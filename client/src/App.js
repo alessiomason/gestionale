@@ -4,7 +4,7 @@ import {useEffect, useState} from "react";
 
 async function get() {
   const base_url = process.env.NODE_ENV === "production" ? "https://tm-gestionale-d0730417ec44.herokuapp.com" : "http://localhost";
-  const port = process.env.PORT || 3001;
+  const port = process.env.NODE_ENV === "production" ? 443 : 3001;
   let res =  await fetch(new URL(`${base_url}:${port}/ping`))
   return res.json()
 }
