@@ -3,7 +3,6 @@
 const express = require('express');
 const morgan = require('morgan'); // logging middleware
 const cors = require('cors');
-const path = require('path')
 //const userDao = require('./user-dao');
 //const passport = require('passport');   // authentication middleware
 //const LocalStrategy = require('passport-local').Strategy;   // username and password for login
@@ -22,7 +21,14 @@ const corsOptions = {
   credentials: true
 };
 app.use(cors(corsOptions));
-app.use(express.static(path.join(__dirname, '../client/build')));
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+  const path = require("path");
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
 
 
 // expose the APIs
