@@ -6,6 +6,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "heroku-prebuild": "ls -a && cp ../client ./tmp_client",
     "start": "node ./app.js",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix ../client && npm run build --prefix ../client"
   },
