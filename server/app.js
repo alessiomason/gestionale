@@ -8,6 +8,7 @@ const cors = require('cors');
 //const LocalStrategy = require('passport-local').Strategy;   // username and password for login
 //const session = require('express-session');    // enable sessions
 //const riddlesAPIs = require('./API');
+require('dotenv').config();
 
 // init express
 const app = new express();
@@ -17,7 +18,7 @@ const port = process.env.PORT || 3001;
 app.use(morgan('dev'));
 app.use(express.json());
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: process.env.APP_URL,
   credentials: true
 };
 app.use(cors(corsOptions));
