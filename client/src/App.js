@@ -3,7 +3,8 @@ import './App.css';
 import {useEffect, useState} from "react";
 
 async function get() {
-  let res =  await fetch(new URL("http://localhost:3001/ping"))
+  const port = process.env.PORT || 3001;
+  let res =  await fetch(new URL(`http://localhost:${port}/ping`))
   return res.json()
 }
 
