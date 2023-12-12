@@ -1,6 +1,6 @@
 'use strict';
 
-const express = require('express');
+import express, { Express, Request, Response } from "express";
 const morgan = require('morgan'); // logging middleware
 const cors = require('cors');
 //const userDao = require('./user-dao');
@@ -8,10 +8,11 @@ const cors = require('cors');
 //const LocalStrategy = require('passport-local').Strategy;   // username and password for login
 //const session = require('express-session');    // enable sessions
 //const riddlesAPIs = require('./API');
-require('dotenv').config();
+import dotenv from "dotenv";
+dotenv.config();
 
 // init express
-const app = new express();
+const app: Express = express();
 const port = process.env.PORT || 3001;
 
 // set up the middlewares
@@ -26,14 +27,14 @@ app.use(cors(corsOptions));
 // expose the APIs
 //riddlesAPIs.useAPIs(app, isLoggedIn);
 
-app.get("/ping", async (req, res) => {
+app.get("/ping", async (req: Request, res: Response) => {
   res.status(200).json("pong")
 })
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("../client/build"));
   const path = require("path");
-  app.get("*", (req, res) => {
+  app.get("*", (req: Request, res: Response) => {
     res.sendFile(path.resolve(__dirname, "../client", "build", "index.html"));
   });
 }
