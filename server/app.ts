@@ -13,7 +13,6 @@ dotenv.config();
 
 // init express
 const app: Express = express();
-const port = process.env.PORT || 3001;
 
 // set up the middlewares
 app.use(morgan('dev'));
@@ -40,7 +39,4 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-// activate the server
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-});
+export default app;
