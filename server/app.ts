@@ -1,13 +1,13 @@
 'use strict';
 
 import express, { Express, Request, Response } from "express";
-const morgan = require('morgan'); // logging middleware
-const cors = require('cors');
+import morgan from 'morgan'; // logging middleware
+import cors from 'cors';
 //const userDao = require('./user-dao');
 //const passport = require('passport');   // authentication middleware
 //const LocalStrategy = require('passport-local').Strategy;   // username and password for login
 //const session = require('express-session');    // enable sessions
-//const riddlesAPIs = require('./API');
+import { useAPIs } from './APIs';
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -17,6 +17,7 @@ const port = process.env.PORT || 3001;
 
 // set up the middlewares
 app.use(morgan('dev'));
+
 app.use(express.json());
 const corsOptions = {
   origin: process.env.APP_URL,
@@ -25,7 +26,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // expose the APIs
-//riddlesAPIs.useAPIs(app, isLoggedIn);
+useAPIs(app);
 
 app.get("/ping", async (req: Request, res: Response) => {
   res.status(200).json("pong")
