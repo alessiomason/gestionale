@@ -15,3 +15,7 @@ export async function pingDB(){
 
     return rows[0].value
 }
+
+export function closeDbConnection() {
+    db.disconnect()
+}

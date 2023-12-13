@@ -15,6 +15,10 @@ export class Database {
     async connect() {
         this.connection = await mysql.createConnection(Database.config)
     }
+
+    disconnect() {
+        this.connection?.end()
+    }
 }
 
 export const db = new Database()
