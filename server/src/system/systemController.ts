@@ -3,13 +3,15 @@ import {pingDB} from "./systemService";
 import {DatabaseError} from "../errors";
 
 export function useSystemAPIs(app: Express) {
+    const baseURL = "/api/system"
+
     // check if the system is online
-    app.get("/ping", async (req: Request, res: Response) => {
+    app.get(`${baseURL}/ping`, async (req: Request, res: Response) => {
         res.status(200).json("pong")
     })
 
     // check if the database is online
-    app.get("/pingDB", async (req: Request, res: Response) => {
+    app.get(`${baseURL}/pingDB`, async (req: Request, res: Response) => {
         try {
             const ping = await pingDB();
             if (ping) res.json(ping)
