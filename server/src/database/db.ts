@@ -4,10 +4,11 @@ export class Database {
     connection: mysql.Connection | null = null
 
     static config: ConnectionOptions = {
-        host: "d3y0lbg7abxmbuoi.chr7pe7iynqr.eu-west-1.rds.amazonaws.com",
-        user: "rnhrswm0zct3f1gg",
-        password: "luqnc8p1hwkcu8fa",
-        database: "z06jm4tk4on0er5a",
+        host: process.env.DB_HOST,
+        user: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
+        port: parseInt(process.env.DB_PORT as string),
         connectTimeout: 60000
     }
 

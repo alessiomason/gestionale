@@ -3,15 +3,14 @@
 import express, {Express, Request, Response} from "express";
 import morgan from 'morgan'; // logging middleware
 import cors from 'cors';
+import dotenv from "dotenv";
+dotenv.config();
 //const userDao = require('./user-dao');
 //const passport = require('passport');   // authentication middleware
 //const LocalStrategy = require('passport-local').Strategy;   // username and password for login
 //const session = require('express-session');    // enable sessions
 import {Database, db} from "./database/db";
 import {useSystemAPIs} from './system/systemController';
-import dotenv from "dotenv";
-
-dotenv.config();
 
 // init express
 const app: Express = express();
