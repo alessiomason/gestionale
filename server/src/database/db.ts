@@ -1,20 +1,19 @@
-import mysql, {ConnectionOptions} from 'mysql2/promise';
+import Knex from "knex";
+import {knexSnakeCaseMappers} from 'objection';
 
-export class Database {
-    connection: mysql.Connection | null = null
-
-    static config: ConnectionOptions = {
+export const knex = Knex({
+    client: "mysql2",
+    connection: {
         host: process.env.DB_HOST,
         user: process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME,
         port: parseInt(process.env.DB_PORT as string),
         connectTimeout: 60000
-    }
-
-    async connect() {
-        this.connection = await mysql.createConnection(Database.config)
-    }
-}
-
-export const db = new Database()
+    },
+    pool: {
+        min: 0,
+        max: 7,
+    },
+    ...knexSnakeCaseMappers()
+});
