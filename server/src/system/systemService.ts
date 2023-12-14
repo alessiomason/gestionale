@@ -1,21 +1,15 @@
-import {db} from '../database/db';
-import {RowDataPacket} from "mysql2/promise";
+import {knex} from "../database/db";
+import {SystemResult} from "./systemResult";
 
-interface SystemPing extends RowDataPacket {
-    value: string
-}
+export async function pingDB() {
+    const systemResult = await knex
+        .first()
+        .from<SystemResult>("system")
+        .where({description: "Ping"})
 
-export async function pingDB(){
-    if (db.connection === null) return;
-
-    const [rows, _] = await db.connection.query<SystemPing[]>(
-        "SELECT value FROM `system` WHERE description = 'Ping'",
-        null
-    );
-
-    return rows[0].value
+    return systemResult?.value
 }
 
 export function closeDbConnection() {
-    db.disconnect()
+    void knex.destroy()
 }

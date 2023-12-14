@@ -9,6 +9,14 @@ export class BaseError {
     }
 }
 
+export class InternalServerError extends BaseError {
+    static code = 500
+
+    constructor(message: string) {
+        super(DatabaseError.code, message);
+    }
+}
+
 export class DatabaseError extends BaseError {
     static code = 503
 

@@ -19,7 +19,7 @@ export function useSystemAPIs(app: Express) {
                 res.status(DatabaseError.code).json(new DatabaseError("Failed to contact the server."))
             }
         } catch (err: any) {
-            console.error(`Error while pinging DB `, err.message);
+            console.error(`Error while pinging DB`, err.message);
         }
     })
 
