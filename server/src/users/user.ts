@@ -24,7 +24,7 @@ export class User {
     hoursPerDay: number
     costPerHour: number
     car: string | null
-    costPerKm: string | null
+    costPerKm: number | null
 
     constructor(
         id: number,
@@ -38,7 +38,7 @@ export class User {
         hoursPerDay: number,
         costPerHour: number,
         car: string | null,
-        costPerKm: string | null
+        costPerKm: number | null
     ) {
         this.id = id
         this.role = role
