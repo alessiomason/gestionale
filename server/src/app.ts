@@ -16,7 +16,7 @@ import {useUsersAPIs} from "./users/usersController";
 const app: Express = express();
 
 // set up the middlewares
-app.use(morgan('dev'));
+app.use(morgan('dev', { skip: () => process.env.NODE_ENV === 'test' }));
 
 app.use(express.json());
 const corsOptions = {
