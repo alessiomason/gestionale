@@ -1,5 +1,5 @@
 import {knex} from '../database/db';
-import {User} from "./user";
+import {NewUser, User} from "./user";
 
 export async function getAllUsers() {
     const users = await knex<User>("users").select();
@@ -42,5 +42,26 @@ export async function getUser(id: number) {
         user.costPerHour,
         user.car,
         user.costPerKm
+    )
+}
+
+export async function createUser(newUser: NewUser) {
+    const userIds = await knex("users")
+        .returning("id")
+        .insert(newUser);
+
+    return new User(
+        userIds[0],
+        newUser.role,
+        newUser.type,
+        newUser.active,
+        newUser.email,
+        newUser.name,
+        newUser.surname,
+        newUser.phone,
+        newUser.hoursPerDay,
+        newUser.costPerHour,
+        newUser.car,
+        newUser.costPerKm
     )
 }

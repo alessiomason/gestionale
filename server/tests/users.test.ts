@@ -3,7 +3,7 @@ import {agent as request} from "supertest";
 import {createTracker, Tracker} from 'knex-mock-client';
 import {faker} from '@faker-js/faker';
 import { knex as db } from '../src/database/db';
-import {User} from "../src/users/user";
+import {NewUser, User} from "../src/users/user";
 import {UserNotFound} from "../src/users/userErrors";
 
 jest.mock('../src/database/db', () => {
@@ -83,5 +83,53 @@ describe("Test users APIs", () => {
         const expectedError = new UserNotFound()
         expect(res.statusCode).toBe(404)
         expect(res.body).toEqual(expectedError)
+    })
+
+    test("Create user", async () => {
+        const newUser = new NewUser(
+            User.Role.user,
+            User.Type.office,
+            undefined,
+            null,
+            faker.person.firstName(),
+            faker.person.lastName(),
+            null,
+            8.0,
+            30.0,
+            null,
+            10.0
+        )
+        const userId = faker.number.int();
+        tracker.on.insert("users").response([userId]);
+
+        const res = await request(app).post(baseURL).send(newUser);
+        expect(res.body).toEqual({
+            id: userId,
+            ...newUser
+        });
+    })
+
+    test("Create user with optional fields", async () => {
+        const newUser = new NewUser(
+            User.Role.user,
+            User.Type.office,
+            undefined,
+            faker.internet.email(),
+            faker.person.firstName(),
+            faker.person.lastName(),
+            faker.phone.number(),
+            8.0,
+            30.0,
+            faker.vehicle.model(),
+            10.0
+        )
+        const userId = faker.number.int();
+        tracker.on.insert("users").response([userId]);
+
+        const res = await request(app).post(baseURL).send(newUser);
+        expect(res.body).toEqual({
+            id: userId,
+            ...newUser
+        });
     })
 })

@@ -1,19 +1,15 @@
 enum Role {
-    dev,
-    admin,
-    user
+    dev = "dev",
+    admin = "admin",
+    user = "user"
 }
 
 enum Type {
-    office,
-    workshop
+    office = "office",
+    workshop = "workshop"
 }
 
-export class User {
-    static readonly Role = Role;
-    static readonly Type = Type
-
-    id: number
+export class NewUser {
     role: Role
     type: Type
     active: boolean
@@ -25,6 +21,41 @@ export class User {
     costPerHour: number
     car: string | null
     costPerKm: number | null
+
+    constructor(
+        role: Role,
+        type: Type,
+        active = true,
+        email: string | null,
+        name: string,
+        surname: string,
+        phone: string | null,
+        hoursPerDay: number,
+        costPerHour: number,
+        car: string | null,
+        costPerKm: number | null
+    ) {
+        this.role = role
+        this.type = type
+        this.active = active
+        this.email = email
+        this.name = name
+        this.surname = surname
+        this.phone = phone
+        this.hoursPerDay = hoursPerDay
+        this.costPerHour = costPerHour
+        this.car = car
+        this.costPerKm = costPerKm
+    }
+}
+
+export class User extends NewUser {
+    static readonly Role = Role;
+    static readonly allRoles = [Role.user, Role.admin, Role.dev];
+    static readonly Type = Type;
+    static readonly allTypes = [Type.office, Type.workshop];
+
+    id: number
 
     constructor(
         id: number,
@@ -40,17 +71,19 @@ export class User {
         car: string | null,
         costPerKm: number | null
     ) {
-        this.id = id
-        this.role = role
-        this.type = type
-        this.active = active
-        this.email = email
-        this.name = name
-        this.surname = surname
-        this.phone = phone
-        this.hoursPerDay = hoursPerDay
-        this.costPerHour = costPerHour
-        this.car = car
-        this.costPerKm = costPerKm
+        super(
+            role,
+            type,
+            active,
+            email,
+            name,
+            surname,
+            phone,
+            hoursPerDay,
+            costPerHour,
+            car,
+            costPerKm
+        );
+        this.id = id;
     }
 }

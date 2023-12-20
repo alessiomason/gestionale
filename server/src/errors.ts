@@ -9,6 +9,14 @@ export class BaseError {
     }
 }
 
+export class ParameterError extends BaseError {
+    static code = 422
+
+    constructor(message: string) {
+        super(ParameterError.code, message);
+    }
+}
+
 export class InternalServerError extends BaseError {
     static code = 500
 
