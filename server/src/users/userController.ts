@@ -1,6 +1,6 @@
 import {Express, Request, Response} from "express";
 import {InternalServerError} from "../errors";
-import {getAllUsers, getUser} from "./usersService";
+import {getAllUsers, getUser} from "./userService";
 import {check, validationResult} from 'express-validator';
 import {UserIdError, UserNotFound} from "./userErrors"; // validation middleware
 

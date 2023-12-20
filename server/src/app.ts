@@ -10,7 +10,7 @@ dotenv.config();
 //const LocalStrategy = require('passport-local').Strategy;   // username and password for login
 //const session = require('express-session');    // enable sessions
 import {useSystemAPIs} from './system/systemController';
-import {useUsersAPIs} from "./users/usersController";
+import {useUsersAPIs} from "./users/userController";
 
 // init express
 const app: Express = express();
@@ -28,10 +28,6 @@ app.use(cors(corsOptions));
 // expose the APIs
 useSystemAPIs(app);
 useUsersAPIs(app);
-
-app.get("/ping", async (req: Request, res: Response) => {
-    res.status(200).json("pong")
-})
 
 if (process.env.NODE_ENV === "production") {
     app.use(express.static("../client/build"));

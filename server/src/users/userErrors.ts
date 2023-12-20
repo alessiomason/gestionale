@@ -1,7 +1,7 @@
 import {BaseError} from "../errors";
 
 export class UserIdError extends BaseError {
-    static code = 500
+    static code = 422
 
     constructor(message: string) {
         super(UserIdError.code, message);

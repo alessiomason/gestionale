@@ -29,11 +29,10 @@ describe("Test system APIs", () => {
     })
 
     test("PingDB", async () => {
-        const systemResponse = {
+        tracker.on.select('system').response({
             description: "Ping",
             value: "Pong"
-        }
-        tracker.on.select('system').response(systemResponse)
+        })
 
         const res = await request(app).get(`${baseURL}/pingDB`);
         expect(res.body).toEqual("Pong");
