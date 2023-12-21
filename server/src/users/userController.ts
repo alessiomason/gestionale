@@ -46,6 +46,7 @@ export function useUsersAPIs(app: Express) {
         }
     )
 
+    // create a new user
     app.post(baseURL,
         body('role').isIn(User.allRoles.map(role => role.toString())),
         body('type').isIn(User.allTypes.map(type => type.toString())),
@@ -72,13 +73,13 @@ export function useUsersAPIs(app: Express) {
             const newUser = new NewUser(
                 req.body.role,
                 req.body.type,
-                undefined,
-                req.body.email,
                 req.body.name,
                 req.body.surname,
-                req.body.phone,
                 req.body.hoursPerDay,
                 req.body.costPerHour,
+                undefined,
+                req.body.email,
+                req.body.phone,
                 req.body.car,
                 req.body.costPerKm
             )

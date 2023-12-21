@@ -38,13 +38,13 @@ describe("Test users APIs", () => {
             faker.number.int(),
             User.Role.user,
             User.Type.office,
-            true,
-            faker.internet.email(),
             faker.person.firstName(),
             faker.person.lastName(),
-            faker.phone.number(),
             8.0,
             30.0,
+            true,
+            faker.internet.email(),
+            faker.phone.number(),
             faker.vehicle.model(),
             10.0
         )
@@ -59,13 +59,13 @@ describe("Test users APIs", () => {
             faker.number.int(),
             User.Role.user,
             User.Type.office,
-            true,
-            faker.internet.email(),
             faker.person.firstName(),
             faker.person.lastName(),
-            faker.phone.number(),
             8.0,
             30.0,
+            true,
+            faker.internet.email(),
+            faker.phone.number(),
             faker.vehicle.model(),
             10.0
         )
@@ -89,15 +89,10 @@ describe("Test users APIs", () => {
         const newUser = new NewUser(
             User.Role.user,
             User.Type.office,
-            undefined,
-            null,
             faker.person.firstName(),
             faker.person.lastName(),
-            null,
             8.0,
-            30.0,
-            null,
-            10.0
+            30.0
         )
         const userId = faker.number.int();
         tracker.on.insert("users").response([userId]);
@@ -113,13 +108,13 @@ describe("Test users APIs", () => {
         const newUser = new NewUser(
             User.Role.user,
             User.Type.office,
-            undefined,
-            faker.internet.email(),
             faker.person.firstName(),
             faker.person.lastName(),
-            faker.phone.number(),
             8.0,
             30.0,
+            undefined,
+            faker.internet.email(),
+            faker.phone.number(),
             faker.vehicle.model(),
             10.0
         )

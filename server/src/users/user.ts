@@ -25,15 +25,15 @@ export class NewUser {
     constructor(
         role: Role,
         type: Type,
-        active = true,
-        email: string | null,
         name: string,
         surname: string,
-        phone: string | null,
         hoursPerDay: number,
         costPerHour: number,
-        car: string | null,
-        costPerKm: number | null
+        active = true,
+        email: string | null = null,
+        phone: string | null = null,
+        car: string | null = null,
+        costPerKm: number | null = null
     ) {
         this.role = role
         this.type = type
@@ -61,26 +61,26 @@ export class User extends NewUser {
         id: number,
         role: Role,
         type: Type,
-        active = true,
-        email: string | null,
         name: string,
         surname: string,
-        phone: string | null,
         hoursPerDay: number,
         costPerHour: number,
-        car: string | null,
-        costPerKm: number | null
+        active = true,
+        email: string | null = null,
+        phone: string | null = null,
+        car: string | null = null,
+        costPerKm: number | null = null
     ) {
         super(
             role,
             type,
-            active,
-            email,
             name,
             surname,
-            phone,
             hoursPerDay,
             costPerHour,
+            active,
+            email,
+            phone,
             car,
             costPerKm
         );
