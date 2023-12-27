@@ -1,9 +1,19 @@
 import passport from 'passport';
 import WebAuthnStrategy from "@forwardemail/passport-fido2-webauthn";
+import {MockStrategy, setupSerializeAndDeserialize} from "passport-mock-strategy";
 import {knex} from "../database/db";
 import {User} from "../users/user";
 
 export function setupPassport(store: WebAuthnStrategy.SessionChallengeStore) {
+    // mock authentication strategy (for testing)
+    if (process.env.NODE_ENV === 'test') {
+        passport.use(new MockStrategy());
+        setupSerializeAndDeserialize(passport);
+        return
+    }
+
+    // real authentication strategies
+
     passport.use(new WebAuthnStrategy({store: store},
         async function verify(publicKeyId: string, userHandle: Buffer, cb: any) {
             const publicKeyInfo = await knex("public_key_credentials")

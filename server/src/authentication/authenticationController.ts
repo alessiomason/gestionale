@@ -4,8 +4,29 @@ import passport from "passport";
 import {Express, Request, Response} from "express";
 import {getUser} from "../users/userService";
 import {UserNotFound} from "../users/userErrors";
+import {MockStrategy} from "passport-mock-strategy";
 
 export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.SessionChallengeStore) {
+    // mock authentication endpoint (for testing)
+    if (process.env.NODE_ENV === 'test') {
+        app.get('/auth/mock',
+            passport.authenticate('mock'),
+            function (req, res) {
+                res.json({
+                    loggedIn: true,
+                    user: req.user
+                });
+            },
+            function (_err: any, _req: Request, res: Response) {
+                res.json({loggedIn: false});
+            }
+        );
+
+        return
+    }
+
+    // real authentication endpoints
+
     app.post('/login/public-key/challenge', function (req, res, next) {
         store.challenge(req, function (err, challenge) {
             if (err) {

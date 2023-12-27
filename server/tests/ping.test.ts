@@ -14,9 +14,16 @@ jest.mock('../src/database/db', () => {
 describe("Test system APIs", () => {
     const baseURL = "/api/system"
     let tracker: Tracker;
+    let session = "";
 
-    beforeAll(() => {
+    beforeAll(async () => {
         tracker = createTracker(db);
+
+        const res = await request(app).get("/auth/mock")
+        session = res.headers['set-cookie'][0]
+            .split(';')
+            .map(item => item.split(';')[0])
+            .join(';')
     });
 
     afterEach(() => {
@@ -34,7 +41,7 @@ describe("Test system APIs", () => {
             value: "Pong"
         })
 
-        const res = await request(app).get(`${baseURL}/pingDB`);
+        const res = await request(app).get(`${baseURL}/pingDB`).set("Cookie", session);
         expect(res.body).toEqual("Pong");
     })
 })

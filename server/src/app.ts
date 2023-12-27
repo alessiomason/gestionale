@@ -72,7 +72,7 @@ useAuthenticationAPIs(app, store);
 if (process.env.NODE_ENV === "production") {
     app.use(express.static("../client/build"));
     const path = require("path");
-    app.get("*", (req: Request, res: Response) => {
+    app.get("*", (_req: Request, res: Response) => {
         res.sendFile(path.resolve(__dirname, "../client", "build", "index.html"));
     });
 }
