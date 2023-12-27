@@ -1,6 +1,6 @@
 'use strict';
 
-import express, {Express, Request, Response} from "express";
+import express, {Express, NextFunction, Request, Response} from "express";
 import morgan from 'morgan';
 import cors from 'cors';
 import dotenv from "dotenv";
@@ -57,9 +57,16 @@ app.use(function (req, res, next) {
     next();
 });
 
+const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
+    if (req.isAuthenticated())
+        return next();
+
+    return res.status(401).json({ error: 'This API requires an authenticated request!' });
+}
+
 // expose the APIs
-useSystemAPIs(app);
-useUsersAPIs(app);
+useSystemAPIs(app, isLoggedIn);
+useUsersAPIs(app, isLoggedIn);
 useAuthenticationAPIs(app, store);
 
 if (process.env.NODE_ENV === "production") {

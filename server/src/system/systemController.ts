@@ -1,8 +1,9 @@
 import {Express, Request, Response} from "express";
-import {pingDB, closeDbConnection} from "./systemService";
+import {RequestHandler} from "express-serve-static-core";
+import {closeDbConnection, pingDB} from "./systemService";
 import {DatabaseError} from "../errors";
 
-export function useSystemAPIs(app: Express) {
+export function useSystemAPIs(app: Express, isLoggedIn: RequestHandler) {
     const baseURL = "/api/system"
 
     // check if the system is online
@@ -11,7 +12,7 @@ export function useSystemAPIs(app: Express) {
     })
 
     // check if the database is online
-    app.get(`${baseURL}/pingDB`, async (_: Request, res: Response) => {
+    app.get(`${baseURL}/pingDB`, isLoggedIn, async (_: Request, res: Response) => {
         try {
             const ping = await pingDB();
             if (ping) res.json(ping)
@@ -23,7 +24,7 @@ export function useSystemAPIs(app: Express) {
         }
     })
 
-    app.post(`${baseURL}/closeDbConnection`, async (_: Request, res: Response) => {
+    app.post(`${baseURL}/closeDbConnection`, isLoggedIn, async (_: Request, res: Response) => {
         closeDbConnection()
         res.status(200).json()
     })

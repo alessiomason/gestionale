@@ -1,16 +1,16 @@
 import {Express, Request, Response} from "express";
-import {InternalServerError} from "../errors";
+import {RequestHandler} from "express-serve-static-core";
+import {InternalServerError, ParameterError} from "../errors";
 import {createUser, getAllUsers, getUser} from "./userService";
 import {body, param, validationResult} from 'express-validator';
 import {UserNotFound} from "./userErrors";
-import {ParameterError} from '../errors';
 import {NewUser, User} from "./user";
 
-export function useUsersAPIs(app: Express) {
+export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
     const baseURL = "/api/users"
 
     // get all users
-    app.get(baseURL, async (_: Request, res: Response) => {
+    app.get(baseURL, isLoggedIn, async (_: Request, res: Response) => {
         try {
             const users = await getAllUsers()
             res.status(200).json(users)
@@ -22,6 +22,7 @@ export function useUsersAPIs(app: Express) {
 
     // get user by id
     app.get(`${baseURL}/:userId`,
+        isLoggedIn,
         param("userId").isInt({min: 1}),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
@@ -48,6 +49,7 @@ export function useUsersAPIs(app: Express) {
 
     // create a new user
     app.post(baseURL,
+        isLoggedIn,
         body('role').isIn(User.allRoles.map(role => role.toString())),
         body('type').isIn(User.allTypes.map(type => type.toString())),
         body('email').optional({values: "null"}).isEmail(),
