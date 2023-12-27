@@ -1,22 +1,26 @@
 'use strict';
 
 import express, {Express, Request, Response} from "express";
-import morgan from 'morgan'; // logging middleware
+import morgan from 'morgan';
 import cors from 'cors';
 import dotenv from "dotenv";
 dotenv.config();
-//const userDao = require('./user-dao');
-//const passport = require('passport');   // authentication middleware
-//const LocalStrategy = require('passport-local').Strategy;   // username and password for login
-//const session = require('express-session');    // enable sessions
+import passport from 'passport';
+import {SessionChallengeStore} from '@forwardemail/passport-fido2-webauthn';
+import session from 'express-session';
 import {useSystemAPIs} from './system/systemController';
 import {useUsersAPIs} from "./users/userController";
+import {setupPassport} from "./authentication/passportSetup";
+import {useAuthenticationAPIs} from "./authentication/authenticationController";
+
+const store = new SessionChallengeStore();
+setupPassport(store);
 
 // init express
 const app: Express = express();
 
 // set up the middlewares
-app.use(morgan('dev', { skip: () => process.env.NODE_ENV === 'test' }));
+app.use(morgan('dev', {skip: () => process.env.NODE_ENV === 'test'}));
 
 app.use(express.json());
 const corsOptions = {
@@ -25,9 +29,38 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
+// set up the session
+app.use(session({
+    // by default, Passport uses a MemoryStore to keep track of the sessions
+    secret: 'A secret sentence not to share with anybody and anywhere, used to sign the session ID cookie.',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: "auto",
+        httpOnly: false,
+        sameSite: "none",
+        maxAge: 1000 * 60 * 10
+    }
+}));
+
+// then, init passport
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(passport.authenticate('session'));
+app.use(function (req, res, next) {
+    // @ts-ignore
+    const messages = req.session.messages || [];
+    res.locals.messages = messages;
+    res.locals.hasMessages = !!messages.length;
+    // @ts-ignore
+    req.session.messages = [];
+    next();
+});
+
 // expose the APIs
 useSystemAPIs(app);
 useUsersAPIs(app);
+useAuthenticationAPIs(app, store);
 
 if (process.env.NODE_ENV === "production") {
     app.use(express.static("../client/build"));

@@ -22,6 +22,10 @@ export class NewUser {
     car: string | null
     costPerKm: number | null
 
+    fullName() {
+        return `${this.name} ${this.surname}`
+    }
+
     constructor(
         role: Role,
         type: Type,
