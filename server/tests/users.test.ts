@@ -22,7 +22,7 @@ describe("Test users APIs", () => {
     beforeAll(async () => {
         tracker = createTracker(db);
 
-        const res = await request(app).get("/auth/mock")
+        const res = await new request(app).get("/auth/mock")
         session = res.headers['set-cookie'][0]
             .split(';')
             .map(item => item.split(';')[0])
@@ -36,7 +36,7 @@ describe("Test users APIs", () => {
     test("Get all users empty list", async () => {
         tracker.on.select("users").response([]);
 
-        const res = await request(app).get(baseURL).set("Cookie", session);
+        const res = await new request(app).get(baseURL).set("Cookie", session);
         expect(res.body).toEqual([]);
     })
 
@@ -57,7 +57,7 @@ describe("Test users APIs", () => {
         )
         tracker.on.select("users").response([user]);
 
-        const res = await request(app).get(baseURL).set("Cookie", session);
+        const res = await new request(app).get(baseURL).set("Cookie", session);
         expect(res.body).toEqual([user]);
     })
 
@@ -78,14 +78,14 @@ describe("Test users APIs", () => {
         )
         tracker.on.select("users").response(user);
 
-        const res = await request(app).get(`${baseURL}/${user.id}`).set("Cookie", session);
+        const res = await new request(app).get(`${baseURL}/${user.id}`).set("Cookie", session);
         expect(res.body).toEqual(user);
     })
 
     test("Get single user not found", async() => {
         tracker.on.select("users").response(undefined)
 
-        const res = await request(app).get(`${baseURL}/${faker.number.int()}`).set("Cookie", session);
+        const res = await new request(app).get(`${baseURL}/${faker.number.int()}`).set("Cookie", session);
 
         const expectedError = new UserNotFound()
         expect(res.statusCode).toBe(404)
@@ -104,7 +104,7 @@ describe("Test users APIs", () => {
         const userId = faker.number.int();
         tracker.on.insert("users").response([userId]);
 
-        const res = await request(app).post(baseURL).send(newUser).set("Cookie", session);
+        const res = await new request(app).post(baseURL).send(newUser).set("Cookie", session);
         expect(res.body).toEqual({
             id: userId,
             ...newUser
@@ -128,7 +128,7 @@ describe("Test users APIs", () => {
         const userId = faker.number.int();
         tracker.on.insert("users").response([userId]);
 
-        const res = await request(app).post(baseURL).send(newUser).set("Cookie", session);
+        const res = await new request(app).post(baseURL).send(newUser).set("Cookie", session);
         expect(res.body).toEqual({
             id: userId,
             ...newUser
