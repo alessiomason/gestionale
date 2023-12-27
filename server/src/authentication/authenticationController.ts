@@ -1,7 +1,7 @@
 import WebAuthnStrategy from "@forwardemail/passport-fido2-webauthn";
 import base64url from 'base64url';
 import passport from "passport";
-import {Express, NextFunction, Request, Response} from "express";
+import {Express, Request, Response} from "express";
 import {getUser} from "../users/userService";
 import {UserNotFound} from "../users/userErrors";
 
@@ -21,13 +21,13 @@ export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.Sess
 
     app.post('/login/public-key',
         passport.authenticate('webauthn', {failureMessage: true, failWithError: true}),
-        function (req, res, next) {
+        function (req, res) {
             res.json({
                 loggedIn: true,
                 user: req.user
             });
         },
-        function (err: any, req: Request, res: Response, next: NextFunction) {
+        function (_err: any, _req: Request, res: Response) {
             res.json({loggedIn: false});
         }
     );

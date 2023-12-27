@@ -5,33 +5,39 @@ import {User} from "../users/user";
 
 export function setupPassport(store: WebAuthnStrategy.SessionChallengeStore) {
     passport.use(new WebAuthnStrategy({store: store},
-        async function verify(id: string, userHandle: Buffer, cb: any) {
+        async function verify(publicKeyId: string, userHandle: Buffer, cb: any) {
             const publicKeyInfo = await knex("public_key_credentials")
                 .first()
-                .where({externalId: id});
+                .where({publicKeyId: publicKeyId});
 
             const user = await knex<User>("users")
                 .first()
                 .where({id: publicKeyInfo.userId})
 
-            if (Buffer.from(String(user?.id ?? 1)).compare(userHandle)) {
+            if (!user)
+                return cb(null, false, {message: 'User not found.'});
+
+            if (Buffer.from(user.id.toString()).compare(userHandle)) {
                 return cb(null, user, publicKeyInfo.publicKey)
             }
 
             return cb(null, false, {message: 'Invalid key.'});
         },
 
-        async function register(userInfo: any, id: string, publicKey: string, cb: any) {
+        async function register(userInfo: any, publicKeyId: string, publicKey: string, cb: any) {
             const userId = parseInt((userInfo.id as Buffer).toString())
             const user = await knex<User>("users")
                 .first()
                 .where({id: userId})
 
+            if (!user)
+                return cb(null, false, {message: 'User not found.'});
+
             await knex("public_key_credentials")
                 .insert({
-                    userId: user?.id,
-                    externalId: id,
-                    publicKey: publicKey
+                    publicKeyId: publicKeyId,
+                    publicKey: publicKey,
+                    userId: user.id
                 })
 
             return cb(null, user);
@@ -46,10 +52,10 @@ export function setupPassport(store: WebAuthnStrategy.SessionChallengeStore) {
     });
 
     // starting from the data in the session, we extract the current (logged-in) user
-    passport.deserializeUser(async (id, done) => {
+    passport.deserializeUser(async (id: number, done) => {
         const user = await knex<User>("users")
             .first()
-            .where({id: id as number})
+            .where({id: id})
 
         done(null, user);
     });
