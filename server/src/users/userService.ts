@@ -47,12 +47,12 @@ export async function getUser(id: number) {
 }
 
 export async function createUser(newUser: NewUser) {
-    const existingUser = await knex
+    const existingUser = await knex<User>("users")
         .first()
         .where({name: newUser.name, surname: newUser.surname})
 
     if (existingUser) {
-        throw new UserWithSameUsernameError()
+        return new UserWithSameUsernameError()
     }
 
     const userIds = await knex("users")

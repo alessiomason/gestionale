@@ -4,7 +4,7 @@ import {createTracker, Tracker} from 'knex-mock-client';
 import {faker} from '@faker-js/faker';
 import { knex as db } from '../src/database/db';
 import {NewUser, User} from "../src/users/user";
-import {UserNotFound} from "../src/users/userErrors";
+import {UserNotFound, UserWithSameUsernameError} from "../src/users/userErrors";
 
 jest.mock('../src/database/db', () => {
     const Knex = require('knex');
@@ -102,6 +102,7 @@ describe("Test users APIs", () => {
             30.0
         )
         const userId = faker.number.int();
+        tracker.on.select("users").response(undefined); // no already existing user
         tracker.on.insert("users").response([userId]);
 
         const res = await new request(app).post(baseURL).send(newUser).set("Cookie", session);
@@ -126,6 +127,7 @@ describe("Test users APIs", () => {
             10.0
         )
         const userId = faker.number.int();
+        tracker.on.select("users").response(undefined); // no already existing user
         tracker.on.insert("users").response([userId]);
 
         const res = await new request(app).post(baseURL).send(newUser).set("Cookie", session);
@@ -133,5 +135,21 @@ describe("Test users APIs", () => {
             id: userId,
             ...newUser
         });
+    })
+
+    test("Cannot create a user with the same username", async () => {
+        const newUser = new NewUser(
+            User.Role.user,
+            User.Type.office,
+            faker.person.firstName(),
+            faker.person.lastName(),
+            8.0,
+            30.0
+        )
+        const userId = faker.number.int();
+        tracker.on.select("users").response(newUser); // already existing user
+
+        const res = await new request(app).post(baseURL).send(newUser).set("Cookie", session);
+        expect(res.body).toEqual(new UserWithSameUsernameError());
     })
 })

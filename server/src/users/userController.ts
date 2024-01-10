@@ -86,12 +86,12 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
                 req.body.costPerKm
             )
 
-            try {
-                const user = await createUser(newUser);
+            const user = await createUser(newUser);
+
+            if (user instanceof UserWithSameUsernameError) {
+                res.status(user.statusCode).json(user);
+            } else {
                 res.status(200).json(user);
-            } catch (e) {
-                const err = e as BaseError
-                res.status(err.statusCode).json(err);
             }
         }
     )
