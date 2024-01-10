@@ -7,3 +7,11 @@ export class UserNotFound extends BaseError {
         super(UserNotFound.code, "User not found!");
     }
 }
+
+export class UserWithSameUsernameError extends BaseError {
+    static code = 422
+
+    constructor() {
+        super(UserWithSameUsernameError.code, "A user with the same username already exists!");
+    }
+}

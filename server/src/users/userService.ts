@@ -1,5 +1,6 @@
 import {knex} from '../database/db';
 import {NewUser, User} from "./user";
+import {UserWithSameUsernameError} from "./userErrors";
 
 export async function getAllUsers() {
     const users = await knex<User>("users").select();
@@ -46,6 +47,14 @@ export async function getUser(id: number) {
 }
 
 export async function createUser(newUser: NewUser) {
+    const existingUser = await knex
+        .first()
+        .where({name: newUser.name, surname: newUser.surname})
+
+    if (existingUser) {
+        throw new UserWithSameUsernameError()
+    }
+
     const userIds = await knex("users")
         .returning("id")
         .insert(newUser);

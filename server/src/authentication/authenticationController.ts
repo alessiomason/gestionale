@@ -4,7 +4,6 @@ import passport from "passport";
 import {Express, Request, Response} from "express";
 import {getUser} from "../users/userService";
 import {UserNotFound} from "../users/userErrors";
-import {MockStrategy} from "passport-mock-strategy";
 
 export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.SessionChallengeStore) {
     // mock authentication endpoint (for testing)

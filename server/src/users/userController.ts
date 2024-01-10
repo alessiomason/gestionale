@@ -1,9 +1,9 @@
 import {Express, Request, Response} from "express";
 import {RequestHandler} from "express-serve-static-core";
-import {InternalServerError, ParameterError} from "../errors";
+import {BaseError, InternalServerError, ParameterError} from "../errors";
 import {createUser, getAllUsers, getUser} from "./userService";
 import {body, param, validationResult} from 'express-validator';
-import {UserNotFound} from "./userErrors";
+import {UserNotFound, UserWithSameUsernameError} from "./userErrors";
 import {NewUser, User} from "./user";
 
 export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
@@ -67,7 +67,7 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
                 return
             }
 
-            if (req.body.type === User.Role.dev.toString()) {
+            if (req.body.role === User.Role.dev.toString()) {
                 res.json(ParameterError.code).json(new ParameterError("You cannot register as a developer!"))
                 return
             }
@@ -86,8 +86,13 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
                 req.body.costPerKm
             )
 
-            const user = await createUser(newUser);
-            res.status(200).json(user);
+            try {
+                const user = await createUser(newUser);
+                res.status(200).json(user);
+            } catch (e) {
+                const err = e as BaseError
+                res.status(err.statusCode).json(err);
+            }
         }
     )
 }

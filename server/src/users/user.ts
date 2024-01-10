@@ -26,6 +26,14 @@ export class NewUser {
         return `${this.name} ${this.surname}`
     }
 
+    username() {
+        // replace whitespaces in name and surname with dashes, then lowercase
+        const dashedName = this.name.replace(/\s/g, "-").toLowerCase()
+        const dashedSurname = this.surname.replace(/\s/g, "-").toLowerCase()
+
+        return `${dashedName}-${dashedSurname}`
+    }
+
     constructor(
         role: Role,
         type: Type,
