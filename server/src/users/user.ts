@@ -16,6 +16,7 @@ export class NewUser {
     email: string | null
     name: string
     surname: string
+    username: string
     phone: string | null
     hoursPerDay: number
     costPerHour: number
@@ -26,19 +27,20 @@ export class NewUser {
         return `${this.name} ${this.surname}`
     }
 
-    username() {
+    /*username() {
         // replace whitespaces in name and surname with dashes, then lowercase
         const dashedName = this.name.replace(/\s/g, "-").toLowerCase()
         const dashedSurname = this.surname.replace(/\s/g, "-").toLowerCase()
 
         return `${dashedName}-${dashedSurname}`
-    }
+    }*/
 
     constructor(
         role: Role,
         type: Type,
         name: string,
         surname: string,
+        username: string,
         hoursPerDay: number,
         costPerHour: number,
         active = true,
@@ -53,6 +55,7 @@ export class NewUser {
         this.email = email
         this.name = name
         this.surname = surname
+        this.username = username
         this.phone = phone
         this.hoursPerDay = hoursPerDay
         this.costPerHour = costPerHour
@@ -75,6 +78,7 @@ export class User extends NewUser {
         type: Type,
         name: string,
         surname: string,
+        username: string,
         hoursPerDay: number,
         costPerHour: number,
         active = true,
@@ -88,6 +92,7 @@ export class User extends NewUser {
             type,
             name,
             surname,
+            username,
             hoursPerDay,
             costPerHour,
             active,

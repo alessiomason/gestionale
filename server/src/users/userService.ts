@@ -1,6 +1,6 @@
 import {knex} from '../database/db';
 import {NewUser, User} from "./user";
-import {UserWithSameUsernameError} from "./userErrors";
+import {UserNotFound, UserWithSameUsernameError} from "./userErrors";
 
 export async function getAllUsers() {
     const users = await knex<User>("users").select();
@@ -12,6 +12,7 @@ export async function getAllUsers() {
             user.type,
             user.name,
             user.surname,
+            user.username,
             user.hoursPerDay,
             user.costPerHour,
             user.active,
@@ -36,6 +37,7 @@ export async function getUser(id: number) {
         user.type,
         user.name,
         user.surname,
+        user.username,
         user.hoursPerDay,
         user.costPerHour,
         user.active,
@@ -44,6 +46,18 @@ export async function getUser(id: number) {
         user.car,
         user.costPerKm
     )
+}
+
+export async function getPublicKeyIdFromUsername(username: string) {
+    const publicKeyId = await knex("public_key_credentials")
+        .join("users", "public_key_credentials.user_id", "users.id")
+        .first("public_key_credentials.public_key_id")
+        .where({username: username})
+
+    if (!publicKeyId)
+        return new UserNotFound()
+
+    return publicKeyId
 }
 
 export async function createUser(newUser: NewUser) {
@@ -65,6 +79,7 @@ export async function createUser(newUser: NewUser) {
         newUser.type,
         newUser.name,
         newUser.surname,
+        newUser.username,
         newUser.hoursPerDay,
         newUser.costPerHour,
         newUser.active,

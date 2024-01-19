@@ -1,7 +1,7 @@
 import {Express, Request, Response} from "express";
 import {RequestHandler} from "express-serve-static-core";
-import {BaseError, InternalServerError, ParameterError} from "../errors";
-import {createUser, getAllUsers, getUser} from "./userService";
+import {InternalServerError, ParameterError} from "../errors";
+import {createUser, getAllUsers, getUser, getPublicKeyIdFromUsername} from "./userService";
 import {body, param, validationResult} from 'express-validator';
 import {UserNotFound, UserWithSameUsernameError} from "./userErrors";
 import {NewUser, User} from "./user";
@@ -47,6 +47,31 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
         }
     )
 
+    // get userId by username
+    app.get(`${baseURL}/publicKeyId/:username`,
+        param("username").isString(),
+        async (req: Request, res: Response) => {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                res.status(ParameterError.code).json(new ParameterError("The username must be a string!"))
+                return
+            }
+
+            try {
+                const publicKeyId = await getPublicKeyIdFromUsername(req.params.username)
+
+                if (publicKeyId) {
+                    res.status(200).json(publicKeyId)
+                } else {
+                    res.status(UserNotFound.code).json(new UserNotFound())
+                }
+            } catch (err: any) {
+                console.error("Error while retrieving users: ", err.message);
+                res.status(InternalServerError.code).json(new InternalServerError("Error while retrieving users"))
+            }
+        }
+    )
+
     // create a new user
     app.post(baseURL,
         isLoggedIn,
@@ -77,6 +102,7 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
                 req.body.type,
                 req.body.name,
                 req.body.surname,
+                req.body.username,
                 req.body.hoursPerDay,
                 req.body.costPerHour,
                 undefined,

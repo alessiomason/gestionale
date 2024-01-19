@@ -62,7 +62,7 @@ export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.Sess
 
         const userInfo = {
             id: user.id.toString(),
-            name: user.email ?? "",
+            name: user.username ?? "",
             displayName: user.fullName()
         };
 
