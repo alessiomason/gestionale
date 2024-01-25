@@ -27,13 +27,13 @@ export class NewUser {
         return `${this.name} ${this.surname}`
     }
 
-    /*username() {
+    static usernameFromName(name: string, surname: string) {
         // replace whitespaces in name and surname with dashes, then lowercase
-        const dashedName = this.name.replace(/\s/g, "-").toLowerCase()
-        const dashedSurname = this.surname.replace(/\s/g, "-").toLowerCase()
+        const dashedName = name.replace(/\s/g, "-").toLowerCase()
+        const dashedSurname = surname.replace(/\s/g, "-").toLowerCase()
 
         return `${dashedName}-${dashedSurname}`
-    }*/
+    }
 
     constructor(
         role: Role,
@@ -71,6 +71,9 @@ export class User extends NewUser {
     static readonly allTypes = [Type.office, Type.workshop];
 
     id: number
+    hashedPassword: Buffer | undefined
+    salt: Buffer | undefined
+    registrationToken: string | undefined
 
     constructor(
         id: number,
@@ -79,6 +82,9 @@ export class User extends NewUser {
         name: string,
         surname: string,
         username: string,
+        hashedPassword: Buffer | undefined,
+        salt: Buffer | undefined,
+        registrationToken: string | undefined,
         hoursPerDay: number,
         costPerHour: number,
         active = true,
@@ -102,5 +108,8 @@ export class User extends NewUser {
             costPerKm
         );
         this.id = id;
+        this.hashedPassword = hashedPassword;
+        this.salt = salt;
+        this.registrationToken = registrationToken;
     }
 }

@@ -67,7 +67,7 @@ const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
 // expose the APIs
 useSystemAPIs(app, isLoggedIn);
 useUsersAPIs(app, isLoggedIn);
-useAuthenticationAPIs(app, store);
+useAuthenticationAPIs(app, store, isLoggedIn);
 
 if (process.env.NODE_ENV === "production") {
     app.use(express.static("../client/build"));

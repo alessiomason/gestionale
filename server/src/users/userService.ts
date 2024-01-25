@@ -1,6 +1,7 @@
 import {knex} from '../database/db';
 import {NewUser, User} from "./user";
 import {UserNotFound, UserWithSameUsernameError} from "./userErrors";
+import * as crypto from "crypto";
 
 export async function getAllUsers() {
     const users = await knex<User>("users").select();
@@ -13,6 +14,9 @@ export async function getAllUsers() {
             user.name,
             user.surname,
             user.username,
+            user.hashedPassword,
+            user.salt,
+            user.registrationToken,
             user.hoursPerDay,
             user.costPerHour,
             user.active,
@@ -38,6 +42,90 @@ export async function getUser(id: number) {
         user.name,
         user.surname,
         user.username,
+        undefined,
+        undefined,
+        undefined,
+        user.hoursPerDay,
+        user.costPerHour,
+        user.active,
+        user.email,
+        user.phone,
+        user.car,
+        user.costPerKm
+    )
+}
+
+export async function getFullUser(id: number) {
+    const user = await knex<User>("users")
+        .first()
+        .where({id: id})
+
+    if (!user) return
+
+    return new User(
+        user.id,
+        user.role,
+        user.type,
+        user.name,
+        user.surname,
+        user.username,
+        user.hashedPassword,
+        user.salt,
+        user.registrationToken,
+        user.hoursPerDay,
+        user.costPerHour,
+        user.active,
+        user.email,
+        user.phone,
+        user.car,
+        user.costPerKm
+    )
+}
+
+export async function getUserFromUsername(username: string) {
+    const user = await knex<User>("users")
+        .first()
+        .where({username: username})
+
+    if (!user) return
+
+    return new User(
+        user.id,
+        user.role,
+        user.type,
+        user.name,
+        user.surname,
+        user.username,
+        user.hashedPassword,
+        user.salt,
+        user.registrationToken,
+        user.hoursPerDay,
+        user.costPerHour,
+        user.active,
+        user.email,
+        user.phone,
+        user.car,
+        user.costPerKm
+    )
+}
+
+export async function getUserFromRegistrationToken(registrationToken: string) {
+    const user = await knex<User>("users")
+        .first()
+        .where({registrationToken: registrationToken})
+
+    if (!user) return
+
+    return new User(
+        user.id,
+        user.role,
+        user.type,
+        user.name,
+        user.surname,
+        user.username,
+        user.hashedPassword,
+        user.salt,
+        user.registrationToken,
         user.hoursPerDay,
         user.costPerHour,
         user.active,
@@ -73,6 +161,12 @@ export async function createUser(newUser: NewUser) {
         .returning("id")
         .insert(newUser);
 
+    const registrationToken = crypto.randomBytes(8).toString("hex")
+
+    await knex("users")
+        .where({id: userIds[0]})
+        .update({registrationToken: registrationToken})
+
     return new User(
         userIds[0],
         newUser.role,
@@ -80,6 +174,9 @@ export async function createUser(newUser: NewUser) {
         newUser.name,
         newUser.surname,
         newUser.username,
+        undefined,
+        undefined,
+        registrationToken,
         newUser.hoursPerDay,
         newUser.costPerHour,
         newUser.active,
@@ -88,4 +185,13 @@ export async function createUser(newUser: NewUser) {
         newUser.car,
         newUser.costPerKm
     )
+}
+
+export async function saveUserPassword(userId: number, hashedPassword: Buffer, salt: Buffer) {
+    await knex("users")
+        .where({id: userId})
+        .update({
+            hashedPassword: hashedPassword,
+            salt: salt
+        })
 }

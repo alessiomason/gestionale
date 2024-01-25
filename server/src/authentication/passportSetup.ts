@@ -1,8 +1,12 @@
 import passport from 'passport';
+const LocalStrategy = require('passport-local').Strategy;
 import WebAuthnStrategy from "@forwardemail/passport-fido2-webauthn";
 import {MockStrategy, setupSerializeAndDeserialize} from "passport-mock-strategy";
 import {knex} from "../database/db";
 import {User} from "../users/user";
+import {BaseError} from "../errors";
+import * as crypto from "crypto";
+import {getUser, getUserFromUsername} from "../users/userService";
 
 export function setupPassport(store: WebAuthnStrategy.SessionChallengeStore) {
     // mock authentication strategy (for testing)
@@ -13,6 +17,39 @@ export function setupPassport(store: WebAuthnStrategy.SessionChallengeStore) {
     }
 
     // real authentication strategies
+
+    passport.use(new LocalStrategy(
+        async function (username: string, password: string, done: any) {
+            const user = await getUserFromUsername(username);
+
+            if (!user) {
+                return done(null, false, "Incorrect username or password.");
+            }
+
+            if (!user.salt) {
+                return done(null, false, "User is not registered.");
+            }
+
+            crypto.pbkdf2(password, user.salt, 31000, 32, "sha256", function (err, hashedPassword) {
+                if (err) return (done(err));
+
+                if (!user.hashedPassword) {
+                    return done(null, false, "User is not registered.");
+                }
+
+                if (!crypto.timingSafeEqual(user.hashedPassword, hashedPassword)) {
+                    return done(null, false, "Incorrect username or password.");
+                }
+
+                // do not send these fields to the client
+                user.hashedPassword = undefined;
+                user.salt = undefined;
+                user.registrationToken = undefined;
+
+                return done(null, user);
+            })
+        }
+    ));
 
     passport.use(new WebAuthnStrategy({store: store},
         async function verify(publicKeyId: string, userHandle: Buffer, cb: any) {
@@ -63,10 +100,7 @@ export function setupPassport(store: WebAuthnStrategy.SessionChallengeStore) {
 
     // starting from the data in the session, we extract the current (logged-in) user
     passport.deserializeUser(async (id: number, done) => {
-        const user = await knex<User>("users")
-            .first()
-            .where({id: id})
-
+        const user = await getUser(id);
         done(null, user);
     });
 }
