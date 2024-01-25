@@ -1,30 +1,57 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
 import React, {useEffect, useState} from 'react';
-import logo from './logo.svg';
+import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate } from 'react-router-dom';
+import PageLayout from "./PageLayout";
+import LoginPage from "./login/LoginPage";
+import loginApis, {Credentials} from "./api/loginApis";
 import './App.css';
-
-async function get() {
-  const base_url = process.env.NODE_ENV === "production" ? "https://tm-gestionale-d0730417ec44.herokuapp.com" : "http://localhost";
-  const port = process.env.NODE_ENV === "production" ? 443 : 3001;
-  let res =  await fetch(new URL(`${base_url}:${port}/api/system/pingDB`))
-  return res.json()
-}
+import base64url from './base64url';
 
 function App() {
-  const [text, setText] = useState("initial");
+    return (
+        <Router>
+            <App2 />
+        </Router>
+    );
+}
 
-  useEffect(() => {
-    get()
-        .then(res => setText(res))
-  }, [])
+function App2() {
+    const [text, setText] = useState("initial");
+    const [loggedIn, setLoggedIn] = useState(false);
+    const [user, setUser] = useState({});
+    const [message, setMessage] = useState("");
 
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>DB: {text}</p>
-      </header>
-    </div>
-  );
+    const navigate = useNavigate();
+
+    function doSignup(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        
+    }
+
+    function doLogin(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, credentials: Credentials) {
+        event.preventDefault();
+
+        loginApis.login(credentials)
+            .then(user => {
+                setLoggedIn(true);
+                setUser(user);
+                setMessage('');
+                navigate('/');
+            })
+            .catch(err => {
+                setMessage(err);
+            })
+    }
+
+    function doLogout() {}
+
+    return (
+        <Routes>
+            <Route path='/login' element={loggedIn ? <Navigate to='/' /> : <LoginPage loggedIn={loggedIn} doLogin={doLogin} doSignup={doSignup} user={user} message={message} setMessage={setMessage} />} />
+            <Route path='/' element={loggedIn ? <PageLayout loggedIn={loggedIn} user={user} doLogin={doLogin} doLogout={doLogout} /> : <Navigate to='/login' />}>
+                <Route index element={<p>ciao</p>} />
+            </Route>
+        </Routes>
+    );
 }
 
 export default App;
