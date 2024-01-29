@@ -1,0 +1,20 @@
+.login-container {
+    height: 100vh;
+}
+
+form {
+    height: 100vh;
+}
+
+.padded-form-input {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.login-logo {
+    height: 10vh;
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+}

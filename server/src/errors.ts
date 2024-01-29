@@ -9,8 +9,16 @@ export class BaseError {
     }
 }
 
+export class ParameterError extends BaseError {
+    static readonly code = 422
+
+    constructor(message: string) {
+        super(ParameterError.code, message);
+    }
+}
+
 export class InternalServerError extends BaseError {
-    static code = 500
+    static readonly code = 500
 
     constructor(message: string) {
         super(DatabaseError.code, message);
@@ -18,7 +26,7 @@ export class InternalServerError extends BaseError {
 }
 
 export class DatabaseError extends BaseError {
-    static code = 503
+    static readonly code = 503
 
     constructor(message: string) {
         super(DatabaseError.code, message);

@@ -1,22 +1,26 @@
 'use strict';
 
-import express, {Express, Request, Response} from "express";
-import morgan from 'morgan'; // logging middleware
+import express, {Express, NextFunction, Request, Response} from "express";
+import morgan from 'morgan';
 import cors from 'cors';
 import dotenv from "dotenv";
 dotenv.config();
-//const userDao = require('./user-dao');
-//const passport = require('passport');   // authentication middleware
-//const LocalStrategy = require('passport-local').Strategy;   // username and password for login
-//const session = require('express-session');    // enable sessions
+import passport from 'passport';
+import {SessionChallengeStore} from '@forwardemail/passport-fido2-webauthn';
+import session from 'express-session';
 import {useSystemAPIs} from './system/systemController';
-import {useUsersAPIs} from "./users/usersController";
+import {useUsersAPIs} from "./users/userController";
+import {setupPassport} from "./authentication/passportSetup";
+import {useAuthenticationAPIs} from "./authentication/authenticationController";
+
+const store = new SessionChallengeStore();
+setupPassport(store);
 
 // init express
 const app: Express = express();
 
 // set up the middlewares
-app.use(morgan('dev', { skip: () => process.env.NODE_ENV === 'test' }));
+app.use(morgan('dev', {skip: () => process.env.NODE_ENV === 'test'}));
 
 app.use(express.json());
 const corsOptions = {
@@ -25,18 +29,50 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-// expose the APIs
-useSystemAPIs(app);
-useUsersAPIs(app);
+// set up the session
+app.use(session({
+    // by default, Passport uses a MemoryStore to keep track of the sessions
+    secret: 'A secret sentence not to share with anybody and anywhere, used to sign the session ID cookie.',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: "auto",
+        httpOnly: true,
+        sameSite: "none",
+        maxAge: 1000 * 60 * 10
+    }
+}));
 
-app.get("/ping", async (req: Request, res: Response) => {
-    res.status(200).json("pong")
-})
+// then, init passport
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(passport.authenticate('session'));
+app.use(function (req, res, next) {
+    // @ts-ignore
+    const messages = req.session.messages || [];
+    res.locals.messages = messages;
+    res.locals.hasMessages = !!messages.length;
+    // @ts-ignore
+    req.session.messages = [];
+    next();
+});
+
+const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
+    if (req.isAuthenticated())
+        return next();
+
+    return res.status(401).json({ error: 'This API requires an authenticated request!' });
+}
+
+// expose the APIs
+useSystemAPIs(app, isLoggedIn);
+useUsersAPIs(app, isLoggedIn);
+useAuthenticationAPIs(app, store, isLoggedIn);
 
 if (process.env.NODE_ENV === "production") {
     app.use(express.static("../client/build"));
     const path = require("path");
-    app.get("*", (req: Request, res: Response) => {
+    app.get("*", (_req: Request, res: Response) => {
         res.sendFile(path.resolve(__dirname, "../client", "build", "index.html"));
     });
 }
