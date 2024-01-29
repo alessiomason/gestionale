@@ -1,0 +1,44 @@
+.navbar {
+    height: 84px;
+    --bs-bg-opacity: 1;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    background: linear-gradient(145deg, #ffffff, #e6e6e6);
+    box-shadow: 10px 10px 25px #999999,
+    -10px -10px 25px #ffffff;
+}
+
+.purple {
+    color: #552bd4 !important;
+}
+
+.icon {
+    vertical-align: top;
+}
+
+.navbar-padding {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.text {
+    padding-left: 20px;
+    font-size: 130%;
+}
+
+.navbar-button {
+    margin-right: 10px;
+    color: #552bd4;
+    background-color: transparent;
+    border-radius: 10px;
+    border-color: transparent;
+}
+
+.navbar-button:hover, .navbar-button:focus, .navbar-button:active, .navbar-button:active:focus {
+    color: #552bd4;
+    border-radius: 10px;
+    border-color: #552bd4;
+    background: transparent;
+    box-shadow: inset 5px 5px 10px #d6d6d6,
+    inset -5px -5px 10px #ffffff;
+}

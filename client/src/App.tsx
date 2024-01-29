@@ -46,7 +46,7 @@ function App2() {
     return (
         <Routes>
             <Route path='/login' element={loggedIn ? <Navigate to='/' /> : <LoginPage loggedIn={loggedIn} doLogin={doLogin} doSignup={doSignup} user={user} message={message} setMessage={setMessage} />} />
-            <Route path='/' element={loggedIn ? <PageLayout loggedIn={loggedIn} user={user} doLogin={doLogin} doLogout={doLogout} /> : <Navigate to='/login' />}>
+            <Route path='/' element={loggedIn ? <PageLayout /> : <Navigate to='/login' />}>
                 <Route index element={<p>ciao</p>} />
             </Route>
         </Routes>
