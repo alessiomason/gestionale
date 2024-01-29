@@ -1,7 +1,8 @@
 import {Button, Col, Container, FloatingLabel, Form, Row} from "react-bootstrap";
 import {useState} from "react";
-import './LoginPage.css';
 import {Credentials} from "../api/loginApis";
+import './LoginPage.css';
+import roundLogo from "../images/logos/round_logo.png";
 
 function LoginPage(props: any) {
     const [username, setUsername] = useState("alessiomason");
@@ -9,6 +10,8 @@ function LoginPage(props: any) {
 
     return (
         <Container className="login-container">
+            <img src={roundLogo} alt="The logo of the company" className="login-logo" />
+
             <Row>
                 <Form className="d-flex flex-column justify-content-center">
                     <Row>
@@ -23,7 +26,7 @@ function LoginPage(props: any) {
                             <Row>
                                 <Col>
                                     <FloatingLabel controlId="floatingInput" label="Username" className="padded-form-input">
-                                        <Form.Control type='text' value={username}
+                                        <Form.Control type='text' placeholder="Username" value={username}
                                                       onChange={ev => setUsername(ev.target.value)}/>
                                     </FloatingLabel>
                                 </Col>
@@ -32,7 +35,7 @@ function LoginPage(props: any) {
                             <Row>
                                 <Col>
                                     <FloatingLabel controlId="floatingInput" label="Password" className="padded-form-input">
-                                        <Form.Control type='text' value={password}
+                                        <Form.Control type='password' placeholder="Password" value={password}
                                                       onChange={ev => setPassword(ev.target.value)}/>
                                     </FloatingLabel>
                                 </Col>
