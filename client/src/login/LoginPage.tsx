@@ -46,7 +46,7 @@ function LoginPage(props: any) {
 
                     <Row>
                         <Col className="d-flex justify-content-center">
-                            <Button type="submit" className="login-button glossy-button"
+                            <Button type="submit" className="glossy-button"
                                     onClick={ev => props.doLogin(ev, new Credentials(username, password))}>Login</Button>
                         </Col>
                     </Row>

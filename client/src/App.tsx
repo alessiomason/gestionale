@@ -5,6 +5,7 @@ import PageLayout from "./PageLayout";
 import LoginPage from "./login/LoginPage";
 import loginApis, {Credentials} from "./api/loginApis";
 import './App.css';
+import SignUpPage from "./signup/SignUpPage";
 
 function App() {
     return (
@@ -45,7 +46,8 @@ function App2() {
 
     return (
         <Routes>
-            <Route path='/login' element={loggedIn ? <Navigate to='/' /> : <LoginPage loggedIn={loggedIn} doLogin={doLogin} doSignup={doSignup} user={user} message={message} setMessage={setMessage} />} />
+            <Route path='/login' element={loggedIn ? <Navigate to='/' /> : <LoginPage loggedIn={loggedIn} doLogin={doLogin} user={user} message={message} setMessage={setMessage} />} />
+            <Route path='/signup/:registrationToken' element={loggedIn ? <Navigate to='/' /> : <SignUpPage loggedIn={loggedIn} doLogin={doLogin} doSignup={doSignup} user={user} message={message} setMessage={setMessage} />} />
             <Route path='/' element={loggedIn ? <PageLayout /> : <Navigate to='/login' />}>
                 <Route index element={<p>ciao</p>} />
             </Route>

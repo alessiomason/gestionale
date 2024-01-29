@@ -2,10 +2,16 @@ body {
     background-image: url("./images/car-background.jpg");
     background-size: cover;
     background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
 }
 
 p, h1, h2, h3, h4, h5, h6 {
     color: #393a39;
+}
+
+p {
+    margin-bottom: 4px
 }
 
 .glossy-background {
@@ -26,7 +32,7 @@ p, h1, h2, h3, h4, h5, h6 {
     /* From https://css.glass */
     background: rgba(165, 165, 165, 0.33);
     border-radius: 10px;
-    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     border: 2px solid rgba(165, 165, 165, 0.36);
@@ -39,7 +45,7 @@ p, h1, h2, h3, h4, h5, h6 {
     /* From https://css.glass */
     background: rgba(165, 165, 165, 0.33) !important;
     border-radius: 10px;
-    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     border: 2px solid rgba(89, 89, 89, 0.6) !important;
