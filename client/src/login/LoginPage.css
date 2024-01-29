@@ -5,3 +5,8 @@
 form {
     height: 100vh;
 }
+
+.padded-form-input {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}

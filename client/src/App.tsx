@@ -5,7 +5,6 @@ import PageLayout from "./PageLayout";
 import LoginPage from "./login/LoginPage";
 import loginApis, {Credentials} from "./api/loginApis";
 import './App.css';
-import base64url from './base64url';
 
 function App() {
     return (
