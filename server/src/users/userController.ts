@@ -1,7 +1,13 @@
 import {Express, Request, Response} from "express";
 import {RequestHandler} from "express-serve-static-core";
 import {InternalServerError, ParameterError} from "../errors";
-import {createUser, getAllUsers, getUser, getPublicKeyIdFromUsername} from "./userService";
+import {
+    createUser,
+    getAllUsers,
+    getUser,
+    getPublicKeyIdFromUsername,
+    getUserFromRegistrationToken
+} from "./userService";
 import {body, param, validationResult} from 'express-validator';
 import {UserNotFound, UserWithSameUsernameError} from "./userErrors";
 import {NewUser, User} from "./user";
@@ -47,7 +53,32 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
         }
     )
 
-    // get userId by username
+    // get user by registrationToken
+    app.get(`${baseURL}/registrationToken/:registrationToken`,
+        param("registrationToken").isString(),
+        async (req: Request, res: Response) => {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                res.status(ParameterError.code).json(new ParameterError("There was ann error with the registration token!"))
+                return
+            }
+
+            try {
+                const user = await getUserFromRegistrationToken(req.params.registrationToken)
+
+                if (user) {
+                    res.status(200).json(user)
+                } else {
+                    res.status(UserNotFound.code).json(new UserNotFound())
+                }
+            } catch (err: any) {
+                console.error("Error while retrieving users: ", err.message);
+                res.status(InternalServerError.code).json(new InternalServerError("Error while retrieving users"))
+            }
+        }
+    )
+
+    // get publicKeyId by username
     app.get(`${baseURL}/publicKeyId/:username`,
         param("username").isString(),
         async (req: Request, res: Response) => {

@@ -5,6 +5,7 @@ import {faker} from '@faker-js/faker';
 import { knex as db } from '../src/database/db';
 import {NewUser, User} from "../src/users/user";
 import {UserNotFound, UserWithSameUsernameError} from "../src/users/userErrors";
+import * as crypto from "crypto";
 
 jest.mock('../src/database/db', () => {
     const Knex = require('knex');
@@ -94,6 +95,14 @@ describe("Test users APIs", () => {
         const expectedError = new UserNotFound()
         expect(res.statusCode).toBe(404)
         expect(res.body).toEqual(expectedError)
+    })
+
+    test("Get single user from registration token", async () => {
+        tracker.on.select("users").response(user);
+        const registrationToken = crypto.randomBytes(8).toString("hex");
+
+        const res = await new request(app).get(`${baseURL}/registrationToken/${registrationToken}`);
+        expect(res.body).toEqual(user);
     })
 
     test("Create user", async () => {
