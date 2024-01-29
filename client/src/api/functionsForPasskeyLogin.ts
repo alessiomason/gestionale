@@ -90,8 +90,7 @@ function doSignup(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
                     body = {
                         response: {
                             clientDataJSON: base64url.encode(publicKeyCredentialResponse.clientDataJSON),
-                            attestationObject: base64url.encode(publicKeyCredentialResponse.attestationObject),
-                            transports: publicKeyCredentialResponse.getTransports()
+                            attestationObject: base64url.encode(publicKeyCredentialResponse.attestationObject)
                         }
                     }
                 }
@@ -178,7 +177,7 @@ function doLogin(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, usernam
             const a = base64url.decode(publicKeyCredential.id) as ArrayBuffer
             const b = publicKeyCredential.rawId
 
-            if (a.byteLength != a.byteLength) console.log(false);
+            if (a.byteLength != b.byteLength) console.log(false);
             var dv1 = new Int8Array(a);
             var dv2 = new Int8Array(b);
             for (var i = 0 ; i != a.byteLength ; i++)

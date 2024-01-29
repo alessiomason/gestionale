@@ -15,9 +15,13 @@ export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.Sess
         app.get('/auth/mock',
             passport.authenticate('mock'),
             function (req: Request, res: Response) {
-                res.json({
-                    loggedIn: true,
-                    user: req.user
+                const prevSession = req.session;
+                req.session.regenerate((_err) => {
+                    Object.assign(req.session, prevSession);
+                    res.json({
+                        loggedIn: true,
+                        user: req.user
+                    });
                 });
             },
             function (_err: any, _req: Request, res: Response) {
