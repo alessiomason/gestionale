@@ -34,9 +34,13 @@ export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.Sess
     app.post('/api/sessions',
         passport.authenticate('local', {failureMessage: true, failWithError: true}),
         function (req, res) {
-            res.json({
-                loggedIn: true,
-                user: req.user
+            const prevSession = req.session;
+            req.session.regenerate((_err) => {
+                Object.assign(req.session, prevSession);
+                res.json({
+                    loggedIn: true,
+                    user: req.user
+                });
             });
         },
         function (_err: any, _req: Request, res: Response) {
@@ -103,9 +107,13 @@ export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.Sess
     app.post('/login/public-key',
         passport.authenticate('webauthn', {failureMessage: true, failWithError: true}),
         function (req, res) {
-            res.json({
-                loggedIn: true,
-                user: req.user
+            const prevSession = req.session;
+            req.session.regenerate((_err) => {
+                Object.assign(req.session, prevSession);
+                res.json({
+                    loggedIn: true,
+                    user: req.user
+                });
             });
         },
         function (_err: any, _req: Request, res: Response) {
