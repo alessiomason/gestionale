@@ -16,7 +16,7 @@ function LoginPage(props: any) {
                 <Form className="d-flex flex-column justify-content-center">
                     <Row>
                         <Col>
-                            <h3 className="text-center">Login</h3>
+                            <h2 className="text-center">Login</h2>
                         </Col>
                     </Row>
 

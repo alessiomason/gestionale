@@ -55,33 +55,6 @@ export async function getUser(id: number) {
     )
 }
 
-export async function getFullUser(id: number) {
-    const user = await knex<User>("users")
-        .first()
-        .where({id: id})
-
-    if (!user) return
-
-    return new User(
-        user.id,
-        user.role,
-        user.type,
-        user.name,
-        user.surname,
-        user.username,
-        user.hashedPassword,
-        user.salt,
-        user.registrationToken,
-        user.hoursPerDay,
-        user.costPerHour,
-        user.active,
-        user.email,
-        user.phone,
-        user.car,
-        user.costPerKm
-    )
-}
-
 export async function getUserFromUsername(username: string) {
     const user = await knex<User>("users")
         .first()
@@ -96,8 +69,8 @@ export async function getUserFromUsername(username: string) {
         user.name,
         user.surname,
         user.username,
-        undefined,
-        undefined,
+        user.hashedPassword,
+        user.salt,
         undefined,
         user.hoursPerDay,
         user.costPerHour,
@@ -123,8 +96,8 @@ export async function getUserFromRegistrationToken(registrationToken: string) {
         user.name,
         user.surname,
         user.username,
-        undefined,
-        undefined,
+        user.hashedPassword,
+        user.salt,
         user.registrationToken,
         user.hoursPerDay,
         user.costPerHour,
@@ -185,6 +158,35 @@ export async function createUser(newUser: NewUser) {
         newUser.car,
         newUser.costPerKm
     )
+}
+
+export async function updateUser(
+    id: number,
+    role: typeof User.Role | undefined,
+    type: typeof User.Type | undefined,
+    hoursPerDay: number | undefined,
+    costPerHour: number | undefined,
+    email: string | undefined,
+    phone: string | undefined,
+    car: string | undefined,
+    costPerKm: number | undefined
+) {
+    // check that at least one field is changing to avoid a faulty query
+    if (role !== undefined || type !== undefined || hoursPerDay !== undefined || costPerHour !== undefined
+        || email !== undefined || phone !== undefined || car !== undefined || costPerKm !== undefined) {
+        await knex("users")
+            .where("id", id)
+            .update({
+                role: role,
+                type: type,
+                hoursPerDay: hoursPerDay,
+                costPerHour: costPerHour,
+                email: email,
+                phone: phone,
+                car: car,
+                costPerKm: costPerKm
+            })
+    }
 }
 
 export async function saveUserPassword(userId: number, hashedPassword: Buffer, salt: Buffer) {

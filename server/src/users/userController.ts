@@ -67,6 +67,8 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
                 const user = await getUserFromRegistrationToken(req.params.registrationToken)
 
                 if (user) {
+                    user.hashedPassword = undefined;
+                    user.salt = undefined;
                     res.status(200).json(user)
                 } else {
                     res.status(UserNotFound.code).json(new UserNotFound())
