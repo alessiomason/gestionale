@@ -1,9 +1,9 @@
 {
-  "name": "gestionale",
+  "name": "gestionale-server",
   "author": "Alessio Mason",
-  "description": "",
-  "license": "",
-  "version": "0.0.0",
+  "description": "The server for a web application to manage jobs and register worked hours",
+  "license": "MIT",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "build": "npx tsc",

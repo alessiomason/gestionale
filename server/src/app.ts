@@ -69,14 +69,13 @@ useSystemAPIs(app, isLoggedIn);
 useUsersAPIs(app, isLoggedIn);
 useAuthenticationAPIs(app, store, isLoggedIn);
 
-//if (process.env.NODE_ENV === "production") {
-    import path from "path";
-    // ../../.. -> triple because the production build is served from server/dist/src/
+if (process.env.NODE_ENV === "production") {
+    const path = require("path");
+    // ../../../ -> triple because the production build is served from server/dist/src/
     app.use(express.static(path.resolve(__dirname, "../../../client", "build")));
     app.get("*", (_req: Request, res: Response) => {
-        console.log(__dirname)
         res.sendFile(path.resolve(__dirname, "../../../client", "build", "index.html"));
     });
-//}
+}
 
 export default app;

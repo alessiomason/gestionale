@@ -2,7 +2,7 @@ import WebAuthnStrategy from "@forwardemail/passport-fido2-webauthn";
 import base64url from 'base64url';
 import passport from "passport";
 import {Express, Request, Response} from "express";
-import {getUser, getUserFromRegistrationToken, saveUserPassword} from "../users/userService";
+import {getUser, getUserFromRegistrationToken, saveUserPassword, updateUser} from "../users/userService";
 import {UserNotFound} from "../users/userErrors";
 import * as crypto from "crypto";
 import {RequestHandler} from "express-serve-static-core";
@@ -71,6 +71,9 @@ export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.Sess
     app.post('/api/signup/:registrationToken',
         param("registrationToken").isString(),
         body("password").isString(),
+        //body("email").optional().isEmail(),
+        //body("phone").optional().isMobilePhone("any"),
+        //body("car").optional().isString(),
         async (req, res) => {
             const errors = validationResult(req);
             if (!errors.isEmpty() || !req.params) {
@@ -84,9 +87,18 @@ export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.Sess
                 return new UserNotFound()
             }
 
-            // check expired registration token
-
             // check password already existing
+            if (user.hashedPassword) {
+                res.status(403).json(new BaseError(403, "L'utente è già registrato!"))
+            }
+
+            // TODO: check expired registration token
+
+            // update other fields user can enter during registration
+            const email = req.body.email as string | undefined
+            const phone = req.body.phone as string | undefined
+            const car = req.body.car as string | undefined
+            await updateUser(user.id, undefined, undefined, undefined, undefined, email, phone, car, undefined)
 
             const salt = crypto.randomBytes(16);
             crypto.pbkdf2(req.body.password, salt, 31000, 32, "sha256", function (err, hashedPassword) {

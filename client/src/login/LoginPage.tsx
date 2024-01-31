@@ -5,8 +5,8 @@ import './LoginPage.css';
 import roundLogo from "../images/logos/round_logo.png";
 
 function LoginPage(props: any) {
-    const [username, setUsername] = useState("alessiomason");
-    const [password, setPassword] = useState("password");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
 
     return (
         <Container className="login-container">
@@ -16,7 +16,7 @@ function LoginPage(props: any) {
                 <Form className="d-flex flex-column justify-content-center">
                     <Row>
                         <Col>
-                            <h3 className="text-center">Login</h3>
+                            <h2 className="text-center">Login</h2>
                         </Col>
                     </Row>
 
@@ -46,7 +46,7 @@ function LoginPage(props: any) {
 
                     <Row>
                         <Col className="d-flex justify-content-center">
-                            <Button type="submit" className="login-button glossy-button"
+                            <Button type="submit" className="glossy-button"
                                     onClick={ev => props.doLogin(ev, new Credentials(username, password))}>Login</Button>
                         </Col>
                     </Row>

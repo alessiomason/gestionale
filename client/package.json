@@ -1,5 +1,8 @@
 {
-  "name": "client",
+  "name": "gestionale-client",
+  "author": "Alessio Mason",
+  "description": "The server for a web application to manage jobs and register worked hours",
+  "license": "MIT",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

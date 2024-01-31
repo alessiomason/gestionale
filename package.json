@@ -1,9 +1,9 @@
 {
   "name": "gestionale",
   "author": "Alessio Mason",
-  "description": "",
-  "license": "",
-  "version": "0.0.0",
+  "description": "A web application to manage jobs and register worked hours",
+  "license": "MIT",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "start": "cd server && npm start",
