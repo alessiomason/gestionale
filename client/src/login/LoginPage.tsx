@@ -1,8 +1,9 @@
-import {Button, Col, Container, FloatingLabel, Form, Row} from "react-bootstrap";
+import {Button, Col, Container, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import React, {useState} from "react";
 import loginApis, {Credentials} from "../api/loginApis";
 import './LoginPage.css';
 import roundLogo from "../images/logos/round_logo.png";
+import {Lock, Person} from "react-bootstrap-icons";
 
 function LoginPage(props: any) {
     const [username, setUsername] = useState("");
@@ -38,7 +39,7 @@ function LoginPage(props: any) {
                 <Form className="d-flex flex-column justify-content-center">
                     <Row>
                         <Col>
-                            <h2 className="text-center">Login (add icons)</h2>
+                            <h2 className="text-center">Login</h2>
                         </Col>
                     </Row>
 
@@ -47,21 +48,27 @@ function LoginPage(props: any) {
                         <Col sm={6} className="glossy-background">
                             <Row>
                                 <Col>
-                                    <FloatingLabel controlId="floatingInput" label="Username"
-                                                   className="padded-form-input">
-                                        <Form.Control type='text' placeholder="Username" isInvalid={invalidUsername} value={username}
-                                                      onChange={ev => setUsername(ev.target.value)}/>
-                                    </FloatingLabel>
+                                    <InputGroup className="padded-form-input">
+                                        <InputGroup.Text><Person /></InputGroup.Text>
+                                        <FloatingLabel controlId="floatingInput" label="Username">
+                                            <Form.Control type='text' placeholder="Username" isInvalid={invalidUsername}
+                                                          value={username}
+                                                          onChange={ev => setUsername(ev.target.value)}/>
+                                        </FloatingLabel>
+                                    </InputGroup>
                                 </Col>
                             </Row>
 
                             <Row>
                                 <Col>
-                                    <FloatingLabel controlId="floatingInput" label="Password"
-                                                   className="padded-form-input">
-                                        <Form.Control type='password' placeholder="Password" isInvalid={invalidPassword} value={password}
-                                                      onChange={ev => setPassword(ev.target.value)}/>
-                                    </FloatingLabel>
+                                    <InputGroup className="padded-form-input">
+                                        <InputGroup.Text><Lock /></InputGroup.Text>
+                                        <FloatingLabel controlId="floatingInput" label="Password">
+                                            <Form.Control type='password' placeholder="Password"
+                                                          isInvalid={invalidPassword} value={password}
+                                                          onChange={ev => setPassword(ev.target.value)}/>
+                                        </FloatingLabel>
+                                    </InputGroup>
                                 </Col>
                             </Row>
 
