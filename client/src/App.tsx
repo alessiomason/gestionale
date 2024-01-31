@@ -24,13 +24,7 @@ function App2() {
 
     const navigate = useNavigate();
 
-    function doSignup(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-        
-    }
-
-    function doLogin(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, credentials: Credentials) {
-        event.preventDefault();
-
+    function doLogin(credentials: Credentials) {
         loginApis.login(credentials)
             .then(user => {
                 setLoggedIn(true);
@@ -39,16 +33,15 @@ function App2() {
                 navigate('/');
             })
             .catch(err => {
+                console.log(err)
                 setMessage(err);
             })
     }
 
-    function doLogout() {}
-
     return (
         <Routes>
-            <Route path='/login' element={loggedIn ? <Navigate to='/' /> : <LoginPage loggedIn={loggedIn} doLogin={doLogin} user={user} message={message} setMessage={setMessage} />} />
-            <Route path='/signup/:registrationToken' element={loggedIn ? <Navigate to='/' /> : <SignUpPage loggedIn={loggedIn} doLogin={doLogin} doSignup={doSignup} user={user} message={message} setMessage={setMessage} />} />
+            <Route path='/login' element={loggedIn ? <Navigate to='/' /> : <LoginPage loggedIn={loggedIn} doLogin={doLogin} user={user} message={message} />} />
+            <Route path='/signup/:registrationToken' element={loggedIn ? <Navigate to='/' /> : <SignUpPage />} />
             <Route path='/successful-signup' element={<SuccessfulSignUpPage />} />
             <Route path='/' element={loggedIn ? <PageLayout /> : <Navigate to='/login' />}>
                 <Route index element={<p>ciao</p>} />

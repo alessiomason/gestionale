@@ -23,22 +23,22 @@ export function setupPassport(store: WebAuthnStrategy.SessionChallengeStore) {
             const user = await getUserFromUsername(username);
 
             if (!user) {
-                return done(null, false, "Incorrect username or password.");
+                return done(null, false, "Username o password non corretti.");
             }
 
             if (!user.salt) {
-                return done(null, false, "User is not registered.");
+                return done(null, false, "Username o password non corretti.");
             }
 
             crypto.pbkdf2(password, user.salt, 31000, 32, "sha256", function (err, hashedPassword) {
                 if (err) return (done(err));
 
                 if (!user.hashedPassword) {
-                    return done(null, false, "User is not registered.");
+                    return done(null, false, "Username o password non corretti.");
                 }
 
                 if (!crypto.timingSafeEqual(user.hashedPassword, hashedPassword)) {
-                    return done(null, false, "Incorrect username or password.");
+                    return done(null, false, "Username o password non corretti.");
                 }
 
                 // do not send these fields to the client

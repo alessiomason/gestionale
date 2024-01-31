@@ -8,6 +8,7 @@ import * as crypto from "crypto";
 import {RequestHandler} from "express-serve-static-core";
 import {body, param, validationResult} from "express-validator";
 import {BaseError, ParameterError} from "../errors";
+import {User} from "../users/user";
 
 export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.SessionChallengeStore, isLoggedIn: RequestHandler) {
     // mock authentication endpoint (for testing)
@@ -35,22 +36,29 @@ export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.Sess
     // real authentication endpoints
 
     // login
-    app.post('/api/sessions',
-        passport.authenticate('local', {failureMessage: true, failWithError: true}),
-        function (req, res) {
-            const prevSession = req.session;
-            req.session.regenerate((_err) => {
-                Object.assign(req.session, prevSession);
-                res.json({
-                    loggedIn: true,
-                    user: req.user
+    app.post('/api/sessions', function (req, res, next) {
+        passport.authenticate('local', (err: any, user: User, info: string) => {
+            if (err) return next(err);
+            if (!user) {
+                // display wrong login messages
+                return res.status(401).json(info);
+            }
+            // success, perform the login
+            req.login(user, (err) => {
+                if (err) return next(err);
+
+                // req.user contains the authenticated user, we send all the user info back
+                const prevSession = req.session;
+                req.session.regenerate((_err) => {
+                    Object.assign(req.session, prevSession);
+                    res.json({
+                        loggedIn: true,
+                        user: req.user
+                    });
                 });
             });
-        },
-        function (_err: any, _req: Request, res: Response) {
-            res.json({loggedIn: false});
-        }
-    );
+        })(req, res, next);
+    });
 
     // logout
     app.delete('/api/sessions/current', isLoggedIn, (req, res) => {

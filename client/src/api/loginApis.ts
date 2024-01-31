@@ -24,7 +24,7 @@ async function login(credentials: Credentials) {
         return await response.json();
     } else {
         const errDetail = await response.json();
-        throw errDetail.message;
+        throw errDetail;
     }
 }
 

@@ -120,7 +120,7 @@ function SignUpPane(props: SignUpPaneProps) {
                         <p>Nome: {user?.name}</p>
                         <p>Cognome: {user?.surname}</p>
                         <Row>
-                            <Col className="d-flex align-items-center">
+                            <Col className="d-flex align-items-center username-field">
                                 <span>Username: {user?.username}</span>
                                 <Badge bg="secondary" className="mx-2">Ti verrà richiesto al login</Badge>
                             </Col>

@@ -134,7 +134,7 @@ export async function createUser(newUser: NewUser) {
         .returning("id")
         .insert(newUser);
 
-    const registrationToken = crypto.randomBytes(8).toString("hex")
+    const registrationToken = crypto.randomBytes(8).toString("hex");
 
     await knex("users")
         .where({id: userIds[0]})
