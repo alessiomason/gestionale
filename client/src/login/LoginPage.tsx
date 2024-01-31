@@ -5,8 +5,8 @@ import './LoginPage.css';
 import roundLogo from "../images/logos/round_logo.png";
 
 function LoginPage(props: any) {
-    const [username, setUsername] = useState("alessiomason");
-    const [password, setPassword] = useState("password");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
 
     return (
         <Container className="login-container">
