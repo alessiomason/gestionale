@@ -34,8 +34,8 @@ function SignUpPage(props: any) {
             email !== "" ? email : undefined,
             phone !== "" ? phone : undefined,
             car !== "" ? car : undefined
-        ).then(res => {
-            navigate("/login");
+        ).then(_res => {
+            navigate("/successful-signup");
         }).catch(err => {
             setErrorMessage(err);
         })
