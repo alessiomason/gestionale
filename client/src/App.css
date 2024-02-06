@@ -54,3 +54,24 @@ p {
     -webkit-backdrop-filter: blur(15px);
     border: 2px solid rgba(89, 89, 89, 0.6) !important;
 }
+
+.light-glossy-button {
+    color: #595959;
+    max-height: min-content;
+    /* From https://css.glass */
+    background: rgba(165, 165, 165, 0.15);
+    border-radius: 10px;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(89, 89, 89, 0.6);
+}
+
+.light-glossy-button:hover,
+.light-glossy-button:active,
+.light-glossy-button:focus-visible,
+.light-glossy-button:active:focus {
+    color: #393a39 !important;
+    /* From https://css.glass */
+    background: rgba(165, 165, 165, 0.33) !important;
+    border: 1px solid rgba(89, 89, 89, 0.6) !important;
+}
