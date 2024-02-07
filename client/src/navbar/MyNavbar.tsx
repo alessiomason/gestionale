@@ -1,11 +1,11 @@
 import {useNavigate} from 'react-router-dom';
-import {Button, Col, Container, Navbar, Row} from 'react-bootstrap';
+import {Button, Col, Navbar, Row} from 'react-bootstrap';
 import './MyNavbar.css';
 import horizontalWhiteLogo from '../images/logos/horizontal_white_logo.png';
 import {User} from "../models/user";
 
 interface NavbarProps {
-    user: User
+    readonly user: User
 }
 
 function MyNavbar(props: NavbarProps) {

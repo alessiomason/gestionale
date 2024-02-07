@@ -4,7 +4,7 @@ import {CarFront, EnvelopeAt, Person, Telephone} from "react-bootstrap-icons";
 import {useNavigate} from "react-router-dom";
 
 interface ProfilePageProps {
-    user: User
+    readonly user: User
 }
 
 function ProfilePage(props: ProfilePageProps) {

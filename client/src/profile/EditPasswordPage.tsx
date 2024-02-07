@@ -6,7 +6,7 @@ import React, {useState} from "react";
 import profileApis from "../api/profileApis";
 
 interface EditPasswordPageProps {
-    user: User
+    readonly user: User
 }
 
 function EditPasswordPage(props: EditPasswordPageProps) {

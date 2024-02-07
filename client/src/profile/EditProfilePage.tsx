@@ -1,13 +1,13 @@
 import {Button, Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import {User} from "../models/user";
-import {CarFront, EnvelopeAt, Person, Telephone} from "react-bootstrap-icons";
+import {CarFront, EnvelopeAt, Telephone} from "react-bootstrap-icons";
 import {useNavigate} from "react-router-dom";
 import React, {useState} from "react";
 import profileApis from "../api/profileApis";
 
 interface EditProfilePageProps {
-    user: User,
-    setDirtyUser:  React.Dispatch<React.SetStateAction<boolean>>
+    readonly user: User,
+    readonly setDirtyUser:  React.Dispatch<React.SetStateAction<boolean>>
 }
 
 function EditProfilePage(props: EditProfilePageProps) {
