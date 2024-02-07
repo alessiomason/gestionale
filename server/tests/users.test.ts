@@ -153,4 +153,17 @@ describe("Test users APIs", () => {
         const res = await new request(app).post(baseURL).send(newUser).set("Cookie", session);
         expect(res.body).toEqual(new UserWithSameUsernameError());
     })
+
+    test("Update user", async () => {
+        tracker.on.update("users").response(null);
+
+        const body = {
+            email: user.email,
+            phone: user.phone,
+            car: user.car
+        }
+
+        const res = await new request(app).put(`${baseURL}/${user.id}`).send(body).set("Cookie", session);
+        expect(res.statusCode).toBe(200);
+    })
 })

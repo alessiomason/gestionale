@@ -160,6 +160,7 @@ export async function createUser(newUser: NewUser) {
     )
 }
 
+// `undefined` values are skipped, not updated
 export async function updateUser(
     id: number,
     role: typeof User.Role | undefined,

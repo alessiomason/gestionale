@@ -6,7 +6,8 @@ import {
     getAllUsers,
     getUser,
     getPublicKeyIdFromUsername,
-    getUserFromRegistrationToken
+    getUserFromRegistrationToken,
+    updateUser
 } from "./userService";
 import {body, param, validationResult} from 'express-validator';
 import {UserNotFound, UserWithSameUsernameError} from "./userErrors";
@@ -152,6 +153,36 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
             } else {
                 res.status(200).json(user);
             }
+        }
+    )
+
+    app.put(`${baseURL}/:userId`,
+        isLoggedIn,
+        param("userId").isInt({min: 1}),
+        body('email').optional({values: "null"}).isEmail(),
+        body('phone').optional({values: "null"}).isString(),
+        body('car').optional({values: "null"}).isString(),
+        async (req: Request, res: Response) => {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                res.status(ParameterError.code).json(new ParameterError("There was an error with the parameters!"))
+                return
+            }
+
+            const userId = parseInt(req.params.userId);
+            await updateUser(
+                userId,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                req.body.email,
+                req.body.phone,
+                req.body.car,
+                undefined
+            );
+
+            res.status(200).end();
         }
     )
 }
