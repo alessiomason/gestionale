@@ -55,6 +55,33 @@ export async function getUser(id: number) {
     )
 }
 
+export async function getFullUser(id: number) {
+    const user = await knex<User>("users")
+        .first()
+        .where({id: id})
+
+    if (!user) return
+
+    return new User(
+        user.id,
+        user.role,
+        user.type,
+        user.name,
+        user.surname,
+        user.username,
+        user.hashedPassword,
+        user.salt,
+        user.registrationToken,
+        user.hoursPerDay,
+        user.costPerHour,
+        user.active,
+        user.email,
+        user.phone,
+        user.car,
+        user.costPerKm
+    )
+}
+
 export async function getUserFromUsername(username: string) {
     const user = await knex<User>("users")
         .first()
@@ -160,6 +187,7 @@ export async function createUser(newUser: NewUser) {
     )
 }
 
+// `undefined` values are skipped, not updated
 export async function updateUser(
     id: number,
     role: typeof User.Role | undefined,

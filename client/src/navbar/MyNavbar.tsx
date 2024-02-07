@@ -1,17 +1,30 @@
 import {useNavigate} from 'react-router-dom';
-import {Container, Navbar} from 'react-bootstrap';
+import {Button, Col, Navbar, Row} from 'react-bootstrap';
 import './MyNavbar.css';
+import horizontalWhiteLogo from '../images/logos/horizontal_white_logo.png';
+import {User} from "../models/user";
 
-function MyNavbar() {
+interface NavbarProps {
+    readonly user: User
+}
+
+function MyNavbar(props: NavbarProps) {
     const navigate = useNavigate();
 
     return (
         <Navbar className="navbar fixed-top navbar-padding">
-            <Container fluid>
-                <Navbar.Brand className='purple text' onClick={() => navigate("/")}>
-                    Technomake
-                </Navbar.Brand>
-            </Container>
+            <Row className="navbar-row">
+                <Col>
+                    <Navbar.Brand className='text' onClick={() => navigate("/")}>
+                        <img src={horizontalWhiteLogo} className="brand-image" alt="Logo di Technomake"/>
+                    </Navbar.Brand>
+                </Col>
+
+                <Col className="d-flex justify-content-end align-items-center">
+                    <Button className="light-glossy-button"
+                            onClick={() => navigate("/profile")}>{`${props.user.name} ${props.user.surname}`}</Button>
+                </Col>
+            </Row>
         </Navbar>
     );
 }

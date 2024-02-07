@@ -79,9 +79,9 @@ export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.Sess
     app.post('/api/signup/:registrationToken',
         param("registrationToken").isString(),
         body("password").isString(),
-        //body("email").optional().isEmail(),
-        //body("phone").optional().isMobilePhone("any"),
-        //body("car").optional().isString(),
+        body("email").optional().isEmail(),
+        body("phone").optional().isMobilePhone("any"),
+        body("car").optional().isString(),
         async (req, res) => {
             const errors = validationResult(req);
             if (!errors.isEmpty() || !req.params) {

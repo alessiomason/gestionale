@@ -11,7 +11,11 @@ p, h1, h2, h3, h4, h5, h6 {
 }
 
 p {
-    margin-bottom: 4px
+    margin-bottom: 4px;
+}
+
+.page-title {
+    padding-left: 25px;
 }
 
 .error {
@@ -28,6 +32,10 @@ p {
     backdrop-filter: blur(13px);
     -webkit-backdrop-filter: blur(13px);
     border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.glossy-background.smaller {
+    padding: 5px;
 }
 
 .glossy-button {
@@ -53,4 +61,25 @@ p {
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     border: 2px solid rgba(89, 89, 89, 0.6) !important;
+}
+
+.light-glossy-button {
+    color: #595959;
+    max-height: min-content;
+    /* From https://css.glass */
+    background: rgba(165, 165, 165, 0.15);
+    border-radius: 10px;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(89, 89, 89, 0.6);
+}
+
+.light-glossy-button:hover,
+.light-glossy-button:active,
+.light-glossy-button:focus-visible,
+.light-glossy-button:active:focus {
+    color: #393a39 !important;
+    /* From https://css.glass */
+    background: rgba(165, 165, 165, 0.33) !important;
+    border: 1px solid rgba(89, 89, 89, 0.6) !important;
 }
