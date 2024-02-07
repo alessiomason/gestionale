@@ -62,7 +62,7 @@ function App2() {
             <Route path='/signup/:registrationToken' element={loggedIn ? <Navigate to='/'/> : <SignUpPage/>}/>
             <Route path='/successful-signup' element={<SuccessfulSignUpPage/>}/>
             <Route path='/' element={loggedIn ? <PageLayout user={user!}/> : <Navigate to='/login'/>}>
-                <Route index element={<p>ciao</p>}/>
+                <Route index element={<Navigate to='profile' replace={true}/>}/>
                 <Route path='profile' element={<ProfilePage user={user!}/>}/>
                 <Route path='profile/edit' element={<EditProfilePage user={user!} setDirtyUser={setDirtyUser}/>}/>
                 <Route path='profile/password' element={<EditPasswordPage user={user!}/>}/>
