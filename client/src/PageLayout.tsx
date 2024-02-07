@@ -5,7 +5,7 @@ import './PageLayout.css';
 import {User} from "./models/user";
 
 interface PageLayoutProps {
-    user: User
+    readonly user: User
 }
 
 function PageLayout(props: PageLayoutProps) {
