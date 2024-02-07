@@ -1,17 +1,18 @@
 import {Express, Request, Response} from "express";
 import {RequestHandler} from "express-serve-static-core";
-import {InternalServerError, ParameterError} from "../errors";
+import {BaseError, InternalServerError, ParameterError} from "../errors";
 import {
     createUser,
     getAllUsers,
     getUser,
     getPublicKeyIdFromUsername,
     getUserFromRegistrationToken,
-    updateUser
+    updateUser, saveUserPassword, getFullUser
 } from "./userService";
 import {body, param, validationResult} from 'express-validator';
 import {UserNotFound, UserWithSameUsernameError} from "./userErrors";
 import {NewUser, User} from "./user";
+import crypto from "crypto";
 
 export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
     const baseURL = "/api/users"
@@ -183,6 +184,41 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
             );
 
             res.status(200).end();
+        }
+    )
+
+    app.put(`${baseURL}/password/:userId`,
+        isLoggedIn,
+        param("userId").isInt({min: 1}),
+        body("oldPassword").isString(),
+        body("newPassword").isString(),
+        async (req: Request, res: Response) => {
+            const errors = validationResult(req);
+            if (!errors.isEmpty() || !req.params) {
+                res.status(ParameterError.code).json(new ParameterError("The registration token must be a string!"))
+                return
+            }
+
+            const userId = parseInt(req.params.userId);
+            const user = await getFullUser(userId);
+
+            if (!user) {
+                res.status(UserNotFound.code).json(new UserNotFound())
+                return
+            }
+
+            crypto.pbkdf2(req.body.oldPassword, user.salt!, 31000, 32, "sha256", function (err, hashedPassword) {
+                if (!crypto.timingSafeEqual(user.hashedPassword!, hashedPassword)) {
+                    res.status(422).json(new BaseError(422, "La vecchia password è errata!"));
+                    return
+                }
+
+                const salt = crypto.randomBytes(16);
+                crypto.pbkdf2(req.body.newPassword, salt, 31000, 32, "sha256", function (err, hashedPassword) {
+                    saveUserPassword(userId, hashedPassword, salt);
+                    res.status(200).end()
+                })
+            })
         }
     )
 }

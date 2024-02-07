@@ -10,13 +10,13 @@ interface EditProfilePageProps {
     setDirtyUser:  React.Dispatch<React.SetStateAction<boolean>>
 }
 
-function ProfilePage(props: EditProfilePageProps) {
+function EditProfilePage(props: EditProfilePageProps) {
     const navigate = useNavigate();
     const [email, setEmail] = useState(props.user.email);
     const [phone, setPhone] = useState(props.user.phone);
     const [car, setCar] = useState(props.user.car);
 
-    function handleEdit() {
+    function handleSubmit() {
         profileApis.updateUser(props.user.id, email, phone, car)
             .then(() => {
                 props.setDirtyUser(true);
@@ -28,7 +28,7 @@ function ProfilePage(props: EditProfilePageProps) {
     return (
         <>
             <Row>
-                <h1 className="page-title">{`Modifica ${props.user.name} ${props.user.surname}`}</h1>
+                <h1 className="page-title">Modifica le informazioni personali</h1>
             </Row>
 
             <Row>
@@ -61,11 +61,11 @@ function ProfilePage(props: EditProfilePageProps) {
 
             <Row className="d-flex justify-content-center mt-4">
                 <Col md={4} className="d-flex justify-content-center">
-                    <Button className="glossy-button" onClick={handleEdit}>Salva</Button>
+                    <Button className="glossy-button" onClick={handleSubmit}>Salva</Button>
                 </Col>
             </Row>
         </>
     );
 }
 
-export default ProfilePage;
+export default EditProfilePage;

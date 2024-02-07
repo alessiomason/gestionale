@@ -61,7 +61,7 @@ function ProfilePage(props: ProfilePageProps) {
 
                 <Col className="d-flex justify-content-center">
                     <Button className="glossy-button" onClick={() => {
-                        navigate("/profile/edit")
+                        navigate("/profile/password")
                     }}>Modifica password</Button>
                 </Col>
                 <Col />

@@ -12,6 +12,7 @@ import ProfilePage from "./profile/ProfilePage";
 import EditProfilePage from "./profile/EditProfilePage";
 import {Credentials} from "./models/credentials";
 import profileApis from "./api/profileApis";
+import EditPasswordPage from "./profile/EditPasswordPage";
 
 function App() {
     return (
@@ -62,8 +63,9 @@ function App2() {
             <Route path='/successful-signup' element={<SuccessfulSignUpPage/>}/>
             <Route path='/' element={loggedIn ? <PageLayout user={user!}/> : <Navigate to='/login'/>}>
                 <Route index element={<p>ciao</p>}/>
-                <Route path='profile' element={<ProfilePage user={user!} />} />
-                <Route path='profile/edit' element={<EditProfilePage user={user!} setDirtyUser={setDirtyUser} />}/>
+                <Route path='profile' element={<ProfilePage user={user!}/>}/>
+                <Route path='profile/edit' element={<EditProfilePage user={user!} setDirtyUser={setDirtyUser}/>}/>
+                <Route path='profile/password' element={<EditPasswordPage user={user!}/>}/>
             </Route>
         </Routes>
     );
