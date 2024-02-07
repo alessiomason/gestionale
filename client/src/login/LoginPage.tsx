@@ -1,9 +1,10 @@
 import {Button, Col, Container, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import React, {useState} from "react";
-import loginApis, {Credentials} from "../api/loginApis";
+import loginApis from "../api/loginApis";
 import './LoginPage.css';
 import roundLogo from "../images/logos/round_logo.png";
 import {Lock, Person} from "react-bootstrap-icons";
+import {Credentials} from "../models/credentials";
 
 function LoginPage(props: any) {
     const [username, setUsername] = useState("");

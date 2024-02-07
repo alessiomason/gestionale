@@ -1,14 +1,5 @@
 import {apiUrl} from "./apisValues";
-
-export class Credentials {
-    username: string
-    password: string
-
-    constructor(username: string, password: string) {
-        this.username = username
-        this.password = password
-    }
-}
+import {Credentials} from "../models/credentials";
 
 async function login(credentials: Credentials) {
     const response = await fetch(new URL('sessions', apiUrl), {
@@ -21,10 +12,10 @@ async function login(credentials: Credentials) {
         body: JSON.stringify(credentials),
     });
     if (response.ok) {
-        return await response.json();
+        const res = await response.json();
+        return res.user;
     } else {
-        const errDetail = await response.json();
-        throw errDetail;
+        throw await response.json();
     }
 }
 

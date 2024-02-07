@@ -19,16 +19,16 @@ export class User {
     role: Role
     type: Type
     active: boolean
-    email: string | null
+    email: string | undefined
     name: string
     surname: string
     username: string
     registrationToken: string | undefined
-    phone: string | null
+    phone: string | undefined
     hoursPerDay: number
     costPerHour: number
-    car: string | null
-    costPerKm: number | null
+    car: string | undefined
+    costPerKm: number | undefined
 
     constructor(
         id: number,
@@ -41,10 +41,10 @@ export class User {
         hoursPerDay: number,
         costPerHour: number,
         active = true,
-        email: string | null = null,
-        phone: string | null = null,
-        car: string | null = null,
-        costPerKm: number | null = null
+        email: string | undefined = undefined,
+        phone: string | undefined = undefined,
+        car: string | undefined = undefined,
+        costPerKm: number | undefined = undefined
     ) {
         this.id = id
         this.role = role

@@ -11,7 +11,11 @@ p, h1, h2, h3, h4, h5, h6 {
 }
 
 p {
-    margin-bottom: 4px
+    margin-bottom: 4px;
+}
+
+.page-title {
+    padding-left: 25px;
 }
 
 .error {
@@ -28,6 +32,10 @@ p {
     backdrop-filter: blur(13px);
     -webkit-backdrop-filter: blur(13px);
     border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.glossy-background.smaller {
+    padding: 5px;
 }
 
 .glossy-button {
