@@ -1,5 +1,5 @@
 import {knex} from '../database/db';
-import {NewUser, User} from "./user";
+import {NewUser, Role, Type, User} from "./user";
 import {UserNotFound, UserWithSameUsernameError} from "./userErrors";
 import * as crypto from "crypto";
 
@@ -190,8 +190,8 @@ export async function createUser(newUser: NewUser) {
 // `undefined` values are skipped, not updated
 export async function updateUser(
     id: number,
-    role: typeof User.Role | undefined,
-    type: typeof User.Type | undefined,
+    role: Role | undefined,
+    type: Type | undefined,
     hoursPerDay: number | undefined,
     costPerHour: number | undefined,
     email: string | undefined,

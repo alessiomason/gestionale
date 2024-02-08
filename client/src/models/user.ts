@@ -1,10 +1,10 @@
-enum Role {
+export enum Role {
     dev = "dev",
     admin = "admin",
     user = "user"
 }
 
-enum Type {
+export enum Type {
     office = "office",
     workshop = "workshop"
 }

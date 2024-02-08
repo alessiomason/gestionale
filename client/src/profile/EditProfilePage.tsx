@@ -19,7 +19,7 @@ function EditProfilePage(props: EditProfilePageProps) {
     function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
 
-        userApis.updateUser(props.user.id, email, phone, car)
+        userApis.updateProfile(props.user.id, email, phone, car)
             .then(() => {
                 props.setDirtyUser(true);
                 navigate("/profile");

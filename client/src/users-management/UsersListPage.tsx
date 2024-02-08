@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {User} from "../models/user";
+import {Role, Type, User} from "../models/user";
 import userApis from "../api/userApis";
 import {Button, Col, FloatingLabel, Form, InputGroup, Row, Table} from "react-bootstrap";
 import {
@@ -18,11 +18,12 @@ import SwitchToggle from "./SwitchToggle";
 
 function UsersListPage() {
     const [users, setUsers] = useState<User[]>([]);
+    const [dirty, setDirty] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User>();
 
     const [active, setActive] = useState(false);
-    const [role, setRole] = useState("");
-    const [type, setType] = useState("");
+    const [role, setRole] = useState<"user" | "admin" | "dev" | "">("");
+    const [type, setType] = useState<"office" | "workshop" | "">("");
     const [email, setEmail] = useState<string>("");
     const [phone, setPhone] = useState<string>("");
     const [hoursPerDay, setHoursPerDay] = useState(0);
@@ -34,17 +35,41 @@ function UsersListPage() {
         userApis.getAllUsers()
             .then(users => setUsers(users))
             .catch(err => console.error(err))
-    }, []);
+    }, [dirty]);
 
     function selectUser(user: User) {
         setSelectedUser(user);
 
         setActive(user.active);
-        setRole(user.role.toString());
-        setType(user.type.toString());
+        setRole(user.role.toString() as "user" | "admin" | "dev");
+        setType(user.type.toString() as "office" | "workshop");
         setEmail(user.email ?? "");
         setPhone(user.phone ?? "");
+        setHoursPerDay(user.hoursPerDay);
+        setCostPerHour(user.costPerHour);
         setCar(user.car ?? "");
+        setCostPerKm(user.costPerKm ?? 0);
+    }
+
+    function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        event.preventDefault();
+
+        if (selectedUser === undefined || role === "" || type === "") return
+
+        let user = selectedUser;
+        user.active = active;
+        user.role = Role[role];
+        user.type = Type[type];
+        user.email = email;
+        user.phone = phone;
+        user.hoursPerDay = hoursPerDay;
+        user.costPerHour = costPerHour;
+        user.car = car;
+        user.costPerKm = costPerKm;
+
+        userApis.updateUser(user)
+            .then(_ => setDirty(true))
+            .catch(err => console.error(err))
     }
 
     return (
@@ -115,7 +140,7 @@ function UsersListPage() {
                                     <InputGroup.Text><PersonVcard/></InputGroup.Text>
                                     <FloatingLabel controlId="floatingInput" label="Tipo">
                                         <Form.Select value={type}
-                                                     onChange={ev => setRole(ev.target.value)}>
+                                                     onChange={ev => setType(ev.target.value as "office" | "workshop")}>
                                             {User.allTypes.map(type => {
                                                 return (
                                                     <option key={type.toString()}
@@ -129,10 +154,11 @@ function UsersListPage() {
                                     <InputGroup.Text><PersonBadge/></InputGroup.Text>
                                     <FloatingLabel controlId="floatingInput" label="Mansione">
                                         <Form.Select value={role}
-                                                     onChange={ev => setRole(ev.target.value)}>
+                                                     onChange={ev => setRole(ev.target.value as "user" | "admin")}>
                                             {User.allRoles.map(role => {
                                                 return (
                                                     <option key={role.toString()}
+                                                            disabled={role === Role.dev}
                                                             value={role.toString()}>{User.roleName(role)}</option>
                                                 );
                                             })}
@@ -191,7 +217,7 @@ function UsersListPage() {
 
                             <Row className="d-flex justify-content-center my-4">
                                 <Col sm={4} className="d-flex justify-content-center">
-                                    <Button type="submit" className="glossy-button">Salva</Button>
+                                    <Button type="submit" className="glossy-button" onClick={handleSubmit}>Salva</Button>
                                 </Col>
                             </Row>
                         </Form>

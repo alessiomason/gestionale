@@ -1,4 +1,5 @@
 import {apiUrl} from "./apisValues";
+import {User} from "../models/user";
 
 async function getAllUsers() {
     const response = await fetch(new URL("users", apiUrl), {
@@ -34,14 +35,31 @@ async function getUser(userId: number) {
     }
 }
 
-async function updateUser(userId: number, email: string | undefined, phone: string | undefined, car: string | undefined) {
+async function updateUser(user: User) {
+    const response = await fetch(new URL(`users/${user.id}`, apiUrl), {
+        method: 'PUT',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(user),
+    });
+    if (response.ok) {
+        return true;
+    } else {
+        throw await response.json();
+    }
+}
+
+async function updateProfile(userId: number, email: string | undefined, phone: string | undefined, car: string | undefined) {
     const body = {
         email: email,
         phone: phone,
         car: car
     }
 
-    const response = await fetch(new URL(`users/${userId}`, apiUrl), {
+    const response = await fetch(new URL("users", apiUrl), {
         method: 'PUT',
         credentials: 'include',
         headers: {
@@ -79,5 +97,5 @@ async function updatePassword(userId: number, oldPassword: string, newPassword: 
     }
 }
 
-const userApis = {getAllUsers, getUser, updateUser, updatePassword};
+const userApis = {getAllUsers, getUser, updateUser, updateProfile, updatePassword};
 export default userApis;
