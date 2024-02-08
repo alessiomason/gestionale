@@ -1,5 +1,22 @@
 import {apiUrl} from "./apisValues";
 
+async function getAllUsers() {
+    const response = await fetch(new URL("users", apiUrl), {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+    });
+    if (response.ok) {
+        return await response.json();
+    } else {
+        const errDetail = await response.json();
+        throw errDetail.message;
+    }
+}
+
 async function getUser(userId: number) {
     const response = await fetch(new URL(`users/${userId}`, apiUrl), {
         method: 'GET',
@@ -62,5 +79,5 @@ async function updatePassword(userId: number, oldPassword: string, newPassword: 
     }
 }
 
-const profileApis = {getUser, updateUser, updatePassword};
-export default profileApis;
+const userApis = {getAllUsers, getUser, updateUser, updatePassword};
+export default userApis;

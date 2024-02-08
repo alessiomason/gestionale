@@ -11,7 +11,7 @@ import {User} from "./models/user";
 import ProfilePage from "./profile/ProfilePage";
 import EditProfilePage from "./profile/EditProfilePage";
 import {Credentials} from "./models/credentials";
-import profileApis from "./api/profileApis";
+import userApis from "./api/userApis";
 import EditPasswordPage from "./profile/EditPasswordPage";
 
 function App() {
@@ -32,7 +32,7 @@ function App2() {
 
     useEffect(() => {
         if (loggedIn && dirtyUser) {
-            profileApis.getUser(user!.id)
+            userApis.getUser(user!.id)
                 .then(user => {
                     setUser(user);
                     setDirtyUser(false);

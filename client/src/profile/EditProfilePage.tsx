@@ -3,7 +3,7 @@ import {User} from "../models/user";
 import {CarFront, EnvelopeAt, Telephone} from "react-bootstrap-icons";
 import {useNavigate} from "react-router-dom";
 import React, {useState} from "react";
-import profileApis from "../api/profileApis";
+import userApis from "../api/userApis";
 
 interface EditProfilePageProps {
     readonly user: User,
@@ -19,7 +19,7 @@ function EditProfilePage(props: EditProfilePageProps) {
     function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
 
-        profileApis.updateUser(props.user.id, email, phone, car)
+        userApis.updateUser(props.user.id, email, phone, car)
             .then(() => {
                 props.setDirtyUser(true);
                 navigate("/profile");

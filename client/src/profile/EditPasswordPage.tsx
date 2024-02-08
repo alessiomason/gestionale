@@ -3,7 +3,7 @@ import {User} from "../models/user";
 import {Lock, LockFill} from "react-bootstrap-icons";
 import {useNavigate} from "react-router-dom";
 import React, {useState} from "react";
-import profileApis from "../api/profileApis";
+import userApis from "../api/userApis";
 
 interface EditPasswordPageProps {
     readonly user: User
@@ -26,7 +26,7 @@ function EditPasswordPage(props: EditPasswordPageProps) {
             return
         }
 
-        profileApis.updatePassword(props.user.id, oldPassword, password)
+        userApis.updatePassword(props.user.id, oldPassword, password)
             .then(_ => navigate("/profile"))
             .catch(err => console.error(err))
     }
