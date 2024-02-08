@@ -17,10 +17,28 @@ import {
 import SwitchToggle from "./SwitchToggle";
 import "./UsersListPage.css";
 
+function compareUsers(a: User, b: User) {
+    // sort active first
+    if (!a.active && b.active) {
+        return 1
+    } else if (a.active && !b.active) {
+        return -1
+    }
+
+    // sort by surname and name
+    const surnameComparison = a.surname.localeCompare(b.surname);
+    if (surnameComparison !== 0) {
+        return surnameComparison;
+    } else {
+        return a.name.localeCompare(b.name);
+    }
+}
+
 function UsersListPage() {
     const [users, setUsers] = useState<User[]>([]);
     const [dirty, setDirty] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User>();
+    const [savedUser, setSavedUser] = useState(false);
 
     const [active, setActive] = useState(false);
     const [role, setRole] = useState<"user" | "admin" | "dev" | "">("");
@@ -40,6 +58,7 @@ function UsersListPage() {
 
     function selectUser(user: User) {
         setSelectedUser(user);
+        setSavedUser(false);
 
         setActive(user.active);
         setRole(user.role.toString() as "user" | "admin" | "dev");
@@ -61,7 +80,7 @@ function UsersListPage() {
         user.active = active;
         user.role = Role[role];
         user.type = Type[type];
-        user.email = email;
+        user.email = email === "" ? undefined : email;
         user.phone = phone;
         user.hoursPerDay = hoursPerDay;
         user.costPerHour = costPerHour;
@@ -69,7 +88,10 @@ function UsersListPage() {
         user.costPerKm = costPerKm;
 
         userApis.updateUser(user)
-            .then(_ => setDirty(true))
+            .then(_ => {
+                setDirty(true);
+                setSavedUser(true);
+            })
             .catch(err => console.error(err))
     }
 
@@ -85,8 +107,8 @@ function UsersListPage() {
                         <Table hover responsive>
                             <thead>
                             <tr>
-                                <th>Nome</th>
                                 <th>Cognome</th>
+                                <th>Nome</th>
                                 <th>Tipo</th>
                                 <th>Mansione</th>
                                 <th>Attivo</th>
@@ -94,11 +116,11 @@ function UsersListPage() {
                             </thead>
 
                             <tbody>
-                            {users.map(user => {
+                            {users.sort(compareUsers).map(user => {
                                 return (
                                     <tr key={user.id} onClick={() => selectUser(user)}>
-                                        <td>{user.name}</td>
                                         <td>{user.surname}</td>
+                                        <td>{user.name}</td>
                                         <td>{User.typeName(user.type)}</td>
                                         <td>{User.roleName(user.role)}</td>
                                         <td>{user.active ? <CheckCircle/> : <XCircle/>}</td>
@@ -218,7 +240,7 @@ function UsersListPage() {
 
                             <Row className="d-flex justify-content-center my-4">
                                 <Col sm={4} className="d-flex justify-content-center">
-                                    <Button type="submit" className="glossy-button" onClick={handleSubmit}>Salva</Button>
+                                    <Button type="submit" className="glossy-button" onClick={handleSubmit}>{savedUser ? "Salvato" : "Salva"}</Button>
                                 </Col>
                             </Row>
                         </Form>

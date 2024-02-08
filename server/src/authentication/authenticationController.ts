@@ -106,7 +106,7 @@ export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.Sess
             const email = req.body.email as string | undefined
             const phone = req.body.phone as string | undefined
             const car = req.body.car as string | undefined
-            await updateUser(user.id, undefined, undefined, undefined, undefined, email, phone, car, undefined)
+            await updateUser(user.id, undefined, undefined, undefined, undefined, undefined, email, phone, car, undefined)
 
             const salt = crypto.randomBytes(16);
             crypto.pbkdf2(req.body.password, salt, 31000, 32, "sha256", function (err, hashedPassword) {

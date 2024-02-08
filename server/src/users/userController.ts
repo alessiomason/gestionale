@@ -177,6 +177,7 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
                 undefined,
                 undefined,
                 undefined,
+                undefined,
                 req.body.email,
                 req.body.phone,
                 req.body.car,
@@ -191,6 +192,7 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
     app.put(`${baseURL}/:userId`,
         isLoggedIn,
         param("userId").isInt({min: 1}),
+        body("active").optional({values: "null"}).isBoolean(),
         body("role").optional({values: "null"}).isString(),
         body("type").optional({values: "null"}).isString(),
         body("hoursPerDay").optional({values: "null"}).isFloat({min: 0, max: 8}),
@@ -212,6 +214,7 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
 
             await updateUser(
                 userId,
+                req.body.active,
                 roleName === undefined ? undefined : Role[roleName],
                 typeName === undefined ? undefined : Type[typeName],
                 parseFloat(req.body.hoursPerDay),
@@ -246,14 +249,14 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
                 return
             }
 
-            crypto.pbkdf2(req.body.oldPassword, user.salt!, 31000, 32, "sha256", function (err, hashedPassword) {
+            crypto.pbkdf2(req.body.oldPassword, user.salt!, 31000, 32, "sha256", function (_err, hashedPassword) {
                 if (!crypto.timingSafeEqual(user.hashedPassword!, hashedPassword)) {
                     res.status(422).json(new BaseError(422, "La vecchia password è errata!"));
                     return
                 }
 
                 const salt = crypto.randomBytes(16);
-                crypto.pbkdf2(req.body.newPassword, salt, 31000, 32, "sha256", function (err, hashedPassword) {
+                crypto.pbkdf2(req.body.newPassword, salt, 31000, 32, "sha256", function (_err, hashedPassword) {
                     saveUserPassword(userId, hashedPassword, salt);
                     res.status(200).end()
                 })
