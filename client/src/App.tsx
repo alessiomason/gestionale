@@ -42,6 +42,20 @@ function App2() {
         }
     }, [dirtyUser]);
 
+    useEffect(() => {
+        checkAuth();
+    }, []);
+
+    async function checkAuth() {
+        try {
+            const user = await loginApis.getUserInfo();
+            setLoggedIn(true);
+            setUser(user);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     function doLogin(credentials: Credentials) {
         loginApis.login(credentials)
             .then(user => {

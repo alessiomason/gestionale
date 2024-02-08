@@ -22,11 +22,7 @@ async function login(credentials: Credentials) {
 async function logout() {
     const response = await fetch(new URL('sessions/current', apiUrl), {
         method: 'DELETE',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
+        credentials: 'include'
     });
     if (response.ok) {
         return true;
@@ -35,5 +31,17 @@ async function logout() {
     }
 }
 
-const loginApis = {Credentials, login, logout};
+async function getUserInfo() {
+    const response = await fetch(new URL('sessions/current', apiUrl), {
+        method: 'GET',
+        credentials: 'include'
+    });
+    if (response.ok) {
+        return await response.json();
+    } else {
+        throw await response.json();
+    }
+}
+
+const loginApis = {Credentials, login, logout, getUserInfo};
 export default loginApis;
