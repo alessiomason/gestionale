@@ -15,6 +15,7 @@ import {
     XCircle
 } from "react-bootstrap-icons";
 import SwitchToggle from "./SwitchToggle";
+import "./UsersListPage.css";
 
 function UsersListPage() {
     const [users, setUsers] = useState<User[]>([]);
