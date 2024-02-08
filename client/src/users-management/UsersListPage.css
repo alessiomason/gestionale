@@ -1,0 +1,7 @@
+table {
+    --bs-table-bg: transparent !important;
+}
+
+tbody>tr:hover {
+    cursor: pointer;
+}

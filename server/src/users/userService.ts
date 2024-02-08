@@ -1,5 +1,5 @@
 import {knex} from '../database/db';
-import {NewUser, User} from "./user";
+import {NewUser, Role, Type, User} from "./user";
 import {UserNotFound, UserWithSameUsernameError} from "./userErrors";
 import * as crypto from "crypto";
 
@@ -190,8 +190,9 @@ export async function createUser(newUser: NewUser) {
 // `undefined` values are skipped, not updated
 export async function updateUser(
     id: number,
-    role: typeof User.Role | undefined,
-    type: typeof User.Type | undefined,
+    active: boolean | undefined,
+    role: Role | undefined,
+    type: Type | undefined,
     hoursPerDay: number | undefined,
     costPerHour: number | undefined,
     email: string | undefined,
@@ -200,11 +201,13 @@ export async function updateUser(
     costPerKm: number | undefined
 ) {
     // check that at least one field is changing to avoid a faulty query
-    if (role !== undefined || type !== undefined || hoursPerDay !== undefined || costPerHour !== undefined
-        || email !== undefined || phone !== undefined || car !== undefined || costPerKm !== undefined) {
+    if (active !== undefined || role !== undefined || type !== undefined || hoursPerDay !== undefined ||
+        costPerHour !== undefined || email !== undefined || phone !== undefined || car !== undefined
+        || costPerKm !== undefined) {
         await knex("users")
             .where("id", id)
             .update({
+                active: active,
                 role: role,
                 type: type,
                 hoursPerDay: hoursPerDay,

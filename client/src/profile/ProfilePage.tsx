@@ -2,9 +2,11 @@ import {Button, Col, Row} from "react-bootstrap";
 import {User} from "../models/user";
 import {CarFront, EnvelopeAt, Person, Telephone} from "react-bootstrap-icons";
 import {useNavigate} from "react-router-dom";
+import loginApis from "../api/loginApis";
 
 interface ProfilePageProps {
     readonly user: User
+    readonly doLogout: () => void
 }
 
 function ProfilePage(props: ProfilePageProps) {
@@ -18,41 +20,48 @@ function ProfilePage(props: ProfilePageProps) {
 
             <Row>
                 <Col/>
-                <Col md={8} className="glossy-background">
-                    <Row className="d-flex align-items-center">
-                        <Col sm={2}
-                             className="glossy-background smaller d-flex justify-content-center align-items-center">
-                            <Person className="me-1"/> Username
+                <Col md={8}>
+                    <Row>
+                        <Col className="d-flex justify-content-end me-3">
+                            <Button className="glossy-button" onClick={props.doLogout}>Logout</Button>
                         </Col>
-                        <Col>{props.user.username}</Col>
                     </Row>
-                    <Row className="d-flex align-items-center">
-                        <Col sm={2}
-                             className="glossy-background smaller d-flex justify-content-center align-items-center">
-                            <EnvelopeAt className="me-2"/> Email
-                        </Col>
-                        <Col>{props.user.email}</Col>
-                    </Row>
-                    <Row className="d-flex align-items-center">
-                        <Col sm={2}
-                             className="glossy-background smaller d-flex justify-content-center align-items-center">
-                            <Telephone className="me-1"/> Telefono
-                        </Col>
-                        <Col>{props.user.phone}</Col>
-                    </Row>
-                    <Row className="d-flex align-items-center">
-                        <Col sm={2}
-                             className="glossy-background smaller d-flex justify-content-center align-items-center">
-                            <CarFront className="me-2"/> Vettura
-                        </Col>
-                        <Col>{props.user.car}</Col>
+                    <Row className="glossy-background">
+                        <Row className="d-flex align-items-center">
+                            <Col sm={2}
+                                 className="glossy-background smaller d-flex justify-content-center align-items-center">
+                                <Person className="me-1"/> Username
+                            </Col>
+                            <Col>{props.user.username}</Col>
+                        </Row>
+                        <Row className="d-flex align-items-center">
+                            <Col sm={2}
+                                 className="glossy-background smaller d-flex justify-content-center align-items-center">
+                                <EnvelopeAt className="me-2"/> Email
+                            </Col>
+                            <Col>{props.user.email}</Col>
+                        </Row>
+                        <Row className="d-flex align-items-center">
+                            <Col sm={2}
+                                 className="glossy-background smaller d-flex justify-content-center align-items-center">
+                                <Telephone className="me-1"/> Telefono
+                            </Col>
+                            <Col>{props.user.phone}</Col>
+                        </Row>
+                        <Row className="d-flex align-items-center">
+                            <Col sm={2}
+                                 className="glossy-background smaller d-flex justify-content-center align-items-center">
+                                <CarFront className="me-2"/> Vettura
+                            </Col>
+                            <Col>{props.user.car}</Col>
+                        </Row>
                     </Row>
                 </Col>
                 <Col/>
             </Row>
 
             <Row className="mt-4">
-                <Col />
+                <Col/>
                 <Col className="d-flex justify-content-center">
                     <Button className="glossy-button" onClick={() => {
                         navigate("/profile/edit")
@@ -64,7 +73,7 @@ function ProfilePage(props: ProfilePageProps) {
                         navigate("/profile/password")
                     }}>Modifica password</Button>
                 </Col>
-                <Col />
+                <Col/>
             </Row>
         </>
     );

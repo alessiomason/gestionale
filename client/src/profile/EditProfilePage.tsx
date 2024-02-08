@@ -3,11 +3,11 @@ import {User} from "../models/user";
 import {CarFront, EnvelopeAt, Telephone} from "react-bootstrap-icons";
 import {useNavigate} from "react-router-dom";
 import React, {useState} from "react";
-import profileApis from "../api/profileApis";
+import userApis from "../api/userApis";
 
 interface EditProfilePageProps {
     readonly user: User,
-    readonly setDirtyUser:  React.Dispatch<React.SetStateAction<boolean>>
+    readonly setDirtyUser: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 function EditProfilePage(props: EditProfilePageProps) {
@@ -16,8 +16,10 @@ function EditProfilePage(props: EditProfilePageProps) {
     const [phone, setPhone] = useState(props.user.phone);
     const [car, setCar] = useState(props.user.car);
 
-    function handleSubmit() {
-        profileApis.updateUser(props.user.id, email, phone, car)
+    function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        event.preventDefault();
+
+        userApis.updateProfile(props.user.id, email, phone, car)
             .then(() => {
                 props.setDirtyUser(true);
                 navigate("/profile");
@@ -26,11 +28,10 @@ function EditProfilePage(props: EditProfilePageProps) {
     }
 
     return (
-        <>
+        <Form>
             <Row>
                 <h1 className="page-title">Modifica le informazioni personali</h1>
             </Row>
-
             <Row>
                 <Col/>
                 <Col md={8} className="glossy-background">
@@ -61,10 +62,10 @@ function EditProfilePage(props: EditProfilePageProps) {
 
             <Row className="d-flex justify-content-center mt-4">
                 <Col md={4} className="d-flex justify-content-center">
-                    <Button className="glossy-button" onClick={handleSubmit}>Salva</Button>
+                    <Button type="submit" className="glossy-button" onClick={handleSubmit}>Salva</Button>
                 </Col>
             </Row>
-        </>
+        </Form>
     );
 }
 

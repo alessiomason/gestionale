@@ -11,7 +11,7 @@ import {
 } from "./userService";
 import {body, param, validationResult} from 'express-validator';
 import {UserNotFound, UserWithSameUsernameError} from "./userErrors";
-import {NewUser, User} from "./user";
+import {NewUser, Role, Type, User} from "./user";
 import crypto from "crypto";
 
 export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
@@ -157,9 +157,9 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
         }
     )
 
-    app.put(`${baseURL}/:userId`,
+    // update personal information
+    app.put(baseURL,
         isLoggedIn,
-        param("userId").isInt({min: 1}),
         body('email').optional({values: "null"}).isEmail(),
         body('phone').optional({values: "null"}).isString(),
         body('car').optional({values: "null"}).isString(),
@@ -170,9 +170,10 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
                 return
             }
 
-            const userId = parseInt(req.params.userId);
+            const userId = (req.user as User).id;
             await updateUser(
                 userId,
+                undefined,
                 undefined,
                 undefined,
                 undefined,
@@ -187,6 +188,48 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
         }
     )
 
+    // update user
+    app.put(`${baseURL}/:userId`,
+        isLoggedIn,
+        param("userId").isInt({min: 1}),
+        body("active").optional({values: "null"}).isBoolean(),
+        body("role").optional({values: "null"}).isString(),
+        body("type").optional({values: "null"}).isString(),
+        body("hoursPerDay").optional({values: "null"}).isFloat({min: 0, max: 8}),
+        body("costPerHour").optional({values: "null"}).isFloat({min: 0}),
+        body('email').optional({values: "null"}).isEmail(),
+        body('phone').optional({values: "null"}).isString(),
+        body('car').optional({values: "null"}).isString(),
+        body("costPerKm").optional({values: "null"}).isFloat({min: 0}),
+        async (req: Request, res: Response) => {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                res.status(ParameterError.code).json(new ParameterError("There was an error with the parameters!"))
+                return
+            }
+
+            const userId = parseInt(req.params.userId);
+            const roleName = req.body.role as ("user" | "admin" | "dev" | undefined);
+            const typeName = req.body.type as ("office" | "workshop" | undefined);
+
+            await updateUser(
+                userId,
+                req.body.active,
+                roleName === undefined ? undefined : Role[roleName],
+                typeName === undefined ? undefined : Type[typeName],
+                parseFloat(req.body.hoursPerDay),
+                parseFloat(req.body.costPerHour),
+                req.body.email,
+                req.body.phone,
+                req.body.car,
+                parseFloat(req.body.costPerKm)
+            );
+
+            res.status(200).end();
+        }
+    )
+
+    // update password
     app.put(`${baseURL}/password/:userId`,
         isLoggedIn,
         param("userId").isInt({min: 1}),
@@ -207,14 +250,14 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
                 return
             }
 
-            crypto.pbkdf2(req.body.oldPassword, user.salt!, 31000, 32, "sha256", function (err, hashedPassword) {
+            crypto.pbkdf2(req.body.oldPassword, user.salt!, 31000, 32, "sha256", function (_err, hashedPassword) {
                 if (!crypto.timingSafeEqual(user.hashedPassword!, hashedPassword)) {
                     res.status(422).json(new BaseError(422, "La vecchia password è errata!"));
                     return
                 }
 
                 const salt = crypto.randomBytes(16);
-                crypto.pbkdf2(req.body.newPassword, salt, 31000, 32, "sha256", function (err, hashedPassword) {
+                crypto.pbkdf2(req.body.newPassword, salt, 31000, 32, "sha256", function (_err, hashedPassword) {
                     saveUserPassword(userId, hashedPassword, salt);
                     res.status(200).end()
                 })

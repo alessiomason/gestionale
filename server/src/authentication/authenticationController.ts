@@ -62,9 +62,20 @@ export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.Sess
 
     // logout
     app.delete('/api/sessions/current', isLoggedIn, (req, res) => {
-        req.logout(() => {
-            res.status(200).end();
+        req.session.destroy(err => {
+            if (err) {
+                console.error(err);
+            } else {
+                res.status(200).end();
+            }
         });
+        /*req.logout(err => {
+            if (err) {
+                console.error(err);
+            } else {
+                res.status(200).end();
+            }
+        });*/
     });
 
     // check whether the user is logged in or not
@@ -106,7 +117,7 @@ export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.Sess
             const email = req.body.email as string | undefined
             const phone = req.body.phone as string | undefined
             const car = req.body.car as string | undefined
-            await updateUser(user.id, undefined, undefined, undefined, undefined, email, phone, car, undefined)
+            await updateUser(user.id, undefined, undefined, undefined, undefined, undefined, email, phone, car, undefined)
 
             const salt = crypto.randomBytes(16);
             crypto.pbkdf2(req.body.password, salt, 31000, 32, "sha256", function (err, hashedPassword) {

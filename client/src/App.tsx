@@ -11,8 +11,9 @@ import {User} from "./models/user";
 import ProfilePage from "./profile/ProfilePage";
 import EditProfilePage from "./profile/EditProfilePage";
 import {Credentials} from "./models/credentials";
-import profileApis from "./api/profileApis";
+import userApis from "./api/userApis";
 import EditPasswordPage from "./profile/EditPasswordPage";
+import UsersListPage from "./users-management/UsersListPage";
 
 function App() {
     return (
@@ -32,7 +33,7 @@ function App2() {
 
     useEffect(() => {
         if (loggedIn && dirtyUser) {
-            profileApis.getUser(user!.id)
+            userApis.getUser(user!.id)
                 .then(user => {
                     setUser(user);
                     setDirtyUser(false);
@@ -41,18 +42,43 @@ function App2() {
         }
     }, [dirtyUser]);
 
+    useEffect(() => {
+        checkAuth();
+    }, []);
+
+    async function checkAuth() {
+        try {
+            const user = await loginApis.getUserInfo();
+            setLoggedIn(true);
+            setUser(user);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     function doLogin(credentials: Credentials) {
         loginApis.login(credentials)
             .then(user => {
                 setLoggedIn(true);
                 setUser(user);
-                setMessage('');
+                setMessage("");
                 navigate('/');
             })
             .catch(err => {
                 console.log(err)
                 setMessage(err);
             })
+    }
+
+    function doLogout() {
+        loginApis.logout()
+            .then(() => {
+                setLoggedIn(false);
+                setUser(undefined);
+                setMessage("");
+                navigate("/login");
+            })
+            .catch(err => console.error(err))
     }
 
     return (
@@ -62,10 +88,11 @@ function App2() {
             <Route path='/signup/:registrationToken' element={loggedIn ? <Navigate to='/'/> : <SignUpPage/>}/>
             <Route path='/successful-signup' element={<SuccessfulSignUpPage/>}/>
             <Route path='/' element={loggedIn ? <PageLayout user={user!}/> : <Navigate to='/login'/>}>
-                <Route index element={<Navigate to='profile' replace={true}/>}/>
-                <Route path='profile' element={<ProfilePage user={user!}/>}/>
+                <Route index element={<Navigate to='users' replace={true}/>}/>
+                <Route path='profile' element={<ProfilePage user={user!} doLogout={doLogout}/>}/>
                 <Route path='profile/edit' element={<EditProfilePage user={user!} setDirtyUser={setDirtyUser}/>}/>
                 <Route path='profile/password' element={<EditPasswordPage user={user!}/>}/>
+                <Route path='users' element={<UsersListPage/>}/>
             </Route>
         </Routes>
     );

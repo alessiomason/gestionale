@@ -37,7 +37,7 @@ function LoginPage(props: any) {
             <img src={roundLogo} alt="The logo of the company" className="login-logo"/>
 
             <Row>
-                <Form className="d-flex flex-column justify-content-center">
+                <Form className="login-form d-flex flex-column justify-content-center">
                     <Row>
                         <Col>
                             <h2 className="text-center">Login</h2>
