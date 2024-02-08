@@ -188,7 +188,7 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
         }
     )
 
-    // update personal information
+    // update user
     app.put(`${baseURL}/:userId`,
         isLoggedIn,
         param("userId").isInt({min: 1}),
@@ -229,6 +229,7 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
         }
     )
 
+    // update password
     app.put(`${baseURL}/password/:userId`,
         isLoggedIn,
         param("userId").isInt({min: 1}),

@@ -47,13 +47,24 @@ function App2() {
             .then(user => {
                 setLoggedIn(true);
                 setUser(user);
-                setMessage('');
+                setMessage("");
                 navigate('/');
             })
             .catch(err => {
                 console.log(err)
                 setMessage(err);
             })
+    }
+
+    function doLogout() {
+        loginApis.logout()
+            .then(() => {
+                setLoggedIn(false);
+                setUser(undefined);
+                setMessage("");
+                navigate("/login");
+            })
+            .catch(err => console.error(err))
     }
 
     return (
@@ -64,7 +75,7 @@ function App2() {
             <Route path='/successful-signup' element={<SuccessfulSignUpPage/>}/>
             <Route path='/' element={loggedIn ? <PageLayout user={user!}/> : <Navigate to='/login'/>}>
                 <Route index element={<Navigate to='users' replace={true}/>}/>
-                <Route path='profile' element={<ProfilePage user={user!}/>}/>
+                <Route path='profile' element={<ProfilePage user={user!} doLogout={doLogout}/>}/>
                 <Route path='profile/edit' element={<EditProfilePage user={user!} setDirtyUser={setDirtyUser}/>}/>
                 <Route path='profile/password' element={<EditPasswordPage user={user!}/>}/>
                 <Route path='users' element={<UsersListPage/>}/>

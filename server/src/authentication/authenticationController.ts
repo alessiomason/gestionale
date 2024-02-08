@@ -62,9 +62,20 @@ export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.Sess
 
     // logout
     app.delete('/api/sessions/current', isLoggedIn, (req, res) => {
-        req.logout(() => {
-            res.status(200).end();
+        req.session.destroy(err => {
+            if (err) {
+                console.error(err);
+            } else {
+                res.status(200).end();
+            }
         });
+        /*req.logout(err => {
+            if (err) {
+                console.error(err);
+            } else {
+                res.status(200).end();
+            }
+        });*/
     });
 
     // check whether the user is logged in or not

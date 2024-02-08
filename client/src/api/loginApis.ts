@@ -9,7 +9,7 @@ async function login(credentials: Credentials) {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         },
-        body: JSON.stringify(credentials),
+        body: JSON.stringify(credentials)
     });
     if (response.ok) {
         const res = await response.json();
@@ -19,5 +19,21 @@ async function login(credentials: Credentials) {
     }
 }
 
-const loginApis = {Credentials, login};
+async function logout() {
+    const response = await fetch(new URL('sessions/current', apiUrl), {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+    });
+    if (response.ok) {
+        return true;
+    } else {
+        throw await response.json();
+    }
+}
+
+const loginApis = {Credentials, login, logout};
 export default loginApis;
