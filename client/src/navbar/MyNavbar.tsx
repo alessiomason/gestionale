@@ -21,6 +21,8 @@ function MyNavbar(props: NavbarProps) {
                 </Col>
 
                 <Col className="d-flex justify-content-end align-items-center">
+                    <Button className="light-glossy-button me-3"
+                            onClick={() => navigate("/users")}>Gestione utenti</Button>
                     <Button className="light-glossy-button"
                             onClick={() => navigate("/profile")}>{`${props.user.name} ${props.user.surname}`}</Button>
                 </Col>
