@@ -46,14 +46,14 @@ p {
 
 .glossy-button {
     padding: 10px 30px;
-    color: white;
+    color: rgba(57, 58, 57, 0.8);
     /* From https://css.glass */
     background: rgba(165, 165, 165, 0.33);
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-    border: 2px solid rgba(165, 165, 165, 0.36);
+    border: 2px solid rgba(165, 165, 165, 0.6);
 }
 
 .glossy-button:hover,
