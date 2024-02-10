@@ -6,7 +6,7 @@ import React, {useState} from "react";
 import userApis from "../api/userApis";
 
 interface EditProfilePageProps {
-    readonly user: User,
+    readonly user: User
     readonly setDirtyUser: React.Dispatch<React.SetStateAction<boolean>>
 }
 

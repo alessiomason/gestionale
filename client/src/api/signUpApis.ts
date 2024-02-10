@@ -1,4 +1,5 @@
 import {apiUrl} from "./apisValues";
+import {User} from "../models/user";
 
 async function getUserFromRegistrationToken(registrationToken: string) {
     const response = await fetch(new URL(`users/registrationToken/${registrationToken}`, apiUrl), {
@@ -48,5 +49,23 @@ async function signUp(
     }
 }
 
-const signUpApis = {getUserFromRegistrationToken, signUp};
+async function createUser(user: User) {
+    const response = await fetch(new URL("users", apiUrl), {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(user)
+    });
+    if (response.ok) {
+        return await response.json();
+    } else {
+        const errDetail = await response.json();
+        throw errDetail.message;
+    }
+}
+
+const signUpApis = {getUserFromRegistrationToken, signUp, createUser};
 export default signUpApis;

@@ -140,7 +140,7 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
                 req.body.username,
                 req.body.hoursPerDay,
                 req.body.costPerHour,
-                undefined,
+                req.body.active,
                 req.body.email,
                 req.body.phone,
                 req.body.car,
