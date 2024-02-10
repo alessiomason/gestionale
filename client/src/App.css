@@ -22,6 +22,12 @@ p {
     color: red;
 }
 
+.form-floating>label {
+    color: #595959;
+}
+
+/* Glossy classes */
+
 .glossy-background {
     margin: 10px;
     padding: 20px;

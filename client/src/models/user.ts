@@ -84,8 +84,8 @@ export class User {
 
     static usernameFromName(name: string, surname: string) {
         // replace whitespaces in name and surname with dashes, then lowercase
-        const dashedName = name.replace(/\s/g, "-").toLowerCase()
-        const dashedSurname = surname.replace(/\s/g, "-").toLowerCase()
+        const dashedName = name.trim().replace(/\s/g, "-").toLowerCase()
+        const dashedSurname = surname.trim().replace(/\s/g, "-").toLowerCase()
 
         return `${dashedName}-${dashedSurname}`
     }

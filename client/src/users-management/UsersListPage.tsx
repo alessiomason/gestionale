@@ -128,7 +128,7 @@ function UsersListPage() {
                             <tbody>
                             {users.sort(compareUsers).map(user => {
                                 return (
-                                    <tr key={user.id} onClick={() => selectUser(user)}>
+                                    <tr key={user.id} onClick={() => selectUser(user)} className={user === selectedUser ? "selected-user" : ""}>
                                         <td>{user.surname}</td>
                                         <td>{user.name}</td>
                                         <td>{User.typeName(user.type)}</td>
