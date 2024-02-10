@@ -5,3 +5,8 @@ table {
 tbody>tr:hover {
     cursor: pointer;
 }
+
+.new-user-button {
+    width: 100%;
+    margin: 10px 10px 15px;
+}

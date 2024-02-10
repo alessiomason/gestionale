@@ -2,7 +2,6 @@ import {Button, Col, Row} from "react-bootstrap";
 import {User} from "../models/user";
 import {CarFront, EnvelopeAt, Person, Telephone} from "react-bootstrap-icons";
 import {useNavigate} from "react-router-dom";
-import loginApis from "../api/loginApis";
 
 interface ProfilePageProps {
     readonly user: User

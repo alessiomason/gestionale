@@ -157,15 +157,15 @@ export async function createUser(newUser: NewUser) {
         return new UserWithSameUsernameError()
     }
 
+    const registrationToken = crypto.randomBytes(8).toString("hex");
+    const userToInsert = {
+        ...newUser,
+        registrationToken: registrationToken
+    }
+
     const userIds = await knex("users")
         .returning("id")
-        .insert(newUser);
-
-    const registrationToken = crypto.randomBytes(8).toString("hex");
-
-    await knex("users")
-        .where({id: userIds[0]})
-        .update({registrationToken: registrationToken})
+        .insert(userToInsert);
 
     return new User(
         userIds[0],
