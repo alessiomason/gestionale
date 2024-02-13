@@ -1,14 +1,16 @@
 import React, {useEffect, useState} from "react";
 import {Role, Type, User} from "../models/user";
 import userApis from "../api/userApis";
-import {Button, Col, FloatingLabel, Form, InputGroup, Row, Table} from "react-bootstrap";
+import {Col, FloatingLabel, Form, InputGroup, Row, Table} from "react-bootstrap";
 import {
     CarFront,
     CheckCircle,
     Clock,
     Coin,
     EnvelopeAt,
+    Icon,
     Person,
+    PersonAdd,
     PersonBadge,
     PersonVcard,
     Telephone,
@@ -17,6 +19,8 @@ import {
 import SwitchToggle from "./SwitchToggle";
 import "./UsersListPage.css";
 import NewUserPane from "./NewUserPane";
+import GlossyButton from "../buttons/GlossyButton";
+import Floppy from "../new-bootstrap-icons/Floppy";
 
 function compareUsers(a: User, b: User) {
     // sort active first
@@ -111,7 +115,7 @@ function UsersListPage() {
 
             <Row>
                 <Col md={4}>
-                    <Button className="glossy-button new-user-button" onClick={showNewUser}>Nuovo utente</Button>
+                    <GlossyButton icon={PersonAdd} onClick={showNewUser} className="new-user-button">Nuovo utente</GlossyButton>
 
                     <Row className="glossy-background w-100">
                         <Table hover responsive>
@@ -252,8 +256,9 @@ function UsersListPage() {
 
                             <Row className="d-flex justify-content-center my-4">
                                 <Col sm={4} className="d-flex justify-content-center">
-                                    <Button type="submit" className="glossy-button"
-                                            onClick={handleSubmit}>{savedUser ? "Salvato" : "Salva"}</Button>
+                                    <GlossyButton icon={Floppy as Icon} onClick={handleSubmit}>
+                                        {savedUser ? "Salvato" : "Salva"}
+                                    </GlossyButton>
                                 </Col>
                             </Row>
                         </Form>

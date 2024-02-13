@@ -1,9 +1,11 @@
-import {Button, Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
+import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import {User} from "../models/user";
-import {CarFront, EnvelopeAt, Telephone} from "react-bootstrap-icons";
+import {CarFront, EnvelopeAt, Icon, Telephone} from "react-bootstrap-icons";
 import {useNavigate} from "react-router-dom";
 import React, {useState} from "react";
 import userApis from "../api/userApis";
+import GlossyButton from "../buttons/GlossyButton";
+import Floppy from "../new-bootstrap-icons/Floppy";
 
 interface EditProfilePageProps {
     readonly user: User
@@ -62,7 +64,7 @@ function EditProfilePage(props: EditProfilePageProps) {
 
             <Row className="d-flex justify-content-center mt-4">
                 <Col md={4} className="d-flex justify-content-center">
-                    <Button type="submit" className="glossy-button" onClick={handleSubmit}>Salva</Button>
+                    <GlossyButton type="submit" icon={Floppy as Icon} onClick={handleSubmit}>Salva</GlossyButton>
                 </Col>
             </Row>
         </Form>

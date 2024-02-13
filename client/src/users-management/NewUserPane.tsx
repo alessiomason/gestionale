@@ -1,10 +1,12 @@
-import {Button, Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
+import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import {
     CarFront,
     CheckCircle,
-    Clock, Coin,
+    Clock,
+    Coin,
     EnvelopeAt,
     Person,
+    PersonAdd,
     PersonBadge,
     PersonVcard,
     Telephone,
@@ -14,9 +16,10 @@ import SwitchToggle from "./SwitchToggle";
 import {Role, Type, User} from "../models/user";
 import React, {useState} from "react";
 import signUpApis from "../api/signUpApis";
+import GlossyButton from "../buttons/GlossyButton";
 
 interface NewUserPaneProps {
-    readonly setDirty:  React.Dispatch<React.SetStateAction<boolean>>
+    readonly setDirty: React.Dispatch<React.SetStateAction<boolean>>
     readonly selectUser: (user: User) => void
 }
 
@@ -205,8 +208,7 @@ function NewUserPane(props: NewUserPaneProps) {
 
             <Row className="d-flex justify-content-center my-4">
                 <Col sm={4} className="d-flex justify-content-center">
-                    <Button type="submit" className="glossy-button"
-                            onClick={handleSubmit}>Crea utente</Button>
+                    <GlossyButton icon={PersonAdd} onClick={handleSubmit}>Crea utente</GlossyButton>
                 </Col>
             </Row>
         </Form>

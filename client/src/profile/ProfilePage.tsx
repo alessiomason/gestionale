@@ -1,7 +1,8 @@
-import {Button, Col, Row} from "react-bootstrap";
+import {Col, Row} from "react-bootstrap";
 import {User} from "../models/user";
-import {CarFront, EnvelopeAt, Person, Telephone} from "react-bootstrap-icons";
+import {BoxArrowLeft, CarFront, EnvelopeAt, Key, PencilSquare, Person, Telephone} from "react-bootstrap-icons";
 import {useNavigate} from "react-router-dom";
+import GlossyButton from "../buttons/GlossyButton";
 
 interface ProfilePageProps {
     readonly user: User
@@ -22,7 +23,7 @@ function ProfilePage(props: ProfilePageProps) {
                 <Col md={8}>
                     <Row>
                         <Col className="d-flex justify-content-end me-3">
-                            <Button className="glossy-button" onClick={props.doLogout}>Logout</Button>
+                            <GlossyButton icon={BoxArrowLeft} onClick={props.doLogout}>Logout</GlossyButton>
                         </Col>
                     </Row>
                     <Row className="glossy-background">
@@ -62,15 +63,15 @@ function ProfilePage(props: ProfilePageProps) {
             <Row className="mt-4">
                 <Col/>
                 <Col className="d-flex justify-content-center">
-                    <Button className="glossy-button" onClick={() => {
+                    <GlossyButton icon={PencilSquare} onClick={() => {
                         navigate("/profile/edit")
-                    }}>Modifica informazioni personali</Button>
+                    }}>Modifica informazioni personali</GlossyButton>
                 </Col>
 
                 <Col className="d-flex justify-content-center">
-                    <Button className="glossy-button" onClick={() => {
+                    <GlossyButton icon={Key} onClick={() => {
                         navigate("/profile/password")
-                    }}>Modifica password</Button>
+                    }}>Modifica password</GlossyButton>
                 </Col>
                 <Col/>
             </Row>
