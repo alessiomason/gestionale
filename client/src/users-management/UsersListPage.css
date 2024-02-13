@@ -11,6 +11,19 @@ tbody>tr:hover {
     margin: 10px 10px 15px;
 }
 
+.input-group-button {
+    max-height: initial;
+}
+
 .selected-user {
     background-color: #cccccc;
+}
+
+.form-control:disabled {
+    background-color: rgba(204, 204, 204, 0.3);
+}
+
+.form-floating>.form-control:disabled~label::after,
+.form-floating>:disabled~label::after {
+    background-color: transparent;
 }

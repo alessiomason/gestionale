@@ -61,6 +61,8 @@ function NewUserPane(props: NewUserPaneProps) {
             surname,
             username,
             undefined,
+            undefined,
+            undefined,
             hoursPerDay,
             costPerHour,
             active,
