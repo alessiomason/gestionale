@@ -44,6 +44,9 @@ export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.Sess
                 // display wrong login messages
                 return res.status(401).json(info);
             }
+            if (!user.active) {
+                return res.status(401).json("L'utente non è attivo!");
+            }
             // success, perform the login
             req.login(user, (err) => {
                 if (err) return next(err);
