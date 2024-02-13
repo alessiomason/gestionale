@@ -1,8 +1,10 @@
 import {useNavigate} from 'react-router-dom';
-import {Button, Col, Navbar, Row} from 'react-bootstrap';
+import {Col, Navbar, Row} from 'react-bootstrap';
 import './MyNavbar.css';
 import horizontalWhiteLogo from '../images/logos/horizontal_white_logo.png';
 import {User} from "../models/user";
+import LightGlossyButton from "../buttons/LightGlossyButton";
+import {PersonBadge, PersonVcard} from "react-bootstrap-icons";
 
 interface NavbarProps {
     readonly user: User
@@ -21,10 +23,12 @@ function MyNavbar(props: NavbarProps) {
                 </Col>
 
                 <Col className="d-flex justify-content-end align-items-center">
-                    <Button className="light-glossy-button me-3"
-                            onClick={() => navigate("/users")}>Gestione utenti</Button>
-                    <Button className="light-glossy-button"
-                            onClick={() => navigate("/profile")}>{`${props.user.name} ${props.user.surname}`}</Button>
+                    <LightGlossyButton icon={PersonVcard} className="me-3" onClick={() => navigate("/users")}>
+                        Gestione utenti
+                    </LightGlossyButton>
+                    <LightGlossyButton icon={PersonBadge} onClick={() => navigate("/profile")}>
+                        {`${props.user.name} ${props.user.surname}`}
+                    </LightGlossyButton>
                 </Col>
             </Row>
         </Navbar>
