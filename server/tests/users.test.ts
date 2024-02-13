@@ -32,6 +32,8 @@ describe("Test users APIs", () => {
         undefined,
         undefined,
         undefined,
+        undefined,
+        undefined,
         8.0,
         30.0,
         true,
@@ -114,8 +116,9 @@ describe("Test users APIs", () => {
         expect(res.body).toEqual({
             id: userId,
             ...newUser,
-            registrationToken: res.body.registrationToken
+            registrationToken: res.body.registrationToken,
             // registrationToken randomly generated from the server, use the one from the response to pass the test
+            tokenExpiryDate: res.body.tokenExpiryDate
         });
     })
 
@@ -142,8 +145,9 @@ describe("Test users APIs", () => {
         expect(res.body).toEqual({
             id: userId,
             ...newUserWithOptionalFields,
-            registrationToken: res.body.registrationToken
+            registrationToken: res.body.registrationToken,
             // registrationToken randomly generated from the server, use the one from the response to pass the test
+            tokenExpiryDate: res.body.tokenExpiryDate
         });
     })
 

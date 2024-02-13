@@ -1,6 +1,5 @@
 import {Button, Col, Container, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import React, {useState} from "react";
-import loginApis from "../api/loginApis";
 import './LoginPage.css';
 import roundLogo from "../images/logos/round_logo.png";
 import {Lock, Person} from "react-bootstrap-icons";

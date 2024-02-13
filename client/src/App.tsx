@@ -14,6 +14,9 @@ import {Credentials} from "./models/credentials";
 import userApis from "./api/userApis";
 import EditPasswordPage from "./profile/EditPasswordPage";
 import UsersListPage from "./users-management/UsersListPage";
+import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+import "dayjs/locale/it";
 
 function App() {
     return (
@@ -42,8 +45,14 @@ function App2() {
         }
     }, [dirtyUser]);
 
+    // run once, at app load
     useEffect(() => {
+        // check if already logged in
         checkAuth();
+
+        // set up dayjs with localization
+        dayjs.extend(localizedFormat);
+        dayjs.locale("it");
     }, []);
 
     async function checkAuth() {

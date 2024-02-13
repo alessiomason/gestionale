@@ -4,7 +4,6 @@ import WebAuthnStrategy from "@forwardemail/passport-fido2-webauthn";
 import {MockStrategy, setupSerializeAndDeserialize} from "passport-mock-strategy";
 import {knex} from "../database/db";
 import {User} from "../users/user";
-import {BaseError} from "../errors";
 import * as crypto from "crypto";
 import {getUser, getUserFromUsername} from "../users/userService";
 

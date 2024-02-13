@@ -9,6 +9,7 @@ import {RequestHandler} from "express-serve-static-core";
 import {body, param, validationResult} from "express-validator";
 import {BaseError, ParameterError} from "../errors";
 import {User} from "../users/user";
+import dayjs from "dayjs";
 
 export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.SessionChallengeStore, isLoggedIn: RequestHandler) {
     // mock authentication endpoint (for testing)
@@ -42,6 +43,9 @@ export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.Sess
             if (!user) {
                 // display wrong login messages
                 return res.status(401).json(info);
+            }
+            if (!user.active) {
+                return res.status(401).json("L'utente non è attivo!");
             }
             // success, perform the login
             req.login(user, (err) => {
@@ -107,17 +111,32 @@ export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.Sess
             }
 
             // check password already existing
-            if (user.hashedPassword) {
+            if (user.hashedPassword || user.registrationDate) {
                 res.status(403).json(new BaseError(403, "L'utente è già registrato!"))
+                return
             }
 
-            // TODO: check expired registration token
+            // registration token is expired
+            if (dayjs(user.tokenExpiryDate).isBefore(dayjs())) {
+                res.status(403).json(new BaseError(403, "Il link di registrazione è scaduto!"))
+                return
+            }
 
             // update other fields user can enter during registration
             const email = req.body.email as string | undefined
             const phone = req.body.phone as string | undefined
             const car = req.body.car as string | undefined
-            await updateUser(user.id, undefined, undefined, undefined, undefined, undefined, email, phone, car, undefined)
+            const registrationDate = dayjs().format();
+            await updateUser(user.id, undefined,
+                undefined,
+                undefined,
+                registrationDate,
+                undefined,
+                undefined,
+                email,
+                phone,
+                car,
+                undefined)
 
             const salt = crypto.randomBytes(16);
             crypto.pbkdf2(req.body.password, salt, 31000, 32, "sha256", function (err, hashedPassword) {

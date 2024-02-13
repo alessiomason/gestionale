@@ -21,6 +21,7 @@ import "./UsersListPage.css";
 import NewUserPane from "./NewUserPane";
 import GlossyButton from "../buttons/GlossyButton";
 import Floppy from "../new-bootstrap-icons/Floppy";
+import {RegisteredSection, NoRegistrationSection} from "./UsersListSections";
 
 function compareUsers(a: User, b: User) {
     // sort active first
@@ -115,7 +116,8 @@ function UsersListPage() {
 
             <Row>
                 <Col md={4}>
-                    <GlossyButton icon={PersonAdd} onClick={showNewUser} className="new-user-button">Nuovo utente</GlossyButton>
+                    <GlossyButton icon={PersonAdd} onClick={showNewUser} className="new-user-button">Nuovo
+                        utente</GlossyButton>
 
                     <Row className="glossy-background w-100">
                         <Table hover responsive>
@@ -132,7 +134,8 @@ function UsersListPage() {
                             <tbody>
                             {users.sort(compareUsers).map(user => {
                                 return (
-                                    <tr key={user.id} onClick={() => selectUser(user)} className={user === selectedUser ? "selected-user" : ""}>
+                                    <tr key={user.id} onClick={() => selectUser(user)}
+                                        className={user === selectedUser ? "selected-user" : ""}>
                                         <td>{user.surname}</td>
                                         <td>{user.name}</td>
                                         <td>{User.typeName(user.type)}</td>
@@ -229,8 +232,8 @@ function UsersListPage() {
                                     </InputGroup>
                                     <InputGroup className="mt-2">
                                         <InputGroup.Text><Coin/></InputGroup.Text>
-                                        <FloatingLabel controlId="floatingInput" label="Costo all'ora">
-                                            <Form.Control type="number" step={0.5} min={0} placeholder="Costo all'ora"
+                                        <FloatingLabel controlId="floatingInput" label="Costo all'ora (euro)">
+                                            <Form.Control type="number" step={0.5} min={0} placeholder="Costo all'ora (euro)"
                                                           value={costPerHour}
                                                           onChange={ev => setCostPerHour(parseFloat(ev.target.value))}/>
                                         </FloatingLabel>
@@ -244,14 +247,18 @@ function UsersListPage() {
                                     </InputGroup>
                                     <InputGroup className="mt-2">
                                         <InputGroup.Text><Coin/></InputGroup.Text>
-                                        <FloatingLabel controlId="floatingInput" label="Costo al chilometro">
+                                        <FloatingLabel controlId="floatingInput" label="Costo al chilometro (euro)">
                                             <Form.Control type="number" step={0.5} min={0}
-                                                          placeholder="Costo al chilometro"
+                                                          placeholder="Costo al chilometro (euro)"
                                                           value={costPerKm}
                                                           onChange={ev => setCostPerKm(parseFloat(ev.target.value))}/>
                                         </FloatingLabel>
                                     </InputGroup>
                                 </Row>
+
+                                {selectedUser.registrationDate ?
+                                    <RegisteredSection user={selectedUser}/> :
+                                    <NoRegistrationSection user={selectedUser}/>}
                             </Row>
 
                             <Row className="d-flex justify-content-center my-4">

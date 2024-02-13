@@ -7,10 +7,11 @@ import roundLogo from "../images/logos/round_logo.png";
 import signUpApis from "../api/signUpApis";
 import {User} from "../models/user";
 
-function SignUpPage(props: any) {
+function SignUpPage() {
     const navigate = useNavigate();
 
     const {registrationToken} = useParams();
+    const [expired, setExpired] = useState(false);
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [car, setCar] = useState("");
@@ -58,17 +59,17 @@ function SignUpPage(props: any) {
                     <Row>
                         <Col/>
                         <Col sm={6} className="glossy-background">
-                            {registrationToken === undefined ?
-                                <p>L'URL per la registrazione non è valido!</p> :
+                            {registrationToken === undefined || expired ?
+                                <p>Il link di registrazione è scaduto o non è più valido!</p> :
                                 <SignUpPane
-                                    registrationToken={registrationToken}
+                                    registrationToken={registrationToken} setExpired={setExpired}
                                     email={email} setEmail={setEmail}
                                     phone={phone} setPhone={setPhone}
                                     car={car} setCar={setCar}
                                     password={password} setPassword={setPassword}
                                     confirmPassword={confirmPassword} setConfirmPassword={setConfirmPassword}
                                     invalidPassword={invalidPassword} setInvalidPassword={setInvalidPassword}
-                                    errorMessage={errorMessage} />}
+                                    errorMessage={errorMessage}/>}
                         </Col>
                         <Col/>
                     </Row>
@@ -87,6 +88,7 @@ function SignUpPage(props: any) {
 
 interface SignUpPaneProps {
     registrationToken: string,
+    setExpired: React.Dispatch<React.SetStateAction<boolean>>,
     email: string,
     setEmail: React.Dispatch<React.SetStateAction<string>>,
     phone: string,
@@ -107,8 +109,23 @@ function SignUpPane(props: SignUpPaneProps) {
 
     useEffect(() => {
         signUpApis.getUserFromRegistrationToken(props.registrationToken)
-            .then(user => setUser(user))
-            .catch(err => console.error(err))
+            .then(user => {
+                setUser(user);
+
+                if (user.email) {
+                    props.setEmail(user.email);
+                }
+                if (user.phone) {
+                    props.setPhone(user.phone);
+                }
+                if (user.car) {
+                    props.setCar(user.car);
+                }
+            })
+            .catch(err => {
+                props.setExpired(true);
+                console.error(err);
+            })
     }, [])
 
     return (
@@ -128,8 +145,13 @@ function SignUpPane(props: SignUpPaneProps) {
                         {user?.role === User.Role.admin && <p>Accesso: {User.roleName(user.role)}</p>}
                     </div>
 
-                    <h3 className="mt-4">Inserisci i dati mancanti</h3>
-                    <h6 className="mt-2">I seguenti dati sono facoltativi; potrai comunque modificarli in seguito</h6>
+                    <h3 className="mt-4">Inserisci o conferma i dati mancanti</h3>
+                    <h6 className="mt-2">
+                        {(user?.email || user?.phone || user?.car) ?
+                            `I seguenti dati sono facoltativi e sono già stati inseriti dall'amministratore,
+                            ma puoi comunque modificarli o rimuoverli.` :
+                            "I seguenti dati sono facoltativi; potrai comunque modificarli in seguito."}
+                    </h6>
                     <InputGroup className="padded-form-input">
                         <InputGroup.Text><EnvelopeAt/></InputGroup.Text>
                         <FloatingLabel controlId="floatingInput" label="Email">

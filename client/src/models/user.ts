@@ -24,6 +24,8 @@ export class User {
     surname: string
     username: string
     registrationToken: string | undefined
+    tokenExpiryDate: string | undefined
+    registrationDate: string | undefined
     phone: string | undefined
     hoursPerDay: number
     costPerHour: number
@@ -38,6 +40,8 @@ export class User {
         surname: string,
         username: string,
         registrationToken: string | undefined,
+        tokenExpiryDate: string | undefined,
+        registrationDate: string | undefined,
         hoursPerDay: number,
         costPerHour: number,
         active = true,
@@ -55,6 +59,8 @@ export class User {
         this.surname = surname
         this.username = username
         this.registrationToken = registrationToken;
+        this.tokenExpiryDate = tokenExpiryDate;
+        this.registrationDate = registrationDate;
         this.phone = phone
         this.hoursPerDay = hoursPerDay
         this.costPerHour = costPerHour
