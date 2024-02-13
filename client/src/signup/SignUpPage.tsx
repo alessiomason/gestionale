@@ -11,6 +11,7 @@ function SignUpPage() {
     const navigate = useNavigate();
 
     const {registrationToken} = useParams();
+    const [expired, setExpired] = useState(false);
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [car, setCar] = useState("");
@@ -58,10 +59,10 @@ function SignUpPage() {
                     <Row>
                         <Col/>
                         <Col sm={6} className="glossy-background">
-                            {registrationToken === undefined ?
-                                <p>L'URL per la registrazione non è valido!</p> :
+                            {registrationToken === undefined || expired ?
+                                <p>Il link di registrazione è scaduto o non è più valido!</p> :
                                 <SignUpPane
-                                    registrationToken={registrationToken}
+                                    registrationToken={registrationToken} setExpired={setExpired}
                                     email={email} setEmail={setEmail}
                                     phone={phone} setPhone={setPhone}
                                     car={car} setCar={setCar}
@@ -87,6 +88,7 @@ function SignUpPage() {
 
 interface SignUpPaneProps {
     registrationToken: string,
+    setExpired: React.Dispatch<React.SetStateAction<boolean>>,
     email: string,
     setEmail: React.Dispatch<React.SetStateAction<string>>,
     phone: string,
@@ -120,7 +122,10 @@ function SignUpPane(props: SignUpPaneProps) {
                     props.setCar(user.car);
                 }
             })
-            .catch(err => console.error(err))
+            .catch(err => {
+                props.setExpired(true);
+                console.error(err);
+            })
     }, [])
 
     return (

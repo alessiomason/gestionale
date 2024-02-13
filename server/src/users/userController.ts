@@ -13,6 +13,7 @@ import {body, param, validationResult} from 'express-validator';
 import {UserNotFound, UserWithSameUsernameError} from "./userErrors";
 import {NewUser, Role, Type, User} from "./user";
 import crypto from "crypto";
+import dayjs from "dayjs";
 
 export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
     const baseURL = "/api/users"
@@ -69,6 +70,12 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
                 const user = await getUserFromRegistrationToken(req.params.registrationToken)
 
                 if (user) {
+                    // user already registered or token expired
+                    if (user.registrationDate || dayjs(user.tokenExpiryDate).isBefore(dayjs())) {
+                        res.status(403).json(new BaseError(403, "Il link di registrazione è scaduto o non è più valido!"))
+                        return
+                    }
+
                     user.hashedPassword = undefined;
                     user.salt = undefined;
                     res.status(200).json(user)
