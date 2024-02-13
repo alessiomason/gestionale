@@ -2,6 +2,7 @@ import {knex} from '../database/db';
 import {NewUser, Role, Type, User} from "./user";
 import {UserNotFound, UserWithSameUsernameError} from "./userErrors";
 import * as crypto from "crypto";
+import dayjs from "dayjs";
 
 export async function getAllUsers() {
     const users = await knex<User>("users").select();
@@ -14,9 +15,11 @@ export async function getAllUsers() {
             user.name,
             user.surname,
             user.username,
-            user.hashedPassword,
-            user.salt,
+            undefined,
+            undefined,
             user.registrationToken,
+            user.tokenExpiryDate,
+            user.registrationDate,
             user.hoursPerDay,
             user.costPerHour,
             user.active,
@@ -45,6 +48,8 @@ export async function getUser(id: number) {
         undefined,
         undefined,
         undefined,
+        undefined,
+        user.registrationDate,
         user.hoursPerDay,
         user.costPerHour,
         user.active,
@@ -72,6 +77,8 @@ export async function getFullUser(id: number) {
         user.hashedPassword,
         user.salt,
         user.registrationToken,
+        user.tokenExpiryDate,
+        user.registrationDate,
         user.hoursPerDay,
         user.costPerHour,
         user.active,
@@ -99,6 +106,8 @@ export async function getUserFromUsername(username: string) {
         user.hashedPassword,
         user.salt,
         undefined,
+        undefined,
+        user.registrationDate,
         user.hoursPerDay,
         user.costPerHour,
         user.active,
@@ -126,6 +135,8 @@ export async function getUserFromRegistrationToken(registrationToken: string) {
         user.hashedPassword,
         user.salt,
         user.registrationToken,
+        user.tokenExpiryDate,
+        user.registrationDate,
         user.hoursPerDay,
         user.costPerHour,
         user.active,
@@ -158,9 +169,12 @@ export async function createUser(newUser: NewUser) {
     }
 
     const registrationToken = crypto.randomBytes(8).toString("hex");
+    const tokenExpiryDate = dayjs().add(7, "days").format();  // expiry date is in 7 days
+
     const userToInsert = {
         ...newUser,
-        registrationToken: registrationToken
+        registrationToken: registrationToken,
+        tokenExpiryDate: tokenExpiryDate
     }
 
     const userIds = await knex("users")
@@ -177,6 +191,8 @@ export async function createUser(newUser: NewUser) {
         undefined,
         undefined,
         registrationToken,
+        tokenExpiryDate,
+        undefined,
         newUser.hoursPerDay,
         newUser.costPerHour,
         newUser.active,
@@ -193,6 +209,7 @@ export async function updateUser(
     active: boolean | undefined,
     role: Role | undefined,
     type: Type | undefined,
+    registrationDate: string | undefined,
     hoursPerDay: number | undefined,
     costPerHour: number | undefined,
     email: string | undefined,
@@ -201,15 +218,16 @@ export async function updateUser(
     costPerKm: number | undefined
 ) {
     // check that at least one field is changing to avoid a faulty query
-    if (active !== undefined || role !== undefined || type !== undefined || hoursPerDay !== undefined ||
-        costPerHour !== undefined || email !== undefined || phone !== undefined || car !== undefined
-        || costPerKm !== undefined) {
+    if (active !== undefined || role !== undefined || type !== undefined || registrationDate !== undefined
+        || hoursPerDay !== undefined || costPerHour !== undefined || email !== undefined || phone !== undefined
+        || car !== undefined || costPerKm !== undefined) {
         await knex("users")
             .where("id", id)
             .update({
                 active: active,
                 role: role,
                 type: type,
+                registrationDate: registrationDate,
                 hoursPerDay: hoursPerDay,
                 costPerHour: costPerHour,
                 email: email,

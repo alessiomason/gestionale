@@ -74,6 +74,8 @@ export class User extends NewUser {
     hashedPassword: Buffer | undefined
     salt: Buffer | undefined
     registrationToken: string | undefined
+    tokenExpiryDate: string | undefined
+    registrationDate: string | undefined
 
     constructor(
         id: number,
@@ -85,6 +87,8 @@ export class User extends NewUser {
         hashedPassword: Buffer | undefined,
         salt: Buffer | undefined,
         registrationToken: string | undefined,
+        tokenExpiryDate: string | undefined,
+        registrationDate: string | undefined,
         hoursPerDay: number,
         costPerHour: number,
         active = true,
@@ -111,5 +115,7 @@ export class User extends NewUser {
         this.hashedPassword = hashedPassword;
         this.salt = salt;
         this.registrationToken = registrationToken;
+        this.tokenExpiryDate = tokenExpiryDate;
+        this.registrationDate = registrationDate;
     }
 }
