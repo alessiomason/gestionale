@@ -238,8 +238,8 @@ function UsersListPage() {
                                     </InputGroup>
                                     <InputGroup className="mt-2">
                                         <InputGroup.Text><Coin/></InputGroup.Text>
-                                        <FloatingLabel controlId="floatingInput" label="Costo all'ora">
-                                            <Form.Control type="number" step={0.5} min={0} placeholder="Costo all'ora"
+                                        <FloatingLabel controlId="floatingInput" label="Costo all'ora (euro)">
+                                            <Form.Control type="number" step={0.5} min={0} placeholder="Costo all'ora (euro)"
                                                           value={costPerHour}
                                                           onChange={ev => setCostPerHour(parseFloat(ev.target.value))}/>
                                         </FloatingLabel>
@@ -253,9 +253,9 @@ function UsersListPage() {
                                     </InputGroup>
                                     <InputGroup className="mt-2">
                                         <InputGroup.Text><Coin/></InputGroup.Text>
-                                        <FloatingLabel controlId="floatingInput" label="Costo al chilometro">
+                                        <FloatingLabel controlId="floatingInput" label="Costo al chilometro (euro)">
                                             <Form.Control type="number" step={0.5} min={0}
-                                                          placeholder="Costo al chilometro"
+                                                          placeholder="Costo al chilometro (euro)"
                                                           value={costPerKm}
                                                           onChange={ev => setCostPerKm(parseFloat(ev.target.value))}/>
                                         </FloatingLabel>
