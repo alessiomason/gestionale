@@ -12,15 +12,17 @@ import {useSystemAPIs} from './system/systemController';
 import {useUsersAPIs} from "./users/userController";
 import {setupPassport} from "./authentication/passportSetup";
 import {useAuthenticationAPIs} from "./authentication/authenticationController";
+import {dbOptions} from "./database/db";
 
-const store = new SessionChallengeStore();
-setupPassport(store);
+// setup passport
+const webAuthnStore = new SessionChallengeStore();
+setupPassport(webAuthnStore);
 
 // init express
 const app: Express = express();
 
 // set up the middlewares
-app.use(morgan('dev', {skip: () => process.env.NODE_ENV === 'test'}));
+app.use(morgan("dev", {skip: () => process.env.NODE_ENV === "test"}));
 
 app.use(express.json());
 const corsOptions = {
@@ -30,16 +32,20 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // set up the session
+const MySQLSessionStore = require('express-mysql-session')(session);
+const sessionStore = new MySQLSessionStore(dbOptions);
+
 app.use(session({
-    // by default, Passport uses a MemoryStore to keep track of the sessions
-    secret: 'A secret sentence not to share with anybody and anywhere, used to sign the session ID cookie.',
+    secret: process.env.SESSION_SECRET ?? "A secret sentence not to share with anybody and anywhere, used to sign the session ID cookie.",
     resave: false,
     saveUninitialized: false,
+    store: process.env.NODE_ENV === "test" ? undefined : sessionStore,  // use MemoryStore for testing
+    rolling: true,
     cookie: {
         secure: "auto",
         httpOnly: true,
-        sameSite: "none",
-        maxAge: 1000 * 60 * 10
+        sameSite: "strict",
+        maxAge: 1000 * 60 * 5  // 5 minutes since last interaction, as rolling is set to true
     }
 }));
 
@@ -67,7 +73,7 @@ const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
 // expose the APIs
 useSystemAPIs(app, isLoggedIn);
 useUsersAPIs(app, isLoggedIn);
-useAuthenticationAPIs(app, store, isLoggedIn);
+useAuthenticationAPIs(app, webAuthnStore, isLoggedIn);
 
 if (process.env.NODE_ENV === "production") {
     const path = require("path");
