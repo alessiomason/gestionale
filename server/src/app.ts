@@ -36,15 +36,16 @@ const MySQLSessionStore = require('express-mysql-session')(session);
 const sessionStore = new MySQLSessionStore(dbOptions);
 
 app.use(session({
-    secret: 'A secret sentence not to share with anybody and anywhere, used to sign the session ID cookie.',
+    secret: process.env.SESSION_SECRET ?? "A secret sentence not to share with anybody and anywhere, used to sign the session ID cookie.",
     resave: false,
     saveUninitialized: false,
     store: sessionStore,
+    rolling: true,
     cookie: {
         secure: "auto",
         httpOnly: true,
         sameSite: "strict",
-        maxAge: 1000 * 60 * 10  // 10 minutes
+        maxAge: 1000 * 60 * 5  // 5 minutes since last interaction, as rolling is set to true
     }
 }));
 
