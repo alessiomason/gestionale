@@ -12,9 +12,11 @@ import {useSystemAPIs} from './system/systemController';
 import {useUsersAPIs} from "./users/userController";
 import {setupPassport} from "./authentication/passportSetup";
 import {useAuthenticationAPIs} from "./authentication/authenticationController";
+import {dbOptions} from "./database/db";
 
-const store = new SessionChallengeStore();
-setupPassport(store);
+// setup passport
+const webAuthnStore = new SessionChallengeStore();
+setupPassport(webAuthnStore);
 
 // init express
 const app: Express = express();
@@ -30,16 +32,19 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // set up the session
+const MySQLSessionStore = require('express-mysql-session')(session);
+const sessionStore = new MySQLSessionStore(dbOptions);
+
 app.use(session({
-    // by default, Passport uses a MemoryStore to keep track of the sessions
     secret: 'A secret sentence not to share with anybody and anywhere, used to sign the session ID cookie.',
     resave: false,
     saveUninitialized: false,
+    store: sessionStore,
     cookie: {
         secure: "auto",
         httpOnly: true,
         sameSite: "strict",
-        maxAge: 1000 * 60 * 10
+        maxAge: 1000 * 60 * 10  // 10 minutes
     }
 }));
 
@@ -67,7 +72,7 @@ const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
 // expose the APIs
 useSystemAPIs(app, isLoggedIn);
 useUsersAPIs(app, isLoggedIn);
-useAuthenticationAPIs(app, store, isLoggedIn);
+useAuthenticationAPIs(app, webAuthnStore, isLoggedIn);
 
 if (process.env.NODE_ENV === "production") {
     const path = require("path");
