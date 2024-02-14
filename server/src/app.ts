@@ -22,7 +22,7 @@ setupPassport(webAuthnStore);
 const app: Express = express();
 
 // set up the middlewares
-app.use(morgan('dev', {skip: () => process.env.NODE_ENV === 'test'}));
+app.use(morgan("dev", {skip: () => process.env.NODE_ENV === "test"}));
 
 app.use(express.json());
 const corsOptions = {
@@ -39,7 +39,7 @@ app.use(session({
     secret: process.env.SESSION_SECRET ?? "A secret sentence not to share with anybody and anywhere, used to sign the session ID cookie.",
     resave: false,
     saveUninitialized: false,
-    store: sessionStore,
+    store: process.env.NODE_ENV === "test" ? undefined : sessionStore,  // use MemoryStore for testing
     rolling: true,
     cookie: {
         secure: "auto",
