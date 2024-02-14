@@ -79,6 +79,11 @@ function UsersListPage() {
         setCostPerKm(user.costPerKm ?? 0);
     }
 
+    function showNewUser() {
+        setSelectedUser(undefined);
+        setShowingNewUser(true);
+    }
+
     function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
 
@@ -101,11 +106,6 @@ function UsersListPage() {
                 setSavedUser(true);
             })
             .catch(err => console.error(err))
-    }
-
-    function showNewUser() {
-        setSelectedUser(undefined);
-        setShowingNewUser(true);
     }
 
     return (

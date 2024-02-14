@@ -60,8 +60,8 @@ function App2() {
             const user = await loginApis.getUserInfo();
             setLoggedIn(true);
             setUser(user);
-        } catch (err) {
-            console.error(err);
+        } catch (_err) {
+            // do not log it, otherwise error logged before every login
         }
     }
 
