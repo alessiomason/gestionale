@@ -6,7 +6,6 @@ async function getAllUsers() {
         method: 'GET',
         credentials: 'include',
         headers: {
-            'Content-Type': 'application/json',
             'Accept': 'application/json'
         }
     });
@@ -23,7 +22,6 @@ async function getUser(userId: number) {
         method: 'GET',
         credentials: 'include',
         headers: {
-            'Content-Type': 'application/json',
             'Accept': 'application/json'
         }
     });

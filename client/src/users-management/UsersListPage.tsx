@@ -42,7 +42,7 @@ function compareUsers(a: User, b: User) {
 
 function UsersListPage() {
     const [users, setUsers] = useState<User[]>([]);
-    const [dirty, setDirty] = useState(false);
+    const [dirty, setDirty] = useState(true);
     const [selectedUser, setSelectedUser] = useState<User>();
     const [savedUser, setSavedUser] = useState(false);
     const [showingNewUser, setShowingNewUser] = useState(false);
@@ -58,9 +58,14 @@ function UsersListPage() {
     const [costPerKm, setCostPerKm] = useState(0);
 
     useEffect(() => {
-        userApis.getAllUsers()
-            .then(users => setUsers(users))
-            .catch(err => console.error(err))
+        if (dirty) {
+            userApis.getAllUsers()
+                .then(users => {
+                    setUsers(users);
+                    setDirty(false);
+                })
+                .catch(err => console.error(err))
+        }
     }, [dirty]);
 
     function selectUser(user: User) {
@@ -116,8 +121,9 @@ function UsersListPage() {
 
             <Row>
                 <Col md={4}>
-                    <GlossyButton icon={PersonAdd} onClick={showNewUser} className="new-user-button">Nuovo
-                        utente</GlossyButton>
+                    <GlossyButton icon={PersonAdd} onClick={showNewUser} className="new-user-button">
+                        Nuovo utente
+                    </GlossyButton>
 
                     <Row className="glossy-background w-100">
                         <Table hover responsive>
