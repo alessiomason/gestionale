@@ -13,6 +13,7 @@ import {useUsersAPIs} from "./users/userController";
 import {setupPassport} from "./authentication/passportSetup";
 import {useAuthenticationAPIs} from "./authentication/authenticationController";
 import {dbOptions} from "./database/db";
+import {useJobsAPIs} from "./jobs/jobController";
 
 // setup passport
 const webAuthnStore = new SessionChallengeStore();
@@ -72,8 +73,9 @@ const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
 
 // expose the APIs
 useSystemAPIs(app, isLoggedIn);
-useUsersAPIs(app, isLoggedIn);
 useAuthenticationAPIs(app, webAuthnStore, isLoggedIn);
+useUsersAPIs(app, isLoggedIn);
+useJobsAPIs(app, isLoggedIn);
 
 if (process.env.NODE_ENV === "production") {
     const path = require("path");

@@ -1,5 +1,5 @@
 import app from "../src/app";
-import {agent as request} from "supertest";
+import {agent as Request} from "supertest";
 import {createTracker, Tracker} from 'knex-mock-client';
 import {faker} from '@faker-js/faker';
 import { knex as db } from '../src/database/db';
@@ -57,7 +57,7 @@ describe("Test users APIs", () => {
     beforeAll(async () => {
         tracker = createTracker(db);
 
-        const res = await new request(app).get("/auth/mock")
+        const res = await new Request(app).get("/auth/mock")
         session = res.headers['set-cookie'][0]
             .split(';')
             .map(item => item.split(';')[0])
@@ -71,28 +71,28 @@ describe("Test users APIs", () => {
     test("Get all users empty list", async () => {
         tracker.on.select("users").response([]);
 
-        const res = await new request(app).get(baseURL).set("Cookie", session);
+        const res = await new Request(app).get(baseURL).set("Cookie", session);
         expect(res.body).toEqual([]);
     })
 
     test("Get all users", async () => {
         tracker.on.select("users").response([user]);
 
-        const res = await new request(app).get(baseURL).set("Cookie", session);
+        const res = await new Request(app).get(baseURL).set("Cookie", session);
         expect(res.body).toEqual([user]);
     })
 
     test("Get single user", async () => {
         tracker.on.select("users").response(user);
 
-        const res = await new request(app).get(`${baseURL}/${user.id}`).set("Cookie", session);
+        const res = await new Request(app).get(`${baseURL}/${user.id}`).set("Cookie", session);
         expect(res.body).toEqual(user);
     })
 
     test("Get single user not found", async() => {
         tracker.on.select("users").response(undefined)
 
-        const res = await new request(app).get(`${baseURL}/${faker.number.int()}`).set("Cookie", session);
+        const res = await new Request(app).get(`${baseURL}/${faker.number.int()}`).set("Cookie", session);
 
         const expectedError = new UserNotFound()
         expect(res.statusCode).toBe(404)
@@ -103,7 +103,7 @@ describe("Test users APIs", () => {
         tracker.on.select("users").response(user);
         const registrationToken = crypto.randomBytes(8).toString("hex");
 
-        const res = await new request(app).get(`${baseURL}/registrationToken/${registrationToken}`);
+        const res = await new Request(app).get(`${baseURL}/registrationToken/${registrationToken}`);
         expect(res.body).toEqual(user);
     })
 
@@ -112,7 +112,7 @@ describe("Test users APIs", () => {
         tracker.on.insert("users").response([userId]);
         tracker.on.update("users").response(null);      // no answer from update call
 
-        const res = await new request(app).post(baseURL).send(newUser).set("Cookie", session);
+        const res = await new Request(app).post(baseURL).send(newUser).set("Cookie", session);
         expect(res.body).toEqual({
             id: userId,
             ...newUser,
@@ -141,7 +141,7 @@ describe("Test users APIs", () => {
         tracker.on.insert("users").response([userId]);
         tracker.on.update("users").response(null);      // no answer from update call
 
-        const res = await new request(app).post(baseURL).send(newUserWithOptionalFields).set("Cookie", session);
+        const res = await new Request(app).post(baseURL).send(newUserWithOptionalFields).set("Cookie", session);
         expect(res.body).toEqual({
             id: userId,
             ...newUserWithOptionalFields,
@@ -154,7 +154,7 @@ describe("Test users APIs", () => {
     test("Cannot create a user with the same username", async () => {
         tracker.on.select("users").response(newUser); // already existing user
 
-        const res = await new request(app).post(baseURL).send(newUser).set("Cookie", session);
+        const res = await new Request(app).post(baseURL).send(newUser).set("Cookie", session);
         expect(res.body).toEqual(new UserWithSameUsernameError());
     })
 
@@ -167,7 +167,7 @@ describe("Test users APIs", () => {
             car: user.car
         }
 
-        const res = await new request(app).put(`${baseURL}/${user.id}`).send(body).set("Cookie", session);
+        const res = await new Request(app).put(`${baseURL}/${user.id}`).send(body).set("Cookie", session);
         expect(res.statusCode).toBe(200);
     })
 })
