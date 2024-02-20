@@ -3,7 +3,7 @@ export class Job {
     subject: string
     client: string
     finalClient: string | undefined
-    order: string | undefined
+    orderName: string | undefined
     orderAmount: number | undefined
     dueDate: string | null
     deliveryDate: string | null
@@ -18,7 +18,7 @@ export class Job {
         subject: string,
         client: string,
         finalClient: string | undefined,
-        order: string | undefined,
+        orderName: string | undefined,
         orderAmount: number | undefined,
         dueDate: string | null = null,
         deliveryDate: string | null = null,
@@ -32,7 +32,7 @@ export class Job {
         this.subject = subject
         this.client = client
         this.finalClient = finalClient
-        this.order = order
+        this.orderName = orderName
         this.orderAmount = orderAmount
         this.dueDate = dueDate
         this.deliveryDate = deliveryDate
