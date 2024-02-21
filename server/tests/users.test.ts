@@ -95,7 +95,7 @@ describe("Test users APIs", () => {
         const res = await new Request(app).get(`${baseURL}/${faker.number.int()}`).set("Cookie", session);
 
         const expectedError = new UserNotFound()
-        expect(res.statusCode).toBe(404)
+        expect(res.statusCode).toBe(UserNotFound.code)
         expect(res.body).toEqual(expectedError)
     })
 

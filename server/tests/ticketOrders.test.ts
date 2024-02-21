@@ -76,7 +76,7 @@ describe("Test ticket orders APIs", () => {
         const res = await new Request(app).get(`${baseURL}/${faker.number.int()}`).set("Cookie", session);
 
         const expectedError = new TicketOrderNotFound()
-        expect(res.statusCode).toBe(404)
+        expect(res.statusCode).toBe(TicketOrderNotFound.code)
         expect(res.body).toEqual(expectedError)
     })
 
@@ -102,7 +102,7 @@ describe("Test ticket orders APIs", () => {
         const res = await new Request(app).delete(`${baseURL}/${ticketOrder.id}`).set("Cookie", session);
 
         const expectedError = new TicketOrderNotFound()
-        expect(res.statusCode).toBe(404);
+        expect(res.statusCode).toBe(TicketOrderNotFound.code);
         expect(res.body).toEqual(expectedError)
     })
 })

@@ -77,7 +77,7 @@ describe("Test jobs APIs", () => {
         const res = await new Request(app).get(`${baseURL}/${faker.number.int()}`).set("Cookie", session);
 
         const expectedError = new JobNotFound()
-        expect(res.statusCode).toBe(404)
+        expect(res.statusCode).toBe(JobNotFound.code)
         expect(res.body).toEqual(expectedError)
     })
 
@@ -113,7 +113,7 @@ describe("Test jobs APIs", () => {
         const res = await new Request(app).put(`${baseURL}/${job.id}`).send(job).set("Cookie", session);
 
         const expectedError = new JobNotFound()
-        expect(res.statusCode).toBe(404);
+        expect(res.statusCode).toBe(JobNotFound.code);
         expect(res.body).toEqual(expectedError)
     })
 
@@ -131,7 +131,7 @@ describe("Test jobs APIs", () => {
         const res = await new Request(app).delete(`${baseURL}/${job.id}`).set("Cookie", session);
 
         const expectedError = new JobNotFound()
-        expect(res.statusCode).toBe(404);
+        expect(res.statusCode).toBe(JobNotFound.code);
         expect(res.body).toEqual(expectedError)
     })
 })

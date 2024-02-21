@@ -63,7 +63,7 @@ describe("Test ticket companies APIs", () => {
         const res = await new Request(app).get(`${baseURL}/${faker.number.int()}`).set("Cookie", session);
 
         const expectedError = new TicketCompanyNotFound()
-        expect(res.statusCode).toBe(404)
+        expect(res.statusCode).toBe(TicketCompanyNotFound.code)
         expect(res.body).toEqual(expectedError)
     })
 
@@ -89,7 +89,7 @@ describe("Test ticket companies APIs", () => {
         const res = await new Request(app).delete(`${baseURL}/${ticketCompany.id}`).set("Cookie", session);
 
         const expectedError = new TicketCompanyNotFound()
-        expect(res.statusCode).toBe(404);
+        expect(res.statusCode).toBe(TicketCompanyNotFound.code);
         expect(res.body).toEqual(expectedError)
     })
 })

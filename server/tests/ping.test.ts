@@ -1,5 +1,5 @@
 import app from "../src/app";
-import {agent as request} from "supertest";
+import {agent as Request} from "supertest";
 import {createTracker, Tracker} from 'knex-mock-client';
 import {knex as db} from '../src/database/db';
 
@@ -19,7 +19,7 @@ describe("Test system APIs", () => {
     beforeAll(async () => {
         tracker = createTracker(db);
 
-        const res = await new request(app).get("/auth/mock")
+        const res = await new Request(app).get("/auth/mock")
         session = res.headers['set-cookie'][0]
             .split(';')
             .map(item => item.split(';')[0])
@@ -31,7 +31,7 @@ describe("Test system APIs", () => {
     });
 
     test("Ping", async () => {
-        const res = await new request(app).get(`${baseURL}/ping`);
+        const res = await new Request(app).get(`${baseURL}/ping`);
         expect(res.body).toEqual("pong");
     })
 
@@ -41,7 +41,7 @@ describe("Test system APIs", () => {
             value: "Pong"
         })
 
-        const res = await new request(app).get(`${baseURL}/pingDB`).set("Cookie", session);
+        const res = await new Request(app).get(`${baseURL}/pingDB`).set("Cookie", session);
         expect(res.body).toEqual("Pong");
     })
 })
