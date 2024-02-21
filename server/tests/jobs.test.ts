@@ -4,7 +4,8 @@ import {createTracker, Tracker} from 'knex-mock-client';
 import {faker} from '@faker-js/faker';
 import { knex as db } from '../src/database/db';
 import {Job} from "../src/jobs/job";
-import {JobNotFound} from "../src/jobs/jobErrors";
+import {DuplicateJob, JobNotFound} from "../src/jobs/jobErrors";
+import {TicketCompanyNotFound} from "../src/tickets/ticketErrors";
 
 jest.mock('../src/database/db', () => {
     const Knex = require('knex');
@@ -21,14 +22,14 @@ describe("Test jobs APIs", () => {
 
     const job = new Job(
         "24-052",
-        faker.string.sample(),
+        faker.lorem.words(3),
         faker.company.name(),
         faker.company.name(),
-        faker.string.sample(),
+        faker.word.words(5),
         faker.number.float(),
         faker.date.soon().toISOString(),
         faker.date.recent().toISOString(),
-        faker.string.sample(),
+        faker.lorem.sentences(),
         true,
         false,
         true,
@@ -77,6 +78,60 @@ describe("Test jobs APIs", () => {
 
         const expectedError = new JobNotFound()
         expect(res.statusCode).toBe(404)
+        expect(res.body).toEqual(expectedError)
+    })
+
+    test("Create job", async () => {
+        tracker.on.select("jobs").response(undefined);
+        tracker.on.insert("jobs").response(undefined);
+
+        const res = await new Request(app).post(baseURL).send(job).set("Cookie", session);
+        expect(res.body).toEqual(job);
+    })
+
+    test("Create duplicate job", async () => {
+        tracker.on.select("jobs").response(job);
+
+        const res = await new Request(app).post(baseURL).send(job).set("Cookie", session);
+
+        const expectedError = new DuplicateJob()
+        expect(res.statusCode).toBe(DuplicateJob.code)
+        expect(res.body).toEqual(expectedError)
+    })
+
+    test("Update job", async () => {
+        tracker.on.select("jobs").response(job);
+        tracker.on.update("jobs").response(undefined);
+
+        const res = await new Request(app).put(`${baseURL}/${job.id}`).send(job).set("Cookie", session);
+        expect(res.statusCode).toBe(200);
+    })
+
+    test("Update job not found", async () => {
+        tracker.on.select("jobs").response(undefined);
+
+        const res = await new Request(app).put(`${baseURL}/${job.id}`).send(job).set("Cookie", session);
+
+        const expectedError = new JobNotFound()
+        expect(res.statusCode).toBe(404);
+        expect(res.body).toEqual(expectedError)
+    })
+
+    test("Delete job", async () => {
+        tracker.on.select("jobs").response(job);
+        tracker.on.delete("jobs").response(undefined);
+
+        const res = await new Request(app).delete(`${baseURL}/${job.id}`).set("Cookie", session);
+        expect(res.statusCode).toBe(200);
+    })
+
+    test("Delete job not found", async () => {
+        tracker.on.select("jobs").response(undefined);
+
+        const res = await new Request(app).delete(`${baseURL}/${job.id}`).set("Cookie", session);
+
+        const expectedError = new JobNotFound()
+        expect(res.statusCode).toBe(404);
         expect(res.body).toEqual(expectedError)
     })
 })

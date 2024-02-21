@@ -53,7 +53,7 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler) {
         body("subject").isString(),
         body("client").isString(),
         body("finalClient").optional({values: "null"}).isString(),
-        body("order").optional({values: "null"}).isString(),
+        body("orderName").optional({values: "null"}).isString(),
         body("orderAmount").optional({values: "null"}).isFloat(),
         body("dueDate").optional({values: "null"}).isString(),
         body("deliveryDate").optional({values: "null"}).isString(),
@@ -74,7 +74,7 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler) {
                 req.body.subject,
                 req.body.client,
                 req.body.finalClient,
-                req.body.order,
+                req.body.orderName,
                 req.body.orderAmount,
                 req.body.dueDate,
                 req.body.deliveryDate,
@@ -102,7 +102,7 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler) {
         body("subject").optional({values: "null"}).isString(),
         body("client").optional({values: "null"}).isString(),
         body("finalClient").optional({values: "null"}).isString(),
-        body("order").optional({values: "null"}).isString(),
+        body("orderName").optional({values: "null"}).isString(),
         body("orderAmount").optional({values: "null"}).isFloat(),
         body("dueDate").optional({values: "null"}).isString(),
         body("deliveryDate").optional({values: "null"}).isString(),
@@ -118,12 +118,12 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler) {
                 return
             }
 
-            const job = new Job(
+            const updatedJob = new Job(
                 req.params.jobId,
                 req.body.subject,
                 req.body.client,
                 req.body.finalClient,
-                req.body.order,
+                req.body.orderName,
                 req.body.orderAmount,
                 req.body.dueDate,
                 req.body.deliveryDate,
@@ -134,8 +134,19 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler) {
                 req.body.construction
             )
 
-            await updateJob(job);
-            res.status(200).end();
+            try {
+                const job = await getJob(req.params.jobId)
+
+                if (job) {
+                    await updateJob(updatedJob)
+                    res.status(200).end()
+                } else {
+                    res.status(JobNotFound.code).json(new JobNotFound())
+                }
+            } catch (err: any) {
+                console.error("Error while retrieving jobs: ", err.message);
+                res.status(InternalServerError.code).json(new InternalServerError("Error while retrieving jobs"))
+            }
         }
     )
 
