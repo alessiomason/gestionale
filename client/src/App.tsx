@@ -18,6 +18,7 @@ import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import "dayjs/locale/it";
 import JobsPage from "./jobs/JobsPage";
+import TicketsPage from "./tickets/TicketsPage";
 
 function App() {
     return (
@@ -98,12 +99,13 @@ function App2() {
             <Route path='/signup/:registrationToken' element={loggedIn ? <Navigate to='/'/> : <SignUpPage/>}/>
             <Route path='/successful-signup' element={<SuccessfulSignUpPage/>}/>
             <Route path='/' element={loggedIn ? <PageLayout user={user!}/> : <Navigate to='/login'/>}>
-                <Route index element={<Navigate to='/jobs' replace={true}/>}/>
+                <Route index element={<Navigate to='/tickets' replace={true}/>}/>
                 <Route path='profile' element={<ProfilePage user={user!} doLogout={doLogout}/>}/>
                 <Route path='profile/edit' element={<EditProfilePage user={user!} setDirtyUser={setDirtyUser}/>}/>
                 <Route path='profile/password' element={<EditPasswordPage user={user!}/>}/>
                 <Route path='users' element={<UsersListPage/>}/>
                 <Route path='jobs' element={<JobsPage/>}/>
+                <Route path='tickets' element={<TicketsPage/>}/>
             </Route>
         </Routes>
     );
