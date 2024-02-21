@@ -14,6 +14,9 @@ import {setupPassport} from "./authentication/passportSetup";
 import {useAuthenticationAPIs} from "./authentication/authenticationController";
 import {dbOptions} from "./database/db";
 import {useJobsAPIs} from "./jobs/jobController";
+import {useTicketsAPIs} from "./tickets/tickets/ticketController";
+import {useTicketOrdersAPIs} from "./tickets/ticketOrders/ticketOrderController";
+import {useTicketCompaniesAPIs} from "./tickets/ticketCompanies/ticketCompanyController";
 
 // setup passport
 const webAuthnStore = new SessionChallengeStore();
@@ -76,6 +79,9 @@ useSystemAPIs(app, isLoggedIn);
 useAuthenticationAPIs(app, webAuthnStore, isLoggedIn);
 useUsersAPIs(app, isLoggedIn);
 useJobsAPIs(app, isLoggedIn);
+useTicketCompaniesAPIs(app, isLoggedIn);
+useTicketOrdersAPIs(app, isLoggedIn);
+useTicketsAPIs(app, isLoggedIn);
 
 if (process.env.NODE_ENV === "production") {
     const path = require("path");
