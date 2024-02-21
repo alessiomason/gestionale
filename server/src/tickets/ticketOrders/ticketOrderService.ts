@@ -21,6 +21,8 @@ export async function getTicketOrder(id: number) {
         .first()
         .whereRaw("ticketsOrders.id = ?", id)
 
+    if (!ticketOrder) return
+
     const ticketCompany = new TicketCompany(ticketOrder.companyId, ticketOrder.name);
     return new TicketOrder(ticketOrder.id, ticketCompany, ticketOrder.hours, ticketOrder.date)
 }
@@ -41,8 +43,7 @@ export async function createTicketOrder(
         .returning("id")
         .insert(ticketOrder);
 
-    ticketOrder.id = ticketOrderIds[0];
-    return ticketOrder;
+    return getTicketOrder(ticketOrderIds[0]);
 }
 
 export async function deleteTicketOrder(id: number) {

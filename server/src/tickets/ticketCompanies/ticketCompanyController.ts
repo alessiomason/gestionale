@@ -41,7 +41,7 @@ export function useTicketCompaniesAPIs(app: Express, isLoggedIn: RequestHandler)
                 if (ticketCompany) {
                     res.status(200).json(ticketCompany)
                 } else {
-                    res.status(TicketNotFound.code).json(new TicketNotFound())
+                    res.status(TicketNotFound.code).json(new TicketCompanyNotFound())
                 }
             } catch (err: any) {
                 console.error("Error while retrieving ticket companies: ", err.message);

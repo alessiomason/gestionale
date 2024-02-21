@@ -27,6 +27,8 @@ export async function getTicket(id: number) {
         .first()
         .whereRaw("tickets.id = ?", id)
 
+    if (!ticket) return
+
     const ticketCompany = new TicketCompany(ticket.companyId, ticket.name);
     return new Ticket(
         ticket.id,
@@ -45,7 +47,7 @@ export async function createTicket(
     startTime: string | undefined,
     endTime: string | undefined
 ) {
-    const ticket = {
+    const newTicket = {
         id: -1,
         companyId: companyId,
         title: title,
@@ -56,10 +58,9 @@ export async function createTicket(
 
     const ticketIds = await knex("tickets")
         .returning("id")
-        .insert(ticket);
+        .insert(newTicket);
 
-    ticket.id = ticketIds[0];
-    return ticket;
+    return getTicket(ticketIds[0]);
 }
 
 export async function deleteTicket(id: number) {
