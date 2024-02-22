@@ -4,7 +4,7 @@ import {createTracker, Tracker} from 'knex-mock-client';
 import {faker} from '@faker-js/faker';
 import { knex as db } from '../src/database/db';
 import {TicketCompany} from "../src/tickets/ticketCompanies/ticketCompany";
-import {TicketNotFound, TicketOrderNotFound} from "../src/tickets/ticketErrors";
+import {TicketCompanyNotFound, TicketNotFound, TicketOrderNotFound} from "../src/tickets/ticketErrors";
 import {TicketOrder} from "../src/tickets/ticketOrders/ticketOrder";
 
 jest.mock('../src/database/db', () => {
@@ -49,18 +49,30 @@ describe("Test ticket orders APIs", () => {
         tracker.reset();
     });
 
-    test("Get all ticket orders empty list", async () => {
+    test("Get ticket orders by company empty list", async () => {
+        tracker.on.select("ticketCompanies").responseOnce(ticketCompany);
         tracker.on.select("ticketOrders").response([]);
 
-        const res = await new Request(app).get(baseURL).set("Cookie", session);
+        const res = await new Request(app).get(`${baseURL}/company/${ticketCompany.id}`).set("Cookie", session);
         expect(res.body).toEqual([]);
     })
 
-    test("Get all ticket orders", async () => {
+    test("Get ticket orders by company", async () => {
+        tracker.on.select("ticketCompanies").responseOnce(ticketCompany);
         tracker.on.select("ticketOrders").response([responseTicketOrder]);
 
-        const res = await new Request(app).get(baseURL).set("Cookie", session);
+        const res = await new Request(app).get(`${baseURL}/company/${ticketCompany.id}`).set("Cookie", session);
         expect(res.body).toEqual([ticketOrder]);
+    })
+
+    test("Get ticket orders by company not found", async () => {
+        tracker.on.select("ticketCompanies").response(undefined);
+
+        const res = await new Request(app).get(`${baseURL}/company/${ticketCompany.id}`).set("Cookie", session);
+
+        const expectedError = new TicketCompanyNotFound()
+        expect(res.statusCode).toBe(TicketCompanyNotFound.code)
+        expect(res.body).toEqual(expectedError)
     })
 
     test("Get single ticket order ", async () => {

@@ -5,7 +5,7 @@ import {faker} from '@faker-js/faker';
 import { knex as db } from '../src/database/db';
 import {Ticket} from "../src/tickets/tickets/ticket";
 import {TicketCompany} from "../src/tickets/ticketCompanies/ticketCompany";
-import {TicketNotFound, TicketOrderNotFound} from "../src/tickets/ticketErrors";
+import {TicketCompanyNotFound, TicketNotFound, TicketOrderNotFound} from "../src/tickets/ticketErrors";
 
 jest.mock('../src/database/db', () => {
     const Knex = require('knex');
@@ -53,18 +53,30 @@ describe("Test tickets APIs", () => {
         tracker.reset();
     });
 
-    test("Get all tickets empty list", async () => {
+    test("Get tickets by company empty list", async () => {
+        tracker.on.select("ticketCompanies").responseOnce(ticketCompany);
         tracker.on.select("tickets").response([]);
 
-        const res = await new Request(app).get(baseURL).set("Cookie", session);
+        const res = await new Request(app).get(`${baseURL}/company/${ticketCompany.id}`).set("Cookie", session);
         expect(res.body).toEqual([]);
     })
 
-    test("Get all tickets", async () => {
+    test("Get tickets by company", async () => {
+        tracker.on.select("ticketCompanies").responseOnce(ticketCompany);
         tracker.on.select("tickets").response([responseTicket]);
 
-        const res = await new Request(app).get(baseURL).set("Cookie", session);
+        const res = await new Request(app).get(`${baseURL}/company/${ticketCompany.id}`).set("Cookie", session);
         expect(res.body).toEqual([ticket]);
+    })
+
+    test("Get tickets by company not found", async () => {
+        tracker.on.select("ticketCompanies").response(undefined);
+
+        const res = await new Request(app).get(`${baseURL}/company/${ticketCompany.id}`).set("Cookie", session);
+
+        const expectedError = new TicketCompanyNotFound()
+        expect(res.statusCode).toBe(TicketCompanyNotFound.code)
+        expect(res.body).toEqual(expectedError)
     })
 
     test("Get single ticket", async () => {

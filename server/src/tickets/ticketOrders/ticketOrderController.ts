@@ -2,22 +2,43 @@ import {Express, Request, Response} from "express";
 import {RequestHandler} from "express-serve-static-core";
 import {body, param, validationResult} from 'express-validator';
 import {InternalServerError, ParameterError} from "../../errors";
-import {createTicketOrder, deleteTicketOrder, getAllTicketOrders, getTicketOrder} from "./ticketOrderService";
-import {TicketOrderNotFound} from "../ticketErrors";
+import {
+    createTicketOrder,
+    deleteTicketOrder,
+    getTicketOrder,
+    getTicketOrders
+} from "./ticketOrderService";
+import {TicketCompanyNotFound, TicketOrderNotFound} from "../ticketErrors";
+import {getTicketCompany} from "../ticketCompanies/ticketCompanyService";
 
 export function useTicketOrdersAPIs(app: Express, isLoggedIn: RequestHandler) {
     const baseURL = "/api/tickets/orders"
 
-    // get all ticket orders
-    app.get(baseURL, isLoggedIn, async (_: Request, res: Response) => {
-        try {
-            const ticketOrders = await getAllTicketOrders()
-            res.status(200).json(ticketOrders)
-        } catch (err: any) {
-            console.error("Error while retrieving ticket orders", err.message);
-            res.status(InternalServerError.code).json(new InternalServerError("Error while retrieving ticket orders"))
-        }
-    })
+    // get ticket orders by company
+    app.get(`${baseURL}/company/:ticketCompanyId`,
+        isLoggedIn,
+        param("ticketCompanyId").isInt(),
+        async (req: Request, res: Response) => {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                res.status(ParameterError.code).json(new ParameterError("There was an error with the ticket company id!"))
+                return
+            }
+
+            try {
+                const ticketCompany = await getTicketCompany(parseInt(req.params.ticketCompanyId));
+
+               if (ticketCompany) {
+                   const ticketOrders = await getTicketOrders(ticketCompany.id)
+                   res.status(200).json(ticketOrders)
+               } else {
+                   res.status(TicketCompanyNotFound.code).json(new TicketCompanyNotFound())
+               }
+            } catch (err: any) {
+                console.error("Error while retrieving ticket orders", err.message);
+                res.status(InternalServerError.code).json(new InternalServerError("Error while retrieving ticket orders"))
+            }
+        })
 
     // get ticket order by id
     app.get(`${baseURL}/:ticketOrderId`,

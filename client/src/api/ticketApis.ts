@@ -1,8 +1,8 @@
 import {apiUrl} from "./apisValues";
 import {Ticket} from "../../../server/src/tickets/tickets/ticket";
 
-async function getAllTickets() {
-    const response = await fetch(new URL("tickets", apiUrl), {
+async function getTickets(ticketCompanyId: number) {
+    const response = await fetch(new URL(`tickets/company/${ticketCompanyId}`, apiUrl), {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -66,5 +66,5 @@ async function deleteTicket(ticketId: string) {
     }
 }
 
-const ticketApis = {getAllTickets, getTicket, createTicket, deleteTicket};
+const ticketApis = {getTickets, getTicket, createTicket, deleteTicket};
 export default ticketApis;

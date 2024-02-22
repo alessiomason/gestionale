@@ -2,9 +2,10 @@ import {knex} from "../../database/db";
 import {Ticket} from "./ticket";
 import {TicketCompany} from "../ticketCompanies/ticketCompany";
 
-export async function getAllTickets() {
+export async function getTickets(companyId: number) {
     const tickets = await knex("tickets")
         .join("ticketCompanies", "tickets.companyId", "=", "ticketCompanies.id")
+        .whereRaw("tickets.companyId = ?", companyId)
         .select();
 
     return tickets.map(t => {

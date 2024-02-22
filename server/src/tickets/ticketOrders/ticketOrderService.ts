@@ -3,9 +3,10 @@ import {TicketOrder} from "./ticketOrder";
 import {TicketCompany} from "../ticketCompanies/ticketCompany";
 import {Ticket} from "../tickets/ticket";
 
-export async function getAllTicketOrders() {
+export async function getTicketOrders(companyId: number) {
     const ticketOrders = await knex("ticketOrders")
         .join("ticketCompanies", "ticketOrders.companyId", "=", "ticketCompanies.id")
+        .whereRaw("ticketOrders.companyId = ?", companyId)
         .select();
 
     return ticketOrders.map(t => {
