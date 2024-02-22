@@ -23,14 +23,16 @@ export async function getTicketCompany(id: number) {
 }
 
 export async function createTicketCompany(name: string) {
-    const newTicketCompany = new TicketCompany(-1, name);
+    const newTicketCompany = {
+        id: undefined,
+        name: name
+    }
 
     const ticketCompanyIds = await knex("ticketCompanies")
         .returning("id")
         .insert(newTicketCompany);
 
-    newTicketCompany.id = ticketCompanyIds[0];
-    return newTicketCompany;
+    return new TicketCompany(ticketCompanyIds[0], name);
 }
 
 export async function deleteTicketCompany(id: number) {

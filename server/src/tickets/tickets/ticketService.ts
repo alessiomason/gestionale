@@ -49,7 +49,7 @@ export async function createTicket(
     endTime: string | undefined
 ) {
     const newTicket = {
-        id: -1,
+        id: undefined,
         companyId: companyId,
         title: title,
         description: description,

@@ -43,63 +43,63 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
     }, [dirtyTicketOrders]);
 
     return (
-        <Form>
-            <Row className="glossy-background">
-                <Row>
-                    <h3>{props.ticketCompany.name}</h3>
-                </Row>
-
-                <Row className="mb-4">
-                    <Col>
-                    <TicketCompanyHoursProgress ticketCompany={props.ticketCompany}/>
-                    </Col>
-                </Row>
-
-                <Row>
-                    <Col className="me-3">
-                        <Row className="d-flex align-items-center mb-3">
-                            <Col>
-                                <h4>Ordini</h4>
-                            </Col>
-                            <Col className="d-flex justify-content-end">
-                                <LightGlossyButton icon={PlusCircle} onClick={() => {}}>
-                                    Nuovo ordine
-                                </LightGlossyButton>
-                            </Col>
-                        </Row>
-
-                        <Row>
-                            {ticketOrders.map(ticketOrder => {
-                                return (
-                                  <TicketOrderBox ticketOrder={ticketOrder}/>
-                                );
-                            })}
-                        </Row>
-                    </Col>
-
-                    <Col className="ms-3">
-                        <Row className="d-flex align-items-center mb-3">
-                            <Col>
-                                <h4>Ticket</h4>
-                            </Col>
-                            <Col className="d-flex justify-content-end">
-                                <LightGlossyButton icon={PlusCircle} onClick={() => {}}>
-                                    Nuovo ticket
-                                </LightGlossyButton>
-                            </Col>
-                        </Row>
-
-                        <Row>
-                            {tickets.map(ticket => {
-                                return (
-                                  <TicketBox ticket={ticket}/>
-                                );
-                            })}
-                        </Row>
-                    </Col>
-                </Row>
+        <Row className="glossy-background">
+            <Row>
+                <h3>{props.ticketCompany.name}</h3>
             </Row>
-        </Form>
+
+            <Row className="mb-4">
+                <Col>
+                    <TicketCompanyHoursProgress ticketCompany={props.ticketCompany}/>
+                </Col>
+            </Row>
+
+            <Row>
+                <Col className="me-3">
+                    <Row className="d-flex align-items-center mb-3">
+                        <Col>
+                            <h4>Ordini</h4>
+                        </Col>
+                        <Col className="d-flex justify-content-end">
+                            <LightGlossyButton icon={PlusCircle} onClick={() => {
+                            }}>
+                                Nuovo ordine
+                            </LightGlossyButton>
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        {ticketOrders.map(ticketOrder => {
+                            return (
+                                <TicketOrderBox ticketOrder={ticketOrder}/>
+                            );
+                        })}
+                    </Row>
+                </Col>
+
+                <Col className="ms-3">
+                    <Row className="d-flex align-items-center mb-3">
+                        <Col>
+                            <h4>Ticket</h4>
+                        </Col>
+                        <Col className="d-flex justify-content-end">
+                            <LightGlossyButton icon={PlusCircle} onClick={() => {
+                            }}>
+                                Nuovo ticket
+                            </LightGlossyButton>
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        {tickets.map(ticket => {
+                            return (
+                                <TicketBox ticket={ticket}/>
+                            );
+                        })}
+                    </Row>
+                </Col>
+            </Row>
+        </Row>
     );
 }
 

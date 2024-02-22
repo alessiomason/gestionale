@@ -1,10 +1,11 @@
-import {Col, Form, Row, Table} from "react-bootstrap";
+import {Col, Row, Table} from "react-bootstrap";
 import GlossyButton from "../buttons/GlossyButton";
-import {JournalPlus} from "react-bootstrap-icons";
+import {BuildingAdd} from "react-bootstrap-icons";
 import React, {useEffect, useState} from "react";
 import ticketCompanyApis from "../api/ticketCompanyApis";
 import TicketCompanyPane from "./TicketCompanyPane";
 import {TicketCompany} from "../models/ticketCompany";
+import NewTicketCompanyPane from "./NewTicketCompanyPane";
 
 function TicketsPage() {
     const [ticketCompanies, setTicketCompanies] = useState<TicketCompany[]>([]);
@@ -23,6 +24,11 @@ function TicketsPage() {
             .catch(err => console.error(err))
     }, [dirty]);
 
+    function selectTicketCompany(ticketCompany: TicketCompany) {
+        setShowingNewTicketCompany(false);
+        setSelectedTicketCompany(ticketCompany);
+    }
+
     return (
         <>
             <Row>
@@ -31,7 +37,8 @@ function TicketsPage() {
 
             <Row>
                 <Col md={4}>
-                    <GlossyButton icon={JournalPlus} onClick={() => setShowingNewTicketCompany(true)} className="new-user-button">
+                    <GlossyButton icon={BuildingAdd} onClick={() => setShowingNewTicketCompany(true)}
+                                  className="new-user-button">
                         Nuova azienda
                     </GlossyButton>
 
@@ -50,10 +57,8 @@ function TicketsPage() {
                                 .sort((a, b) => a.name.localeCompare(b.name))
                                 .map((ticketCompany, i) => {
                                     return (
-                                        <tr key={ticketCompany.id} onClick={() => {
-                                            setShowingNewTicketCompany(false);
-                                            setSelectedTicketCompany(ticketCompany);
-                                        }}>
+                                        <tr key={ticketCompany.id} onClick={() => selectTicketCompany(ticketCompany)}
+                                            className={ticketCompany == selectedTicketCompany ? "table-selected-row" : ""}>
                                             <td>{i + 1}</td>
                                             <td>{ticketCompany.name}</td>
                                             <td>{ticketCompany.usedHoursProgress}%</td>
@@ -66,7 +71,8 @@ function TicketsPage() {
                 </Col>
 
                 <Col>
-                    {showingNewTicketCompany && <></>}
+                    {showingNewTicketCompany &&
+                        <NewTicketCompanyPane setDirty={setDirty} selectTicketCompany={selectTicketCompany}/>}
                     {!showingNewTicketCompany && selectedTicketCompany !== undefined &&
                         <TicketCompanyPane ticketCompany={selectedTicketCompany}/>
                     }

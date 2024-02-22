@@ -1,5 +1,4 @@
 import {apiUrl} from "./apisValues";
-import {TicketCompany} from "../../../server/src/tickets/ticketCompanies/ticketCompany";
 
 async function getAllTicketCompanies() {
     const response = await fetch(new URL("tickets/companies", apiUrl), {
@@ -33,7 +32,11 @@ async function getTicketCompany(ticketCompanyId: string) {
     }
 }
 
-async function createTicketCompany(ticketCompany: TicketCompany) {
+async function createTicketCompany(name: string) {
+    const body = {
+        name: name
+    }
+
     const response = await fetch(new URL("tickets/companies", apiUrl), {
         method: 'POST',
         credentials: 'include',
@@ -41,7 +44,7 @@ async function createTicketCompany(ticketCompany: TicketCompany) {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         },
-        body: JSON.stringify(ticketCompany),
+        body: JSON.stringify(body),
     });
     if (response.ok) {
         return await response.json();

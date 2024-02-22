@@ -35,7 +35,7 @@ export async function createTicketOrder(
     date: string | undefined
 ) {
     const ticketOrder = {
-        id: -1,
+        id: undefined,
         companyId: companyId,
         hours: hours,
         date: date
