@@ -81,7 +81,7 @@ describe("Test ticket companies APIs", () => {
         tracker.on.select("ticketCompanies").response(ticketCompany);
 
         const res = await new Request(app).post(baseURL).send(ticketCompany).set("Cookie", session);
-        expect(res.body).toEqual(ticketCompany);
+        expect(res.body).toEqual(ticketCompanyWithProgress);
     })
 
     test("Delete ticket company", async () => {

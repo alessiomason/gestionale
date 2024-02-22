@@ -96,7 +96,7 @@ describe("Test ticket orders APIs", () => {
         tracker.on.insert("ticketOrders").response([ticketOrder.id]);
         tracker.on.select("ticketOrders").response(responseTicketOrder);
 
-        const res = await new Request(app).post(baseURL).send(responseTicketOrder).set("Cookie", session);
+        const res = await new Request(app).post(baseURL).send(ticketOrder).set("Cookie", session);
         expect(res.body).toEqual(ticketOrder);
     })
 

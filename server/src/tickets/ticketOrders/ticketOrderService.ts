@@ -21,7 +21,7 @@ export async function getTicketOrder(id: number) {
     const ticketOrder = await knex("ticketOrders")
         .join("ticketCompanies", "ticketOrders.companyId", "=", "ticketCompanies.id")
         .first()
-        .whereRaw("tickets_orders.id = ?", id)
+        .whereRaw("ticket_orders.id = ?", id)
 
     if (!ticketOrder) return
 

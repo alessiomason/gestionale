@@ -17,6 +17,12 @@ function TicketsPage() {
         ticketCompanyApis.getAllTicketCompanies()
             .then(ticketCompanies => {
                 if (dirty) {
+                    if (selectedTicketCompany) {
+                        const newSelectedTicketCompany = ticketCompanies
+                            .find(ticketCompany => ticketCompany.id === selectedTicketCompany.id)
+                        setSelectedTicketCompany(newSelectedTicketCompany);
+                    }
+
                     setTicketCompanies(ticketCompanies);
                     setDirty(false);
                 }
@@ -74,7 +80,7 @@ function TicketsPage() {
                     {showingNewTicketCompany &&
                         <NewTicketCompanyPane setDirty={setDirty} selectTicketCompany={selectTicketCompany}/>}
                     {!showingNewTicketCompany && selectedTicketCompany !== undefined &&
-                        <TicketCompanyPane ticketCompany={selectedTicketCompany}/>
+                        <TicketCompanyPane ticketCompany={selectedTicketCompany} setDirtyTicketCompany={setDirty}/>
                     }
                 </Col>
             </Row>

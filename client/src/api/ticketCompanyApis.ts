@@ -1,4 +1,5 @@
 import {apiUrl} from "./apisValues";
+import {TicketCompany} from "../models/ticketCompany";
 
 async function getAllTicketCompanies() {
     const response = await fetch(new URL("tickets/companies", apiUrl), {
@@ -9,7 +10,7 @@ async function getAllTicketCompanies() {
         }
     });
     if (response.ok) {
-        return await response.json();
+        return (await response.json() as TicketCompany[]);
     } else {
         const errDetail = await response.json();
         throw errDetail.message;

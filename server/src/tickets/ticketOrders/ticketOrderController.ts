@@ -10,6 +10,7 @@ import {
 } from "./ticketOrderService";
 import {TicketCompanyNotFound, TicketOrderNotFound} from "../ticketErrors";
 import {getTicketCompany} from "../ticketCompanies/ticketCompanyService";
+import dayjs from "dayjs";
 
 export function useTicketOrdersAPIs(app: Express, isLoggedIn: RequestHandler) {
     const baseURL = "/api/tickets/orders"
@@ -69,7 +70,7 @@ export function useTicketOrdersAPIs(app: Express, isLoggedIn: RequestHandler) {
     // create a new ticket order
     app.post(baseURL,
         isLoggedIn,
-        body("companyId").isInt(),
+        body("company.id").isInt(),
         body("hours").isFloat(),
         body("date").optional({values: "null"}).isString(),
         async (req: Request, res: Response) => {
@@ -79,10 +80,12 @@ export function useTicketOrdersAPIs(app: Express, isLoggedIn: RequestHandler) {
                 return
             }
 
+            const date = (req.body.date === undefined || req.body.date === "") ? dayjs().format() : req.body.date as string;
+
             const ticketOrder = await createTicketOrder(
-                parseInt(req.body.companyId),
+                parseInt(req.body.company.id),
                 parseFloat(req.body.hours),
-                req.body.date
+                date
             );
             res.status(200).json(ticketOrder);
         }

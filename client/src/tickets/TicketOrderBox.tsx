@@ -1,8 +1,8 @@
 import {Card} from "react-bootstrap";
-import {TicketOrder} from "../../../server/src/tickets/ticketOrders/ticketOrder";
 import {humanize} from "../functions";
 import dayjs from "dayjs";
 import "./TicketCompanyPane.css";
+import {TicketOrder} from "../models/ticketOrder";
 
 interface TicketOrderBoxProps {
     readonly ticketOrder: TicketOrder

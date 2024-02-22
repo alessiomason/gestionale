@@ -1,6 +1,5 @@
-import {Col, Form, Row} from "react-bootstrap";
+import {Col, Row} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
-import {TicketOrder} from "../../../server/src/tickets/ticketOrders/ticketOrder";
 import {Ticket} from "../../../server/src/tickets/tickets/ticket";
 import ticketApis from "../api/ticketApis";
 import ticketOrderApis from "../api/ticketOrderApis";
@@ -10,9 +9,12 @@ import TicketBox from "./TicketBox";
 import TicketOrderBox from "./TicketOrderBox";
 import TicketCompanyHoursProgress from "./TicketCompanyHoursProgress";
 import {TicketCompany} from "../models/ticketCompany";
+import NewTicketOrderModal from "./NewTicketOrderModal";
+import {TicketOrder} from "../models/ticketOrder";
 
 interface TicketCompanyPaneProps {
-    readonly ticketCompany: TicketCompany
+    readonly ticketCompany: TicketCompany,
+    readonly setDirtyTicketCompany: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 function TicketCompanyPane(props: TicketCompanyPaneProps) {
@@ -20,6 +22,14 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
     const [dirtyTicketOrders, setDirtyTicketOrders] = useState(true);
     const [tickets, setTickets] = useState<Ticket[]>([]);
     const [dirtyTickets, setDirtyTickets] = useState(true);
+    const [showNewOrderModal, setShowNewOrderModal] = useState(false);
+    const [showNewTicketModal, setShowNewTicketModal] = useState(false);
+
+    // empty arrays when selected ticket company changes
+    useEffect(() => {
+        setDirtyTickets(true);
+        setDirtyTicketOrders(true);
+    }, [props.ticketCompany]);
 
     useEffect(() => {
         if (dirtyTickets) {
@@ -44,6 +54,9 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
 
     return (
         <Row className="glossy-background">
+            <NewTicketOrderModal show={showNewOrderModal} setShow={setShowNewOrderModal}
+                                 ticketCompany={props.ticketCompany} setDirtyTicketCompany={props.setDirtyTicketCompany} setDirtyTicketOrders={setDirtyTicketOrders}/>
+
             <Row>
                 <h3>{props.ticketCompany.name}</h3>
             </Row>
@@ -61,8 +74,7 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
                             <h4>Ordini</h4>
                         </Col>
                         <Col className="d-flex justify-content-end">
-                            <LightGlossyButton icon={PlusCircle} onClick={() => {
-                            }}>
+                            <LightGlossyButton icon={PlusCircle} onClick={() => setShowNewOrderModal(true)}>
                                 Nuovo ordine
                             </LightGlossyButton>
                         </Col>
@@ -83,8 +95,7 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
                             <h4>Ticket</h4>
                         </Col>
                         <Col className="d-flex justify-content-end">
-                            <LightGlossyButton icon={PlusCircle} onClick={() => {
-                            }}>
+                            <LightGlossyButton icon={PlusCircle} onClick={() => setShowNewTicketModal(true)}>
                                 Nuovo ticket
                             </LightGlossyButton>
                         </Col>
