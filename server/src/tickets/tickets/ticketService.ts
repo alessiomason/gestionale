@@ -5,7 +5,7 @@ import {TicketCompany} from "../ticketCompanies/ticketCompany";
 export async function getTickets(companyId: number) {
     const tickets = await knex("tickets")
         .join("ticketCompanies", "tickets.companyId", "=", "ticketCompanies.id")
-        .whereRaw("tickets.companyId = ?", companyId)
+        .whereRaw("tickets.company_id = ?", companyId)
         .select();
 
     return tickets.map(t => {

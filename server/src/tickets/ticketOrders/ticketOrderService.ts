@@ -2,17 +2,18 @@ import {knex} from '../../database/db';
 import {TicketOrder} from "./ticketOrder";
 import {TicketCompany} from "../ticketCompanies/ticketCompany";
 import {Ticket} from "../tickets/ticket";
+import retryTimes = jest.retryTimes;
 
 export async function getTicketOrders(companyId: number) {
     const ticketOrders = await knex("ticketOrders")
         .join("ticketCompanies", "ticketOrders.companyId", "=", "ticketCompanies.id")
-        .whereRaw("ticketOrders.companyId = ?", companyId)
+        .whereRaw("ticket_orders.company_id = ?", companyId)
         .select();
 
     return ticketOrders.map(t => {
         const ticketCompany = new TicketCompany(t.companyId, t.name);
 
-        return new TicketOrder(t.id, ticketCompany, t.hours, t.date);
+        return new TicketOrder(t.id, ticketCompany, parseFloat(t.hours), t.date);
     })
 }
 
@@ -20,12 +21,12 @@ export async function getTicketOrder(id: number) {
     const ticketOrder = await knex("ticketOrders")
         .join("ticketCompanies", "ticketOrders.companyId", "=", "ticketCompanies.id")
         .first()
-        .whereRaw("ticketsOrders.id = ?", id)
+        .whereRaw("tickets_orders.id = ?", id)
 
     if (!ticketOrder) return
 
     const ticketCompany = new TicketCompany(ticketOrder.companyId, ticketOrder.name);
-    return new TicketOrder(ticketOrder.id, ticketCompany, ticketOrder.hours, ticketOrder.date)
+    return new TicketOrder(ticketOrder.id, ticketCompany, parseFloat(ticketOrder.hours), ticketOrder.date)
 }
 
 export async function createTicketOrder(

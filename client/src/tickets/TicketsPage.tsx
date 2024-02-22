@@ -31,8 +31,7 @@ function TicketsPage() {
 
             <Row>
                 <Col md={4}>
-                    <GlossyButton icon={JournalPlus} onClick={() => {
-                    }} className="new-user-button">
+                    <GlossyButton icon={JournalPlus} onClick={() => setShowingNewTicketCompany(true)} className="new-user-button">
                         Nuova azienda
                     </GlossyButton>
 
@@ -50,7 +49,10 @@ function TicketsPage() {
                                 .sort((a, b) => a.name.localeCompare(b.name))
                                 .map((ticketCompany, i) => {
                                     return (
-                                        <tr key={ticketCompany.id} onClick={() => setSelectedTicketCompany(ticketCompany)}>
+                                        <tr key={ticketCompany.id} onClick={() => {
+                                            setShowingNewTicketCompany(false);
+                                            setSelectedTicketCompany(ticketCompany);
+                                        }}>
                                             <td>{i + 1}</td>
                                             <td>{ticketCompany.name}</td>
                                         </tr>

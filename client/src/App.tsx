@@ -15,6 +15,8 @@ import userApis from "./api/userApis";
 import EditPasswordPage from "./profile/EditPasswordPage";
 import UsersListPage from "./users-management/UsersListPage";
 import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
+import relativeTime from "dayjs/plugin/relativeTime";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import "dayjs/locale/it";
 import JobsPage from "./jobs/JobsPage";
@@ -52,7 +54,9 @@ function App2() {
         // check if already logged in
         checkAuth();
 
-        // set up dayjs with localization
+        // set up dayjs with localization and durations
+        dayjs.extend(duration);
+        dayjs.extend(relativeTime);
         dayjs.extend(localizedFormat);
         dayjs.locale("it");
     }, []);
