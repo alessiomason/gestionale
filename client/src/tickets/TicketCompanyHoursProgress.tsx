@@ -1,5 +1,6 @@
 import {ProgressBar} from "react-bootstrap";
 import {TicketCompany} from "../models/ticketCompany";
+import {humanize} from "../functions";
 
 interface TicketCompanyHoursProgressProps {
     ticketCompany: TicketCompany
@@ -7,7 +8,8 @@ interface TicketCompanyHoursProgressProps {
 
 function TicketCompanyHoursProgress(props: TicketCompanyHoursProgressProps) {
     return (
-        <ProgressBar now={props.ticketCompany.usedHoursProgress} label={`${props.ticketCompany.usedHoursProgress}%`}/>
+        <ProgressBar now={props.ticketCompany.usedHoursProgress}
+                     label={`${humanize(props.ticketCompany.usedHoursProgress, 2)}%`}/>
     );
 }
 

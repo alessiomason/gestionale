@@ -6,6 +6,7 @@ import ticketCompanyApis from "../api/ticketCompanyApis";
 import TicketCompanyPane from "./TicketCompanyPane";
 import {TicketCompany} from "../models/ticketCompany";
 import NewTicketCompanyPane from "./NewTicketCompanyPane";
+import {humanize} from "../functions";
 
 function TicketsPage() {
     const [ticketCompanies, setTicketCompanies] = useState<TicketCompany[]>([]);
@@ -67,7 +68,7 @@ function TicketsPage() {
                                             className={ticketCompany == selectedTicketCompany ? "table-selected-row" : ""}>
                                             <td>{i + 1}</td>
                                             <td>{ticketCompany.name}</td>
-                                            <td>{ticketCompany.usedHoursProgress}%</td>
+                                            <td>{humanize(ticketCompany.usedHoursProgress, 2)}%</td>
                                         </tr>
                                     );
                                 })}
