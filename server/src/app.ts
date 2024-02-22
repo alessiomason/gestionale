@@ -17,6 +17,8 @@ import {useJobsAPIs} from "./jobs/jobController";
 import {useTicketsAPIs} from "./tickets/tickets/ticketController";
 import {useTicketOrdersAPIs} from "./tickets/ticketOrders/ticketOrderController";
 import {useTicketCompaniesAPIs} from "./tickets/ticketCompanies/ticketCompanyController";
+import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
 
 // setup passport
 const webAuthnStore = new SessionChallengeStore();
@@ -27,6 +29,7 @@ const app: Express = express();
 
 // set up the middlewares
 app.use(morgan("dev", {skip: () => process.env.NODE_ENV === "test"}));
+dayjs.extend(duration);
 
 app.use(express.json());
 const corsOptions = {

@@ -2,14 +2,14 @@ import app from "../src/app";
 import {agent as Request} from "supertest";
 import {createTracker, Tracker} from 'knex-mock-client';
 import {faker} from '@faker-js/faker';
-import { knex as db } from '../src/database/db';
+import {knex as db} from '../src/database/db';
 import {Ticket} from "../src/tickets/tickets/ticket";
-import {TicketCompany} from "../src/tickets/ticketCompanies/ticketCompany";
+import {TicketCompany, TicketCompanyWithProgress} from "../src/tickets/ticketCompanies/ticketCompany";
 import {TicketCompanyNotFound, TicketNotFound, TicketOrderNotFound} from "../src/tickets/ticketErrors";
 
 jest.mock('../src/database/db', () => {
     const Knex = require('knex');
-    const { MockClient } = require('knex-mock-client');
+    const {MockClient} = require('knex-mock-client');
     return {
         knex: Knex({client: MockClient}),
     };
@@ -21,6 +21,11 @@ describe("Test ticket companies APIs", () => {
     let session = "";
 
     const ticketCompany = new TicketCompany(faker.number.int(), faker.company.name());
+    const ticketCompanyWithProgress = new TicketCompanyWithProgress(
+        ticketCompany.id,
+        ticketCompany.name,
+        100
+    );
 
     beforeAll(async () => {
         tracker = createTracker(db);
@@ -44,20 +49,24 @@ describe("Test ticket companies APIs", () => {
     })
 
     test("Get all ticket companies", async () => {
-        tracker.on.select("ticketCompanies").response([ticketCompany]);
+        tracker.on.select("ticketCompanies").responseOnce([ticketCompany]);
+        tracker.on.select("ticketOrders").responseOnce([]);
+        tracker.on.select("tickets").responseOnce([]);
 
         const res = await new Request(app).get(baseURL).set("Cookie", session);
-        expect(res.body).toEqual([ticketCompany]);
+        expect(res.body).toEqual([ticketCompanyWithProgress]);
     })
 
     test("Get single ticket company", async () => {
-        tracker.on.select("ticketCompanies").response(ticketCompany);
+        tracker.on.select("ticketCompanies").responseOnce(ticketCompany);
+        tracker.on.select("ticketOrders").responseOnce([]);
+        tracker.on.select("tickets").responseOnce([]);
 
         const res = await new Request(app).get(`${baseURL}/${ticketCompany.id}`).set("Cookie", session);
-        expect(res.body).toEqual(ticketCompany);
+        expect(res.body).toEqual(ticketCompanyWithProgress);
     })
 
-    test("Get single ticket company not found", async() => {
+    test("Get single ticket company not found", async () => {
         tracker.on.select("ticketCompanies").response(undefined)
 
         const res = await new Request(app).get(`${baseURL}/${faker.number.int()}`).set("Cookie", session);

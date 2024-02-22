@@ -2,9 +2,9 @@ import {Col, Form, Row, Table} from "react-bootstrap";
 import GlossyButton from "../buttons/GlossyButton";
 import {JournalPlus} from "react-bootstrap-icons";
 import React, {useEffect, useState} from "react";
-import {TicketCompany} from "../../../server/src/tickets/ticketCompanies/ticketCompany";
 import ticketCompanyApis from "../api/ticketCompanyApis";
 import TicketCompanyPane from "./TicketCompanyPane";
+import {TicketCompany} from "../models/ticketCompany";
 
 function TicketsPage() {
     const [ticketCompanies, setTicketCompanies] = useState<TicketCompany[]>([]);
@@ -41,6 +41,7 @@ function TicketsPage() {
                             <tr>
                                 <th>#</th>
                                 <th>Nome</th>
+                                <th>Ore usate</th>
                             </tr>
                             </thead>
 
@@ -55,6 +56,7 @@ function TicketsPage() {
                                         }}>
                                             <td>{i + 1}</td>
                                             <td>{ticketCompany.name}</td>
+                                            <td>{ticketCompany.usedHoursProgress}%</td>
                                         </tr>
                                     );
                                 })}

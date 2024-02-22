@@ -9,7 +9,6 @@ interface TicketBoxProps {
 
 function TicketBox(props: TicketBoxProps) {
     const ticketDuration = dayjs.duration(dayjs(props.ticket.endTime).diff(dayjs(props.ticket.startTime)));
-    console.log(ticketDuration)
 
     return (
         <Card key={props.ticket.id} className="ticket-company-pane-card glossy-background">

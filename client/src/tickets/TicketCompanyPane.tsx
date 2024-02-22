@@ -1,6 +1,5 @@
 import {Col, Form, Row} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
-import {TicketCompany} from "../../../server/src/tickets/ticketCompanies/ticketCompany";
 import {TicketOrder} from "../../../server/src/tickets/ticketOrders/ticketOrder";
 import {Ticket} from "../../../server/src/tickets/tickets/ticket";
 import ticketApis from "../api/ticketApis";
@@ -9,6 +8,8 @@ import LightGlossyButton from "../buttons/LightGlossyButton";
 import {PlusCircle} from "react-bootstrap-icons";
 import TicketBox from "./TicketBox";
 import TicketOrderBox from "./TicketOrderBox";
+import TicketCompanyHoursProgress from "./TicketCompanyHoursProgress";
+import {TicketCompany} from "../models/ticketCompany";
 
 interface TicketCompanyPaneProps {
     readonly ticketCompany: TicketCompany
@@ -46,6 +47,12 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
             <Row className="glossy-background">
                 <Row>
                     <h3>{props.ticketCompany.name}</h3>
+                </Row>
+
+                <Row className="mb-4">
+                    <Col>
+                    <TicketCompanyHoursProgress ticketCompany={props.ticketCompany}/>
+                    </Col>
                 </Row>
 
                 <Row>

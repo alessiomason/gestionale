@@ -3,13 +3,23 @@ import {TicketOrder} from "../ticketOrders/ticketOrder";
 import {TicketCompany} from "./ticketCompany";
 
 export async function getAllTicketCompanies() {
-    return knex<TicketCompany>("ticketCompanies").select();
+    const ticketCompanies = await knex<TicketCompany>("ticketCompanies").select();
+
+    // rebuild to get access to methods of the class
+    return ticketCompanies.map(ticketCompany => {
+        return new TicketCompany(ticketCompany.id, ticketCompany.name);
+    })
 }
 
 export async function getTicketCompany(id: number) {
-    return knex<TicketCompany>("ticketCompanies")
+    const ticketCompany = await knex<TicketCompany>("ticketCompanies")
         .first()
         .where({id: id})
+
+    // rebuild to get access to methods of the class
+    if (ticketCompany) {
+        return new TicketCompany(ticketCompany.id, ticketCompany.name);
+    }
 }
 
 export async function createTicketCompany(name: string) {

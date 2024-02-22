@@ -9,6 +9,7 @@ import {
     getAllTicketCompanies,
     getTicketCompany
 } from "./ticketCompanyService";
+import {TicketCompany, TicketCompanyWithProgress} from "./ticketCompany";
 
 export function useTicketCompaniesAPIs(app: Express, isLoggedIn: RequestHandler) {
     const baseURL = "/api/tickets/companies"
@@ -17,7 +18,13 @@ export function useTicketCompaniesAPIs(app: Express, isLoggedIn: RequestHandler)
     app.get(baseURL, isLoggedIn, async (_: Request, res: Response) => {
         try {
             const ticketCompanies = await getAllTicketCompanies()
-            res.status(200).json(ticketCompanies)
+            const ticketCompaniesWithProgress: TicketCompanyWithProgress[] = [];
+
+            for (let ticketCompany of ticketCompanies) {
+                ticketCompaniesWithProgress.push(await ticketCompany.attachProgress())
+            }
+
+            res.status(200).json(ticketCompaniesWithProgress)
         } catch (err: any) {
             console.error("Error while retrieving ticket companies", err.message);
             res.status(InternalServerError.code).json(new InternalServerError("Error while retrieving ticket companies"))
@@ -39,7 +46,7 @@ export function useTicketCompaniesAPIs(app: Express, isLoggedIn: RequestHandler)
                 const ticketCompany = await getTicketCompany(parseInt(req.params.ticketId));
 
                 if (ticketCompany) {
-                    res.status(200).json(ticketCompany)
+                    res.status(200).json(await ticketCompany.attachProgress())
                 } else {
                     res.status(TicketNotFound.code).json(new TicketCompanyNotFound())
                 }
