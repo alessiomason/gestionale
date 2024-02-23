@@ -55,7 +55,7 @@ function TicketsPage() {
                             <tr>
                                 <th>#</th>
                                 <th>Nome</th>
-                                <th>Ore disponibili</th>
+                                <th>Ore rimanenti</th>
                             </tr>
                             </thead>
 
@@ -65,10 +65,14 @@ function TicketsPage() {
                                 .map((ticketCompany, i) => {
                                     return (
                                         <tr key={ticketCompany.id} onClick={() => selectTicketCompany(ticketCompany)}
-                                            className={ticketCompany == selectedTicketCompany ? "table-selected-row" : ""}>
+                                            className={(!showingNewTicketCompany && ticketCompany == selectedTicketCompany) ?
+                                                "table-selected-row" : ""}>
                                             <td>{i + 1}</td>
                                             <td>{ticketCompany.name}</td>
-                                            <td>{humanize(ticketCompany.usedHoursProgress, 2)}%</td>
+                                            <td>
+                                                {Math.round(ticketCompany.remainingHoursPercentage)}%
+                                                ({ticketCompany.remainingHours} di {ticketCompany.orderedHours})
+                                            </td>
                                         </tr>
                                     );
                                 })}

@@ -1,9 +1,8 @@
 import {Card, Col, FloatingLabel, Form, InputGroup, Modal, Row} from "react-bootstrap";
 import React, {useState} from "react";
 import {TicketCompany} from "../models/ticketCompany";
-import {Building, Icon} from "react-bootstrap-icons";
+import {Building, HourglassTop} from "react-bootstrap-icons";
 import GlossyButton from "../buttons/GlossyButton";
-import Floppy from "../new-bootstrap-icons/Floppy";
 import dayjs from "dayjs";
 import "./NewTicketModal.css";
 
@@ -111,7 +110,7 @@ function NewTicketModal(props: NewTicketModalProps) {
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <GlossyButton icon={Floppy as Icon} onClick={handleSubmit}>Avvia ticket</GlossyButton>
+                    <GlossyButton icon={HourglassTop} onClick={handleSubmit}>Avvia ticket</GlossyButton>
                 </Modal.Footer>
             </Form>
         </Modal>

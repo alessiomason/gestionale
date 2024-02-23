@@ -24,7 +24,8 @@ describe("Test ticket companies APIs", () => {
     const ticketCompanyWithProgress = new TicketCompanyWithProgress(
         ticketCompany.id,
         ticketCompany.name,
-        100
+        0,
+        0
     );
 
     beforeAll(async () => {

@@ -73,7 +73,8 @@ export function useTicketCompaniesAPIs(app: Express, isLoggedIn: RequestHandler)
             const ticketCompanyWithProgress = new TicketCompanyWithProgress(
                 ticketCompany.id!,
                 ticketCompany.name,
-                100
+                0,
+                0
             );
             res.status(200).json(ticketCompanyWithProgress);
         }

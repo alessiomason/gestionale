@@ -24,18 +24,17 @@ export class TicketCompany {
             .reduce(((sum, ticketDuration) => sum.add(ticketDuration)), dayjs.duration(0))
             .asHours()
 
-        // if no ordered hours, usedHoursProgress is maxed out
-        const progress = totalOrderedHours === 0 ? 100 : totalUsedHours/totalOrderedHours * 100;
-
-        return new TicketCompanyWithProgress(this.id, this.name, progress);
+        return new TicketCompanyWithProgress(this.id, this.name, totalUsedHours, totalOrderedHours);
     }
 }
 
 export class TicketCompanyWithProgress extends TicketCompany {
-    usedHoursProgress: number
+    usedHours: number
+    orderedHours: number
 
-    constructor(id: number, name: string, usedHoursProgress: number) {
+    constructor(id: number, name: string, usedHours: number, orderedHours: number) {
         super(id, name);
-        this.usedHoursProgress = usedHoursProgress;
+        this.usedHours = usedHours;
+        this.orderedHours = orderedHours;
     }
 }

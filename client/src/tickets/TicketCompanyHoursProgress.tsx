@@ -8,8 +8,8 @@ interface TicketCompanyHoursProgressProps {
 
 function TicketCompanyHoursProgress(props: TicketCompanyHoursProgressProps) {
     return (
-        <ProgressBar now={props.ticketCompany.usedHoursProgress}
-                     label={`${humanize(props.ticketCompany.usedHoursProgress, 2)}%`}/>
+        <ProgressBar now={props.ticketCompany.remainingHoursPercentage}
+                     label={`${Math.round(props.ticketCompany.remainingHoursPercentage)}%`}/>
     );
 }
 

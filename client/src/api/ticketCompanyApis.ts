@@ -10,7 +10,10 @@ async function getAllTicketCompanies() {
         }
     });
     if (response.ok) {
-        return (await response.json() as TicketCompany[]);
+        const ticketCompanies = await response.json() as TicketCompany[];
+        return ticketCompanies.map(ticketCompany => {
+            return new TicketCompany(ticketCompany.id, ticketCompany.name, ticketCompany.usedHours, ticketCompany.orderedHours);
+        })
     } else {
         const errDetail = await response.json();
         throw errDetail.message;
