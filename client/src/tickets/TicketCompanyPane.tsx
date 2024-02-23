@@ -85,7 +85,9 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
                     </Row>
 
                     <Row>
-                        {ticketOrders.map(ticketOrder => {
+                        {ticketOrders
+                            .sort((a, b) => -1 * a.date.localeCompare(b.date))
+                            .map(ticketOrder => {
                             return (
                                 <TicketOrderBox key={`ticket-order-${ticketOrder.id}`} ticketOrder={ticketOrder}/>
                             );
@@ -106,7 +108,9 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
                     </Row>
 
                     <Row>
-                        {tickets.map(ticket => {
+                        {tickets
+                            .sort((a, b) => -1 * a.startTime.localeCompare(b.startTime))
+                            .map(ticket => {
                             return (
                                 <TicketBox key={`ticket-order-${ticket.id}`} ticket={ticket}/>
                             );

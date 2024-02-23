@@ -22,10 +22,7 @@ function NewTicketModal(props: NewTicketModalProps) {
     const [currentTime, setCurrentTime] = useState(dayjs());
     const [adjustedDate, setAdjustedDate] = useState("");
     const [adjustedTime, setAdjustedTime] = useState("");
-
     const [useCurrentTime, setUseCurrentTime] = useState(true);
-    const [currentTimeClassName, setCurrentTimeClassName] = useState("selected-card");
-    const [adjustedTimeClassName, setAdjustedTimeClassName] = useState("deselected-card");
 
     useEffect(() => {
         let intervalId: NodeJS.Timeout | undefined = undefined;
@@ -41,34 +38,30 @@ function NewTicketModal(props: NewTicketModalProps) {
         }
     }, [props.show])
 
-    function handleSelection(selectCurrent: boolean) {
-        if (selectCurrent) {
-            setCurrentTimeClassName("selected-card");
-            setAdjustedTimeClassName("deselected-card");
-            setUseCurrentTime(true);
-        } else {
-            setCurrentTimeClassName("deselected-card");
-            setAdjustedTimeClassName("selected-card");
-            setUseCurrentTime(false);
-        }
-    }
-
     function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
+
+        const adjusted = dayjs(`${adjustedDate} ${adjustedTime}`, "YYYY-MM-DD HH:mm");
 
         const newTicket = new Ticket(
             -1,
             props.ticketCompany,
             title,
             description,
-            useCurrentTime ? undefined : adjustedTime,
+            useCurrentTime ? undefined : adjusted.format(),
             undefined
         )
 
         ticketApis.createTicket(newTicket)
-            .then(ticket => {
+            .then(_ticket => {
                 props.setDirtyTickets(true);
                 props.setShow(false);
+
+                setTitle("");
+                setDescription("");
+                setAdjustedDate("");
+                setAdjustedTime("");
+                setUseCurrentTime(true);
             })
             .catch(err => console.error(err))
     }
@@ -103,8 +96,8 @@ function NewTicketModal(props: NewTicketModalProps) {
 
                     <Row>
                         <Col md={6} className="d-flex justify-content-center">
-                            <Card className={"date-time-card " + currentTimeClassName}
-                                  onClick={() => handleSelection(true)}>
+                            <Card className={"date-time-card " + (useCurrentTime ? "selected-card" : "deselected-card")}
+                                  onClick={() => setUseCurrentTime(true)}>
                                 <Card.Body className="d-flex flex-column justify-content-center">
                                     <Card.Title className="text-center mb-1">
                                         Avvia con l'ora corrente
@@ -116,8 +109,8 @@ function NewTicketModal(props: NewTicketModalProps) {
                             </Card>
                         </Col>
                         <Col md={6} className="d-flex justify-content-center">
-                            <Card className={"date-time-card " + adjustedTimeClassName}
-                                  onClick={() => handleSelection(false)}>
+                            <Card className={"date-time-card " + (useCurrentTime ? "deselected-card" : "selected-card")}
+                                  onClick={() => setUseCurrentTime(false)}>
                                 <Card.Body className="d-flex flex-column align-items-center">
                                     <Card.Title className="text-center ">
                                         Modifica ora di inizio
