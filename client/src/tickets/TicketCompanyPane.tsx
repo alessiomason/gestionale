@@ -11,6 +11,7 @@ import TicketCompanyHoursProgress from "./TicketCompanyHoursProgress";
 import {TicketCompany} from "../models/ticketCompany";
 import NewTicketOrderModal from "./NewTicketOrderModal";
 import {TicketOrder} from "../models/ticketOrder";
+import NewTicketModal from "./NewTicketModal";
 
 interface TicketCompanyPaneProps {
     readonly ticketCompany: TicketCompany,
@@ -55,7 +56,11 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
     return (
         <Row className="glossy-background">
             <NewTicketOrderModal show={showNewOrderModal} setShow={setShowNewOrderModal}
-                                 ticketCompany={props.ticketCompany} setDirtyTicketCompany={props.setDirtyTicketCompany} setDirtyTicketOrders={setDirtyTicketOrders}/>
+                                 ticketCompany={props.ticketCompany} setDirtyTicketCompany={props.setDirtyTicketCompany}
+                                 setDirtyTicketOrders={setDirtyTicketOrders}/>
+            <NewTicketModal show={showNewTicketModal} setShow={setShowNewTicketModal}
+                            ticketCompany={props.ticketCompany} setDirtyTicketCompany={props.setDirtyTicketCompany}
+                            setDirtyTickets={setDirtyTickets}/>
 
             <Row>
                 <h3>{props.ticketCompany.name}</h3>
@@ -83,7 +88,7 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
                     <Row>
                         {ticketOrders.map(ticketOrder => {
                             return (
-                                <TicketOrderBox ticketOrder={ticketOrder}/>
+                                <TicketOrderBox key={`ticket-order-${ticketOrder.id}`} ticketOrder={ticketOrder}/>
                             );
                         })}
                     </Row>
@@ -104,7 +109,7 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
                     <Row>
                         {tickets.map(ticket => {
                             return (
-                                <TicketBox ticket={ticket}/>
+                                <TicketBox key={`ticket-order-${ticket.id}`} ticket={ticket}/>
                             );
                         })}
                     </Row>

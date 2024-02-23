@@ -1,0 +1,16 @@
+.date-time-card {
+    width: 330px;
+    margin-top: 30px;
+    background-color: white;
+    color: black;
+    transition: all .25s ease;
+}
+
+.date-time-card:hover {
+    cursor: pointer;
+}
+
+.date-time-card.deselected-card,
+.date-time-card.deselected-card > div > p {
+    color: rgba(128, 128, 128, 0.7);
+}

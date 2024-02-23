@@ -55,7 +55,7 @@ function TicketsPage() {
                             <tr>
                                 <th>#</th>
                                 <th>Nome</th>
-                                <th>Ore usate</th>
+                                <th>Ore disponibili</th>
                             </tr>
                             </thead>
 

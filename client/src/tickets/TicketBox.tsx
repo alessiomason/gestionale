@@ -11,7 +11,7 @@ function TicketBox(props: TicketBoxProps) {
     const ticketDuration = dayjs.duration(dayjs(props.ticket.endTime).diff(dayjs(props.ticket.startTime)));
 
     return (
-        <Card key={props.ticket.id} className="ticket-company-pane-card glossy-background mt-2 mb-2">
+        <Card className="ticket-company-pane-card glossy-background mt-2 mb-2">
             <Card.Title>{props.ticket.title}</Card.Title>
             <Card.Subtitle>{props.ticket.description}</Card.Subtitle>
             <Card.Body>

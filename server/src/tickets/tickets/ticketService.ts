@@ -6,7 +6,8 @@ export async function getTickets(companyId: number) {
     const tickets = await knex("tickets")
         .join("ticketCompanies", "tickets.companyId", "=", "ticketCompanies.id")
         .whereRaw("tickets.company_id = ?", companyId)
-        .select();
+        .select("tickets.id", "company_id", "name", "title",
+            "description", "startTime", "endTime");
 
     return tickets.map(t => {
         const ticketCompany = new TicketCompany(t.companyId, t.name);
@@ -25,7 +26,8 @@ export async function getTickets(companyId: number) {
 export async function getTicket(id: number) {
     const ticket = await knex("tickets")
         .join("ticketCompanies", "tickets.companyId", "=", "ticketCompanies.id")
-        .first()
+        .first("tickets.id", "company_id", "name", "title",
+            "description", "startTime", "endTime")
         .whereRaw("tickets.id = ?", id)
 
     if (!ticket) return
