@@ -3,7 +3,7 @@ import {TicketCompany} from "../models/ticketCompany";
 import "./TicketCompanyHoursProgress.css";
 
 interface TicketCompanyHoursProgressProps {
-    ticketCompany: TicketCompany
+    readonly ticketCompany: TicketCompany
 }
 
 function TicketCompanyHoursProgress(props: TicketCompanyHoursProgressProps) {
@@ -15,9 +15,18 @@ function TicketCompanyHoursProgress(props: TicketCompanyHoursProgressProps) {
     }
 
     return (
-        <ProgressBar now={props.ticketCompany.remainingHoursPercentage}
-                     label={`${Math.round(props.ticketCompany.remainingHoursPercentage)}%`}
-                     className={className}/>
+        <>
+            <ProgressBar now={props.ticketCompany.remainingHoursPercentage}
+                         label={`${Math.round(props.ticketCompany.remainingHoursPercentage)}%`}
+                         className={className}/>
+
+            <p className="mt-3">
+                Usate {Math.round(props.ticketCompany.usedHours)} ore di {Math.round(props.ticketCompany.orderedHours)}
+            </p>
+            <p>
+                Rimanenti: {Math.round(props.ticketCompany.remainingHours)} ({Math.round(props.ticketCompany.remainingHoursPercentage)}%)
+            </p>
+        </>
     );
 }
 

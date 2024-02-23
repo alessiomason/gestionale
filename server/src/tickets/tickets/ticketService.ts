@@ -18,7 +18,7 @@ export async function getTickets(companyId: number) {
             t.title,
             t.description,
             t.startTime,
-            t.endTime
+            t.endTime ?? undefined
         )
     })
 }
@@ -39,7 +39,7 @@ export async function getTicket(id: number) {
         ticket.title,
         ticket.description,
         ticket.startTime,
-        ticket.endTime
+        ticket.endTime ?? undefined
     )
 }
 

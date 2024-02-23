@@ -6,7 +6,6 @@ import ticketCompanyApis from "../api/ticketCompanyApis";
 import TicketCompanyPane from "./TicketCompanyPane";
 import {TicketCompany} from "../models/ticketCompany";
 import NewTicketCompanyPane from "./NewTicketCompanyPane";
-import {humanize} from "../functions";
 
 function TicketsPage() {
     const [ticketCompanies, setTicketCompanies] = useState<TicketCompany[]>([]);
@@ -71,7 +70,7 @@ function TicketsPage() {
                                             <td>{ticketCompany.name}</td>
                                             <td>
                                                 {Math.round(ticketCompany.remainingHoursPercentage)}%
-                                                ({ticketCompany.remainingHours} di {ticketCompany.orderedHours})
+                                                ({Math.round(ticketCompany.remainingHours)} di {Math.round(ticketCompany.orderedHours)})
                                             </td>
                                         </tr>
                                     );

@@ -25,6 +25,9 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
     const [dirtyTickets, setDirtyTickets] = useState(true);
     const [showNewOrderModal, setShowNewOrderModal] = useState(false);
     const [showNewTicketModal, setShowNewTicketModal] = useState(false);
+    const [ticketToBeEnded, setTicketToBeEnded] = useState<Ticket>();
+
+    // modal end ticket
 
     // empty arrays when selected ticket company changes
     useEffect(() => {
@@ -88,10 +91,10 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
                         {ticketOrders
                             .sort((a, b) => -1 * a.date.localeCompare(b.date))
                             .map(ticketOrder => {
-                            return (
-                                <TicketOrderBox key={`ticket-order-${ticketOrder.id}`} ticketOrder={ticketOrder}/>
-                            );
-                        })}
+                                return (
+                                    <TicketOrderBox key={`ticket-order-${ticketOrder.id}`} ticketOrder={ticketOrder}/>
+                                );
+                            })}
                     </Row>
                 </Col>
 
@@ -111,10 +114,11 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
                         {tickets
                             .sort((a, b) => -1 * a.startTime.localeCompare(b.startTime))
                             .map(ticket => {
-                            return (
-                                <TicketBox key={`ticket-order-${ticket.id}`} ticket={ticket}/>
-                            );
-                        })}
+                                return (
+                                    <TicketBox key={`ticket-order-${ticket.id}`} ticket={ticket}
+                                               setTicketToBeEnded={setTicketToBeEnded}/>
+                                );
+                            })}
                     </Row>
                 </Col>
             </Row>
