@@ -59,8 +59,7 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
                                  ticketCompany={props.ticketCompany} setDirtyTicketCompany={props.setDirtyTicketCompany}
                                  setDirtyTicketOrders={setDirtyTicketOrders}/>
             <NewTicketModal show={showNewTicketModal} setShow={setShowNewTicketModal}
-                            ticketCompany={props.ticketCompany} setDirtyTicketCompany={props.setDirtyTicketCompany}
-                            setDirtyTickets={setDirtyTickets}/>
+                            ticketCompany={props.ticketCompany} setDirtyTickets={setDirtyTickets}/>
 
             <Row>
                 <h3>{props.ticketCompany.name}</h3>

@@ -1,28 +1,45 @@
 import {Card, Col, FloatingLabel, Form, InputGroup, Modal, Row} from "react-bootstrap";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {TicketCompany} from "../models/ticketCompany";
 import {Building, HourglassTop} from "react-bootstrap-icons";
 import GlossyButton from "../buttons/GlossyButton";
 import dayjs from "dayjs";
 import "./NewTicketModal.css";
+import {Ticket} from "../models/ticket";
+import ticketApis from "../api/ticketApis";
 
 interface NewTicketModalProps {
     readonly show: boolean
     readonly setShow: React.Dispatch<React.SetStateAction<boolean>>
     readonly ticketCompany: TicketCompany
-    readonly setDirtyTicketCompany: React.Dispatch<React.SetStateAction<boolean>>
     readonly setDirtyTickets: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 function NewTicketModal(props: NewTicketModalProps) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
+
     const [currentTime, setCurrentTime] = useState(dayjs());
     const [adjustedDate, setAdjustedDate] = useState("");
     const [adjustedTime, setAdjustedTime] = useState("");
+
     const [useCurrentTime, setUseCurrentTime] = useState(true);
     const [currentTimeClassName, setCurrentTimeClassName] = useState("selected-card");
     const [adjustedTimeClassName, setAdjustedTimeClassName] = useState("deselected-card");
+
+    useEffect(() => {
+        let intervalId: NodeJS.Timeout | undefined = undefined;
+
+        if (props.show) {
+            intervalId = setInterval(() => {
+                setCurrentTime(dayjs());
+            }, 1000)
+
+            return () => clearInterval(intervalId);
+        } else {
+            clearInterval(intervalId);
+        }
+    }, [props.show])
 
     function handleSelection(selectCurrent: boolean) {
         if (selectCurrent) {
@@ -39,7 +56,21 @@ function NewTicketModal(props: NewTicketModalProps) {
     function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
 
+        const newTicket = new Ticket(
+            -1,
+            props.ticketCompany,
+            title,
+            description,
+            useCurrentTime ? undefined : adjustedTime,
+            undefined
+        )
 
+        ticketApis.createTicket(newTicket)
+            .then(ticket => {
+                props.setDirtyTickets(true);
+                props.setShow(false);
+            })
+            .catch(err => console.error(err))
     }
 
     return (

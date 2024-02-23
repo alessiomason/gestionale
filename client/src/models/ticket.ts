@@ -1,11 +1,11 @@
-import {TicketCompany} from "../ticketCompanies/ticketCompany";
+import {TicketCompany} from "./ticketCompany";
 
 export class Ticket {
     id: number
     company: TicketCompany
     title: string
     description: string
-    startTime: string
+    startTime: string | undefined
     endTime: string | undefined
 
     constructor(
@@ -13,7 +13,7 @@ export class Ticket {
         company: TicketCompany,
         title: string,
         description: string,
-        startTime: string,
+        startTime: string | undefined,
         endTime: string | undefined
     ) {
         this.id = id;

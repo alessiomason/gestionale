@@ -21,7 +21,7 @@ describe("Test tickets APIs", () => {
     let session = "";
 
     const ticketCompany = new TicketCompany(faker.number.int(), faker.company.name());
-    const ticket = new Ticket(
+    const endedTicket = new Ticket(
         faker.number.int(),
         ticketCompany,
         faker.word.sample(),
@@ -29,14 +29,31 @@ describe("Test tickets APIs", () => {
         faker.date.recent().toISOString(),
         faker.date.soon().toISOString()
     )
-    const responseTicket = {
-        id: ticket.id,
+    const startedTicket = new Ticket(
+        endedTicket.id,
+        ticketCompany,
+        endedTicket.title,
+        endedTicket.description,
+        endedTicket.startTime,
+        undefined
+    )
+    const responseEndedTicket = {
+        id: endedTicket.id,
         companyId: ticketCompany.id,
         name: ticketCompany.name,
-        title: ticket.title,
-        description: ticket.description,
-        startTime: ticket.startTime,
-        endTime: ticket.endTime
+        title: endedTicket.title,
+        description: endedTicket.description,
+        startTime: endedTicket.startTime,
+        endTime: endedTicket.endTime
+    }
+    const responseStartedTicket = {
+        id: startedTicket.id,
+        companyId: ticketCompany.id,
+        name: ticketCompany.name,
+        title: startedTicket.title,
+        description: startedTicket.description,
+        startTime: startedTicket.startTime,
+        endTime: undefined
     }
 
     beforeAll(async () => {
@@ -63,10 +80,10 @@ describe("Test tickets APIs", () => {
 
     test("Get tickets by company", async () => {
         tracker.on.select("ticketCompanies").responseOnce(ticketCompany);
-        tracker.on.select("tickets").response([responseTicket]);
+        tracker.on.select("tickets").response([responseEndedTicket]);
 
         const res = await new Request(app).get(`${baseURL}/company/${ticketCompany.id}`).set("Cookie", session);
-        expect(res.body).toEqual([ticket]);
+        expect(res.body).toEqual([endedTicket]);
     })
 
     test("Get tickets by company not found", async () => {
@@ -80,10 +97,10 @@ describe("Test tickets APIs", () => {
     })
 
     test("Get single ticket", async () => {
-        tracker.on.select("tickets").response(responseTicket);
+        tracker.on.select("tickets").response(responseEndedTicket);
 
-        const res = await new Request(app).get(`${baseURL}/${ticket.id}`).set("Cookie", session);
-        expect(res.body).toEqual(ticket);
+        const res = await new Request(app).get(`${baseURL}/${endedTicket.id}`).set("Cookie", session);
+        expect(res.body).toEqual(endedTicket);
     })
 
     test("Get single ticket not found", async() => {
@@ -97,25 +114,25 @@ describe("Test tickets APIs", () => {
     })
 
     test("Create ticket", async () => {
-        tracker.on.insert("tickets").response([ticket.id]);
-        tracker.on.select("tickets").response(responseTicket);
+        tracker.on.insert("tickets").response([endedTicket.id]);
+        tracker.on.select("tickets").response(responseStartedTicket);
 
-        const res = await new Request(app).post(baseURL).send(responseTicket).set("Cookie", session);
-        expect(res.body).toEqual(ticket);
+        const res = await new Request(app).post(baseURL).send(startedTicket).set("Cookie", session);
+        expect(res.body).toEqual(startedTicket);
     })
 
     test("Delete ticket", async () => {
-        tracker.on.select("tickets").response(responseTicket);
+        tracker.on.select("tickets").response(responseEndedTicket);
         tracker.on.delete("tickets").response(undefined);
 
-        const res = await new Request(app).delete(`${baseURL}/${ticket.id}`).set("Cookie", session);
+        const res = await new Request(app).delete(`${baseURL}/${endedTicket.id}`).set("Cookie", session);
         expect(res.statusCode).toBe(200);
     })
 
     test("Delete ticket not found", async () => {
         tracker.on.select("tickets").response(undefined);
 
-        const res = await new Request(app).delete(`${baseURL}/${ticket.id}`).set("Cookie", session);
+        const res = await new Request(app).delete(`${baseURL}/${endedTicket.id}`).set("Cookie", session);
 
         const expectedError = new TicketNotFound()
         expect(res.statusCode).toBe(TicketNotFound.code);

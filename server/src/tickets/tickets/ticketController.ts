@@ -5,6 +5,7 @@ import {InternalServerError, ParameterError} from "../../errors";
 import {createTicket, deleteTicket, getTicket, getTickets} from "./ticketService";
 import {TicketCompanyNotFound, TicketNotFound} from "../ticketErrors";
 import {getTicketCompany} from "../ticketCompanies/ticketCompanyService";
+import dayjs from "dayjs";
 
 export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
     const baseURL = "/api/tickets"
@@ -64,11 +65,10 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
     // create a new ticket
     app.post(baseURL,
         isLoggedIn,
-        body("companyId").isInt(),
+        body("company.id").isInt(),
         body("title").isString(),
         body("description").isString(),
         body("startTime").optional({values: "null"}).isString(),
-        body("endTime").optional({values: "null"}).isString(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -77,11 +77,11 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
             }
 
             const ticket = await createTicket(
-                parseInt(req.body.companyId),
+                parseInt(req.body.company.id),
                 req.body.title,
                 req.body.description,
-                req.body.startTime,
-                req.body.endTime
+                req.body.startTime ?? dayjs().format(),
+                undefined
             );
             res.status(200).json(ticket);
         }

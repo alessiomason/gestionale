@@ -1,5 +1,5 @@
 import {apiUrl} from "./apisValues";
-import {Ticket} from "../../../server/src/tickets/tickets/ticket";
+import {Ticket} from "../models/ticket";
 
 async function getTickets(ticketCompanyId: number) {
     const response = await fetch(new URL(`tickets/company/${ticketCompanyId}`, apiUrl), {
