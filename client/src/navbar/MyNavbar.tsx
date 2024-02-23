@@ -24,7 +24,7 @@ function MyNavbar(props: NavbarProps) {
 
                 <Col className="d-flex justify-content-end align-items-center">
                     <LightGlossyButton icon={TicketPerforated} className="me-3" onClick={() => navigate("/tickets")}>
-                        Ticket
+                        Assistenza
                     </LightGlossyButton>
                     <LightGlossyButton icon={JournalBookmarkFill} className="me-3" onClick={() => navigate("/jobs")}>
                         Commesse

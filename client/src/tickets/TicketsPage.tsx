@@ -39,7 +39,7 @@ function TicketsPage() {
     return (
         <>
             <Row>
-                <h1 className="page-title">Ticket</h1>
+                <h1 className="page-title">Assistenza</h1>
             </Row>
 
             <Row>
