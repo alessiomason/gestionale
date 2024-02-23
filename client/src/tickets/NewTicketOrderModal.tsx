@@ -1,18 +1,19 @@
-import {FloatingLabel, Form, InputGroup, Modal, Row} from "react-bootstrap";
+import {Col, FloatingLabel, Form, InputGroup, Modal, Row} from "react-bootstrap";
 import React, {useState} from "react";
 import {TicketCompany} from "../models/ticketCompany";
-import {Building, Icon} from "react-bootstrap-icons";
+import {Building, Clock, Icon} from "react-bootstrap-icons";
 import GlossyButton from "../buttons/GlossyButton";
 import Floppy from "../new-bootstrap-icons/Floppy";
 import ticketOrderApis from "../api/ticketOrderApis";
 import {TicketOrder} from "../models/ticketOrder";
+import LightGlossyButton from "../buttons/LightGlossyButton";
 
 interface NewTicketOrderModalProps {
     readonly show: boolean
     readonly setShow: React.Dispatch<React.SetStateAction<boolean>>
     readonly ticketCompany: TicketCompany
     readonly setDirtyTicketCompany: React.Dispatch<React.SetStateAction<boolean>>
-    readonly setDirtyTicketOrders:  React.Dispatch<React.SetStateAction<boolean>>
+    readonly setDirtyTicketOrders: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 function NewTicketOrderModal(props: NewTicketOrderModalProps) {
@@ -54,6 +55,23 @@ function NewTicketOrderModal(props: NewTicketOrderModalProps) {
                                               onChange={ev => setHours(parseInt(ev.target.value))}/>
                             </FloatingLabel>
                         </InputGroup>
+                    </Row>
+
+                    <Row className="mt-3">
+                        <Col/>
+                        <Col sm={2}>
+                            <LightGlossyButton icon={Clock} className="w-100" onClick={() => setHours(50)}>50
+                                ore</LightGlossyButton>
+                        </Col>
+                        <Col sm={2}>
+                            <LightGlossyButton icon={Clock} className="w-100" onClick={() => setHours(100)}>100
+                                ore</LightGlossyButton>
+                        </Col>
+                        <Col sm={2}>
+                            <LightGlossyButton icon={Clock} className="w-100" onClick={() => setHours(150)}>150
+                                ore</LightGlossyButton>
+                        </Col>
+                        <Col/>
                     </Row>
                 </Modal.Body>
 
