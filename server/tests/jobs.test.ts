@@ -2,14 +2,14 @@ import app from "../src/app";
 import {agent as Request} from "supertest";
 import {createTracker, Tracker} from 'knex-mock-client';
 import {faker} from '@faker-js/faker';
-import { knex as db } from '../src/database/db';
+import {knex as db} from '../src/database/db';
 import {Job} from "../src/jobs/job";
 import {DuplicateJob, JobNotFound} from "../src/jobs/jobErrors";
-import {TicketCompanyNotFound} from "../src/tickets/ticketErrors";
+import {clearTests, setupTests} from "./setupTests";
 
 jest.mock('../src/database/db', () => {
     const Knex = require('knex');
-    const { MockClient } = require('knex-mock-client');
+    const {MockClient} = require('knex-mock-client');
     return {
         knex: Knex({client: MockClient}),
     };
@@ -37,17 +37,13 @@ describe("Test jobs APIs", () => {
     )
 
     beforeAll(async () => {
-        tracker = createTracker(db);
-
-        const res = await new Request(app).get("/auth/mock")
-        session = res.headers['set-cookie'][0]
-            .split(';')
-            .map(item => item.split(';')[0])
-            .join(';')
+        const setupResult = await setupTests();
+        tracker = setupResult.tracker;
+        session = setupResult.session;
     });
 
     afterEach(() => {
-        tracker.reset();
+        clearTests(tracker);
     });
 
     test("Get all jobs empty list", async () => {
@@ -71,7 +67,7 @@ describe("Test jobs APIs", () => {
         expect(res.body).toEqual(job);
     })
 
-    test("Get single job not found", async() => {
+    test("Get single job not found", async () => {
         tracker.on.select("jobs").response(undefined)
 
         const res = await new Request(app).get(`${baseURL}/${faker.number.int()}`).set("Cookie", session);

@@ -1,11 +1,11 @@
 import app from "../src/app";
 import {agent as Request} from "supertest";
-import {createTracker, Tracker} from 'knex-mock-client';
+import {Tracker} from 'knex-mock-client';
 import {faker} from '@faker-js/faker';
-import { knex as db } from '../src/database/db';
 import {TicketCompany} from "../src/tickets/ticketCompanies/ticketCompany";
-import {TicketCompanyNotFound, TicketNotFound, TicketOrderNotFound} from "../src/tickets/ticketErrors";
+import {TicketCompanyNotFound, TicketOrderNotFound} from "../src/tickets/ticketErrors";
 import {TicketOrder} from "../src/tickets/ticketOrders/ticketOrder";
+import {clearTests, setupTests} from "./setupTests";
 
 jest.mock('../src/database/db', () => {
     const Knex = require('knex');
@@ -43,17 +43,13 @@ describe("Test ticket orders APIs", () => {
     }
 
     beforeAll(async () => {
-        tracker = createTracker(db);
-
-        const res = await new Request(app).get("/auth/mock")
-        session = res.headers['set-cookie'][0]
-            .split(';')
-            .map(item => item.split(';')[0])
-            .join(';')
+        const setupResult = await setupTests();
+        tracker = setupResult.tracker;
+        session = setupResult.session;
     });
 
     afterEach(() => {
-        tracker.reset();
+        clearTests(tracker);
     });
 
     test("Get ticket orders by company empty list", async () => {

@@ -1,5 +1,4 @@
 import {knex} from '../../database/db';
-import {TicketOrder} from "../ticketOrders/ticketOrder";
 import {TicketCompany} from "./ticketCompany";
 
 export async function getAllTicketCompanies() {

@@ -2,7 +2,7 @@ import {Col, Row} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
 import {Job} from "../../../server/src/jobs/job";
 import jobApis from "../api/jobApis";
-import {JournalPlus, PersonAdd} from "react-bootstrap-icons";
+import {JournalPlus} from "react-bootstrap-icons";
 import GlossyButton from "../buttons/GlossyButton";
 
 function JobsPage() {

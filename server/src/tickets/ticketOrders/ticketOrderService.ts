@@ -1,8 +1,6 @@
 import {knex} from '../../database/db';
 import {TicketOrder} from "./ticketOrder";
 import {TicketCompany} from "../ticketCompanies/ticketCompany";
-import {Ticket} from "../tickets/ticket";
-import retryTimes = jest.retryTimes;
 
 export async function getTicketOrders(companyId: number) {
     const ticketOrders = await knex("ticketOrders")

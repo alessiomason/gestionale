@@ -5,7 +5,6 @@ import {InternalServerError, ParameterError} from "../../errors";
 import {closeTicket, createTicket, deleteTicket, getTicket, getTickets} from "./ticketService";
 import {TicketAlreadyClosed, TicketCompanyNotFound, TicketNotFound} from "../ticketErrors";
 import {getTicketCompany} from "../ticketCompanies/ticketCompanyService";
-import dayjs from "dayjs";
 
 export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
     const baseURL = "/api/tickets"
