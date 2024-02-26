@@ -5,10 +5,14 @@ import dayjs from "dayjs";
 export class TicketCompany {
     id: number
     name: string
+    email: string | undefined
+    contact: string | undefined
 
-    constructor(id: number, name: string) {
+    constructor(id: number, name: string, email: string | undefined, contact: string | undefined) {
         this.id = id;
         this.name = name;
+        this.email = email;
+        this.contact = contact;
     }
 
     async attachProgress() {
@@ -24,7 +28,7 @@ export class TicketCompany {
             .reduce(((sum, ticketDuration) => sum.add(ticketDuration)), dayjs.duration(0))
             .asHours()
 
-        return new TicketCompanyWithProgress(this.id, this.name, totalUsedHours, totalOrderedHours);
+        return new TicketCompanyWithProgress(this.id, this.name, this.email, this.contact, totalUsedHours, totalOrderedHours);
     }
 }
 
@@ -32,8 +36,8 @@ export class TicketCompanyWithProgress extends TicketCompany {
     usedHours: number
     orderedHours: number
 
-    constructor(id: number, name: string, usedHours: number, orderedHours: number) {
-        super(id, name);
+    constructor(id: number, name: string, email: string | undefined, contact: string | undefined, usedHours: number, orderedHours: number) {
+        super(id, name, email, contact);
         this.usedHours = usedHours;
         this.orderedHours = orderedHours;
     }

@@ -20,10 +20,17 @@ describe("Test ticket companies APIs", () => {
     let tracker: Tracker;
     let session = "";
 
-    const ticketCompany = new TicketCompany(faker.number.int(), faker.company.name());
+    const ticketCompany = new TicketCompany(
+        faker.number.int(),
+        faker.company.name(),
+        faker.internet.email(),
+        faker.person.fullName()
+    );
     const ticketCompanyWithProgress = new TicketCompanyWithProgress(
         ticketCompany.id,
         ticketCompany.name,
+        ticketCompany.email,
+        ticketCompany.contact,
         0,
         0
     );

@@ -7,7 +7,7 @@ export async function getAllTicketCompanies() {
 
     // rebuild to get access to methods of the class
     return ticketCompanies.map(ticketCompany => {
-        return new TicketCompany(ticketCompany.id, ticketCompany.name);
+        return new TicketCompany(ticketCompany.id, ticketCompany.name, ticketCompany.email, ticketCompany.contact);
     })
 }
 
@@ -18,21 +18,23 @@ export async function getTicketCompany(id: number) {
 
     // rebuild to get access to methods of the class
     if (ticketCompany) {
-        return new TicketCompany(ticketCompany.id, ticketCompany.name);
+        return new TicketCompany(ticketCompany.id, ticketCompany.name, ticketCompany.email, ticketCompany.contact);
     }
 }
 
-export async function createTicketCompany(name: string) {
+export async function createTicketCompany(name: string, email: string | undefined, contact: string | undefined) {
     const newTicketCompany = {
         id: undefined,
-        name: name
+        name: name,
+        email: email,
+        contact: contact
     }
 
     const ticketCompanyIds = await knex("ticketCompanies")
         .returning("id")
         .insert(newTicketCompany);
 
-    return new TicketCompany(ticketCompanyIds[0], name);
+    return new TicketCompany(ticketCompanyIds[0], name, email, contact);
 }
 
 export async function deleteTicketCompany(id: number) {

@@ -12,7 +12,14 @@ async function getAllTicketCompanies() {
     if (response.ok) {
         const ticketCompanies = await response.json() as TicketCompany[];
         return ticketCompanies.map(ticketCompany => {
-            return new TicketCompany(ticketCompany.id, ticketCompany.name, ticketCompany.usedHours, ticketCompany.orderedHours);
+            return new TicketCompany(
+                ticketCompany.id,
+                ticketCompany.name,
+                ticketCompany.email,
+                ticketCompany.contact,
+                ticketCompany.usedHours,
+                ticketCompany.orderedHours
+            );
         })
     } else {
         const errDetail = await response.json();
@@ -36,9 +43,11 @@ async function getTicketCompany(ticketCompanyId: string) {
     }
 }
 
-async function createTicketCompany(name: string) {
+async function createTicketCompany(name: string, email: string | undefined, contact: string | undefined) {
     const body = {
-        name: name
+        name: name,
+        email: email,
+        contact: contact
     }
 
     const response = await fetch(new URL("tickets/companies", apiUrl), {

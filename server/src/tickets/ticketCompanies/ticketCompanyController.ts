@@ -61,6 +61,8 @@ export function useTicketCompaniesAPIs(app: Express, isLoggedIn: RequestHandler)
     app.post(baseURL,
         isLoggedIn,
         body("name").isString(),
+        body("email").optional({values: "null"}).isEmail(),
+        body("contact").optional({values: "null"}).isString(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -68,11 +70,17 @@ export function useTicketCompaniesAPIs(app: Express, isLoggedIn: RequestHandler)
                 return
             }
 
-            const ticketCompany = await createTicketCompany(req.body.name);
+            const ticketCompany = await createTicketCompany(
+                req.body.name,
+                req.body.email,
+                req.body.contact
+            );
 
             const ticketCompanyWithProgress = new TicketCompanyWithProgress(
-                ticketCompany.id!,
+                ticketCompany.id,
                 ticketCompany.name,
+                ticketCompany.email,
+                ticketCompany.contact,
                 0,
                 0
             );

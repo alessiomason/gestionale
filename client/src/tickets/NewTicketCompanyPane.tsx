@@ -1,6 +1,6 @@
 import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import {TicketCompany} from "../models/ticketCompany";
-import {Building, BuildingCheck} from "react-bootstrap-icons";
+import {Building, BuildingCheck, EnvelopeAt, PersonVcard} from "react-bootstrap-icons";
 import React, {useState} from "react";
 import GlossyButton from "../buttons/GlossyButton";
 import ticketCompanyApis from "../api/ticketCompanyApis";
@@ -12,12 +12,14 @@ interface NewTicketCompanyPaneProps {
 
 function NewTicketCompanyPane(props: NewTicketCompanyPaneProps) {
     const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [contact, setContact] = useState("");
 
     function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
         if (name.trim() === "") return
 
-        ticketCompanyApis.createTicketCompany(name)
+        ticketCompanyApis.createTicketCompany(name, email, contact)
             .then(ticketCompany => {
                 props.setDirty(true);
                 props.selectTicketCompany(ticketCompany);
@@ -38,6 +40,20 @@ function NewTicketCompanyPane(props: NewTicketCompanyPaneProps) {
                         <FloatingLabel controlId="floatingInput" label="Nome dell'azienda">
                             <Form.Control type="text" placeholder="Nome dell'azienda" value={name}
                                           onChange={ev => setName(ev.target.value)}/>
+                        </FloatingLabel>
+                    </InputGroup>
+                    <InputGroup className="mt-2">
+                        <InputGroup.Text><EnvelopeAt/></InputGroup.Text>
+                        <FloatingLabel controlId="floatingInput" label="Email">
+                            <Form.Control type="email" placeholder="Email" value={email}
+                                          onChange={ev => setEmail(ev.target.value)}/>
+                        </FloatingLabel>
+                    </InputGroup>
+                    <InputGroup className="mt-2">
+                        <InputGroup.Text><PersonVcard/></InputGroup.Text>
+                        <FloatingLabel controlId="floatingInput" label="Riferimento">
+                            <Form.Control type="text" placeholder="Riferimento" value={contact}
+                                          onChange={ev => setContact(ev.target.value)}/>
                         </FloatingLabel>
                     </InputGroup>
                 </Row>

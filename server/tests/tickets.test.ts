@@ -20,7 +20,12 @@ describe("Test tickets APIs", () => {
     let tracker: Tracker;
     let session = "";
 
-    const ticketCompany = new TicketCompany(faker.number.int(), faker.company.name());
+    const ticketCompany = new TicketCompany(
+        faker.number.int(),
+        faker.company.name(),
+        faker.internet.email(),
+        faker.person.fullName()
+    );
     const endedTicket = new Ticket(
         faker.number.int(),
         ticketCompany,
@@ -41,6 +46,8 @@ describe("Test tickets APIs", () => {
         id: endedTicket.id,
         companyId: ticketCompany.id,
         name: ticketCompany.name,
+        email: ticketCompany.email,
+        contact: ticketCompany.contact,
         title: endedTicket.title,
         description: endedTicket.description,
         startTime: endedTicket.startTime,
@@ -50,6 +57,8 @@ describe("Test tickets APIs", () => {
         id: startedTicket.id,
         companyId: ticketCompany.id,
         name: ticketCompany.name,
+        email: ticketCompany.email,
+        contact: ticketCompany.contact,
         title: startedTicket.title,
         description: startedTicket.description,
         startTime: startedTicket.startTime,

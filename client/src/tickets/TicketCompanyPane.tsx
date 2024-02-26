@@ -67,9 +67,11 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
 
             <Row>
                 <h3>{props.ticketCompany.name}</h3>
+                <p>Email: {props.ticketCompany.email ?? "non inserita"}</p>
+                <p>Riferimento: {props.ticketCompany.contact ?? "non inserito"}</p>
             </Row>
 
-            <Row className="mb-4">
+            <Row className="my-4">
                 <Col>
                     <TicketCompanyHoursProgress ticketCompany={props.ticketCompany}/>
                 </Col>
