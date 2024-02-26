@@ -11,7 +11,7 @@ interface CloseTicketModalProps {
     readonly ticketToBeClosed: Ticket | undefined
     readonly setTicketToBeClosed: React.Dispatch<React.SetStateAction<Ticket | undefined>>
     readonly setTickets: React.Dispatch<React.SetStateAction<Ticket[]>>
-    readonly updateSelectedCompanyProgress: () => void
+    readonly setDirtyTicketCompanyProgress: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 function CloseTicketModal(props: CloseTicketModalProps) {
@@ -47,7 +47,7 @@ function CloseTicketModal(props: CloseTicketModalProps) {
                     newTickets[index] = ticket;
                     return newTickets;
                 });
-                props.updateSelectedCompanyProgress();
+                props.setDirtyTicketCompanyProgress(true);
                 hide();
             })
             .catch(err => console.error(err))

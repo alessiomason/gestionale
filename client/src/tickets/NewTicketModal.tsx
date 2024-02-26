@@ -13,7 +13,7 @@ interface NewTicketModalProps {
     readonly setShow: React.Dispatch<React.SetStateAction<boolean>>
     readonly ticketCompany: TicketCompany
     readonly setTickets: React.Dispatch<React.SetStateAction<Ticket[]>>
-    readonly updateSelectedCompanyProgress: () => void
+    readonly setDirtyTicketCompanyProgress: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 function NewTicketModal(props: NewTicketModalProps) {
@@ -60,7 +60,7 @@ function NewTicketModal(props: NewTicketModalProps) {
                     newTickets.push(ticket);
                     return newTickets;
                 });
-                props.updateSelectedCompanyProgress();
+                props.setDirtyTicketCompanyProgress(true);
                 hide();
             })
             .catch(err => console.error(err))

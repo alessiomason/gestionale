@@ -21,6 +21,7 @@ interface TicketCompanyPaneProps {
 }
 
 function TicketCompanyPane(props: TicketCompanyPaneProps) {
+    const [dirtyTicketCompanyProgress, setDirtyTicketCompanyProgress] = useState(false);
     const [ticketOrders, setTicketOrders] = useState<TicketOrder[]>([]);
     const [dirtyTicketOrders, setDirtyTicketOrders] = useState(true);
     const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -56,22 +57,32 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
         }
     }, [dirtyTicketOrders]);
 
-    function updateSelectedCompanyProgress() {
-        const totalUsedHours = tickets
-            .map(ticket => dayjs.duration(dayjs(ticket.endTime).diff(dayjs(ticket.startTime))))
-            .reduce(((sum, ticketDuration) => sum.add(ticketDuration)), dayjs.duration(0))
-            .asHours()
+    // update the ticket company progress every 5 minutes
+    useEffect(() => {
+        const intervalId = setInterval(() => setDirtyTicketCompanyProgress(true), 5000 * 60)
+        return () => clearInterval(intervalId);
+    }, []);
 
-        const updatedSelectedCompany = new TicketCompany(
-            props.ticketCompany.id,
-            props.ticketCompany.name,
-            props.ticketCompany.email,
-            props.ticketCompany.contact,
-            totalUsedHours,
-            props.ticketCompany.orderedHours
-        )
-        props.updateSelectedCompany(updatedSelectedCompany);
-    }
+    useEffect(() => {
+        if (dirtyTicketCompanyProgress) {
+            const totalUsedHours = tickets
+                .map(ticket => dayjs.duration(dayjs(ticket.endTime).diff(dayjs(ticket.startTime))))
+                .reduce(((sum, ticketDuration) => sum.add(ticketDuration)), dayjs.duration(0))
+                .asHours()
+
+            const updatedSelectedCompany = new TicketCompany(
+                props.ticketCompany.id,
+                props.ticketCompany.name,
+                props.ticketCompany.email,
+                props.ticketCompany.contact,
+                totalUsedHours,
+                props.ticketCompany.orderedHours
+            )
+            props.updateSelectedCompany(updatedSelectedCompany);
+
+            setDirtyTicketCompanyProgress(false);
+        }
+    }, [dirtyTicketCompanyProgress]);
 
     return (
         <Row className="glossy-background">
@@ -80,9 +91,9 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
                                  updateSelectedCompany={props.updateSelectedCompany}/>
             <NewTicketModal show={showNewTicketModal} setShow={setShowNewTicketModal}
                             ticketCompany={props.ticketCompany} setTickets={setTickets}
-                            updateSelectedCompanyProgress={updateSelectedCompanyProgress}/>
+                            setDirtyTicketCompanyProgress={setDirtyTicketCompanyProgress}/>
             <CloseTicketModal ticketToBeClosed={ticketToBeClosed} setTicketToBeClosed={setTicketToBeClosed}
-                              setTickets={setTickets} updateSelectedCompanyProgress={updateSelectedCompanyProgress}/>
+                              setTickets={setTickets} setDirtyTicketCompanyProgress={setDirtyTicketCompanyProgress}/>
 
             <Row>
                 <h3>{props.ticketCompany.name}</h3>
