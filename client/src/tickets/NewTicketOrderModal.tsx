@@ -30,13 +30,18 @@ function NewTicketOrderModal(props: NewTicketOrderModalProps) {
             .then(_ => {
                 props.setDirtyTicketCompany(true);
                 props.setDirtyTicketOrders(true);
-                props.setShow(false);
+                hide();
             })
             .catch(err => console.error(err))
     }
 
+    function hide() {
+        props.setShow(false);
+        setHours(0);
+    }
+
     return (
-        <Modal show={props.show} onHide={() => props.setShow(false)} size="lg" centered>
+        <Modal show={props.show} onHide={hide} size="lg" centered>
             <Form>
                 <Modal.Header closeButton>
                     <Modal.Title>Nuovo ordine</Modal.Title>

@@ -1,6 +1,5 @@
 import {Col, Row} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
-import {Ticket} from "../../../server/src/tickets/tickets/ticket";
 import ticketApis from "../api/ticketApis";
 import ticketOrderApis from "../api/ticketOrderApis";
 import LightGlossyButton from "../buttons/LightGlossyButton";
@@ -12,6 +11,8 @@ import {TicketCompany} from "../models/ticketCompany";
 import NewTicketOrderModal from "./NewTicketOrderModal";
 import {TicketOrder} from "../models/ticketOrder";
 import NewTicketModal from "./NewTicketModal";
+import CloseTicketModal from "./CloseTicketModal";
+import {Ticket} from "../models/ticket";
 
 interface TicketCompanyPaneProps {
     readonly ticketCompany: TicketCompany,
@@ -25,9 +26,7 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
     const [dirtyTickets, setDirtyTickets] = useState(true);
     const [showNewOrderModal, setShowNewOrderModal] = useState(false);
     const [showNewTicketModal, setShowNewTicketModal] = useState(false);
-    const [ticketToBeEnded, setTicketToBeEnded] = useState<Ticket>();
-
-    // modal end ticket
+    const [ticketToBeClosed, setTicketToBeClosed] = useState<Ticket>();
 
     // empty arrays when selected ticket company changes
     useEffect(() => {
@@ -63,6 +62,8 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
                                  setDirtyTicketOrders={setDirtyTicketOrders}/>
             <NewTicketModal show={showNewTicketModal} setShow={setShowNewTicketModal}
                             ticketCompany={props.ticketCompany} setDirtyTickets={setDirtyTickets}/>
+            <CloseTicketModal ticketToBeClosed={ticketToBeClosed} setTicketToBeClosed={setTicketToBeClosed}
+                              setDirtyTickets={setDirtyTickets}/>
 
             <Row>
                 <h3>{props.ticketCompany.name}</h3>
@@ -112,11 +113,11 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
 
                     <Row>
                         {tickets
-                            .sort((a, b) => -1 * a.startTime.localeCompare(b.startTime))
+                            .sort((a, b) => -1 * a.startTime!.localeCompare(b.startTime!))
                             .map(ticket => {
                                 return (
                                     <TicketBox key={`ticket-order-${ticket.id}`} ticket={ticket}
-                                               setTicketToBeEnded={setTicketToBeEnded}/>
+                                               setTicketToBeEnded={setTicketToBeClosed}/>
                                 );
                             })}
                     </Row>

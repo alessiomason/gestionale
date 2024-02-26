@@ -10,7 +10,8 @@ export class TicketCompany {
         this.id = id;
         this.name = name;
         this.usedHours = usedHours;
-        this.remainingHours = orderedHours - usedHours;
+        const remainingHours = orderedHours - usedHours;
+        this.remainingHours = remainingHours < 0 ? 0 : remainingHours;
         this.orderedHours = orderedHours;
 
         if (orderedHours !== 0) {

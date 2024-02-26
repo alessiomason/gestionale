@@ -23,3 +23,11 @@ export class TicketCompanyNotFound extends BaseError {
         super(TicketCompanyNotFound.code, "Azienda ticket non trovato!");
     }
 }
+
+export class TicketAlreadyClosed extends BaseError {
+    static readonly code = 422;
+
+    constructor() {
+        super(TicketAlreadyClosed.code, "Impossibile chiudere un ticket già chiuso!");
+    }
+}

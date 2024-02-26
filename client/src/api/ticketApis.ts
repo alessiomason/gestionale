@@ -50,6 +50,27 @@ async function createTicket(ticket: Ticket) {
     }
 }
 
+async function closeTicket(ticketId: number, endTime: string | undefined) {
+    const body = {
+        endTime: endTime
+    }
+
+    const response = await fetch(new URL(`tickets/${ticketId}/close`, apiUrl), {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(body),
+    });
+    if (response.ok) {
+        return await response.json();
+    } else {
+        throw await response.json();
+    }
+}
+
 async function deleteTicket(ticketId: string) {
     const response = await fetch(new URL(`tickets/${ticketId}`, apiUrl), {
         method: 'DELETE',
@@ -66,5 +87,5 @@ async function deleteTicket(ticketId: string) {
     }
 }
 
-const ticketApis = {getTickets, getTicket, createTicket, deleteTicket};
+const ticketApis = {getTickets, getTicket, createTicket, closeTicket, deleteTicket};
 export default ticketApis;

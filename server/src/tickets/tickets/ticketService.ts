@@ -1,6 +1,7 @@
 import {knex} from "../../database/db";
 import {Ticket} from "./ticket";
 import {TicketCompany} from "../ticketCompanies/ticketCompany";
+import dayjs from "dayjs";
 
 export async function getTickets(companyId: number) {
     const tickets = await knex("tickets")
@@ -55,7 +56,7 @@ export async function createTicket(
         companyId: companyId,
         title: title,
         description: description,
-        startTime: startTime,
+        startTime: startTime ?? dayjs().format(),
         endTime: endTime
     }
 
@@ -64,6 +65,14 @@ export async function createTicket(
         .insert(newTicket);
 
     return getTicket(ticketIds[0]);
+}
+
+export async function closeTicket(ticketId: number, endTime: string | undefined) {
+    await knex("tickets")
+        .where({id: ticketId})
+        .update({endTime: endTime ?? dayjs().format()})
+
+    return getTicket(ticketId);
 }
 
 export async function deleteTicket(id: number) {

@@ -9,7 +9,7 @@ import {
     getAllTicketCompanies,
     getTicketCompany
 } from "./ticketCompanyService";
-import {TicketCompany, TicketCompanyWithProgress} from "./ticketCompany";
+import {TicketCompanyWithProgress} from "./ticketCompany";
 
 export function useTicketCompaniesAPIs(app: Express, isLoggedIn: RequestHandler) {
     const baseURL = "/api/tickets/companies"

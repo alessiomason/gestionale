@@ -1,15 +1,14 @@
-import {Ticket} from "../../../server/src/tickets/tickets/ticket";
 import {Card, Col, Row} from "react-bootstrap";
 import "./TicketCompanyPane.css";
 import dayjs from "dayjs";
 import GlossyButton from "../buttons/GlossyButton";
 import {HourglassBottom, HourglassSplit} from "react-bootstrap-icons";
 import React from "react";
+import {Ticket} from "../models/ticket";
 
 interface TicketBoxProps {
     readonly ticket: Ticket
     readonly setTicketToBeEnded: React.Dispatch<React.SetStateAction<Ticket | undefined>>
-
 }
 
 function TicketBox(props: TicketBoxProps) {
@@ -28,6 +27,7 @@ function TicketBox(props: TicketBoxProps) {
             <Card.Subtitle>{props.ticket.description}</Card.Subtitle>
             <Card.Body>
                 <p>Inizio: {dayjs(props.ticket.startTime).format("LL [alle] LT")}</p>
+                {props.ticket.endTime && <p>Fine: {dayjs(props.ticket.endTime).format("LL [alle] LT")}</p>}
                 <p>Durata: {ticketDuration.humanize()}{!props.ticket.endTime && " (in corso)"}</p>
 
                 {!props.ticket.endTime && <Row className="mt-3">

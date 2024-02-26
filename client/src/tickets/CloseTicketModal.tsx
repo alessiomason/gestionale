@@ -1,24 +1,19 @@
-import {Card, Col, FloatingLabel, Form, InputGroup, Modal, Row} from "react-bootstrap";
+import {Card, Col, Form, Modal, Row} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
-import {TicketCompany} from "../models/ticketCompany";
-import {Building, HourglassTop} from "react-bootstrap-icons";
+import {HourglassBottom} from "react-bootstrap-icons";
 import GlossyButton from "../buttons/GlossyButton";
 import dayjs from "dayjs";
 import "./NewTicketModal.css";
 import {Ticket} from "../models/ticket";
 import ticketApis from "../api/ticketApis";
 
-interface NewTicketModalProps {
-    readonly show: boolean
-    readonly setShow: React.Dispatch<React.SetStateAction<boolean>>
-    readonly ticketCompany: TicketCompany
+interface CloseTicketModalProps {
+    readonly ticketToBeClosed: Ticket | undefined
+    readonly setTicketToBeClosed: React.Dispatch<React.SetStateAction<Ticket | undefined>>
     readonly setDirtyTickets: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-function NewTicketModal(props: NewTicketModalProps) {
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-
+function CloseTicketModal(props: CloseTicketModalProps) {
     const [currentTime, setCurrentTime] = useState(dayjs());
     const [adjustedDate, setAdjustedDate] = useState("");
     const [adjustedTime, setAdjustedTime] = useState("");
@@ -27,7 +22,7 @@ function NewTicketModal(props: NewTicketModalProps) {
     useEffect(() => {
         let intervalId: NodeJS.Timeout | undefined = undefined;
 
-        if (props.show) {
+        if (props.ticketToBeClosed) {
             intervalId = setInterval(() => {
                 setCurrentTime(dayjs());
             }, 1000)
@@ -36,23 +31,14 @@ function NewTicketModal(props: NewTicketModalProps) {
         } else {
             clearInterval(intervalId);
         }
-    }, [props.show])
+    }, [props.ticketToBeClosed])
 
     function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
 
         const adjusted = dayjs(`${adjustedDate} ${adjustedTime}`, "YYYY-MM-DD HH:mm");
 
-        const newTicket = new Ticket(
-            -1,
-            props.ticketCompany,
-            title,
-            description,
-            useCurrentTime ? undefined : adjusted.format(),
-            undefined
-        )
-
-        ticketApis.createTicket(newTicket)
+        ticketApis.closeTicket(props.ticketToBeClosed!.id, useCurrentTime ? undefined : adjusted.format())
             .then(_ticket => {
                 props.setDirtyTickets(true);
                 hide();
@@ -61,41 +47,25 @@ function NewTicketModal(props: NewTicketModalProps) {
     }
 
     function hide() {
-        props.setShow(false);
+        props.setTicketToBeClosed(undefined);
 
-        setTitle("");
-        setDescription("");
         setAdjustedDate("");
         setAdjustedTime("");
         setUseCurrentTime(true);
     }
 
     return (
-        <Modal show={props.show} onHide={hide} size="lg" centered>
+        <Modal show={props.ticketToBeClosed !== undefined} onHide={hide} size="lg" centered>
             <Form>
                 <Modal.Header closeButton>
-                    <Modal.Title>Nuovo ticket</Modal.Title>
+                    <Modal.Title>Termina ticket</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>
                     <Row>
-                        <p>Azienda: {props.ticketCompany.name}</p>
-                    </Row>
-
-                    <Row>
-                        <InputGroup className="mt-2">
-                            <InputGroup.Text><Building/></InputGroup.Text>
-                            <FloatingLabel controlId="floatingInput" label="Titolo">
-                                <Form.Control type="text" placeholder="Titolo" value={title}
-                                              onChange={ev => setTitle(ev.target.value)}/>
-                            </FloatingLabel>
-                        </InputGroup>
-
-                        <InputGroup className="mt-2">
-                            <InputGroup.Text><Building/></InputGroup.Text>
-                            <Form.Control as="textarea" placeholder="Descrizione" value={description}
-                                          onChange={ev => setDescription(ev.target.value)}/>
-                        </InputGroup>
+                        <h3>{props.ticketToBeClosed?.title}</h3>
+                        <p>{props.ticketToBeClosed?.description}</p>
+                        <p>Azienda: {props.ticketToBeClosed?.company.name}</p>
                     </Row>
 
                     <Row>
@@ -104,7 +74,7 @@ function NewTicketModal(props: NewTicketModalProps) {
                                   onClick={() => setUseCurrentTime(true)}>
                                 <Card.Body className="d-flex flex-column justify-content-center">
                                     <Card.Title className="text-center mb-1">
-                                        Avvia con l'ora corrente
+                                        Termina con l'ora corrente
                                     </Card.Title>
                                     <Card.Text className="text-center">
                                         {currentTime.format("LL, LT")}
@@ -117,7 +87,7 @@ function NewTicketModal(props: NewTicketModalProps) {
                                   onClick={() => setUseCurrentTime(false)}>
                                 <Card.Body className="d-flex flex-column align-items-center">
                                     <Card.Title className="text-center ">
-                                        Modifica ora di inizio
+                                        Modifica ora di fine
                                     </Card.Title>
                                     <Row>
                                         <Col>
@@ -138,11 +108,11 @@ function NewTicketModal(props: NewTicketModalProps) {
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <GlossyButton icon={HourglassTop} onClick={handleSubmit}>Avvia ticket</GlossyButton>
+                    <GlossyButton icon={HourglassBottom} onClick={handleSubmit}>Termina ticket</GlossyButton>
                 </Modal.Footer>
             </Form>
         </Modal>
     );
 }
 
-export default NewTicketModal;
+export default CloseTicketModal;
