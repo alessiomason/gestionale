@@ -65,7 +65,7 @@ async function closeTicket(ticketId: number, endTime: string | undefined) {
         body: JSON.stringify(body),
     });
     if (response.ok) {
-        return await response.json();
+        return await response.json() as Ticket;
     } else {
         throw await response.json();
     }

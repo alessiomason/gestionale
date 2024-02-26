@@ -7,13 +7,14 @@ import Floppy from "../new-bootstrap-icons/Floppy";
 import ticketOrderApis from "../api/ticketOrderApis";
 import {TicketOrder} from "../models/ticketOrder";
 import LightGlossyButton from "../buttons/LightGlossyButton";
+import newTicketOrderModal from "./NewTicketOrderModal";
 
 interface NewTicketOrderModalProps {
     readonly show: boolean
     readonly setShow: React.Dispatch<React.SetStateAction<boolean>>
     readonly ticketCompany: TicketCompany
-    readonly setDirtyTicketCompany: React.Dispatch<React.SetStateAction<boolean>>
-    readonly setDirtyTicketOrders: React.Dispatch<React.SetStateAction<boolean>>
+    readonly setTicketOrders: React.Dispatch<React.SetStateAction<TicketOrder[]>>
+    readonly updateSelectedCompany: (updatedTicketCompany: TicketCompany) => void
 }
 
 function NewTicketOrderModal(props: NewTicketOrderModalProps) {
@@ -27,9 +28,21 @@ function NewTicketOrderModal(props: NewTicketOrderModalProps) {
         const ticketOrder = new TicketOrder(-1, props.ticketCompany, hours, "");
 
         ticketOrderApis.createTicketOrder(ticketOrder)
-            .then(_ => {
-                props.setDirtyTicketCompany(true);
-                props.setDirtyTicketOrders(true);
+            .then(ticketOrder => {
+                props.setTicketOrders(ticketOrders => {
+                    const newTicketOrders = ticketOrders;
+                    newTicketOrders.push(ticketOrder);
+                    return newTicketOrders;
+                });
+                const updatedTicketCompany = new TicketCompany(
+                    props.ticketCompany.id,
+                    props.ticketCompany.name,
+                    props.ticketCompany.email,
+                    props.ticketCompany.contact,
+                    props.ticketCompany.usedHours,
+                    props.ticketCompany.orderedHours + hours
+                )
+                props.updateSelectedCompany(updatedTicketCompany);
                 hide();
             })
             .catch(err => console.error(err))

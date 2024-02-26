@@ -10,7 +10,8 @@ import ticketApis from "../api/ticketApis";
 interface CloseTicketModalProps {
     readonly ticketToBeClosed: Ticket | undefined
     readonly setTicketToBeClosed: React.Dispatch<React.SetStateAction<Ticket | undefined>>
-    readonly setDirtyTickets: React.Dispatch<React.SetStateAction<boolean>>
+    readonly setTickets: React.Dispatch<React.SetStateAction<Ticket[]>>
+    readonly updateSelectedCompanyProgress: () => void
 }
 
 function CloseTicketModal(props: CloseTicketModalProps) {
@@ -39,8 +40,14 @@ function CloseTicketModal(props: CloseTicketModalProps) {
         const adjusted = dayjs(`${adjustedDate} ${adjustedTime}`, "YYYY-MM-DD HH:mm");
 
         ticketApis.closeTicket(props.ticketToBeClosed!.id, useCurrentTime ? undefined : adjusted.format())
-            .then(_ticket => {
-                props.setDirtyTickets(true);
+            .then(ticket => {
+                props.setTickets(tickets => {
+                    const newTickets = tickets;
+                    const index = newTickets.findIndex(t => t.id === ticket.id);
+                    newTickets[index] = ticket;
+                    return newTickets;
+                });
+                props.updateSelectedCompanyProgress();
                 hide();
             })
             .catch(err => console.error(err))
