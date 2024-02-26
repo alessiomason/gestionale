@@ -7,7 +7,6 @@ import Floppy from "../new-bootstrap-icons/Floppy";
 import ticketOrderApis from "../api/ticketOrderApis";
 import {TicketOrder} from "../models/ticketOrder";
 import LightGlossyButton from "../buttons/LightGlossyButton";
-import newTicketOrderModal from "./NewTicketOrderModal";
 
 interface NewTicketOrderModalProps {
     readonly show: boolean

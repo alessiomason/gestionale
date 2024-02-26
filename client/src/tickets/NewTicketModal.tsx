@@ -99,7 +99,7 @@ function NewTicketModal(props: NewTicketModalProps) {
 
                         <InputGroup className="mt-2">
                             <InputGroup.Text><Building/></InputGroup.Text>
-                            <Form.Control as="textarea" placeholder="Descrizione" value={description}
+                            <Form.Control as="textarea" placeholder="Descrizione" maxLength={2047} value={description}
                                           onChange={ev => setDescription(ev.target.value)}/>
                         </InputGroup>
                     </Row>
