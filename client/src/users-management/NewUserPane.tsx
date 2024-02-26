@@ -109,7 +109,7 @@ function NewUserPane(props: NewUserPaneProps) {
                     <InputGroup className="mt-2">
                         <InputGroup.Text><Person/></InputGroup.Text>
                         <FloatingLabel controlId="floatingInput" label="Nome">
-                            <Form.Control type="tel" placeholder="Nome" isInvalid={invalidName} value={name}
+                            <Form.Control type="text" placeholder="Nome" isInvalid={invalidName} value={name}
                                           onChange={ev => {
                                               const newName = ev.target.value;
                                               setName(newName);
@@ -120,7 +120,7 @@ function NewUserPane(props: NewUserPaneProps) {
                     <InputGroup className="mt-2">
                         <InputGroup.Text><Person/></InputGroup.Text>
                         <FloatingLabel controlId="floatingInput" label="Cognome">
-                            <Form.Control type="tel" placeholder="Cognome" isInvalid={invalidSurname} value={surname}
+                            <Form.Control type="text" placeholder="Cognome" isInvalid={invalidSurname} value={surname}
                                           onChange={ev => {
                                               const newSurname = ev.target.value;
                                               setSurname(newSurname);

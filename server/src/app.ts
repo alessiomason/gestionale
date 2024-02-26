@@ -13,6 +13,12 @@ import {useUsersAPIs} from "./users/userController";
 import {setupPassport} from "./authentication/passportSetup";
 import {useAuthenticationAPIs} from "./authentication/authenticationController";
 import {dbOptions} from "./database/db";
+import {useJobsAPIs} from "./jobs/jobController";
+import {useTicketsAPIs} from "./tickets/tickets/ticketController";
+import {useTicketOrdersAPIs} from "./tickets/ticketOrders/ticketOrderController";
+import {useTicketCompaniesAPIs} from "./tickets/ticketCompanies/ticketCompanyController";
+import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
 
 // setup passport
 const webAuthnStore = new SessionChallengeStore();
@@ -23,6 +29,7 @@ const app: Express = express();
 
 // set up the middlewares
 app.use(morgan("dev", {skip: () => process.env.NODE_ENV === "test"}));
+dayjs.extend(duration);
 
 app.use(express.json());
 const corsOptions = {
@@ -72,8 +79,12 @@ const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
 
 // expose the APIs
 useSystemAPIs(app, isLoggedIn);
-useUsersAPIs(app, isLoggedIn);
 useAuthenticationAPIs(app, webAuthnStore, isLoggedIn);
+useUsersAPIs(app, isLoggedIn);
+useJobsAPIs(app, isLoggedIn);
+useTicketCompaniesAPIs(app, isLoggedIn);
+useTicketOrdersAPIs(app, isLoggedIn);
+useTicketsAPIs(app, isLoggedIn);
 
 if (process.env.NODE_ENV === "production") {
     const path = require("path");

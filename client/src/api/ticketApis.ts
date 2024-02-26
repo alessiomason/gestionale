@@ -1,8 +1,8 @@
 import {apiUrl} from "./apisValues";
-import {User} from "../models/user";
+import {Ticket} from "../models/ticket";
 
-async function getAllUsers() {
-    const response = await fetch(new URL("users", apiUrl), {
+async function getTickets(ticketCompanyId: number) {
+    const response = await fetch(new URL(`tickets/company/${ticketCompanyId}`, apiUrl), {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -17,8 +17,8 @@ async function getAllUsers() {
     }
 }
 
-async function getUser(userId: number) {
-    const response = await fetch(new URL(`users/${userId}`, apiUrl), {
+async function getTicket(ticketId: string) {
+    const response = await fetch(new URL(`tickets/${ticketId}`, apiUrl), {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -33,32 +33,30 @@ async function getUser(userId: number) {
     }
 }
 
-async function updateUser(user: User) {
-    const response = await fetch(new URL(`users/${user.id}`, apiUrl), {
-        method: 'PUT',
+async function createTicket(ticket: Ticket) {
+    const response = await fetch(new URL("tickets", apiUrl), {
+        method: 'POST',
         credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         },
-        body: JSON.stringify(user),
+        body: JSON.stringify(ticket),
     });
     if (response.ok) {
-        return true;
+        return await response.json();
     } else {
         throw await response.json();
     }
 }
 
-async function updateProfile(userId: number, email: string | undefined, phone: string | undefined, car: string | undefined) {
+async function closeTicket(ticketId: number, endTime: string | undefined) {
     const body = {
-        email: email,
-        phone: phone,
-        car: car
+        endTime: endTime
     }
 
-    const response = await fetch(new URL("users", apiUrl), {
-        method: 'PUT',
+    const response = await fetch(new URL(`tickets/${ticketId}/close`, apiUrl), {
+        method: 'POST',
         credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
@@ -67,33 +65,27 @@ async function updateProfile(userId: number, email: string | undefined, phone: s
         body: JSON.stringify(body),
     });
     if (response.ok) {
-        return true;
+        return await response.json();
     } else {
         throw await response.json();
     }
 }
 
-async function updatePassword(userId: number, oldPassword: string, newPassword: string) {
-    const body = {
-        oldPassword: oldPassword,
-        newPassword: newPassword
-    }
-
-    const response = await fetch(new URL(`users/password/${userId}`, apiUrl), {
-        method: 'PUT',
+async function deleteTicket(ticketId: string) {
+    const response = await fetch(new URL(`tickets/${ticketId}`, apiUrl), {
+        method: 'DELETE',
         credentials: 'include',
         headers: {
-            'Content-Type': 'application/json',
             'Accept': 'application/json'
-        },
-        body: JSON.stringify(body),
+        }
     });
     if (response.ok) {
         return true;
     } else {
-        throw await response.json();
+        const errDetail = await response.json();
+        throw errDetail.message;
     }
 }
 
-const userApis = {getAllUsers, getUser, updateUser, updateProfile, updatePassword};
-export default userApis;
+const ticketApis = {getTickets, getTicket, createTicket, closeTicket, deleteTicket};
+export default ticketApis;

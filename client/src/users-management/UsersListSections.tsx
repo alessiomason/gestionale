@@ -28,7 +28,7 @@ function RegisteredSection(props: UsersListSectionProps) {
                 <Col/>
                 <Col sm={8} className="d-flex justify-content-center">
                     <GlossyButton icon={Key} onClick={() => {
-                    }}>Resetta password (non disponibile)</GlossyButton>
+                    }}>Reimposta password (non disponibile)</GlossyButton>
                 </Col>
                 <Col/>
             </Row>

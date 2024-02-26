@@ -4,7 +4,7 @@ import './MyNavbar.css';
 import horizontalWhiteLogo from '../images/logos/horizontal_white_logo.png';
 import {User} from "../models/user";
 import LightGlossyButton from "../buttons/LightGlossyButton";
-import {PersonBadge, PersonVcard} from "react-bootstrap-icons";
+import {JournalBookmarkFill, PersonBadge, PersonVcard, TicketPerforated} from "react-bootstrap-icons";
 
 interface NavbarProps {
     readonly user: User
@@ -23,6 +23,12 @@ function MyNavbar(props: NavbarProps) {
                 </Col>
 
                 <Col className="d-flex justify-content-end align-items-center">
+                    <LightGlossyButton icon={TicketPerforated} className="me-3" onClick={() => navigate("/tickets")}>
+                        Assistenza
+                    </LightGlossyButton>
+                    <LightGlossyButton icon={JournalBookmarkFill} className="me-3" onClick={() => navigate("/jobs")}>
+                        Commesse
+                    </LightGlossyButton>
                     <LightGlossyButton icon={PersonVcard} className="me-3" onClick={() => navigate("/users")}>
                         Gestione utenti
                     </LightGlossyButton>

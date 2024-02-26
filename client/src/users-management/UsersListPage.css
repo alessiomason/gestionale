@@ -15,7 +15,7 @@ tbody>tr:hover {
     max-height: initial;
 }
 
-.selected-user {
+.table-selected-row {
     background-color: #cccccc;
 }
 

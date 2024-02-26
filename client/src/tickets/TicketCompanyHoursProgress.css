@@ -1,0 +1,11 @@
+.progress-bar-ok > .progress-bar {
+    background-color: limegreen;
+}
+
+.progress-bar-warning > .progress-bar {
+    background-color: gold;
+}
+
+.progress-bar-red > .progress-bar {
+    background-color: #d50000;
+}
