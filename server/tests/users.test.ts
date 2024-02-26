@@ -6,6 +6,7 @@ import {NewUser, User} from "../src/users/user";
 import {UserNotFound, UserWithSameUsernameError} from "../src/users/userErrors";
 import * as crypto from "crypto";
 import {clearTests, setupTests} from "./setupTests";
+import dayjs = require("dayjs");
 
 jest.mock('../src/database/db', () => {
     const Knex = require('knex');
@@ -96,8 +97,11 @@ describe("Test users APIs", () => {
     })
 
     test("Get single user from registration token", async () => {
-        tracker.on.select("users").response(user);
         const registrationToken = crypto.randomBytes(8).toString("hex");
+        const registeredUser = user;
+        registeredUser.registrationToken = registrationToken;
+        registeredUser.tokenExpiryDate = dayjs().add(7, "days").format();
+        tracker.on.select("users").response(registeredUser);
 
         const res = await new Request(app).get(`${baseURL}/registrationToken/${registrationToken}`);
         expect(res.body).toEqual(user);
