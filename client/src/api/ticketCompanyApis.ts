@@ -46,8 +46,8 @@ async function getTicketCompany(ticketCompanyId: string) {
 async function createTicketCompany(name: string, email: string | undefined, contact: string | undefined) {
     const body = {
         name: name,
-        email: email,
-        contact: contact
+        email: email === "" ? undefined : email,
+        contact: contact === "" ? undefined : contact
     }
 
     const response = await fetch(new URL("tickets/companies", apiUrl), {

@@ -13,13 +13,15 @@ import {TicketOrder} from "../models/ticketOrder";
 import NewTicketModal from "./NewTicketModal";
 import CloseTicketModal from "./CloseTicketModal";
 import {Ticket} from "../models/ticket";
+import dayjs from "dayjs";
 
 interface TicketCompanyPaneProps {
-    readonly ticketCompany: TicketCompany,
-    readonly setDirtyTicketCompany: React.Dispatch<React.SetStateAction<boolean>>
+    readonly ticketCompany: TicketCompany
+    readonly updateSelectedCompany: (updatedTicketCompany: TicketCompany) => void
 }
 
 function TicketCompanyPane(props: TicketCompanyPaneProps) {
+    const [dirtyTicketCompanyProgress, setDirtyTicketCompanyProgress] = useState(false);
     const [ticketOrders, setTicketOrders] = useState<TicketOrder[]>([]);
     const [dirtyTicketOrders, setDirtyTicketOrders] = useState(true);
     const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -55,15 +57,43 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
         }
     }, [dirtyTicketOrders]);
 
+    // update the ticket company progress every 5 minutes
+    useEffect(() => {
+        const intervalId = setInterval(() => setDirtyTicketCompanyProgress(true), 5000 * 60)
+        return () => clearInterval(intervalId);
+    }, []);
+
+    useEffect(() => {
+        if (dirtyTicketCompanyProgress) {
+            const totalUsedHours = tickets
+                .map(ticket => dayjs.duration(dayjs(ticket.endTime).diff(dayjs(ticket.startTime))))
+                .reduce(((sum, ticketDuration) => sum.add(ticketDuration)), dayjs.duration(0))
+                .asHours()
+
+            const updatedSelectedCompany = new TicketCompany(
+                props.ticketCompany.id,
+                props.ticketCompany.name,
+                props.ticketCompany.email,
+                props.ticketCompany.contact,
+                totalUsedHours,
+                props.ticketCompany.orderedHours
+            )
+            props.updateSelectedCompany(updatedSelectedCompany);
+
+            setDirtyTicketCompanyProgress(false);
+        }
+    }, [dirtyTicketCompanyProgress]);
+
     return (
         <Row className="glossy-background">
             <NewTicketOrderModal show={showNewOrderModal} setShow={setShowNewOrderModal}
-                                 ticketCompany={props.ticketCompany} setDirtyTicketCompany={props.setDirtyTicketCompany}
-                                 setDirtyTicketOrders={setDirtyTicketOrders}/>
+                                 ticketCompany={props.ticketCompany} setTicketOrders={setTicketOrders}
+                                 updateSelectedCompany={props.updateSelectedCompany}/>
             <NewTicketModal show={showNewTicketModal} setShow={setShowNewTicketModal}
-                            ticketCompany={props.ticketCompany} setDirtyTickets={setDirtyTickets}/>
+                            ticketCompany={props.ticketCompany} setTickets={setTickets}
+                            setDirtyTicketCompanyProgress={setDirtyTicketCompanyProgress}/>
             <CloseTicketModal ticketToBeClosed={ticketToBeClosed} setTicketToBeClosed={setTicketToBeClosed}
-                              setDirtyTickets={setDirtyTickets}/>
+                              setTickets={setTickets} setDirtyTicketCompanyProgress={setDirtyTicketCompanyProgress}/>
 
             <Row>
                 <h3>{props.ticketCompany.name}</h3>
