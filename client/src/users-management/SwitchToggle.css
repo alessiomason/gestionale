@@ -13,6 +13,7 @@
     cursor: pointer;
     width: 50px;
     height: 24px;
+    margin-right: 10px;
     background: rgba(89, 89, 89, 0.5);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);

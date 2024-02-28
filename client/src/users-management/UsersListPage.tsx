@@ -178,7 +178,7 @@ function UsersListPage() {
                                             <XCircle className="me-2"/>} {active ? "Attivo" : "Non attivo"}
                                     </Col>
                                     <Col className="d-flex align-items-center">
-                                        <SwitchToggle isOn={active} handleToggle={() => setActive(!active)}/>
+                                        <SwitchToggle id="active-toggle" isOn={active} handleToggle={() => setActive(!active)}/>
                                     </Col>
                                 </Row>
 
