@@ -23,7 +23,6 @@ import JobsPage from "./jobs/JobsPage";
 import TicketsPage from "./tickets/TicketsPage";
 
 function App() {
-    console.log(process.env.REACT_APP_URL)
     return (
         <Router>
             <App2/>

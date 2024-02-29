@@ -42,10 +42,11 @@ In any case, the server will be run on port `3001` (if not otherwise specified b
 The tests written for the server part can be run by executing the `npm run test` command in the `server` folder.
 
 ### Environment variables
+#### Server environment variables
 The server requires several environment variables to operate. These are usually included in a `.env` file located inside the `server` folder (file which is obviously not included in the repository for security reasons). These variables are:
 
 - Mandatory
-	- `APP_URL`: the URL the server is served from (used for CORS);
+	- `APP_URL`: the URL the client is served from (used for CORS) - for example, it might be `http://localhost:3000` if run locally;
 	- `DB_HOST`: the hostname of the database;
 	- `DB_PORT`: the port of the connection to the database;
 	- `DB_USERNAME`: the username for the database;
@@ -56,6 +57,10 @@ The server requires several environment variables to operate. These are usually 
 - Optional
 	- `PORT`: the port on which the server has to be served; defaults to `3001` if absent.
 
+#### Client environment variables
+The client too requires an environment variable, to specify the URL of the server.  
+If the client is run locally, the environment variable can be omitted (as the code defaults to consider the server located at `http://localhost:3000`).  
+Otherwise, the `REACT_APP_BASE_URL` environment variable is needed. If the client is served throught the server, the environment variable has to be specified amongst the other varibales for the server.
 
 ---
 
