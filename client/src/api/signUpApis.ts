@@ -1,5 +1,6 @@
 import {apiUrl} from "./apisValues";
 import {User} from "../models/user";
+import {handleApiError} from "./handleApiError";
 
 async function getUserFromRegistrationToken(registrationToken: string) {
     const response = await fetch(new URL(`users/registrationToken/${registrationToken}`, apiUrl), {
@@ -12,10 +13,7 @@ async function getUserFromRegistrationToken(registrationToken: string) {
     });
     if (response.ok) {
         return await response.json();
-    } else {
-        const errDetail = await response.json();
-        throw errDetail.message;
-    }
+    } else await handleApiError(response);
 }
 
 async function signUp(
@@ -43,10 +41,7 @@ async function signUp(
     });
     if (response.ok) {
         return true;
-    } else {
-        const errDetail = await response.json();
-        throw errDetail.message;
-    }
+    } else await handleApiError(response);
 }
 
 async function createUser(user: User) {
@@ -65,10 +60,7 @@ async function createUser(user: User) {
     });
     if (response.ok) {
         return await response.json();
-    } else {
-        const errDetail = await response.json();
-        throw errDetail.message;
-    }
+    } else await handleApiError(response);
 }
 
 const signUpApis = {getUserFromRegistrationToken, signUp, createUser};

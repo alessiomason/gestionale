@@ -18,12 +18,12 @@ function TicketsPage() {
             .then(ticketCompanies => {
                 if (dirty) {
                     if (selectedTicketCompany) {
-                        const newSelectedTicketCompany = ticketCompanies
+                        const newSelectedTicketCompany = ticketCompanies!
                             .find(ticketCompany => ticketCompany.id === selectedTicketCompany.id)
                         setSelectedTicketCompany(newSelectedTicketCompany);
                     }
 
-                    setTicketCompanies(ticketCompanies);
+                    setTicketCompanies(ticketCompanies!);
                     setDirty(false);
                 }
             })

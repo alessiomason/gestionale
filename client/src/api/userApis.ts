@@ -1,5 +1,6 @@
 import {apiUrl} from "./apisValues";
 import {User} from "../models/user";
+import {handleApiError} from "./handleApiError";
 
 async function getAllUsers() {
     const response = await fetch(new URL("users", apiUrl), {
@@ -11,10 +12,7 @@ async function getAllUsers() {
     });
     if (response.ok) {
         return await response.json();
-    } else {
-        const errDetail = await response.json();
-        throw errDetail.message;
-    }
+    } else await handleApiError(response);
 }
 
 async function getUser(userId: number) {
@@ -27,10 +25,7 @@ async function getUser(userId: number) {
     });
     if (response.ok) {
         return await response.json();
-    } else {
-        const errDetail = await response.json();
-        throw errDetail.message;
-    }
+    } else await handleApiError(response);
 }
 
 async function updateUser(user: User) {
@@ -45,9 +40,7 @@ async function updateUser(user: User) {
     });
     if (response.ok) {
         return true;
-    } else {
-        throw await response.json();
-    }
+    } else await handleApiError(response);
 }
 
 async function updateProfile(userId: number, email: string | undefined, phone: string | undefined, car: string | undefined) {
@@ -68,9 +61,7 @@ async function updateProfile(userId: number, email: string | undefined, phone: s
     });
     if (response.ok) {
         return true;
-    } else {
-        throw await response.json();
-    }
+    } else await handleApiError(response);
 }
 
 async function updatePassword(userId: number, oldPassword: string, newPassword: string) {
@@ -90,9 +81,7 @@ async function updatePassword(userId: number, oldPassword: string, newPassword: 
     });
     if (response.ok) {
         return true;
-    } else {
-        throw await response.json();
-    }
+    } else await handleApiError(response);
 }
 
 const userApis = {getAllUsers, getUser, updateUser, updateProfile, updatePassword};

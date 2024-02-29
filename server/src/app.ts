@@ -52,7 +52,7 @@ app.use(session({
         secure: "auto",
         httpOnly: true,
         sameSite: "strict",
-        maxAge: 1000 * 60 * 5  // 5 minutes since last interaction, as rolling is set to true
+        maxAge: 1000 * 60 * 15  // 15 minutes since last interaction, as rolling is set to true
     }
 }));
 
