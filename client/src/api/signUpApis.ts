@@ -50,6 +50,10 @@ async function signUp(
 }
 
 async function createUser(user: User) {
+    user.email = user.email === "" ? undefined : user.email;
+    user.phone = user.phone === "" ? undefined : user.phone;
+    user.car = user.car === "" ? undefined : user.car;
+
     const response = await fetch(new URL("users", apiUrl), {
         method: 'POST',
         credentials: 'include',
