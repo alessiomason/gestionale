@@ -1,5 +1,6 @@
 import {apiUrl} from "./apisValues";
 import {Ticket} from "../models/ticket";
+import {handleApiError} from "./handleApiError";
 
 async function getTickets(ticketCompanyId: number) {
     const response = await fetch(new URL(`tickets/company/${ticketCompanyId}`, apiUrl), {
@@ -11,10 +12,7 @@ async function getTickets(ticketCompanyId: number) {
     });
     if (response.ok) {
         return await response.json();
-    } else {
-        const errDetail = await response.json();
-        throw errDetail.message;
-    }
+    } else await handleApiError(response);
 }
 
 async function getTicket(ticketId: string) {
@@ -27,10 +25,7 @@ async function getTicket(ticketId: string) {
     });
     if (response.ok) {
         return await response.json();
-    } else {
-        const errDetail = await response.json();
-        throw errDetail.message;
-    }
+    } else await handleApiError(response);
 }
 
 async function createTicket(ticket: Ticket) {
@@ -45,9 +40,7 @@ async function createTicket(ticket: Ticket) {
     });
     if (response.ok) {
         return await response.json();
-    } else {
-        throw await response.json();
-    }
+    } else await handleApiError(response);
 }
 
 async function closeTicket(ticketId: number, endTime: string | undefined) {
@@ -66,9 +59,7 @@ async function closeTicket(ticketId: number, endTime: string | undefined) {
     });
     if (response.ok) {
         return await response.json() as Ticket;
-    } else {
-        throw await response.json();
-    }
+    } else await handleApiError(response);
 }
 
 async function deleteTicket(ticketId: string) {
@@ -81,10 +72,7 @@ async function deleteTicket(ticketId: string) {
     });
     if (response.ok) {
         return true;
-    } else {
-        const errDetail = await response.json();
-        throw errDetail.message;
-    }
+    } else await handleApiError(response);
 }
 
 const ticketApis = {getTickets, getTicket, createTicket, closeTicket, deleteTicket};

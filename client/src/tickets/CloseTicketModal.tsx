@@ -43,8 +43,8 @@ function CloseTicketModal(props: CloseTicketModalProps) {
             .then(ticket => {
                 props.setTickets(tickets => {
                     const newTickets = tickets;
-                    const index = newTickets.findIndex(t => t.id === ticket.id);
-                    newTickets[index] = ticket;
+                    const index = newTickets.findIndex(t => t.id === ticket!.id);
+                    newTickets[index] = ticket!;
                     return newTickets;
                 });
                 props.setDirtyTicketCompanyProgress(true);
