@@ -1,7 +1,7 @@
 import {Button, Col, Container, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import React, {useState} from "react";
 import './LoginPage.css';
-import logo from "../images/logos/logo.png";
+import roundLogo from "../images/logos/round_logo.png";
 import {Lock, Person} from "react-bootstrap-icons";
 import {Credentials} from "../models/credentials";
 
@@ -33,7 +33,7 @@ function LoginPage(props: any) {
 
     return (
         <Container className="login-container">
-            <img src={logo} alt="The logo of the company" className="login-logo"/>
+            <img src={roundLogo} alt="The logo of the company" className="login-logo"/>
 
             <Row>
                 <Form className="login-form d-flex flex-column justify-content-center">
