@@ -5,6 +5,12 @@ import {InternalServerError, ParameterError} from "../../errors";
 import {closeTicket, createTicket, deleteTicket, getTicket, getTickets} from "./ticketService";
 import {TicketAlreadyClosed, TicketCompanyNotFound, TicketNotFound} from "../ticketErrors";
 import {getTicketCompany} from "../ticketCompanies/ticketCompanyService";
+import nodemailer from "nodemailer";
+import Mail from "nodemailer/lib/mailer";
+import dayjs from "dayjs";
+
+import {google} from "googleapis";
+const OAuth2 = google.auth.OAuth2;
 
 export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
     const baseURL = "/api/tickets"
@@ -103,6 +109,64 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
             if (ticket) {
                 if (!ticket.endTime) {
                     const updatedTicket = await closeTicket(ticket.id, req.body.endTime);
+
+                    // send report
+                    if (ticket.company.email || true) {
+                        // Nodemailer guide at https://nodemailer.com/smtp/oauth2/
+                        // followed guide at https://medium.com/@nickroach_50526/sending-emails-with-node-js-using-smtp-gmail-and-oauth2-316fe9c790a1#
+                        // additional step at https://github.com/nodemailer/nodemailer/issues/266#issuecomment-542791806
+
+                        const oauth2Client = new OAuth2(
+                            process.env.EMAIL_CLIENT_ID, // ClientID
+                            process.env.EMAIL_CLIENT_SECRET, // Client Secret
+                            "https://developers.google.com/oauthplayground" // Redirect URL
+                        );
+                        oauth2Client.setCredentials({
+                            refresh_token: process.env.EMAIL_REFRESH_TOKEN
+                        });
+                        const accessToken = (await oauth2Client.getAccessToken()).token;
+
+                        const ticketDuration = dayjs.duration(dayjs(ticket.endTime).diff(dayjs(ticket.startTime)));
+                        const ticketCompany = await ticket.company.attachProgress();
+                        const mailHTML = `<p>Inviamo resoconto del ticket di assistenza.</p>
+                            <h3>Ticket: ${ticket.title}</h3>
+                            <p>Descrizione: ${ticket.description}
+                            <p>Inizio: ${dayjs(ticket.startTime).format("LL [alle] LT")}</p>
+                            <p>Fine: ${dayjs(ticket.endTime).format("LL [alle] LT")}</p>
+                            <p>Durata: ${ticketDuration.humanize()}</p>
+                            <p>Ore di assistenza ancora disponibili: ${ticketCompany.usedHours} ore</p>`;       //// !!!
+
+                        const smtpTransport = nodemailer.createTransport({
+                            host: "smtp.gmail.com",
+                            port: 465,
+                            logger: true,
+                            debug: true,
+                            secure: true,
+                            auth: {
+                                type: "OAuth2",
+                                user: "ennio.mason@technomake.it",
+                                clientId: process.env.EMAIL_CLIENT_ID,
+                                clientSecret: process.env.EMAIL_CLIENT_SECRET,
+                                refreshToken: process.env.EMAIL_REFRESH_TOKEN,
+                                accessToken: accessToken ?? undefined   // if null, set undefined
+                            },
+                            tls: {
+                                rejectUnauthorized: false
+                            }
+                        });
+                        console.log(smtpTransport)
+
+                        const mailOptions: Mail.Options = {
+                            from: "ennio.mason@technomake.it",
+                            to: "alessio.mason@me.com",
+                            subject: "Report ticket di assistenza",
+                            html: mailHTML
+                        };
+
+                        const info = await smtpTransport.sendMail(mailOptions);
+                        console.log(info)
+                    }
+
                     res.status(200).json(updatedTicket)
                 } else {
                     res.status(TicketAlreadyClosed.code).json(new TicketAlreadyClosed())
