@@ -1,6 +1,6 @@
 import {Col, Row} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
-import {Job} from "../../../server/src/jobs/job";
+import {Job} from "../models/job";
 import jobApis from "../api/jobApis";
 import {JournalPlus} from "react-bootstrap-icons";
 import GlossyButton from "../buttons/GlossyButton";
@@ -41,7 +41,7 @@ function JobsPage() {
                     </Row>
                 </Col>
                 <Col>
-                    {showingNewJobPane ? <JobPane job={undefined}/> : <JobsTable jobs={jobs}/>}
+                    {showingNewJobPane ? <JobPane job={undefined} setJobs={setJobs}/> : <JobsTable jobs={jobs}/>}
                 </Col>
             </Row>
         </>

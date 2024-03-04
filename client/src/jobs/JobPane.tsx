@@ -2,29 +2,69 @@ import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import {Building, CurrencyEuro, Icon} from "react-bootstrap-icons";
 import React, {useState} from "react";
 import SwitchToggle from "../users-management/SwitchToggle";
-import {Job} from "../../../server/src/jobs/job";
 import GlossyButton from "../buttons/GlossyButton";
 import Floppy from "../new-bootstrap-icons/Floppy";
+import jobApis from "../api/jobApis";
+import {Job} from "../models/job";
+import {useNavigate} from "react-router-dom";
 
 interface JobPaneProps {
     readonly job: Job | undefined
+    readonly setJobs?: React.Dispatch<React.SetStateAction<Job[]>>
 }
 
 function JobPane(props: JobPaneProps) {
-    const [id, setId] = useState("");
-    const [subject, setSubject] = useState("");
-    const [client, setClient] = useState("");
-    const [finalClient, setFinalClient] = useState("");
-    const [orderName, setOrderName] = useState("");
-    const [orderAmount, setOrderAmount] = useState(0);
-    const [notes, setNotes] = useState("");
-    const [dueDate, setDueDate] = useState("");
-    const [deliveryDate, setDeliveryDate] = useState("");
+    const [id, setId] = useState(props.job?.id ?? "");
+    const [subject, setSubject] = useState(props.job?.subject ?? "");
+    const [client, setClient] = useState(props.job?.client ?? "");
+    const [finalClient, setFinalClient] = useState(props.job?.finalClient ?? "");
+    const [orderName, setOrderName] = useState(props.job?.orderName ?? "");
+    const [orderAmount, setOrderAmount] = useState(props.job?.orderAmount ?? 0);
+    const [notes, setNotes] = useState(props.job?.notes ?? "");
+    const [dueDate, setDueDate] = useState(props.job?.dueDate ?? "");
+    const [deliveryDate, setDeliveryDate] = useState(props.job?.deliveryDate ?? "");
 
-    const [active, setActive] = useState(true);
-    const [lost, setLost] = useState(false);
-    const [design, setDesign] = useState(false);
-    const [construction, setConstruction] = useState(false);
+    const [active, setActive] = useState(props.job?.active ?? true);
+    const [lost, setLost] = useState(props.job?.lost ?? false);
+    const [design, setDesign] = useState(props.job?.design ?? false);
+    const [construction, setConstruction] = useState(props.job?.construction ?? false);
+
+    const navigate = useNavigate();
+
+    function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        event.preventDefault();
+
+        const job = new Job(
+            id,
+            subject,
+            client,
+            finalClient,
+            orderName,
+            orderAmount,
+            dueDate,
+            deliveryDate,
+            notes,
+            active,
+            lost,
+            design,
+            construction
+        );
+
+        if (props.job) {    // existing job, update
+
+        } else {    // new job, create
+            jobApis.createJob(job)
+                .then(job => {
+                    props.setJobs!(jobs => {
+                        jobs.push(job);
+                        return jobs;
+                    })
+
+                    navigate(`/jobs/${job.id}`);
+                })
+                .catch(err => console.error(err))
+        }
+    }
 
     return (
         <Form>
@@ -145,7 +185,7 @@ function JobPane(props: JobPaneProps) {
 
             <Row className="d-flex justify-content-center my-4">
                 <Col sm={4} className="d-flex justify-content-center">
-                    <GlossyButton type="submit" icon={Floppy as Icon} onClick={() => {}}>Salva</GlossyButton>
+                    <GlossyButton type="submit" icon={Floppy as Icon} onClick={handleSubmit}>{props.job ? "Aggiorna" : "Salva"}</GlossyButton>
                 </Col>
             </Row>
         </Form>
