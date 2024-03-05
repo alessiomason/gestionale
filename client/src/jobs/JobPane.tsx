@@ -22,7 +22,7 @@ function JobPane(props: JobPaneProps) {
     const [orderName, setOrderName] = useState(props.job?.orderName ?? "");
     const [orderAmount, setOrderAmount] = useState(props.job?.orderAmount ?? 0);
     const [notes, setNotes] = useState(props.job?.notes ?? "");
-    const [dueDate, setDueDate] = useState(props.job?.dueDate ?? "");
+    const [startDate, setStartDate] = useState(props.job?.startDate ?? "");
     const [deliveryDate, setDeliveryDate] = useState(props.job?.deliveryDate ?? "");
 
     const [active, setActive] = useState(props.job?.active ?? true);
@@ -44,7 +44,7 @@ function JobPane(props: JobPaneProps) {
             finalClient,
             orderName,
             orderAmount,
-            dueDate,
+            startDate,
             deliveryDate,
             notes,
             active,
@@ -165,14 +165,14 @@ function JobPane(props: JobPaneProps) {
                                 <Row>
                                     <Col>
                                         <InputGroup className="mt-2">
-                                            <InputGroup.Text>Data di consegna prevista</InputGroup.Text>
-                                            <Form.Control type="date" value={dueDate}
-                                                          onChange={event => setDueDate(event.target.value)}/>
+                                            <InputGroup.Text>Data di inizio</InputGroup.Text>
+                                            <Form.Control type="date" value={startDate}
+                                                          onChange={event => setStartDate(event.target.value)}/>
                                         </InputGroup>
                                     </Col>
                                     <Col>
                                         <InputGroup className="mt-2">
-                                            <InputGroup.Text>Data di consegna effettiva</InputGroup.Text>
+                                            <InputGroup.Text>Data di consegna</InputGroup.Text>
                                             <Form.Control type="date" value={deliveryDate}
                                                           onChange={event => setDeliveryDate(event.target.value)}/>
                                         </InputGroup>
