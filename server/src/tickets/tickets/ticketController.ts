@@ -5,6 +5,8 @@ import {InternalServerError, ParameterError} from "../../errors";
 import {closeTicket, createTicket, deleteTicket, getTicket, getTickets} from "./ticketService";
 import {TicketAlreadyClosed, TicketCompanyNotFound, TicketNotFound} from "../ticketErrors";
 import {getTicketCompany} from "../ticketCompanies/ticketCompanyService";
+import dayjs from "dayjs";
+import {humanize} from "../../functions";
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
 import {OAuth2Client} from 'google-auth-library';
@@ -126,13 +128,16 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
 
                         const ticketDuration = dayjs.duration(dayjs(ticket.endTime).diff(dayjs(ticket.startTime)));
                         const ticketCompany = await ticket.company.attachProgress();
+                        let remainingHours = ticketCompany.orderedHours - ticketCompany.usedHours;
+                        remainingHours = remainingHours < 0 ? 0 : remainingHours;
+
                         const mailHTML = `<p>Inviamo resoconto del ticket di assistenza.</p>
                             <h3>Ticket: ${ticket.title}</h3>
                             <p>Descrizione: ${ticket.description}
                             <p>Inizio: ${dayjs(ticket.startTime).format("LL [alle] LT")}</p>
                             <p>Fine: ${dayjs(ticket.endTime).format("LL [alle] LT")}</p>
                             <p>Durata: ${ticketDuration.humanize()}</p>
-                            <p>Ore di assistenza ancora disponibili: ${ticketCompany.usedHours} ore</p>`;       //// !!!
+                            <p>Ore di assistenza ancora disponibili: ${humanize(remainingHours, 2)} ore</p>`;
 
                         const smtpTransport = nodemailer.createTransport({
                             host: "smtp.gmail.com",
