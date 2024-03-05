@@ -6,6 +6,7 @@ import './SignUpPage.css';
 import roundLogo from "../images/logos/round_logo.png";
 import signUpApis from "../api/signUpApis";
 import {User} from "../models/user";
+import {checkValidEmail} from "../functions";
 
 function SignUpPage() {
     const navigate = useNavigate();
@@ -13,6 +14,7 @@ function SignUpPage() {
     const {registrationToken} = useParams();
     const [expired, setExpired] = useState(false);
     const [email, setEmail] = useState("");
+    const [invalidEmail, setInvalidEmail] = useState(false);
     const [phone, setPhone] = useState("");
     const [car, setCar] = useState("");
     const [password, setPassword] = useState("");
@@ -23,6 +25,12 @@ function SignUpPage() {
     function doSignUp(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
         setInvalidPassword(false);
+        setInvalidEmail(false);
+
+        if (!checkValidEmail(email)) {
+            setInvalidEmail(true);
+            return
+        }
 
         if (password === "" || password !== confirmPassword) {
             setInvalidPassword(true);
@@ -63,13 +71,12 @@ function SignUpPage() {
                                 <p>Il link di registrazione è scaduto o non è più valido!</p> :
                                 <SignUpPane
                                     registrationToken={registrationToken} setExpired={setExpired}
-                                    email={email} setEmail={setEmail}
+                                    email={email} setEmail={setEmail} invalidEmail={invalidEmail}
                                     phone={phone} setPhone={setPhone}
                                     car={car} setCar={setCar}
                                     password={password} setPassword={setPassword}
                                     confirmPassword={confirmPassword} setConfirmPassword={setConfirmPassword}
-                                    invalidPassword={invalidPassword} setInvalidPassword={setInvalidPassword}
-                                    errorMessage={errorMessage}/>}
+                                    invalidPassword={invalidPassword} errorMessage={errorMessage}/>}
                         </Col>
                         <Col/>
                     </Row>
@@ -87,20 +94,20 @@ function SignUpPage() {
 }
 
 interface SignUpPaneProps {
-    registrationToken: string,
-    setExpired: React.Dispatch<React.SetStateAction<boolean>>,
-    email: string,
-    setEmail: React.Dispatch<React.SetStateAction<string>>,
-    phone: string,
-    setPhone: React.Dispatch<React.SetStateAction<string>>,
-    car: string,
-    setCar: React.Dispatch<React.SetStateAction<string>>,
-    password: string,
-    setPassword: React.Dispatch<React.SetStateAction<string>>,
-    confirmPassword: string,
-    setConfirmPassword: React.Dispatch<React.SetStateAction<string>>,
-    invalidPassword: boolean,
-    setInvalidPassword: React.Dispatch<React.SetStateAction<boolean>>,
+    registrationToken: string
+    setExpired: React.Dispatch<React.SetStateAction<boolean>>
+    email: string
+    setEmail: React.Dispatch<React.SetStateAction<string>>
+    invalidEmail: boolean
+    phone: string
+    setPhone: React.Dispatch<React.SetStateAction<string>>
+    car: string
+    setCar: React.Dispatch<React.SetStateAction<string>>
+    password: string
+    setPassword: React.Dispatch<React.SetStateAction<string>>
+    confirmPassword: string
+    setConfirmPassword: React.Dispatch<React.SetStateAction<string>>
+    invalidPassword: boolean
     errorMessage: string
 }
 
@@ -156,6 +163,7 @@ function SignUpPane(props: SignUpPaneProps) {
                         <InputGroup.Text><EnvelopeAt/></InputGroup.Text>
                         <FloatingLabel controlId="floatingInput" label="Email">
                             <Form.Control type='email' placeholder="Email" value={props.email}
+                                          isInvalid={props.invalidEmail}
                                           onChange={ev => props.setEmail(ev.target.value)}/>
                         </FloatingLabel>
                     </InputGroup>

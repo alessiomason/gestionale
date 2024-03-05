@@ -4,6 +4,7 @@ import {Building, BuildingCheck, EnvelopeAt, PersonVcard} from "react-bootstrap-
 import React, {useState} from "react";
 import GlossyButton from "../buttons/GlossyButton";
 import ticketCompanyApis from "../api/ticketCompanyApis";
+import {checkValidEmail} from "../functions";
 
 interface NewTicketCompanyPaneProps {
     readonly setDirty: React.Dispatch<React.SetStateAction<boolean>>
@@ -13,11 +14,20 @@ interface NewTicketCompanyPaneProps {
 function NewTicketCompanyPane(props: NewTicketCompanyPaneProps) {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
+    const [invalidEmail, setInvalidEmail] = useState(false);
     const [contact, setContact] = useState("");
 
     function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
+
+        setInvalidEmail(false);
+
         if (name.trim() === "") return
+
+        if (!checkValidEmail(email)) {
+            setInvalidEmail(true);
+            return
+        }
 
         ticketCompanyApis.createTicketCompany(name, email, contact)
             .then(ticketCompany => {
@@ -45,7 +55,7 @@ function NewTicketCompanyPane(props: NewTicketCompanyPaneProps) {
                     <InputGroup className="mt-2">
                         <InputGroup.Text><EnvelopeAt/></InputGroup.Text>
                         <FloatingLabel controlId="floatingInput" label="Email">
-                            <Form.Control type="email" placeholder="Email" value={email}
+                            <Form.Control type="email" placeholder="Email" value={email} isInvalid={invalidEmail}
                                           onChange={ev => setEmail(ev.target.value)}/>
                         </FloatingLabel>
                     </InputGroup>
