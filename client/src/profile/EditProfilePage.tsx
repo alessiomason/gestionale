@@ -26,7 +26,6 @@ function EditProfilePage(props: EditProfilePageProps) {
         // empty email is allowed
         if (email && !checkValidEmail(email)) {
             setInvalidEmail(true);
-            return
         }
     }
 

@@ -47,7 +47,6 @@ function NewUserPane(props: NewUserPaneProps) {
         // empty email is allowed
         if (email && !checkValidEmail(email)) {
             setInvalidEmail(true);
-            return
         }
     }
 

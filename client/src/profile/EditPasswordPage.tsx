@@ -27,7 +27,6 @@ function EditPasswordPage(props: EditPasswordPageProps) {
         if (!checkValidPassword(password)) {
             setInvalidPassword(true);
             setShowPasswordRequirements(true);
-            return
         }
     }
 

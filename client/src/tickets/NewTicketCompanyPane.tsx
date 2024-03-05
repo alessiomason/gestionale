@@ -23,7 +23,6 @@ function NewTicketCompanyPane(props: NewTicketCompanyPaneProps) {
         // empty email is allowed
         if (email && !checkValidEmail(email)) {
             setInvalidEmail(true);
-            return
         }
     }
 

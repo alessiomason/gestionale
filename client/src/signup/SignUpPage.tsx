@@ -29,7 +29,6 @@ function SignUpPage() {
         // empty email is allowed
         if (email && !checkValidEmail(email)) {
             setInvalidEmail(true);
-            return
         }
     }
 
@@ -40,7 +39,6 @@ function SignUpPage() {
         if (!checkValidPassword(password)) {
             setInvalidPassword(true);
             setShowPasswordRequirements(true);
-            return
         }
     }
 
@@ -89,7 +87,7 @@ function SignUpPage() {
                                 <SignUpPane
                                     registrationToken={registrationToken} setExpired={setExpired}
                                     email={email} setEmail={setEmail} invalidEmail={invalidEmail}
-                                     handleEmailCheck={handleEmailCheck} phone={phone} setPhone={setPhone}
+                                    handleEmailCheck={handleEmailCheck} phone={phone} setPhone={setPhone}
                                     car={car} setCar={setCar}
                                     password={password} setPassword={setPassword}
                                     confirmPassword={confirmPassword} setConfirmPassword={setConfirmPassword}
