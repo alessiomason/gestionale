@@ -50,9 +50,7 @@ async function createJob(job: Job) {
     });
     if (response.ok) {
         return await response.json();
-    } else {
-        throw await response.json();
-    }
+    } else await handleApiError(response);
 }
 
 async function updateJob(job: Job) {
