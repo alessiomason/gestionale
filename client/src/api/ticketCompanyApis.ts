@@ -1,5 +1,6 @@
 import {apiUrl} from "./apisValues";
 import {TicketCompany} from "../models/ticketCompany";
+import {handleApiError} from "./handleApiError";
 
 async function getAllTicketCompanies() {
     const response = await fetch(new URL("tickets/companies", apiUrl), {
@@ -21,10 +22,7 @@ async function getAllTicketCompanies() {
                 ticketCompany.orderedHours
             );
         })
-    } else {
-        const errDetail = await response.json();
-        throw errDetail.message;
-    }
+    } else await handleApiError(response);
 }
 
 async function getTicketCompany(ticketCompanyId: string) {
@@ -37,10 +35,7 @@ async function getTicketCompany(ticketCompanyId: string) {
     });
     if (response.ok) {
         return await response.json();
-    } else {
-        const errDetail = await response.json();
-        throw errDetail.message;
-    }
+    } else await handleApiError(response);
 }
 
 async function createTicketCompany(name: string, email: string | undefined, contact: string | undefined) {
@@ -61,9 +56,7 @@ async function createTicketCompany(name: string, email: string | undefined, cont
     });
     if (response.ok) {
         return await response.json();
-    } else {
-        throw await response.json();
-    }
+    } else await handleApiError(response);
 }
 
 async function deleteTicketCompany(ticketCompanyId: string) {
@@ -76,10 +69,7 @@ async function deleteTicketCompany(ticketCompanyId: string) {
     });
     if (response.ok) {
         return true;
-    } else {
-        const errDetail = await response.json();
-        throw errDetail.message;
-    }
+    } else await handleApiError(response);
 }
 
 const ticketCompanyApis = {getAllTicketCompanies, getTicketCompany, createTicketCompany, deleteTicketCompany};

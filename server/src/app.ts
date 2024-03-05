@@ -19,6 +19,9 @@ import {useTicketOrdersAPIs} from "./tickets/ticketOrders/ticketOrderController"
 import {useTicketCompaniesAPIs} from "./tickets/ticketCompanies/ticketCompanyController";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
+import relativeTime from "dayjs/plugin/relativeTime";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+import "dayjs/locale/it";
 
 // setup passport
 const webAuthnStore = new SessionChallengeStore();
@@ -30,10 +33,13 @@ const app: Express = express();
 // set up the middlewares
 app.use(morgan("dev", {skip: () => process.env.NODE_ENV === "test"}));
 dayjs.extend(duration);
+dayjs.extend(relativeTime);
+dayjs.extend(localizedFormat);
+dayjs.locale("it");
 
 app.use(express.json());
 const corsOptions = {
-    origin: [process.env.APP_URL as string, process.env.DB_HOST as string],
+    origin: [process.env.APP_URL as string, process.env.DB_HOST as string, "https://mail.google.com/", "https://oauth2.googleapis.com"],
     credentials: true
 };
 app.use(cors(corsOptions));
@@ -52,7 +58,7 @@ app.use(session({
         secure: "auto",
         httpOnly: true,
         sameSite: "strict",
-        maxAge: 1000 * 60 * 5  // 5 minutes since last interaction, as rolling is set to true
+        maxAge: 1000 * 60 * 15  // 15 minutes since last interaction, as rolling is set to true
     }
 }));
 

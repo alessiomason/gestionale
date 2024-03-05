@@ -1,5 +1,6 @@
 import {apiUrl} from "./apisValues";
 import {Credentials} from "../models/credentials";
+import {handleApiError} from "./handleApiError";
 
 async function login(credentials: Credentials) {
     const response = await fetch(new URL('sessions', apiUrl), {
@@ -14,8 +15,9 @@ async function login(credentials: Credentials) {
     if (response.ok) {
         const res = await response.json();
         return res.user;
-    } else {
-        throw await response.json();
+    } else {    // do not use handleApiError, or it would refresh to the same page
+        const errorDetail = await response.json();
+        throw errorDetail.message;
     }
 }
 
@@ -26,9 +28,7 @@ async function logout() {
     });
     if (response.ok) {
         return true;
-    } else {
-        throw await response.json();
-    }
+    } else await handleApiError(response);
 }
 
 async function getUserInfo() {
@@ -38,8 +38,9 @@ async function getUserInfo() {
     });
     if (response.ok) {
         return await response.json();
-    } else {
-        throw await response.json();
+    } else {    // do not use handleApiError, or it would cause an infinite loop of refreshes on 401 status code
+        const errorDetail = await response.json();
+        throw errorDetail.message;
     }
 }
 

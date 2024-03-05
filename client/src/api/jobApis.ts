@@ -1,6 +1,7 @@
 import {apiUrl} from "./apisValues";
 import {Job} from "../../../server/src/jobs/job";
 import {Ticket} from "../models/ticket";
+import {handleApiError} from "./handleApiError";
 
 async function getAllJobs() {
     const response = await fetch(new URL("jobs", apiUrl), {
@@ -12,10 +13,7 @@ async function getAllJobs() {
     });
     if (response.ok) {
         return await response.json();
-    } else {
-        const errDetail = await response.json();
-        throw errDetail.message;
-    }
+    } else await handleApiError(response);
 }
 
 async function getJob(jobId: string) {
@@ -28,10 +26,7 @@ async function getJob(jobId: string) {
     });
     if (response.ok) {
         return await response.json();
-    } else {
-        const errDetail = await response.json();
-        throw errDetail.message;
-    }
+    } else await handleApiError(response);
 }
 
 function prepareJobForServer(job: Job) {
@@ -75,9 +70,7 @@ async function updateJob(job: Job) {
     });
     if (response.ok) {
         return true;
-    } else {
-        throw await response.json();
-    }
+    } else await handleApiError(response);
 }
 
 async function deleteJob(jobId: string) {
@@ -90,10 +83,7 @@ async function deleteJob(jobId: string) {
     });
     if (response.ok) {
         return true;
-    } else {
-        const errDetail = await response.json();
-        throw errDetail.message;
-    }
+    } else await handleApiError(response);
 }
 
 const jobApis = {getAllJobs, getJob, createJob, updateJob, deleteJob};
