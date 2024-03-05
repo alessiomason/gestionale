@@ -1,6 +1,5 @@
 import {apiUrl} from "./apisValues";
-import {Job} from "../../../server/src/jobs/job";
-import {Ticket} from "../models/ticket";
+import {Job} from "../models/job";
 import {handleApiError} from "./handleApiError";
 
 async function getAllJobs() {
@@ -32,7 +31,7 @@ async function getJob(jobId: string) {
 function prepareJobForServer(job: Job) {
     job.finalClient = job.finalClient === "" ? undefined : job.finalClient;
     job.orderName = job.orderName === "" ? undefined : job.orderName;
-    job.dueDate = job.dueDate === "" ? null : job.dueDate;
+    job.startDate = job.startDate === "" ? null : job.startDate;
     job.deliveryDate = job.deliveryDate === "" ? null : job.deliveryDate;
     return job;
 }

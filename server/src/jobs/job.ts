@@ -5,7 +5,7 @@ export class Job {
     finalClient: string | undefined
     orderName: string | undefined
     orderAmount: number | undefined
-    dueDate: string | null
+    startDate: string | null
     deliveryDate: string | null
     notes: string
     active: boolean
@@ -20,7 +20,7 @@ export class Job {
         finalClient: string | undefined,
         orderName: string | undefined,
         orderAmount: number | undefined,
-        dueDate: string | null = null,
+        startDate: string | null = null,
         deliveryDate: string | null = null,
         notes: string = "",
         active: boolean = true,
@@ -34,7 +34,7 @@ export class Job {
         this.finalClient = finalClient
         this.orderName = orderName
         this.orderAmount = orderAmount
-        this.dueDate = dueDate
+        this.startDate = startDate
         this.deliveryDate = deliveryDate
         this.notes = notes
         this.active = active
