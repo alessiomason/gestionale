@@ -17,6 +17,7 @@ import {Role, Type, User} from "../models/user";
 import React, {useState} from "react";
 import signUpApis from "../api/signUpApis";
 import GlossyButton from "../buttons/GlossyButton";
+import {checkValidEmail} from "../functions";
 
 interface NewUserPaneProps {
     readonly setDirty: React.Dispatch<React.SetStateAction<boolean>>
@@ -33,11 +34,21 @@ function NewUserPane(props: NewUserPaneProps) {
     const [role, setRole] = useState<"user" | "admin" | "dev">("user");
     const [type, setType] = useState<"office" | "workshop">("office");
     const [email, setEmail] = useState<string>("");
+    const [invalidEmail, setInvalidEmail] = useState(false);
     const [phone, setPhone] = useState<string>("");
     const [hoursPerDay, setHoursPerDay] = useState(0);
     const [costPerHour, setCostPerHour] = useState(0);
     const [car, setCar] = useState<string>("");
     const [costPerKm, setCostPerKm] = useState(0);
+
+    function handleEmailCheck() {
+        setInvalidEmail(false);
+
+        // empty email is allowed
+        if (email && !checkValidEmail(email)) {
+            setInvalidEmail(true);
+        }
+    }
 
     function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
@@ -52,6 +63,8 @@ function NewUserPane(props: NewUserPaneProps) {
             setInvalidSurname(true);
             return
         }
+
+        handleEmailCheck();
 
         const newUser = new User(
             0,
@@ -162,8 +175,9 @@ function NewUserPane(props: NewUserPaneProps) {
                     <InputGroup className="mt-2">
                         <InputGroup.Text><EnvelopeAt/></InputGroup.Text>
                         <FloatingLabel controlId="floatingInput" label="Email">
-                            <Form.Control type="email" placeholder="Email" value={email}
-                                          onChange={ev => setEmail(ev.target.value)}/>
+                            <Form.Control type="email" placeholder="Email" value={email} isInvalid={invalidEmail}
+                                          onChange={ev => setEmail(ev.target.value)}
+                                          onBlur={handleEmailCheck}/>
                         </FloatingLabel>
                     </InputGroup>
                     <InputGroup className="mt-2">

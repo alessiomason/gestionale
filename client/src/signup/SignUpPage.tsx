@@ -6,6 +6,7 @@ import './SignUpPage.css';
 import roundLogo from "../images/logos/round_logo.png";
 import signUpApis from "../api/signUpApis";
 import {User} from "../models/user";
+import {checkValidEmail, checkValidPassword} from "../functions";
 
 function SignUpPage() {
     const navigate = useNavigate();
@@ -13,18 +14,40 @@ function SignUpPage() {
     const {registrationToken} = useParams();
     const [expired, setExpired] = useState(false);
     const [email, setEmail] = useState("");
+    const [invalidEmail, setInvalidEmail] = useState(false);
     const [phone, setPhone] = useState("");
     const [car, setCar] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [invalidPassword, setInvalidPassword] = useState(false);
+    const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+
+    function handleEmailCheck() {
+        setInvalidEmail(false);
+
+        // empty email is allowed
+        if (email && !checkValidEmail(email)) {
+            setInvalidEmail(true);
+        }
+    }
+
+    function handlePasswordCheck() {
+        setInvalidPassword(false);
+        setShowPasswordRequirements(false);
+
+        if (!checkValidPassword(password)) {
+            setInvalidPassword(true);
+            setShowPasswordRequirements(true);
+        }
+    }
 
     function doSignUp(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
-        setInvalidPassword(false);
 
-        if (password === "" || password !== confirmPassword) {
+        handleEmailCheck();
+        handlePasswordCheck();
+        if (password !== confirmPassword) {
             setInvalidPassword(true);
             return
         }
@@ -63,13 +86,13 @@ function SignUpPage() {
                                 <p>Il link di registrazione è scaduto o non è più valido!</p> :
                                 <SignUpPane
                                     registrationToken={registrationToken} setExpired={setExpired}
-                                    email={email} setEmail={setEmail}
-                                    phone={phone} setPhone={setPhone}
+                                    email={email} setEmail={setEmail} invalidEmail={invalidEmail}
+                                    handleEmailCheck={handleEmailCheck} phone={phone} setPhone={setPhone}
                                     car={car} setCar={setCar}
                                     password={password} setPassword={setPassword}
                                     confirmPassword={confirmPassword} setConfirmPassword={setConfirmPassword}
-                                    invalidPassword={invalidPassword} setInvalidPassword={setInvalidPassword}
-                                    errorMessage={errorMessage}/>}
+                                    invalidPassword={invalidPassword} handlePasswordCheck={handlePasswordCheck}
+                                    showPasswordRequirements={showPasswordRequirements} errorMessage={errorMessage}/>}
                         </Col>
                         <Col/>
                     </Row>
@@ -87,20 +110,23 @@ function SignUpPage() {
 }
 
 interface SignUpPaneProps {
-    registrationToken: string,
-    setExpired: React.Dispatch<React.SetStateAction<boolean>>,
-    email: string,
-    setEmail: React.Dispatch<React.SetStateAction<string>>,
-    phone: string,
-    setPhone: React.Dispatch<React.SetStateAction<string>>,
-    car: string,
-    setCar: React.Dispatch<React.SetStateAction<string>>,
-    password: string,
-    setPassword: React.Dispatch<React.SetStateAction<string>>,
-    confirmPassword: string,
-    setConfirmPassword: React.Dispatch<React.SetStateAction<string>>,
-    invalidPassword: boolean,
-    setInvalidPassword: React.Dispatch<React.SetStateAction<boolean>>,
+    registrationToken: string
+    setExpired: React.Dispatch<React.SetStateAction<boolean>>
+    email: string
+    setEmail: React.Dispatch<React.SetStateAction<string>>
+    invalidEmail: boolean
+    handleEmailCheck: () => void
+    phone: string
+    setPhone: React.Dispatch<React.SetStateAction<string>>
+    car: string
+    setCar: React.Dispatch<React.SetStateAction<string>>
+    password: string
+    setPassword: React.Dispatch<React.SetStateAction<string>>
+    confirmPassword: string
+    setConfirmPassword: React.Dispatch<React.SetStateAction<string>>
+    invalidPassword: boolean
+    showPasswordRequirements: boolean
+    handlePasswordCheck: () => void
     errorMessage: string
 }
 
@@ -156,7 +182,9 @@ function SignUpPane(props: SignUpPaneProps) {
                         <InputGroup.Text><EnvelopeAt/></InputGroup.Text>
                         <FloatingLabel controlId="floatingInput" label="Email">
                             <Form.Control type='email' placeholder="Email" value={props.email}
-                                          onChange={ev => props.setEmail(ev.target.value)}/>
+                                          isInvalid={props.invalidEmail}
+                                          onChange={ev => props.setEmail(ev.target.value)}
+                                          onBlur={props.handleEmailCheck}/>
                         </FloatingLabel>
                     </InputGroup>
                     <InputGroup className="padded-form-input">
@@ -180,7 +208,8 @@ function SignUpPane(props: SignUpPaneProps) {
                         <FloatingLabel controlId="floatingInput" label="Password">
                             <Form.Control type='password' placeholder="Password" isInvalid={props.invalidPassword}
                                           value={props.password}
-                                          onChange={ev => props.setPassword(ev.target.value)}/>
+                                          onChange={ev => props.setPassword(ev.target.value)}
+                                          onBlur={props.handlePasswordCheck}/>
                         </FloatingLabel>
                     </InputGroup>
                     <InputGroup className="padded-form-input">
@@ -192,6 +221,11 @@ function SignUpPane(props: SignUpPaneProps) {
                                           onChange={ev => props.setConfirmPassword(ev.target.value)}/>
                         </FloatingLabel>
                     </InputGroup>
+
+                    {props.showPasswordRequirements &&
+                        <p className="text-center mt-3 error">La password deve essere lunga almeno 8 caratteri, deve
+                            contenere una lettera maiuscola, una lettera
+                            minuscola e un numero.</p>}
                 </Col>
             </Row>
 
