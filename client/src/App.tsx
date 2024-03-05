@@ -102,7 +102,7 @@ function App2() {
             <Route path="/login" element={loggedIn ? <Navigate to="/"/> :
                 <LoginPage loggedIn={loggedIn} doLogin={doLogin} user={user} message={message}/>}/>
             <Route path="/signup/:registrationToken" element={loggedIn ? <Navigate to="/"/> : <SignUpPage/>}/>
-            <Route path="/successful-signup" element={<SuccessfulSignUpPage/>}/>
+            <Route path="/successful-signup" element={loggedIn ? <Navigate to="/"/> : <SuccessfulSignUpPage/>}/>
             <Route path="/" element={loggedIn ? <PageLayout user={user!}/> : <Navigate to="/login"/>}>
                 <Route index element={<Navigate to="/tickets" replace={true}/>}/>
                 <Route path="profile" element={<ProfilePage user={user!} doLogout={doLogout}/>}/>

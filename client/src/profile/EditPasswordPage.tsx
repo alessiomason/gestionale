@@ -6,6 +6,7 @@ import React, {useState} from "react";
 import userApis from "../api/userApis";
 import Floppy from "../new-bootstrap-icons/Floppy";
 import GlossyButton from "../buttons/GlossyButton";
+import {checkValidPassword} from "../functions";
 
 interface EditPasswordPageProps {
     readonly user: User
@@ -17,16 +18,29 @@ function EditPasswordPage(props: EditPasswordPageProps) {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [invalidPassword, setInvalidPassword] = useState(false);
+    const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
+
+    function handleCheckPassword() {
+        setInvalidPassword(false);
+        setShowPasswordRequirements(false);
+
+        if (!checkValidPassword(password)) {
+            setInvalidPassword(true);
+            setShowPasswordRequirements(true);
+            return
+        }
+    }
 
     function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
 
-        setInvalidPassword(false);
-
-        if (password === "" || password !== confirmPassword) {
+        handleCheckPassword();
+        if (password !== confirmPassword) {
             setInvalidPassword(true);
             return
         }
+
+        if (oldPassword === "") return
 
         userApis.updatePassword(props.user.id, oldPassword, password)
             .then(_ => navigate("/profile"))
@@ -63,16 +77,23 @@ function EditPasswordPage(props: EditPasswordPageProps) {
                             <Form.Control type='password' placeholder="Conferma nuova password"
                                           isInvalid={invalidPassword}
                                           value={confirmPassword}
-                                          onChange={ev => setConfirmPassword(ev.target.value)}/>
+                                          onChange={ev => setConfirmPassword(ev.target.value)}
+                                          onBlur={handleCheckPassword}/>
                         </FloatingLabel>
                     </InputGroup>
+
+                    {showPasswordRequirements &&
+                        <p className="text-center mt-3 error">La password deve essere lunga almeno 8 caratteri, deve
+                            contenere una lettera maiuscola, una lettera
+                            minuscola e un numero.</p>}
                 </Col>
                 <Col/>
             </Row>
 
             <Row className="d-flex justify-content-center mt-4">
                 <Col md={4} className="d-flex justify-content-center">
-                    <GlossyButton type="submit" icon={Floppy as Icon} onClick={handleSubmit}>Cambia password</GlossyButton>
+                    <GlossyButton type="submit" icon={Floppy as Icon} onClick={handleSubmit}>Cambia
+                        password</GlossyButton>
                 </Col>
             </Row>
         </Form>

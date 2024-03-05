@@ -6,7 +6,7 @@ import './SignUpPage.css';
 import roundLogo from "../images/logos/round_logo.png";
 import signUpApis from "../api/signUpApis";
 import {User} from "../models/user";
-import {checkValidEmail} from "../functions";
+import {checkValidEmail, checkValidPassword} from "../functions";
 
 function SignUpPage() {
     const navigate = useNavigate();
@@ -20,7 +20,19 @@ function SignUpPage() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [invalidPassword, setInvalidPassword] = useState(false);
+    const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+
+    function handleCheckPassword() {
+        setInvalidPassword(false);
+        setShowPasswordRequirements(false);
+
+        if (!checkValidPassword(password)) {
+            setInvalidPassword(true);
+            setShowPasswordRequirements(true);
+            return
+        }
+    }
 
     function doSignUp(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
@@ -32,7 +44,8 @@ function SignUpPage() {
             return
         }
 
-        if (password === "" || password !== confirmPassword) {
+        handleCheckPassword();
+        if (password !== confirmPassword) {
             setInvalidPassword(true);
             return
         }
@@ -76,7 +89,8 @@ function SignUpPage() {
                                     car={car} setCar={setCar}
                                     password={password} setPassword={setPassword}
                                     confirmPassword={confirmPassword} setConfirmPassword={setConfirmPassword}
-                                    invalidPassword={invalidPassword} errorMessage={errorMessage}/>}
+                                    invalidPassword={invalidPassword} handleCheckPassword={handleCheckPassword}
+                                    showPasswordRequirements={showPasswordRequirements} errorMessage={errorMessage}/>}
                         </Col>
                         <Col/>
                     </Row>
@@ -108,6 +122,8 @@ interface SignUpPaneProps {
     confirmPassword: string
     setConfirmPassword: React.Dispatch<React.SetStateAction<string>>
     invalidPassword: boolean
+    showPasswordRequirements: boolean
+    handleCheckPassword: () => void
     errorMessage: string
 }
 
@@ -188,7 +204,8 @@ function SignUpPane(props: SignUpPaneProps) {
                         <FloatingLabel controlId="floatingInput" label="Password">
                             <Form.Control type='password' placeholder="Password" isInvalid={props.invalidPassword}
                                           value={props.password}
-                                          onChange={ev => props.setPassword(ev.target.value)}/>
+                                          onChange={ev => props.setPassword(ev.target.value)}
+                                          onBlur={props.handleCheckPassword}/>
                         </FloatingLabel>
                     </InputGroup>
                     <InputGroup className="padded-form-input">
@@ -200,6 +217,11 @@ function SignUpPane(props: SignUpPaneProps) {
                                           onChange={ev => props.setConfirmPassword(ev.target.value)}/>
                         </FloatingLabel>
                     </InputGroup>
+
+                    {props.showPasswordRequirements &&
+                        <p className="text-center mt-3 error">La password deve essere lunga almeno 8 caratteri, deve
+                            contenere una lettera maiuscola, una lettera
+                            minuscola e un numero.</p>}
                 </Col>
             </Row>
 
