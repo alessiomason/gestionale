@@ -1,13 +1,16 @@
 import {Col, Row} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
-import {Job} from "../../../server/src/jobs/job";
+import {Job} from "../models/job";
 import jobApis from "../api/jobApis";
 import {JournalPlus} from "react-bootstrap-icons";
 import GlossyButton from "../buttons/GlossyButton";
+import JobPane from "./JobPane";
+import JobsTable from "./JobsTable";
 
 function JobsPage() {
     const [jobs, setJobs] = useState<Job[]>([]);
     const [dirty, setDirty] = useState(true);
+    const [showingNewJobPane, setShowingNewJobPane] = useState(false);
 
     useEffect(() => {
         if (dirty) {
@@ -28,7 +31,8 @@ function JobsPage() {
 
             <Row>
                 <Col md={4}>
-                    <GlossyButton icon={JournalPlus} onClick={() => {}} className="new-user-button">
+                    <GlossyButton icon={JournalPlus} onClick={() => setShowingNewJobPane(true)}
+                                  className="new-user-button">
                         Nuova commessa
                     </GlossyButton>
 
@@ -37,9 +41,7 @@ function JobsPage() {
                     </Row>
                 </Col>
                 <Col>
-                    <Row className="glossy-background">
-                        lista di commesse
-                    </Row>
+                    {showingNewJobPane ? <JobPane job={undefined} setJobs={setJobs}/> : <JobsTable jobs={jobs}/>}
                 </Col>
             </Row>
         </>

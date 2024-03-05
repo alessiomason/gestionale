@@ -1,7 +1,8 @@
 import "./SwitchToggle.css";
 
 interface SwitchToggleProps {
-    readonly isOn: boolean,
+    readonly id: string
+    readonly isOn: boolean
     readonly handleToggle: () => void
 }
 
@@ -13,12 +14,12 @@ function SwitchToggle(props: SwitchToggleProps) {
                 checked={props.isOn}
                 onChange={props.handleToggle}
                 className="react-switch-checkbox"
-                id={`react-switch-new`}
+                id={props.id}
                 type="checkbox"
             />
             <label
                 className={"react-switch-label" + (props.isOn ? " active-label" : "")}
-                htmlFor={`react-switch-new`}
+                htmlFor={props.id}
             >
                 <span className={`react-switch-button`}/>
             </label>
