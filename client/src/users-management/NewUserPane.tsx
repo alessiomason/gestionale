@@ -41,11 +41,20 @@ function NewUserPane(props: NewUserPaneProps) {
     const [car, setCar] = useState<string>("");
     const [costPerKm, setCostPerKm] = useState(0);
 
+    function handleEmailCheck() {
+        setInvalidEmail(false);
+
+        // empty email is allowed
+        if (email && !checkValidEmail(email)) {
+            setInvalidEmail(true);
+            return
+        }
+    }
+
     function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
         setInvalidName(false);
         setInvalidSurname(false);
-        setInvalidEmail(false);
 
         if (name === "") {
             setInvalidName(true);
@@ -56,10 +65,7 @@ function NewUserPane(props: NewUserPaneProps) {
             return
         }
 
-        if (!checkValidEmail(email)) {
-            setInvalidEmail(true);
-            return
-        }
+        handleEmailCheck();
 
         const newUser = new User(
             0,
@@ -171,7 +177,8 @@ function NewUserPane(props: NewUserPaneProps) {
                         <InputGroup.Text><EnvelopeAt/></InputGroup.Text>
                         <FloatingLabel controlId="floatingInput" label="Email">
                             <Form.Control type="email" placeholder="Email" value={email} isInvalid={invalidEmail}
-                                          onChange={ev => setEmail(ev.target.value)}/>
+                                          onChange={ev => setEmail(ev.target.value)}
+                                          onBlur={handleEmailCheck}/>
                         </FloatingLabel>
                     </InputGroup>
                     <InputGroup className="mt-2">

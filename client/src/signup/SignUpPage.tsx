@@ -23,7 +23,17 @@ function SignUpPage() {
     const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
-    function handleCheckPassword() {
+    function handleEmailCheck() {
+        setInvalidEmail(false);
+
+        // empty email is allowed
+        if (email && !checkValidEmail(email)) {
+            setInvalidEmail(true);
+            return
+        }
+    }
+
+    function handlePasswordCheck() {
         setInvalidPassword(false);
         setShowPasswordRequirements(false);
 
@@ -36,15 +46,9 @@ function SignUpPage() {
 
     function doSignUp(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
-        setInvalidPassword(false);
-        setInvalidEmail(false);
 
-        if (!checkValidEmail(email)) {
-            setInvalidEmail(true);
-            return
-        }
-
-        handleCheckPassword();
+        handleEmailCheck();
+        handlePasswordCheck();
         if (password !== confirmPassword) {
             setInvalidPassword(true);
             return
@@ -85,11 +89,11 @@ function SignUpPage() {
                                 <SignUpPane
                                     registrationToken={registrationToken} setExpired={setExpired}
                                     email={email} setEmail={setEmail} invalidEmail={invalidEmail}
-                                    phone={phone} setPhone={setPhone}
+                                     handleEmailCheck={handleEmailCheck} phone={phone} setPhone={setPhone}
                                     car={car} setCar={setCar}
                                     password={password} setPassword={setPassword}
                                     confirmPassword={confirmPassword} setConfirmPassword={setConfirmPassword}
-                                    invalidPassword={invalidPassword} handleCheckPassword={handleCheckPassword}
+                                    invalidPassword={invalidPassword} handlePasswordCheck={handlePasswordCheck}
                                     showPasswordRequirements={showPasswordRequirements} errorMessage={errorMessage}/>}
                         </Col>
                         <Col/>
@@ -113,6 +117,7 @@ interface SignUpPaneProps {
     email: string
     setEmail: React.Dispatch<React.SetStateAction<string>>
     invalidEmail: boolean
+    handleEmailCheck: () => void
     phone: string
     setPhone: React.Dispatch<React.SetStateAction<string>>
     car: string
@@ -123,7 +128,7 @@ interface SignUpPaneProps {
     setConfirmPassword: React.Dispatch<React.SetStateAction<string>>
     invalidPassword: boolean
     showPasswordRequirements: boolean
-    handleCheckPassword: () => void
+    handlePasswordCheck: () => void
     errorMessage: string
 }
 
@@ -180,7 +185,8 @@ function SignUpPane(props: SignUpPaneProps) {
                         <FloatingLabel controlId="floatingInput" label="Email">
                             <Form.Control type='email' placeholder="Email" value={props.email}
                                           isInvalid={props.invalidEmail}
-                                          onChange={ev => props.setEmail(ev.target.value)}/>
+                                          onChange={ev => props.setEmail(ev.target.value)}
+                                          onBlur={props.handleEmailCheck}/>
                         </FloatingLabel>
                     </InputGroup>
                     <InputGroup className="padded-form-input">
@@ -205,7 +211,7 @@ function SignUpPane(props: SignUpPaneProps) {
                             <Form.Control type='password' placeholder="Password" isInvalid={props.invalidPassword}
                                           value={props.password}
                                           onChange={ev => props.setPassword(ev.target.value)}
-                                          onBlur={props.handleCheckPassword}/>
+                                          onBlur={props.handlePasswordCheck}/>
                         </FloatingLabel>
                     </InputGroup>
                     <InputGroup className="padded-form-input">

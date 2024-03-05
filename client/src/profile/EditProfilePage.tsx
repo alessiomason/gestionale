@@ -20,9 +20,7 @@ function EditProfilePage(props: EditProfilePageProps) {
     const [phone, setPhone] = useState(props.user.phone);
     const [car, setCar] = useState(props.user.car);
 
-    function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-        event.preventDefault();
-
+    function handleEmailCheck() {
         setInvalidEmail(false);
 
         // empty email is allowed
@@ -30,6 +28,12 @@ function EditProfilePage(props: EditProfilePageProps) {
             setInvalidEmail(true);
             return
         }
+    }
+
+    function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        event.preventDefault();
+
+        handleEmailCheck();
 
         userApis.updateProfile(props.user.id, email, phone, car)
             .then(() => {
@@ -51,7 +55,8 @@ function EditProfilePage(props: EditProfilePageProps) {
                         <InputGroup.Text><EnvelopeAt/></InputGroup.Text>
                         <FloatingLabel controlId="floatingInput" label="Email">
                             <Form.Control type='email' placeholder="Email" value={email} isInvalid={invalidEmail}
-                                          onChange={ev => setEmail(ev.target.value)}/>
+                                          onChange={ev => setEmail(ev.target.value)}
+                                          onBlur={handleEmailCheck}/>
                         </FloatingLabel>
                     </InputGroup>
                     <InputGroup className="padded-form-input">

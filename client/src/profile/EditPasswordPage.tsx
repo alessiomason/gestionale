@@ -20,7 +20,7 @@ function EditPasswordPage(props: EditPasswordPageProps) {
     const [invalidPassword, setInvalidPassword] = useState(false);
     const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
 
-    function handleCheckPassword() {
+    function handlePasswordCheck() {
         setInvalidPassword(false);
         setShowPasswordRequirements(false);
 
@@ -34,7 +34,7 @@ function EditPasswordPage(props: EditPasswordPageProps) {
     function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
 
-        handleCheckPassword();
+        handlePasswordCheck();
         if (password !== confirmPassword) {
             setInvalidPassword(true);
             return
@@ -78,7 +78,7 @@ function EditPasswordPage(props: EditPasswordPageProps) {
                                           isInvalid={invalidPassword}
                                           value={confirmPassword}
                                           onChange={ev => setConfirmPassword(ev.target.value)}
-                                          onBlur={handleCheckPassword}/>
+                                          onBlur={handlePasswordCheck}/>
                         </FloatingLabel>
                     </InputGroup>
 

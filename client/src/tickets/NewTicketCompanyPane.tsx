@@ -17,17 +17,22 @@ function NewTicketCompanyPane(props: NewTicketCompanyPaneProps) {
     const [invalidEmail, setInvalidEmail] = useState(false);
     const [contact, setContact] = useState("");
 
-    function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-        event.preventDefault();
-
+    function handleEmailCheck() {
         setInvalidEmail(false);
 
-        if (name.trim() === "") return
-
-        if (!checkValidEmail(email)) {
+        // empty email is allowed
+        if (email && !checkValidEmail(email)) {
             setInvalidEmail(true);
             return
         }
+    }
+
+    function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        event.preventDefault();
+
+        if (name.trim() === "") return
+
+        handleEmailCheck();
 
         ticketCompanyApis.createTicketCompany(name, email, contact)
             .then(ticketCompany => {
@@ -56,7 +61,8 @@ function NewTicketCompanyPane(props: NewTicketCompanyPaneProps) {
                         <InputGroup.Text><EnvelopeAt/></InputGroup.Text>
                         <FloatingLabel controlId="floatingInput" label="Email">
                             <Form.Control type="email" placeholder="Email" value={email} isInvalid={invalidEmail}
-                                          onChange={ev => setEmail(ev.target.value)}/>
+                                          onChange={ev => setEmail(ev.target.value)}
+                                          onBlur={handleEmailCheck}/>
                         </FloatingLabel>
                     </InputGroup>
                     <InputGroup className="mt-2">
