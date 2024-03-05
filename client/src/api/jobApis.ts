@@ -34,11 +34,16 @@ async function getJob(jobId: string) {
     }
 }
 
-async function createJob(job: Job) {
+function prepareJobForServer(job: Job) {
     job.finalClient = job.finalClient === "" ? undefined : job.finalClient;
     job.orderName = job.orderName === "" ? undefined : job.orderName;
     job.dueDate = job.dueDate === "" ? null : job.dueDate;
     job.deliveryDate = job.deliveryDate === "" ? null : job.deliveryDate;
+    return job;
+}
+
+async function createJob(job: Job) {
+    const newJob = prepareJobForServer(job);
 
     const response = await fetch(new URL("jobs", apiUrl), {
         method: 'POST',
@@ -47,7 +52,7 @@ async function createJob(job: Job) {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         },
-        body: JSON.stringify(job),
+        body: JSON.stringify(newJob),
     });
     if (response.ok) {
         return await response.json();
@@ -57,6 +62,8 @@ async function createJob(job: Job) {
 }
 
 async function updateJob(job: Job) {
+    const updatedJob = prepareJobForServer(job);
+
     const response = await fetch(new URL(`jobs/${job.id}`, apiUrl), {
         method: 'PUT',
         credentials: 'include',
@@ -64,7 +71,7 @@ async function updateJob(job: Job) {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         },
-        body: JSON.stringify(job),
+        body: JSON.stringify(updatedJob),
     });
     if (response.ok) {
         return true;

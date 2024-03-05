@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import jobApis from "../api/jobApis";
 import {Job} from "../models/job";
 import JobPane from "./JobPane";
+import {Row} from "react-bootstrap";
 
 function JobPage() {
     const {jobId} = useParams();
@@ -16,9 +17,17 @@ function JobPage() {
         }
     }, []);
 
-    return (
-        <JobPane job={job}/>
-    );
+    if (job) {
+        return (
+            <JobPane job={job} setJob={setJob}/>
+        );
+    } else {
+        return (
+            <Row className="glossy-background">
+                <h3>Commessa {jobId} non trovata</h3>
+            </Row>
+        );
+    }
 }
 
 export default JobPage;

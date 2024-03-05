@@ -1,5 +1,5 @@
 import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
-import {Building, CurrencyEuro, Icon} from "react-bootstrap-icons";
+import {Building, Check2, CurrencyEuro, Icon} from "react-bootstrap-icons";
 import React, {useState} from "react";
 import SwitchToggle from "../users-management/SwitchToggle";
 import GlossyButton from "../buttons/GlossyButton";
@@ -11,6 +11,7 @@ import {useNavigate} from "react-router-dom";
 interface JobPaneProps {
     readonly job: Job | undefined
     readonly setJobs?: React.Dispatch<React.SetStateAction<Job[]>>
+    readonly setJob?: React.Dispatch<React.SetStateAction<Job | undefined>>
 }
 
 function JobPane(props: JobPaneProps) {
@@ -28,6 +29,8 @@ function JobPane(props: JobPaneProps) {
     const [lost, setLost] = useState(props.job?.lost ?? false);
     const [design, setDesign] = useState(props.job?.design ?? false);
     const [construction, setConstruction] = useState(props.job?.construction ?? false);
+
+    const [updated, setUpdated] = useState(false);
 
     const navigate = useNavigate();
 
@@ -51,7 +54,12 @@ function JobPane(props: JobPaneProps) {
         );
 
         if (props.job) {    // existing job, update
-
+            jobApis.updateJob(job)
+                .then(_ => {
+                    props.setJob!(job);
+                    setUpdated(true);
+                })
+                .catch(err => console.error(err))
         } else {    // new job, create
             jobApis.createJob(job)
                 .then(job => {
@@ -177,7 +185,7 @@ function JobPane(props: JobPaneProps) {
 
                     {props.job &&
                         <Col>
-                            Dettagli
+                            Dettagli costi
                         </Col>
                     }
                 </Row>
@@ -185,7 +193,7 @@ function JobPane(props: JobPaneProps) {
 
             <Row className="d-flex justify-content-center my-4">
                 <Col sm={4} className="d-flex justify-content-center">
-                    <GlossyButton type="submit" icon={Floppy as Icon} onClick={handleSubmit}>{props.job ? "Aggiorna" : "Salva"}</GlossyButton>
+                    <GlossyButton type="submit" icon={updated ? Check2 : (Floppy as Icon)} onClick={handleSubmit}>{props.job ? (updated ? "Aggiornato" : "Aggiorna") : "Salva"}</GlossyButton>
                 </Col>
             </Row>
         </Form>
