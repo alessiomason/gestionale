@@ -13,7 +13,7 @@ interface NewTicketOrderModalProps {
     readonly setShow: React.Dispatch<React.SetStateAction<boolean>>
     readonly ticketCompany: TicketCompany
     readonly setTicketOrders: React.Dispatch<React.SetStateAction<TicketOrder[]>>
-    readonly updateSelectedCompany: (updatedTicketCompany: TicketCompany) => void
+    readonly updateSelectedCompany: (updatedTicketCompany: TicketCompany | undefined) => void
 }
 
 function NewTicketOrderModal(props: NewTicketOrderModalProps) {

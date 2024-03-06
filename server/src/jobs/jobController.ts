@@ -99,21 +99,22 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler) {
     app.put(`${baseURL}/:jobId`,
         isLoggedIn,
         param("jobId").isString(),
-        body("subject").optional({values: "null"}).isString(),
-        body("client").optional({values: "null"}).isString(),
+        body("subject").isString(),
+        body("client").isString(),
         body("finalClient").optional({values: "null"}).isString(),
         body("orderName").optional({values: "null"}).isString(),
         body("orderAmount").optional({values: "null"}).isFloat(),
         body("startDate").optional({values: "null"}).isString(),
         body("deliveryDate").optional({values: "null"}).isString(),
         body("notes").optional({values: "null"}).isString(),
-        body("active").optional({values: "null"}).isBoolean(),
-        body("lost").optional({values: "null"}).isBoolean(),
-        body("design").optional({values: "null"}).isBoolean(),
-        body("construction").optional({values: "null"}).isBoolean(),
+        body("active").isBoolean(),
+        body("lost").isBoolean(),
+        body("design").isBoolean(),
+        body("construction").isBoolean(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
+                console.log(errors)
                 res.status(ParameterError.code).json(new ParameterError("There was an error with the parameters!"))
                 return
             }
@@ -135,7 +136,7 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler) {
             )
 
             try {
-                const job = await getJob(req.params.jobId)
+                const job = await getJob(req.params.jobId);
 
                 if (job) {
                     await updateJob(updatedJob)

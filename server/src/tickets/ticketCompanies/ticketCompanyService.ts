@@ -36,6 +36,12 @@ export async function createTicketCompany(name: string, email: string | undefine
     return new TicketCompany(ticketCompanyIds[0], name, email, contact);
 }
 
+export async function updateTicketCompany(ticketCompany: TicketCompany) {
+    await knex("ticketCompanies")
+        .where({id: ticketCompany.id})
+        .update(ticketCompany);
+}
+
 export async function deleteTicketCompany(id: number) {
     await knex("ticketCompanies")
         .where({id: id})
