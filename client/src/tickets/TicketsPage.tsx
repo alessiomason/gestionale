@@ -44,7 +44,12 @@ function TicketsPage() {
             setTicketCompanies(ticketCompanies => {
                 const newTicketCompanies = ticketCompanies;
                 const index = newTicketCompanies.findIndex(t => t.id === updatedTicketCompany.id);
-                newTicketCompanies[index] = updatedTicketCompany;
+
+                if (index === -1) {
+                    newTicketCompanies.push(updatedTicketCompany);
+                } else {
+                    newTicketCompanies[index] = updatedTicketCompany;
+                }
                 return newTicketCompanies;
             })
         } else {    // deleted company, refresh
