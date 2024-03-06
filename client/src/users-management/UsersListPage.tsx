@@ -22,6 +22,7 @@ import NewUserPane from "./NewUserPane";
 import GlossyButton from "../buttons/GlossyButton";
 import Floppy from "../new-bootstrap-icons/Floppy";
 import {RegisteredSection, NoRegistrationSection} from "./UsersListSections";
+import {checkValidEmail} from "../functions";
 
 function compareUsers(a: User, b: User) {
     // sort active first
@@ -51,6 +52,7 @@ function UsersListPage() {
     const [role, setRole] = useState<"user" | "admin" | "dev" | "">("");
     const [type, setType] = useState<"office" | "workshop" | "">("");
     const [email, setEmail] = useState<string>("");
+    const [invalidEmail, setInvalidEmail] = useState(false);
     const [phone, setPhone] = useState<string>("");
     const [hoursPerDay, setHoursPerDay] = useState(0);
     const [costPerHour, setCostPerHour] = useState(0);
@@ -89,10 +91,21 @@ function UsersListPage() {
         setShowingNewUser(true);
     }
 
+    function handleEmailCheck() {
+        setInvalidEmail(false);
+
+        // empty email is allowed
+        if (email && !checkValidEmail(email)) {
+            setInvalidEmail(true);
+        }
+    }
+
     function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
 
         if (selectedUser === undefined || role === "" || type === "") return
+
+        handleEmailCheck();
 
         let user = selectedUser;
         user.active = active;
@@ -178,7 +191,8 @@ function UsersListPage() {
                                             <XCircle className="me-2"/>} {active ? "Attivo" : "Non attivo"}
                                     </Col>
                                     <Col className="d-flex align-items-center">
-                                        <SwitchToggle id="active-toggle" isOn={active} handleToggle={() => setActive(!active)}/>
+                                        <SwitchToggle id="active-toggle" isOn={active}
+                                                      handleToggle={() => setActive(!active)}/>
                                     </Col>
                                 </Row>
 
@@ -217,7 +231,9 @@ function UsersListPage() {
                                         <InputGroup.Text><EnvelopeAt/></InputGroup.Text>
                                         <FloatingLabel controlId="floatingInput" label="Email">
                                             <Form.Control type="email" placeholder="Email" value={email}
-                                                          onChange={ev => setEmail(ev.target.value)}/>
+                                                          isInvalid={invalidEmail}
+                                                          onChange={ev => setEmail(ev.target.value)}
+                                                          onBlur={handleEmailCheck}/>
                                         </FloatingLabel>
                                     </InputGroup>
                                     <InputGroup className="mt-2">
@@ -239,7 +255,8 @@ function UsersListPage() {
                                     <InputGroup className="mt-2">
                                         <InputGroup.Text><Coin/></InputGroup.Text>
                                         <FloatingLabel controlId="floatingInput" label="Costo all'ora (euro)">
-                                            <Form.Control type="number" step={0.5} min={0} placeholder="Costo all'ora (euro)"
+                                            <Form.Control type="number" step={0.5} min={0}
+                                                          placeholder="Costo all'ora (euro)"
                                                           value={costPerHour}
                                                           onChange={ev => setCostPerHour(parseFloat(ev.target.value))}/>
                                         </FloatingLabel>

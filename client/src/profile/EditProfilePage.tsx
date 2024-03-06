@@ -6,6 +6,7 @@ import React, {useState} from "react";
 import userApis from "../api/userApis";
 import GlossyButton from "../buttons/GlossyButton";
 import Floppy from "../new-bootstrap-icons/Floppy";
+import {checkValidEmail} from "../functions";
 
 interface EditProfilePageProps {
     readonly user: User
@@ -15,18 +16,30 @@ interface EditProfilePageProps {
 function EditProfilePage(props: EditProfilePageProps) {
     const navigate = useNavigate();
     const [email, setEmail] = useState(props.user.email);
+    const [invalidEmail, setInvalidEmail] = useState(false);
     const [phone, setPhone] = useState(props.user.phone);
     const [car, setCar] = useState(props.user.car);
 
+    function handleEmailCheck() {
+        setInvalidEmail(false);
+
+        // empty email is allowed
+        if (email && !checkValidEmail(email)) {
+            setInvalidEmail(true);
+        }
+    }
+
     function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
+
+        handleEmailCheck();
 
         userApis.updateProfile(props.user.id, email, phone, car)
             .then(() => {
                 props.setDirtyUser(true);
                 navigate("/profile");
             })
-            .catch(err => console.log(err))
+            .catch(err => console.error(err))
     }
 
     return (
@@ -40,8 +53,9 @@ function EditProfilePage(props: EditProfilePageProps) {
                     <InputGroup className="padded-form-input">
                         <InputGroup.Text><EnvelopeAt/></InputGroup.Text>
                         <FloatingLabel controlId="floatingInput" label="Email">
-                            <Form.Control type='email' placeholder="Email" value={email}
-                                          onChange={ev => setEmail(ev.target.value)}/>
+                            <Form.Control type='email' placeholder="Email" value={email} isInvalid={invalidEmail}
+                                          onChange={ev => setEmail(ev.target.value)}
+                                          onBlur={handleEmailCheck}/>
                         </FloatingLabel>
                     </InputGroup>
                     <InputGroup className="padded-form-input">

@@ -4,27 +4,53 @@ import {Building, BuildingCheck, EnvelopeAt, PersonVcard} from "react-bootstrap-
 import React, {useState} from "react";
 import GlossyButton from "../buttons/GlossyButton";
 import ticketCompanyApis from "../api/ticketCompanyApis";
+import {checkValidEmail} from "../functions";
 
-interface NewTicketCompanyPaneProps {
-    readonly setDirty: React.Dispatch<React.SetStateAction<boolean>>
-    readonly selectTicketCompany: (ticketCompany: TicketCompany) => void
+interface EditTicketCompanyPaneProps {
+    readonly ticketCompany?: TicketCompany
+    readonly updateSelectedCompany: (updatedTicketCompany: TicketCompany | undefined) => void
 }
 
-function NewTicketCompanyPane(props: NewTicketCompanyPaneProps) {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [contact, setContact] = useState("");
+function EditTicketCompanyPane(props: EditTicketCompanyPaneProps) {
+    const [name, setName] = useState(props.ticketCompany?.name ?? "");
+    const [email, setEmail] = useState(props.ticketCompany?.email ?? "");
+    const [invalidEmail, setInvalidEmail] = useState(false);
+    const [contact, setContact] = useState(props.ticketCompany?.contact ?? "");
+
+    function handleEmailCheck() {
+        setInvalidEmail(false);
+
+        // empty email is allowed
+        if (email && !checkValidEmail(email)) {
+            setInvalidEmail(true);
+        }
+    }
 
     function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
+
         if (name.trim() === "") return
 
-        ticketCompanyApis.createTicketCompany(name, email, contact)
-            .then(ticketCompany => {
-                props.setDirty(true);
-                props.selectTicketCompany(ticketCompany);
-            })
-            .catch(err => console.log(err))
+        handleEmailCheck();
+
+        if (props.ticketCompany) {
+            const updatedTicketCompany = new TicketCompany(
+                props.ticketCompany.id,
+                name,
+                email === "" ? undefined : email,
+                contact === "" ? undefined : contact,
+                props.ticketCompany.usedHours,
+                props.ticketCompany.orderedHours
+            )
+
+            ticketCompanyApis.updateTicketCompany(updatedTicketCompany)
+                .then(ticketCompany => props.updateSelectedCompany(ticketCompany!))
+                .catch(err => console.error(err))
+        } else {
+            ticketCompanyApis.createTicketCompany(name, email, contact)
+                .then(ticketCompany => props.updateSelectedCompany(ticketCompany))
+                .catch(err => console.error(err))
+        }
     }
 
     return (
@@ -45,8 +71,9 @@ function NewTicketCompanyPane(props: NewTicketCompanyPaneProps) {
                     <InputGroup className="mt-2">
                         <InputGroup.Text><EnvelopeAt/></InputGroup.Text>
                         <FloatingLabel controlId="floatingInput" label="Email">
-                            <Form.Control type="email" placeholder="Email" value={email}
-                                          onChange={ev => setEmail(ev.target.value)}/>
+                            <Form.Control type="email" placeholder="Email" value={email} isInvalid={invalidEmail}
+                                          onChange={ev => setEmail(ev.target.value)}
+                                          onBlur={handleEmailCheck}/>
                         </FloatingLabel>
                     </InputGroup>
                     <InputGroup className="mt-2">
@@ -68,4 +95,4 @@ function NewTicketCompanyPane(props: NewTicketCompanyPaneProps) {
     );
 }
 
-export default NewTicketCompanyPane;
+export default EditTicketCompanyPane;

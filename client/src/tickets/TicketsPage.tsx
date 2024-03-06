@@ -5,7 +5,8 @@ import React, {useEffect, useState} from "react";
 import ticketCompanyApis from "../api/ticketCompanyApis";
 import TicketCompanyPane from "./TicketCompanyPane";
 import {TicketCompany} from "../models/ticketCompany";
-import NewTicketCompanyPane from "./NewTicketCompanyPane";
+import EditTicketCompanyPane from "./EditTicketCompanyPane";
+import TicketCompanyModifiablePane from "./TicketCompanyModifiablePane";
 
 function TicketsPage() {
     const [ticketCompanies, setTicketCompanies] = useState<TicketCompany[]>([]);
@@ -35,16 +36,20 @@ function TicketsPage() {
         setSelectedTicketCompany(ticketCompany);
     }
 
-    function updateSelectedCompany(updatedTicketCompany: TicketCompany) {
-        if (!selectedTicketCompany) return
-
+    function updateSelectedCompany(updatedTicketCompany: TicketCompany | undefined) {
+        setShowingNewTicketCompanyPane(false);
         setSelectedTicketCompany(updatedTicketCompany);
-        setTicketCompanies(ticketCompanies => {
-            const newTicketCompanies = ticketCompanies;
-            const index = newTicketCompanies.findIndex(t => t.id === updatedTicketCompany.id);
-            newTicketCompanies[index] = updatedTicketCompany;
-            return newTicketCompanies;
-        })
+
+        if (updatedTicketCompany) {
+            setTicketCompanies(ticketCompanies => {
+                const newTicketCompanies = ticketCompanies;
+                const index = newTicketCompanies.findIndex(t => t.id === updatedTicketCompany.id);
+                newTicketCompanies[index] = updatedTicketCompany;
+                return newTicketCompanies;
+            })
+        } else {    // deleted company, refresh
+            setDirty(true);
+        }
     }
 
     return (
@@ -94,9 +99,9 @@ function TicketsPage() {
 
                 <Col>
                     {showingNewTicketCompanyPane &&
-                        <NewTicketCompanyPane setDirty={setDirty} selectTicketCompany={selectTicketCompany}/>}
+                        <EditTicketCompanyPane updateSelectedCompany={updateSelectedCompany}/>}
                     {!showingNewTicketCompanyPane && selectedTicketCompany !== undefined &&
-                        <TicketCompanyPane ticketCompany={selectedTicketCompany} updateSelectedCompany={updateSelectedCompany}/>
+                        <TicketCompanyModifiablePane ticketCompany={selectedTicketCompany} updateSelectedCompany={updateSelectedCompany}/>
                     }
                 </Col>
             </Row>

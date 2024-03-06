@@ -170,7 +170,7 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
                         const info = await smtpTransport.sendMail(mailOptions);
                         console.log(info)
                     }
-                     */
+                    */
 
                     res.status(200).json(updatedTicket)
                 } else {
