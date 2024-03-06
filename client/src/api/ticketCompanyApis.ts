@@ -34,7 +34,15 @@ async function getTicketCompany(ticketCompanyId: string) {
         }
     });
     if (response.ok) {
-        return await response.json();
+        const ticketCompany = await response.json();
+        return new TicketCompany(
+            ticketCompany.id,
+            ticketCompany.name,
+            ticketCompany.email,
+            ticketCompany.contact,
+            ticketCompany.usedHours,
+            ticketCompany.orderedHours
+        );
     } else await handleApiError(response);
 }
 
@@ -59,6 +67,29 @@ async function createTicketCompany(name: string, email: string | undefined, cont
     } else await handleApiError(response);
 }
 
+async function updateTicketCompany(ticketCompany: TicketCompany) {
+    const response = await fetch(new URL(`tickets/companies/${ticketCompany.id}`, apiUrl), {
+        method: 'PUT',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(ticketCompany),
+    });
+    if (response.ok) {
+        const updatedTicketCompany = await response.json();
+        return new TicketCompany(
+            updatedTicketCompany.id,
+            updatedTicketCompany.name,
+            updatedTicketCompany.email,
+            updatedTicketCompany.contact,
+            updatedTicketCompany.usedHours,
+            updatedTicketCompany.orderedHours
+        );
+    } else await handleApiError(response);
+}
+
 async function deleteTicketCompany(ticketCompanyId: string) {
     const response = await fetch(new URL(`tickets/companies/${ticketCompanyId}`, apiUrl), {
         method: 'DELETE',
@@ -72,5 +103,11 @@ async function deleteTicketCompany(ticketCompanyId: string) {
     } else await handleApiError(response);
 }
 
-const ticketCompanyApis = {getAllTicketCompanies, getTicketCompany, createTicketCompany, deleteTicketCompany};
+const ticketCompanyApis = {
+    getAllTicketCompanies,
+    getTicketCompany,
+    createTicketCompany,
+    updateTicketCompany,
+    deleteTicketCompany
+};
 export default ticketCompanyApis;

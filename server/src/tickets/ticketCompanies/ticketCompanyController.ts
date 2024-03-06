@@ -7,7 +7,8 @@ import {
     createTicketCompany,
     deleteTicketCompany,
     getAllTicketCompanies,
-    getTicketCompany
+    getTicketCompany,
+    updateTicketCompany
 } from "./ticketCompanyService";
 import {TicketCompanyWithProgress} from "./ticketCompany";
 
@@ -85,6 +86,41 @@ export function useTicketCompaniesAPIs(app: Express, isLoggedIn: RequestHandler)
                 0
             );
             res.status(200).json(ticketCompanyWithProgress);
+        }
+    )
+
+    // update a ticket company
+    app.put(`${baseURL}/:ticketCompanyId`,
+        isLoggedIn,
+        param("ticketCompanyId").isInt(),
+        body("name").optional({values: "null"}).isString(),
+        body("email").optional({values: "null"}).isEmail(),
+        body("contact").optional({values: "null"}).isString(),
+        async (req: Request, res: Response) => {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                res.status(ParameterError.code).json(new ParameterError("There was an error in the body values!"))
+                return
+            }
+
+            try {
+                const ticketCompany = await getTicketCompany(parseInt(req.params.ticketCompanyId));
+
+                if (ticketCompany) {
+                    ticketCompany.name = req.body.name;
+                    ticketCompany.email = req.body.email;
+                    ticketCompany.contact = req.body.contact;
+
+                    await updateTicketCompany(ticketCompany);
+                    const updatedTicketCompany = await getTicketCompany(ticketCompany.id);
+                    res.status(200).json(await updatedTicketCompany!.attachProgress());
+                } else {
+                    res.status(TicketNotFound.code).json(new TicketCompanyNotFound())
+                }
+            } catch (err: any) {
+                console.error("Error while retrieving ticket companies: ", err.message);
+                res.status(InternalServerError.code).json(new InternalServerError("Error while retrieving ticket companies"))
+            }
         }
     )
 

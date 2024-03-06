@@ -5,7 +5,8 @@ import React, {useEffect, useState} from "react";
 import ticketCompanyApis from "../api/ticketCompanyApis";
 import TicketCompanyPane from "./TicketCompanyPane";
 import {TicketCompany} from "../models/ticketCompany";
-import NewTicketCompanyPane from "./NewTicketCompanyPane";
+import EditTicketCompanyPane from "./EditTicketCompanyPane";
+import TicketCompanyModifiablePane from "./TicketCompanyModifiablePane";
 
 function TicketsPage() {
     const [ticketCompanies, setTicketCompanies] = useState<TicketCompany[]>([]);
@@ -36,8 +37,7 @@ function TicketsPage() {
     }
 
     function updateSelectedCompany(updatedTicketCompany: TicketCompany) {
-        if (!selectedTicketCompany) return
-
+        setShowingNewTicketCompanyPane(false);
         setSelectedTicketCompany(updatedTicketCompany);
         setTicketCompanies(ticketCompanies => {
             const newTicketCompanies = ticketCompanies;
@@ -94,9 +94,9 @@ function TicketsPage() {
 
                 <Col>
                     {showingNewTicketCompanyPane &&
-                        <NewTicketCompanyPane setDirty={setDirty} selectTicketCompany={selectTicketCompany}/>}
+                        <EditTicketCompanyPane updateSelectedCompany={updateSelectedCompany}/>}
                     {!showingNewTicketCompanyPane && selectedTicketCompany !== undefined &&
-                        <TicketCompanyPane ticketCompany={selectedTicketCompany} updateSelectedCompany={updateSelectedCompany}/>
+                        <TicketCompanyModifiablePane ticketCompany={selectedTicketCompany} updateSelectedCompany={updateSelectedCompany}/>
                     }
                 </Col>
             </Row>

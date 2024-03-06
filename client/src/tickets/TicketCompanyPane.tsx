@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import ticketApis from "../api/ticketApis";
 import ticketOrderApis from "../api/ticketOrderApis";
 import LightGlossyButton from "../buttons/LightGlossyButton";
-import {PlusCircle} from "react-bootstrap-icons";
+import {PencilSquare, PlusCircle, Trash} from "react-bootstrap-icons";
 import TicketBox from "./TicketBox";
 import TicketOrderBox from "./TicketOrderBox";
 import TicketCompanyHoursProgress from "./TicketCompanyHoursProgress";
@@ -14,10 +14,13 @@ import NewTicketModal from "./NewTicketModal";
 import CloseTicketModal from "./CloseTicketModal";
 import {Ticket} from "../models/ticket";
 import dayjs from "dayjs";
+import GlossyButton from "../buttons/GlossyButton";
+import {useNavigate} from "react-router-dom";
 
 interface TicketCompanyPaneProps {
     readonly ticketCompany: TicketCompany
     readonly updateSelectedCompany: (updatedTicketCompany: TicketCompany) => void
+    readonly setModifying: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 function TicketCompanyPane(props: TicketCompanyPaneProps) {
@@ -85,77 +88,88 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
     }, [dirtyTicketCompanyProgress]);
 
     return (
-        <Row className="glossy-background">
-            <NewTicketOrderModal show={showNewOrderModal} setShow={setShowNewOrderModal}
-                                 ticketCompany={props.ticketCompany} setTicketOrders={setTicketOrders}
-                                 updateSelectedCompany={props.updateSelectedCompany}/>
-            <NewTicketModal show={showNewTicketModal} setShow={setShowNewTicketModal}
-                            ticketCompany={props.ticketCompany} setTickets={setTickets}
-                            setDirtyTicketCompanyProgress={setDirtyTicketCompanyProgress}/>
-            <CloseTicketModal ticketToBeClosed={ticketToBeClosed} setTicketToBeClosed={setTicketToBeClosed}
-                              setTickets={setTickets} setDirtyTicketCompanyProgress={setDirtyTicketCompanyProgress}/>
+        <>
+            <Row className="glossy-background">
+                <NewTicketOrderModal show={showNewOrderModal} setShow={setShowNewOrderModal}
+                                     ticketCompany={props.ticketCompany} setTicketOrders={setTicketOrders}
+                                     updateSelectedCompany={props.updateSelectedCompany}/>
+                <NewTicketModal show={showNewTicketModal} setShow={setShowNewTicketModal}
+                                ticketCompany={props.ticketCompany} setTickets={setTickets}
+                                setDirtyTicketCompanyProgress={setDirtyTicketCompanyProgress}/>
+                <CloseTicketModal ticketToBeClosed={ticketToBeClosed} setTicketToBeClosed={setTicketToBeClosed}
+                                  setTickets={setTickets}
+                                  setDirtyTicketCompanyProgress={setDirtyTicketCompanyProgress}/>
 
-            <Row>
-                <h3>{props.ticketCompany.name}</h3>
-                <p>Email: {props.ticketCompany.email ?? "non inserita"}</p>
-                <p>Riferimento: {props.ticketCompany.contact ?? "non inserito"}</p>
+                <Row>
+                    <h3>{props.ticketCompany.name}</h3>
+                    <p>Email: {props.ticketCompany.email ?? "non inserita"}</p>
+                    <p>Riferimento: {props.ticketCompany.contact ?? "non inserito"}</p>
+                </Row>
+
+                <Row className="my-4">
+                    <Col>
+                        <TicketCompanyHoursProgress ticketCompany={props.ticketCompany}/>
+                    </Col>
+                </Row>
+
+                <Row>
+                    <Col className="me-3">
+                        <Row className="d-flex align-items-center mb-3">
+                            <Col>
+                                <h4>Ordini</h4>
+                            </Col>
+                            <Col className="d-flex justify-content-end">
+                                <LightGlossyButton icon={PlusCircle} onClick={() => setShowNewOrderModal(true)}>
+                                    Nuovo ordine
+                                </LightGlossyButton>
+                            </Col>
+                        </Row>
+
+                        <Row>
+                            {ticketOrders
+                                .sort((a, b) => -1 * a.date.localeCompare(b.date))
+                                .map(ticketOrder => {
+                                    return (
+                                        <TicketOrderBox key={`ticket-order-${ticketOrder.id}`}
+                                                        ticketOrder={ticketOrder}/>
+                                    );
+                                })}
+                        </Row>
+                    </Col>
+
+                    <Col className="ms-3">
+                        <Row className="d-flex align-items-center mb-3">
+                            <Col>
+                                <h4>Ticket</h4>
+                            </Col>
+                            <Col className="d-flex justify-content-end">
+                                <LightGlossyButton icon={PlusCircle} onClick={() => setShowNewTicketModal(true)}>
+                                    Nuovo ticket
+                                </LightGlossyButton>
+                            </Col>
+                        </Row>
+
+                        <Row>
+                            {tickets
+                                .sort((a, b) => -1 * a.startTime!.localeCompare(b.startTime!))
+                                .map(ticket => {
+                                    return (
+                                        <TicketBox key={`ticket-order-${ticket.id}`} ticket={ticket}
+                                                   setTicketToBeEnded={setTicketToBeClosed}/>
+                                    );
+                                })}
+                        </Row>
+                    </Col>
+                </Row>
             </Row>
 
-            <Row className="my-4">
-                <Col>
-                    <TicketCompanyHoursProgress ticketCompany={props.ticketCompany}/>
+            <Row className="mt-3 mb-4">
+                <Col className="d-flex justify-content-evenly">
+                    <GlossyButton icon={PencilSquare} onClick={() => props.setModifying(true)}>Modifica azienda</GlossyButton>
+                    <GlossyButton icon={Trash} onClick={() => {}}>Elimina azienda</GlossyButton>
                 </Col>
             </Row>
-
-            <Row>
-                <Col className="me-3">
-                    <Row className="d-flex align-items-center mb-3">
-                        <Col>
-                            <h4>Ordini</h4>
-                        </Col>
-                        <Col className="d-flex justify-content-end">
-                            <LightGlossyButton icon={PlusCircle} onClick={() => setShowNewOrderModal(true)}>
-                                Nuovo ordine
-                            </LightGlossyButton>
-                        </Col>
-                    </Row>
-
-                    <Row>
-                        {ticketOrders
-                            .sort((a, b) => -1 * a.date.localeCompare(b.date))
-                            .map(ticketOrder => {
-                                return (
-                                    <TicketOrderBox key={`ticket-order-${ticketOrder.id}`} ticketOrder={ticketOrder}/>
-                                );
-                            })}
-                    </Row>
-                </Col>
-
-                <Col className="ms-3">
-                    <Row className="d-flex align-items-center mb-3">
-                        <Col>
-                            <h4>Ticket</h4>
-                        </Col>
-                        <Col className="d-flex justify-content-end">
-                            <LightGlossyButton icon={PlusCircle} onClick={() => setShowNewTicketModal(true)}>
-                                Nuovo ticket
-                            </LightGlossyButton>
-                        </Col>
-                    </Row>
-
-                    <Row>
-                        {tickets
-                            .sort((a, b) => -1 * a.startTime!.localeCompare(b.startTime!))
-                            .map(ticket => {
-                                return (
-                                    <TicketBox key={`ticket-order-${ticket.id}`} ticket={ticket}
-                                               setTicketToBeEnded={setTicketToBeClosed}/>
-                                );
-                            })}
-                    </Row>
-                </Col>
-            </Row>
-        </Row>
+        </>
     );
 }
 
