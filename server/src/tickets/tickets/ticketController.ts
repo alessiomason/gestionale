@@ -111,7 +111,6 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
                     const updatedTicket = await closeTicket(ticket.id, req.body.endTime);
 
                     // send report
-                    /*
                     if (ticket.company.email) {
                         // Nodemailer guide at https://nodemailer.com/smtp/oauth2/
                         // followed guide at https://medium.com/@nickroach_50526/sending-emails-with-node-js-using-smtp-gmail-and-oauth2-316fe9c790a1#
@@ -170,7 +169,6 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
                         const info = await smtpTransport.sendMail(mailOptions);
                         console.log(info)
                     }
-                    */
 
                     res.status(200).json(updatedTicket)
                 } else {
