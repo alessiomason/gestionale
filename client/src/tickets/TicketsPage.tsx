@@ -36,15 +36,20 @@ function TicketsPage() {
         setSelectedTicketCompany(ticketCompany);
     }
 
-    function updateSelectedCompany(updatedTicketCompany: TicketCompany) {
+    function updateSelectedCompany(updatedTicketCompany: TicketCompany | undefined) {
         setShowingNewTicketCompanyPane(false);
         setSelectedTicketCompany(updatedTicketCompany);
-        setTicketCompanies(ticketCompanies => {
-            const newTicketCompanies = ticketCompanies;
-            const index = newTicketCompanies.findIndex(t => t.id === updatedTicketCompany.id);
-            newTicketCompanies[index] = updatedTicketCompany;
-            return newTicketCompanies;
-        })
+
+        if (updatedTicketCompany) {
+            setTicketCompanies(ticketCompanies => {
+                const newTicketCompanies = ticketCompanies;
+                const index = newTicketCompanies.findIndex(t => t.id === updatedTicketCompany.id);
+                newTicketCompanies[index] = updatedTicketCompany;
+                return newTicketCompanies;
+            })
+        } else {    // deleted company, refresh
+            setDirty(true);
+        }
     }
 
     return (

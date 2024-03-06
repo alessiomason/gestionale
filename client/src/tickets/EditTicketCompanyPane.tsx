@@ -8,7 +8,7 @@ import {checkValidEmail} from "../functions";
 
 interface EditTicketCompanyPaneProps {
     readonly ticketCompany?: TicketCompany
-    readonly updateSelectedCompany: (updatedTicketCompany: TicketCompany) => void
+    readonly updateSelectedCompany: (updatedTicketCompany: TicketCompany | undefined) => void
 }
 
 function EditTicketCompanyPane(props: EditTicketCompanyPaneProps) {

@@ -63,7 +63,15 @@ async function createTicketCompany(name: string, email: string | undefined, cont
         body: JSON.stringify(body),
     });
     if (response.ok) {
-        return await response.json();
+        const newTicketCompany = await response.json();
+        return new TicketCompany(
+            newTicketCompany.id,
+            newTicketCompany.name,
+            newTicketCompany.email,
+            newTicketCompany.contact,
+            newTicketCompany.usedHours,
+            newTicketCompany.orderedHours
+        );
     } else await handleApiError(response);
 }
 
@@ -90,7 +98,7 @@ async function updateTicketCompany(ticketCompany: TicketCompany) {
     } else await handleApiError(response);
 }
 
-async function deleteTicketCompany(ticketCompanyId: string) {
+async function deleteTicketCompany(ticketCompanyId: number) {
     const response = await fetch(new URL(`tickets/companies/${ticketCompanyId}`, apiUrl), {
         method: 'DELETE',
         credentials: 'include',

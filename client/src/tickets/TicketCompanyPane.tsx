@@ -15,11 +15,11 @@ import CloseTicketModal from "./CloseTicketModal";
 import {Ticket} from "../models/ticket";
 import dayjs from "dayjs";
 import GlossyButton from "../buttons/GlossyButton";
-import {useNavigate} from "react-router-dom";
+import ticketCompanyApis from "../api/ticketCompanyApis";
 
 interface TicketCompanyPaneProps {
     readonly ticketCompany: TicketCompany
-    readonly updateSelectedCompany: (updatedTicketCompany: TicketCompany) => void
+    readonly updateSelectedCompany: (updatedTicketCompany: TicketCompany | undefined) => void
     readonly setModifying: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -86,6 +86,12 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
             setDirtyTicketCompanyProgress(false);
         }
     }, [dirtyTicketCompanyProgress]);
+
+    function deleteTicketCompany() {
+        ticketCompanyApis.deleteTicketCompany(props.ticketCompany.id)
+            .then(() => props.updateSelectedCompany(undefined))
+            .catch(err => console.error(err))
+    }
 
     return (
         <>
@@ -165,8 +171,9 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
 
             <Row className="mt-3 mb-4">
                 <Col className="d-flex justify-content-evenly">
-                    <GlossyButton icon={PencilSquare} onClick={() => props.setModifying(true)}>Modifica azienda</GlossyButton>
-                    <GlossyButton icon={Trash} onClick={() => {}}>Elimina azienda</GlossyButton>
+                    <GlossyButton icon={PencilSquare} onClick={() => props.setModifying(true)}>Modifica
+                        azienda</GlossyButton>
+                    <GlossyButton icon={Trash} onClick={deleteTicketCompany}>Elimina azienda</GlossyButton>
                 </Col>
             </Row>
         </>

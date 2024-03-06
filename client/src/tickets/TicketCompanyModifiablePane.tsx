@@ -5,13 +5,13 @@ import EditTicketCompanyPane from "./EditTicketCompanyPane";
 
 interface TicketCompanyModifiablePaneProps {
     readonly ticketCompany: TicketCompany
-    readonly updateSelectedCompany: (updatedTicketCompany: TicketCompany) => void
+    readonly updateSelectedCompany: (updatedTicketCompany: TicketCompany | undefined) => void
 }
 
 function TicketCompanyModifiablePane(props: TicketCompanyModifiablePaneProps) {
     const [modifying, setModifying] = useState(false);
 
-    function updateSelectedCompany(updatedTicketCompany: TicketCompany) {
+    function updateSelectedCompany(updatedTicketCompany: TicketCompany | undefined) {
         props.updateSelectedCompany(updatedTicketCompany);
         setModifying(false);
     }
