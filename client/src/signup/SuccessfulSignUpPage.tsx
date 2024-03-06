@@ -1,4 +1,4 @@
-import roundLogo from "../images/logos/round_logo.png";
+import logo from "../images/logos/logo.png";
 import {Button, Col, Container, Row} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 
@@ -7,7 +7,7 @@ function SuccessfulSignUpPage() {
 
     return (
         <Container>
-            <img src={roundLogo} alt="The logo of the company" className="login-logo"/>
+            <img src={logo} alt="The logo of the company" className="login-logo"/>
 
             <Row>
                 <div className="d-flex flex-column justify-content-center successful-signup-container">
