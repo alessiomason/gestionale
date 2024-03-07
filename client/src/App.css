@@ -22,8 +22,43 @@ p {
     color: #d50000;
 }
 
+table {
+    --bs-table-bg: transparent !important;
+}
+
+tbody>tr:hover {
+    cursor: pointer;
+}
+
+td, th {
+    white-space: pre-line;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    line-height: 1.5em;
+    max-height: 3em;    /* max-height double the line-height, so only two lines shown before wrapping text */
+    width: fit-content;
+    max-width: 8vw;
+}
+
+.table-selected-row {
+    background-color: #cccccc;
+}
+
 .form-floating>label {
     color: #595959;
+}
+
+.form-control:disabled {
+    background-color: rgba(204, 204, 204, 0.3);
+}
+
+.form-floating>.form-control:disabled~label::after,
+.form-floating>:disabled~label::after {
+    background-color: transparent;
+}
+
+.input-group-button {
+    max-height: initial;
 }
 
 /* Glossy classes */

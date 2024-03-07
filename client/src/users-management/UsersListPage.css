@@ -1,29 +1,4 @@
-table {
-    --bs-table-bg: transparent !important;
-}
-
-tbody>tr:hover {
-    cursor: pointer;
-}
-
 .new-user-button {
     width: 100%;
     margin: 10px 10px 15px;
-}
-
-.input-group-button {
-    max-height: initial;
-}
-
-.table-selected-row {
-    background-color: #cccccc;
-}
-
-.form-control:disabled {
-    background-color: rgba(204, 204, 204, 0.3);
-}
-
-.form-floating>.form-control:disabled~label::after,
-.form-floating>:disabled~label::after {
-    background-color: transparent;
 }
