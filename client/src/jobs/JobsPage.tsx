@@ -1,16 +1,23 @@
-import {Col, Row} from "react-bootstrap";
+import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
 import {Job} from "../models/job";
 import jobApis from "../api/jobApis";
-import {JournalPlus} from "react-bootstrap-icons";
+import {Building, JournalBookmark, JournalPlus, JournalText, JournalX} from "react-bootstrap-icons";
 import GlossyButton from "../buttons/GlossyButton";
 import JobPane from "./JobPane";
 import JobsTable from "./JobsTable";
+import SwitchToggle from "../users-management/SwitchToggle";
 
 function JobsPage() {
     const [jobs, setJobs] = useState<Job[]>([]);
     const [dirty, setDirty] = useState(true);
     const [showingNewJobPane, setShowingNewJobPane] = useState(false);
+
+    const [filteringId, setFilteringId] = useState("");
+    const [filteringSubject, setFilteringSubject] = useState("");
+    const [filteringClient, setFilteringClient] = useState("");
+    const [filteringFinalClient, setFilteringFinalClient] = useState("");
+    const [filteringOnlyActive, setFilteringOnlyActive] = useState(false);
 
     useEffect(() => {
         if (dirty) {
@@ -31,17 +38,82 @@ function JobsPage() {
 
             <Row>
                 <Col md={4}>
-                    <GlossyButton icon={JournalPlus} onClick={() => setShowingNewJobPane(true)}
+                    <GlossyButton icon={showingNewJobPane ? JournalX : JournalPlus}
+                                  onClick={() => setShowingNewJobPane(prevShowing => !prevShowing)}
                                   className="new-user-button">
-                        Nuova commessa
+                        {showingNewJobPane ? "Chiudi" : "Nuova commessa"}
                     </GlossyButton>
 
                     <Row className="glossy-background w-100">
-                        filtri
+                        <Form>
+                            <Row>
+                                <h4>Cerca per...</h4>
+                            </Row>
+
+                            <InputGroup className="mt-2">
+                                <InputGroup.Text><JournalBookmark/></InputGroup.Text>
+                                <FloatingLabel controlId="floatingInput" label="Commessa">
+                                    <Form.Control type="text" placeholder="Commessa" value={filteringId}
+                                                  onChange={ev => setFilteringId(ev.target.value)}/>
+                                </FloatingLabel>
+                            </InputGroup>
+                            <InputGroup className="mt-2">
+                                <InputGroup.Text><JournalText/></InputGroup.Text>
+                                <FloatingLabel controlId="floatingInput" label="Oggetto">
+                                    <Form.Control type="text" placeholder="Oggetto" value={filteringSubject}
+                                                  onChange={ev => setFilteringSubject(ev.target.value)}/>
+                                </FloatingLabel>
+                            </InputGroup>
+                            <InputGroup className="mt-2">
+                                <InputGroup.Text><Building/></InputGroup.Text>
+                                <FloatingLabel controlId="floatingInput" label="Cliente">
+                                    <Form.Control type="text" placeholder="Cliente" value={filteringClient}
+                                                  onChange={ev => setFilteringClient(ev.target.value)}/>
+                                </FloatingLabel>
+                            </InputGroup>
+                            <InputGroup className="mt-2">
+                                <InputGroup.Text><Building/></InputGroup.Text>
+                                <FloatingLabel controlId="floatingInput" label="Cliente finale">
+                                    <Form.Control type="text" placeholder="Cliente finale" value={filteringFinalClient}
+                                                  onChange={ev => setFilteringFinalClient(ev.target.value)}/>
+                                </FloatingLabel>
+                            </InputGroup>
+
+                            <Row className="mt-3">
+                                <Col className="d-flex justify-content-center">
+                                    <SwitchToggle id="active-toggle" isOn={filteringOnlyActive}
+                                                  handleToggle={() => setFilteringOnlyActive(prevFilter => !prevFilter)}/>
+                                    <label>Nascondi non attive</label>
+                                </Col>
+                            </Row>
+                        </Form>
                     </Row>
                 </Col>
+
                 <Col>
-                    {showingNewJobPane ? <JobPane job={undefined} setJobs={setJobs}/> : <JobsTable jobs={jobs}/>}
+                    {showingNewJobPane ?
+                        <JobPane job={undefined} setJobs={setJobs}/> :
+                        <JobsTable jobs={jobs.filter(job => {
+                            let keep = true;
+
+                            if (filteringId !== "") {
+                                keep = job.id.toLowerCase().includes(filteringId.toLowerCase())
+                            }
+                            if (keep && filteringSubject !== "") {
+                                keep = job.subject.toLowerCase().includes(filteringSubject.toLowerCase())
+                            }
+                            if (keep && filteringClient !== "") {
+                                keep = job.client.toLowerCase().includes(filteringClient.toLowerCase())
+                            }
+                            if (keep && filteringFinalClient !== "") {
+                                keep = job.finalClient?.toLowerCase().includes(filteringFinalClient.toLowerCase()) ?? false
+                            }
+                            if (keep && filteringOnlyActive) {
+                                keep = job.active
+                            }
+
+                            return keep;
+                        })}/>}
                 </Col>
             </Row>
         </>
