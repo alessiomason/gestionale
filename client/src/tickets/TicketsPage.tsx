@@ -3,7 +3,6 @@ import GlossyButton from "../buttons/GlossyButton";
 import {BuildingAdd} from "react-bootstrap-icons";
 import React, {useEffect, useState} from "react";
 import ticketCompanyApis from "../api/ticketCompanyApis";
-import TicketCompanyPane from "./TicketCompanyPane";
 import {TicketCompany} from "../models/ticketCompany";
 import EditTicketCompanyPane from "./EditTicketCompanyPane";
 import TicketCompanyModifiablePane from "./TicketCompanyModifiablePane";

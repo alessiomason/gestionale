@@ -31,6 +31,7 @@ function JobPane(props: JobPaneProps) {
     const [construction, setConstruction] = useState(props.job?.construction ?? false);
 
     const [updated, setUpdated] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const navigate = useNavigate();
 
@@ -54,13 +55,18 @@ function JobPane(props: JobPaneProps) {
         );
 
         if (props.job) {    // existing job, update
+            setErrorMessage("");
             jobApis.updateJob(job)
                 .then(_ => {
                     props.setJob!(job);
                     setUpdated(true);
                 })
-                .catch(err => console.error(err))
+                .catch(err => {
+                    setErrorMessage(err);
+                    console.error(err);
+                })
         } else {    // new job, create
+            setErrorMessage("");
             jobApis.createJob(job)
                 .then(job => {
                     props.setJobs!(jobs => {
@@ -70,7 +76,10 @@ function JobPane(props: JobPaneProps) {
 
                     navigate(`/jobs/${job.id}`);
                 })
-                .catch(err => console.error(err))
+                .catch(err => {
+                    setErrorMessage(err);
+                    console.error(err);
+                })
         }
     }
 
@@ -80,6 +89,10 @@ function JobPane(props: JobPaneProps) {
                 <Row>
                     <h3>{props.job ? `Commessa ${props.job.id}` : "Nuova commessa"}</h3>
                 </Row>
+
+                {errorMessage !== "" && <Row className="glossy-error-background">
+                    <Col>{errorMessage}</Col>
+                </Row>}
 
                 <Row>
                     <Col>
