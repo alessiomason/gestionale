@@ -2,7 +2,7 @@ import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
 import {Job} from "../models/job";
 import jobApis from "../api/jobApis";
-import {Building, JournalBookmark, JournalPlus, JournalText} from "react-bootstrap-icons";
+import {Building, JournalBookmark, JournalPlus, JournalText, JournalX} from "react-bootstrap-icons";
 import GlossyButton from "../buttons/GlossyButton";
 import JobPane from "./JobPane";
 import JobsTable from "./JobsTable";
@@ -38,9 +38,10 @@ function JobsPage() {
 
             <Row>
                 <Col md={4}>
-                    <GlossyButton icon={JournalPlus} onClick={() => setShowingNewJobPane(true)}
+                    <GlossyButton icon={showingNewJobPane ? JournalX : JournalPlus}
+                                  onClick={() => setShowingNewJobPane(prevShowing => !prevShowing)}
                                   className="new-user-button">
-                        Nuova commessa
+                        {showingNewJobPane ? "Chiudi" : "Nuova commessa"}
                     </GlossyButton>
 
                     <Row className="glossy-background w-100">
@@ -108,7 +109,7 @@ function JobsPage() {
                                 keep = job.finalClient?.toLowerCase().includes(filteringFinalClient.toLowerCase()) ?? false
                             }
                             if (keep && filteringOnlyActive) {
-                                keep  = job.active
+                                keep = job.active
                             }
 
                             return keep;
