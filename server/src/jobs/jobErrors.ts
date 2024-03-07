@@ -9,7 +9,7 @@ export class JobNotFound extends BaseError {
 }
 
 export class DuplicateJob extends BaseError {
-    static readonly code = 422
+    static readonly code = 409
 
     constructor() {
         super(DuplicateJob.code, "Una commessa con lo stesso identificativo esiste già!");

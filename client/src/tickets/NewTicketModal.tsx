@@ -1,7 +1,7 @@
 import {Card, Col, FloatingLabel, Form, InputGroup, Modal, Row} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
 import {TicketCompany} from "../models/ticketCompany";
-import {Building, HourglassTop} from "react-bootstrap-icons";
+import {HourglassTop, Sticky, TicketPerforated} from "react-bootstrap-icons";
 import GlossyButton from "../buttons/GlossyButton";
 import dayjs from "dayjs";
 import "./NewTicketModal.css";
@@ -90,7 +90,7 @@ function NewTicketModal(props: NewTicketModalProps) {
 
                     <Row>
                         <InputGroup className="mt-2">
-                            <InputGroup.Text><Building/></InputGroup.Text>
+                            <InputGroup.Text><TicketPerforated/></InputGroup.Text>
                             <FloatingLabel controlId="floatingInput" label="Titolo">
                                 <Form.Control type="text" placeholder="Titolo" value={title}
                                               onChange={ev => setTitle(ev.target.value)}/>
@@ -98,7 +98,7 @@ function NewTicketModal(props: NewTicketModalProps) {
                         </InputGroup>
 
                         <InputGroup className="mt-2">
-                            <InputGroup.Text><Building/></InputGroup.Text>
+                            <InputGroup.Text><Sticky/></InputGroup.Text>
                             <Form.Control as="textarea" placeholder="Descrizione" maxLength={2047} value={description}
                                           onChange={ev => setDescription(ev.target.value)}/>
                         </InputGroup>

@@ -1,7 +1,7 @@
 import {Col, FloatingLabel, Form, InputGroup, Modal, Row} from "react-bootstrap";
 import React, {useState} from "react";
 import {TicketCompany} from "../models/ticketCompany";
-import {Building, Clock, Icon} from "react-bootstrap-icons";
+import {Clock, Icon} from "react-bootstrap-icons";
 import GlossyButton from "../buttons/GlossyButton";
 import Floppy from "../new-bootstrap-icons/Floppy";
 import ticketOrderApis from "../api/ticketOrderApis";
@@ -66,7 +66,7 @@ function NewTicketOrderModal(props: NewTicketOrderModalProps) {
 
                     <Row>
                         <InputGroup className="mt-2">
-                            <InputGroup.Text><Building/></InputGroup.Text>
+                            <InputGroup.Text><Clock/></InputGroup.Text>
                             <FloatingLabel controlId="floatingInput" label="Ore">
                                 <Form.Control type="number" min={0} placeholder="Ore" value={hours}
                                               onChange={ev => setHours(parseInt(ev.target.value))}/>

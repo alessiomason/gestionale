@@ -1,5 +1,5 @@
 import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
-import {Building, Check2, CurrencyEuro, Icon} from "react-bootstrap-icons";
+import {Building, Check2, CurrencyEuro, Icon, JournalBookmark, JournalText, Sticky} from "react-bootstrap-icons";
 import React, {useState} from "react";
 import SwitchToggle from "../users-management/SwitchToggle";
 import GlossyButton from "../buttons/GlossyButton";
@@ -31,6 +31,7 @@ function JobPane(props: JobPaneProps) {
     const [construction, setConstruction] = useState(props.job?.construction ?? false);
 
     const [updated, setUpdated] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const navigate = useNavigate();
 
@@ -54,13 +55,18 @@ function JobPane(props: JobPaneProps) {
         );
 
         if (props.job) {    // existing job, update
+            setErrorMessage("");
             jobApis.updateJob(job)
                 .then(_ => {
                     props.setJob!(job);
                     setUpdated(true);
                 })
-                .catch(err => console.error(err))
+                .catch(err => {
+                    setErrorMessage(err);
+                    console.error(err);
+                })
         } else {    // new job, create
+            setErrorMessage("");
             jobApis.createJob(job)
                 .then(job => {
                     props.setJobs!(jobs => {
@@ -70,7 +76,10 @@ function JobPane(props: JobPaneProps) {
 
                     navigate(`/jobs/${job.id}`);
                 })
-                .catch(err => console.error(err))
+                .catch(err => {
+                    setErrorMessage(err);
+                    console.error(err);
+                })
         }
     }
 
@@ -80,6 +89,10 @@ function JobPane(props: JobPaneProps) {
                 <Row>
                     <h3>{props.job ? `Commessa ${props.job.id}` : "Nuova commessa"}</h3>
                 </Row>
+
+                {errorMessage !== "" && <Row className="glossy-error-background">
+                    <Col>{errorMessage}</Col>
+                </Row>}
 
                 <Row>
                     <Col>
@@ -114,14 +127,14 @@ function JobPane(props: JobPaneProps) {
                         <Row>
                             <Col>
                                 <InputGroup className="mt-2">
-                                    <InputGroup.Text><Building/></InputGroup.Text>
+                                    <InputGroup.Text><JournalBookmark/></InputGroup.Text>
                                     <FloatingLabel controlId="floatingInput" label="Commessa">
                                         <Form.Control type="text" placeholder="Commessa" value={id}
                                                       onChange={ev => setId(ev.target.value)}/>
                                     </FloatingLabel>
                                 </InputGroup>
                                 <InputGroup className="mt-2">
-                                    <InputGroup.Text><Building/></InputGroup.Text>
+                                    <InputGroup.Text><JournalText/></InputGroup.Text>
                                     <FloatingLabel controlId="floatingInput" label="Oggetto">
                                         <Form.Control type="text" placeholder="Oggetto" value={subject}
                                                       onChange={ev => setSubject(ev.target.value)}/>
@@ -142,7 +155,7 @@ function JobPane(props: JobPaneProps) {
                                     </FloatingLabel>
                                 </InputGroup>
                                 <InputGroup className="mt-2">
-                                    <InputGroup.Text><Building/></InputGroup.Text>
+                                    <InputGroup.Text><JournalText/></InputGroup.Text>
                                     <FloatingLabel controlId="floatingInput" label="Ordine">
                                         <Form.Control type="text" placeholder="Ordine" value={orderName}
                                                       onChange={ev => setOrderName(ev.target.value)}/>
@@ -157,7 +170,7 @@ function JobPane(props: JobPaneProps) {
                                     </FloatingLabel>
                                 </InputGroup>
                                 <InputGroup className="mt-2">
-                                    <InputGroup.Text><Building/></InputGroup.Text>
+                                    <InputGroup.Text><Sticky/></InputGroup.Text>
                                     <Form.Control as="textarea" placeholder="Note" maxLength={2047} value={notes}
                                                   onChange={ev => setNotes(ev.target.value)}/>
                                 </InputGroup>
