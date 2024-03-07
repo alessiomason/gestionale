@@ -2,7 +2,7 @@ import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
 import {Job} from "../models/job";
 import jobApis from "../api/jobApis";
-import {Building, JournalPlus} from "react-bootstrap-icons";
+import {Building, JournalBookmark, JournalPlus, JournalText} from "react-bootstrap-icons";
 import GlossyButton from "../buttons/GlossyButton";
 import JobPane from "./JobPane";
 import JobsTable from "./JobsTable";
@@ -50,14 +50,14 @@ function JobsPage() {
                             </Row>
 
                             <InputGroup className="mt-2">
-                                <InputGroup.Text><Building/></InputGroup.Text>
+                                <InputGroup.Text><JournalBookmark/></InputGroup.Text>
                                 <FloatingLabel controlId="floatingInput" label="Commessa">
                                     <Form.Control type="text" placeholder="Commessa" value={filteringId}
                                                   onChange={ev => setFilteringId(ev.target.value)}/>
                                 </FloatingLabel>
                             </InputGroup>
                             <InputGroup className="mt-2">
-                                <InputGroup.Text><Building/></InputGroup.Text>
+                                <InputGroup.Text><JournalText/></InputGroup.Text>
                                 <FloatingLabel controlId="floatingInput" label="Oggetto">
                                     <Form.Control type="text" placeholder="Oggetto" value={filteringSubject}
                                                   onChange={ev => setFilteringSubject(ev.target.value)}/>

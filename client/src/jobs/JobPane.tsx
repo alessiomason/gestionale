@@ -1,5 +1,5 @@
 import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
-import {Building, Check2, CurrencyEuro, Icon} from "react-bootstrap-icons";
+import {Building, Check2, CurrencyEuro, Icon, JournalBookmark, JournalText, Sticky} from "react-bootstrap-icons";
 import React, {useState} from "react";
 import SwitchToggle from "../users-management/SwitchToggle";
 import GlossyButton from "../buttons/GlossyButton";
@@ -127,14 +127,14 @@ function JobPane(props: JobPaneProps) {
                         <Row>
                             <Col>
                                 <InputGroup className="mt-2">
-                                    <InputGroup.Text><Building/></InputGroup.Text>
+                                    <InputGroup.Text><JournalBookmark/></InputGroup.Text>
                                     <FloatingLabel controlId="floatingInput" label="Commessa">
                                         <Form.Control type="text" placeholder="Commessa" value={id}
                                                       onChange={ev => setId(ev.target.value)}/>
                                     </FloatingLabel>
                                 </InputGroup>
                                 <InputGroup className="mt-2">
-                                    <InputGroup.Text><Building/></InputGroup.Text>
+                                    <InputGroup.Text><JournalText/></InputGroup.Text>
                                     <FloatingLabel controlId="floatingInput" label="Oggetto">
                                         <Form.Control type="text" placeholder="Oggetto" value={subject}
                                                       onChange={ev => setSubject(ev.target.value)}/>
@@ -155,7 +155,7 @@ function JobPane(props: JobPaneProps) {
                                     </FloatingLabel>
                                 </InputGroup>
                                 <InputGroup className="mt-2">
-                                    <InputGroup.Text><Building/></InputGroup.Text>
+                                    <InputGroup.Text><JournalText/></InputGroup.Text>
                                     <FloatingLabel controlId="floatingInput" label="Ordine">
                                         <Form.Control type="text" placeholder="Ordine" value={orderName}
                                                       onChange={ev => setOrderName(ev.target.value)}/>
@@ -170,7 +170,7 @@ function JobPane(props: JobPaneProps) {
                                     </FloatingLabel>
                                 </InputGroup>
                                 <InputGroup className="mt-2">
-                                    <InputGroup.Text><Building/></InputGroup.Text>
+                                    <InputGroup.Text><Sticky/></InputGroup.Text>
                                     <Form.Control as="textarea" placeholder="Note" maxLength={2047} value={notes}
                                                   onChange={ev => setNotes(ev.target.value)}/>
                                 </InputGroup>
