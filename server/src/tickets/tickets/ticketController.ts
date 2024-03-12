@@ -163,8 +163,8 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
 
                         const mailOptions: Mail.Options = {
                             from: "info@tlftechnology.it",
-                            to: "alessio.mason@me.com",
-                            subject: "Test report ticket di assistenza",
+                            to: ticket.company.email,
+                            subject: "Report ticket di assistenza",
                             html: mailHTML,
                             text: mailText
                         };
