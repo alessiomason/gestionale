@@ -176,7 +176,7 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
 
                         const mailOptions: Mail.Options = {
                             from: "ennio.mason@technomake.it",
-                            to: "alessio.mason@me.com",
+                            to: ticket.company.email,
                             subject: "Report ticket di assistenza",
                             html: mailHTML,
                             text: mailText
