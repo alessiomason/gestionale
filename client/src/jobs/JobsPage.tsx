@@ -97,7 +97,7 @@ function JobsPage() {
                             let keep = true;
 
                             if (filteringId !== "") {
-                                keep = job.id.toLowerCase().includes(filteringId.toLowerCase())
+                                keep = job.id.toLowerCase().startsWith(filteringId.toLowerCase())
                             }
                             if (keep && filteringSubject !== "") {
                                 keep = job.subject.toLowerCase().includes(filteringSubject.toLowerCase())

@@ -85,7 +85,7 @@ function TicketsPage() {
                                 .map((ticketCompany, i) => {
                                     return (
                                         <tr key={ticketCompany.id} onClick={() => selectTicketCompany(ticketCompany)}
-                                            className={(!showingNewTicketCompanyPane && ticketCompany == selectedTicketCompany) ?
+                                            className={(!showingNewTicketCompanyPane && ticketCompany === selectedTicketCompany) ?
                                                 "table-selected-row" : ""}>
                                             <td>{i + 1}</td>
                                             <td>{ticketCompany.name}</td>
