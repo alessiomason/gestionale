@@ -27,7 +27,7 @@ export function useSystemAPIs(app: Express, isLoggedIn: RequestHandler) {
 
     // get the company's logo
     app.get(`${baseURL}/logo`, async (_: Request, res: Response) => {
-        res.sendFile(path.resolve(__dirname, "../../../client", "src", "images", "logos", "logo.png"))
+        res.sendFile(path.resolve(__dirname, "../../../../client", "src", "images", "logos", "logo.png"))
     })
 
     app.post(`${baseURL}/closeDbConnection`, isLoggedIn, async (_: Request, res: Response) => {
