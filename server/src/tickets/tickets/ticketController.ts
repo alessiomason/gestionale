@@ -141,7 +141,7 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
                             <p>Durata: ${ticketDuration.humanize()}</p>
                             <p>Ore di assistenza ancora disponibili: ${humanize(remainingHours, 2)} ore</p>
                             <p>&nbsp;&nbsp;</p>
-                            <img src={imageURL} style="max-width: 70px; max-height: 70px;" alt="Il logo di TLF Technology">
+                            <img src="${imageURL}" style="max-width: 70px; max-height: 70px;" alt="Il logo di TLF Technology">
                             <p><strong>TLF Technology s.r.l. a Socio Unico</strong></p>
                             <p>Viale Artigianato, n°4 - 12051 Alba (CN) Italia</p>
                             <p>Tel. +39 0173 060521 /// Fax +39 0173 061055 /// www.tlftechnology.it</p>`;
