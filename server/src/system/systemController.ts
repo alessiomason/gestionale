@@ -2,6 +2,7 @@ import {Express, Request, Response} from "express";
 import {RequestHandler} from "express-serve-static-core";
 import {closeDbConnection, pingDB} from "./systemService";
 import {DatabaseError} from "../errors";
+import path from "path";
 
 export function useSystemAPIs(app: Express, isLoggedIn: RequestHandler) {
     const baseURL = "/api/system"
@@ -22,6 +23,11 @@ export function useSystemAPIs(app: Express, isLoggedIn: RequestHandler) {
         } catch (err: any) {
             console.error(`Error while pinging DB`, err.message);
         }
+    })
+
+    // get the company's logo
+    app.get(`${baseURL}/logo`, async (_: Request, res: Response) => {
+        res.sendFile(path.resolve(__dirname, "../../../client", "src", "images", "logos", "logo.png"))
     })
 
     app.post(`${baseURL}/closeDbConnection`, isLoggedIn, async (_: Request, res: Response) => {
