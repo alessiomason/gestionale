@@ -12,7 +12,7 @@ import {OAuth2Client} from "google-auth-library";
 import dayjs from "dayjs";
 
 export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
-    const baseURL = "/api/tickets"
+    const baseURL = "/api/tickets";
 
     // get tickets by company
     app.get(`${baseURL}/company/:ticketCompanyId`,
