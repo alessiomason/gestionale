@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {Col, Form, Row} from "react-bootstrap";
 import dayjs from "dayjs";
 import {upperCaseFirst} from "../functions";
-import {ArrowLeftSquare, ArrowRightSquare, CalendarRange} from "react-bootstrap-icons";
+import {ArrowLeftSquare, ArrowRightSquare, CalendarRange, CalendarX} from "react-bootstrap-icons";
 import "./WorkedHoursPage.css";
 import TextButton from "../buttons/TextButton";
 import WorkedHoursTable from "./WorkedHoursTable";
@@ -39,10 +39,10 @@ function WorkedHoursPage() {
             </Row>
 
             <Row className="glossy-background">
-                <Row className="mb-2">
+                <Row className="mb-3">
                     {selectingMonth ?
                         <MonthSelector month={month} setMonth={setMonth} year={year} setYear={setYear}/> :
-                        <h3 className="text-center">
+                        <h3 className="text-center mb-0">
                             {upperCaseFirst(dayjs(`${year}-${month}-01`).format("MMMM YYYY"))}
                         </h3>
                     }
@@ -52,7 +52,7 @@ function WorkedHoursPage() {
                     <Col className="d-flex justify-content-between align-items-center">
                         <ArrowLeftSquare className="hoverable" onClick={decreaseMonth}/>
 
-                        <TextButton icon={CalendarRange} onClick={() => setSelectingMonth(prevState => !prevState)}>
+                        <TextButton icon={selectingMonth ? CalendarX : CalendarRange} onClick={() => setSelectingMonth(prevState => !prevState)}>
                             Seleziona un mese
                         </TextButton>
 
@@ -60,7 +60,7 @@ function WorkedHoursPage() {
                     </Col>
                 </Row>
 
-                <Row>
+                <Row className="mt-2">
                     <WorkedHoursTable month={month} year={year}/>
                 </Row>
             </Row>

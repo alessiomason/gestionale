@@ -33,8 +33,8 @@
     background-color: #cccccc;
 }
 
-.worked-hours-table>thead>tr>th.festivity,
-.worked-hours-table>tbody>tr>td.festivity {
+.worked-hours-table>thead>tr>th.holiday,
+.worked-hours-table>tbody>tr>td.holiday {
     background-color: rgba(213, 0, 0, 0.15);
 }
 

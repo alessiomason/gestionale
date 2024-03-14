@@ -14,15 +14,17 @@ import {Credentials} from "./models/credentials";
 import userApis from "./api/userApis";
 import EditPasswordPage from "./profile/EditPasswordPage";
 import UsersListPage from "./users-management/UsersListPage";
+import JobsPage from "./jobs/JobsPage";
+import TicketsPage from "./tickets/TicketsPage";
+import JobPage from "./jobs/JobPage";
+import WorkedHoursPage from "./workedHours/WorkedHoursPage";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import "dayjs/locale/it";
-import JobsPage from "./jobs/JobsPage";
-import TicketsPage from "./tickets/TicketsPage";
-import JobPage from "./jobs/JobPage";
-import WorkedHoursPage from "./workedHours/WorkedHoursPage";
+import dayjsBusinessDays from 'dayjs-business-days2';
+import {dayjsBusinessDaysOptions} from "./dayjsBusinessDaysOptions";
 
 function App() {
     return (
@@ -56,7 +58,8 @@ function App2() {
         // check if already logged in
         checkAuth();
 
-        // set up dayjs with localization and durations
+        // set up dayjs with localization, durations and business days plugins
+        dayjs.extend(dayjsBusinessDays, dayjsBusinessDaysOptions);
         dayjs.extend(duration);
         dayjs.extend(relativeTime);
         dayjs.extend(localizedFormat);

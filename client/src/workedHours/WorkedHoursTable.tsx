@@ -33,7 +33,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
                 <th className="left-aligned">Descrizione</th>
                 {workdays.map(workday => {
                     return (
-                        <th key={workday.format()} className={workday.format("dd") === "do" ? "festivity" : undefined}>
+                        <th key={workday.format()} className={(!workday.isBusinessDay() || workday.isHoliday()) ? "holiday" : undefined}>
                             {workday.format("dd")}<br/>
                             {workday.format("D")}
                         </th>
@@ -55,7 +55,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
                                 <td className="left-aligned unhoverable"><strong>{job.client}</strong> - {job.subject}</td>
                                 {workdays.map(workday => {
                                     return (
-                                        <td  className={workday.format("dd") === "do" ? "festivity" : undefined}>
+                                        <td className={(!workday.isBusinessDay() || workday.isHoliday()) ? "holiday" : undefined}>
                                             {workItems?.find(workItem =>
                                                 workItem.job.id === job.id &&
                                                 workItem.date === workday.format("YYYY-MM-DD")
