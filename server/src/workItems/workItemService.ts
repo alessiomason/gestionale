@@ -4,9 +4,11 @@ import {UserNotFound} from "../users/userErrors";
 import {knex} from "../database/db";
 import {Job} from "../jobs/job";
 import {WorkItem} from "./workItem";
+import {use} from "passport";
 
 export async function getWorkItems(userId: number, month: string) {
     // check that month is YYYY-MM
+    let formattedMonth = month;
     const splitMonth = month.split("-");
     if (splitMonth.length === 2) {
         const year = parseInt(splitMonth[0]);
@@ -18,6 +20,8 @@ export async function getWorkItems(userId: number, month: string) {
         if (monthOfYear < 0 || monthOfYear > 12 || Number.isNaN(monthOfYear)) {
             return new InvalidMonth();
         }
+
+        formattedMonth = `${year}-${monthOfYear.toString().padStart(2, "0")}`;
     } else {
         return new InvalidMonth();
     }
@@ -31,7 +35,7 @@ export async function getWorkItems(userId: number, month: string) {
         .join("users", "workItems.userId", "users.id")
         .join("jobs", "workItems.jobId", "jobs.id")
         .whereRaw("work_items.user_id = ?", user.id)
-        .andWhereRaw("work_items.date LIKE ?", month + "-%")
+        .andWhereRaw("work_items.date LIKE ?", formattedMonth + "-%")
         .select("workItems.userId", "workItems.jobId", "jobs.subject", "jobs.client",
             "jobs.finalClient", "jobs.orderName", "jobs.orderAmount", "jobs.startDate",
             "jobs.deliveryDate", "jobs.notes", "jobs.active", "jobs.lost",

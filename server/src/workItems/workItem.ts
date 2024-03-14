@@ -1,4 +1,3 @@
-import {User} from "../users/user";
 import {Job} from "../jobs/job";
 
 export class WorkItem {
