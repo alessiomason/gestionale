@@ -1,6 +1,7 @@
 import {createElement, MouseEvent} from "react";
 import {Button} from "react-bootstrap";
 import {Icon} from "react-bootstrap-icons";
+import "./Buttons.css";
 
 interface GlossyButtonProps {
     readonly children: string
