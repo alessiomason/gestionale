@@ -1,7 +1,6 @@
 import React, {useState} from "react";
 import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
-import {Check2, Icon, Key, Link45deg} from "react-bootstrap-icons";
-import Copy from "../new-bootstrap-icons/Copy";
+import {Check2, Copy, Key, Link45deg} from "react-bootstrap-icons";
 import {User} from "../models/user";
 import dayjs from "dayjs";
 import GlossyButton from "../buttons/GlossyButton";
@@ -63,7 +62,7 @@ function NoRegistrationSection(props: UsersListSectionProps) {
                                       value={registrationLink}
                                       disabled/>
                     </FloatingLabel>
-                    <LightGlossyButton icon={copied ? Check2 : (Copy as Icon)} className="input-group-button"
+                    <LightGlossyButton icon={copied ? Check2 : (Copy)} className="input-group-button"
                                        onClick={handleCopy}>
                         {copied ? "Link copiato" : "Copia link"}
                     </LightGlossyButton>

@@ -1,10 +1,9 @@
 import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import {User} from "../models/user";
-import {Icon, Lock, LockFill} from "react-bootstrap-icons";
+import {Floppy, Lock, LockFill} from "react-bootstrap-icons";
 import {useNavigate} from "react-router-dom";
 import React, {useState} from "react";
 import userApis from "../api/userApis";
-import Floppy from "../new-bootstrap-icons/Floppy";
 import GlossyButton from "../buttons/GlossyButton";
 import {checkValidPassword} from "../functions";
 
@@ -91,7 +90,7 @@ function EditPasswordPage(props: EditPasswordPageProps) {
 
             <Row className="d-flex justify-content-center mt-4">
                 <Col md={4} className="d-flex justify-content-center">
-                    <GlossyButton type="submit" icon={Floppy as Icon} onClick={handleSubmit}>Cambia
+                    <GlossyButton type="submit" icon={Floppy} onClick={handleSubmit}>Cambia
                         password</GlossyButton>
                 </Col>
             </Row>
