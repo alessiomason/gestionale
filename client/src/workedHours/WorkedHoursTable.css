@@ -1,0 +1,12 @@
+.worked-hours-table>thead>tr>th:not(.left-aligned) {
+    text-align: center;
+    font-weight: 600;
+}
+
+.worked-hours-table>tbody>tr>td:not(.left-aligned) {
+    text-align: center;
+}
+
+.worked-hours-table {
+    font-size: smaller;
+}
