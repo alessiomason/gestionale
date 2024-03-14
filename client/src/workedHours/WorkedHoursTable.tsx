@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Table} from "react-bootstrap";
+import {Col, Row, Table} from "react-bootstrap";
 import dayjs from "dayjs";
 import "./WorkedHoursTable.css";
 import {WorkItem} from "../models/workItem";
@@ -33,8 +33,9 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
                 <th className="left-aligned">Descrizione</th>
                 {workdays.map(workday => {
                     return (
-                        <th key={workday.format()}>
-                            {workday.format("dd D")}
+                        <th key={workday.format()} className={workday.format("dd") === "do" ? "festivity" : undefined}>
+                            {workday.format("dd")}<br/>
+                            {workday.format("D")}
                         </th>
                     );
                 })}
@@ -50,19 +51,19 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
                     .map(job => {
                         return (
                             <tr key={job.id}>
-                                <td className="left-aligned">{job.id}</td>
-                                <td className="left-aligned"><strong>{job.client}</strong> - {job.subject}</td>
+                                <td className="left-aligned unhoverable">{job.id}</td>
+                                <td className="left-aligned unhoverable"><strong>{job.client}</strong> - {job.subject}</td>
                                 {workdays.map(workday => {
                                     return (
-                                      <td>
-                                          {workItems?.find(workItem =>
-                                              workItem.job.id === job.id &&
-                                              workItem.date === workday.format("YYYY-MM-DD")
-                                          )?.hours ?? ""}
-                                      </td>
+                                        <td  className={workday.format("dd") === "do" ? "festivity" : undefined}>
+                                            {workItems?.find(workItem =>
+                                                workItem.job.id === job.id &&
+                                                workItem.date === workday.format("YYYY-MM-DD")
+                                            )?.hours ?? ""}
+                                        </td>
                                     );
                                 })}
-                                <td>0</td>
+                                <td className="unhoverable">0</td>
                             </tr>
                         );
                     })

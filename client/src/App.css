@@ -26,11 +26,11 @@ table {
     --bs-table-bg: transparent !important;
 }
 
-tbody>tr:hover {
+tbody>tr:hover:not(.worked-hours-table>tbody>tr) {
     cursor: pointer;
 }
 
-td, th {
+td:not(.worked-hours-table>tbody>tr>td), th:not(.worked-hours-table>thead>tr>th) {
     white-space: pre-line;
     text-overflow: ellipsis;
     overflow: hidden;
