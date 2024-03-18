@@ -149,12 +149,10 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
 
                         const smtpTransport = nodemailer.createTransport({
                             service: "Outlook365",
-                            logger: true,
-                            debug: true,
                             secure: true,
                             auth: {
-                                user: "info@tlftechnology.it",
-                                pass: "dbrcpkcflnsxtwgg"
+                                user: process.env.EMAIL,
+                                pass: process.env.EMAIL_PASSWORD
                             },
                             tls: {
                                 ciphers: 'SSLv3'
@@ -162,7 +160,7 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
                         });
 
                         const mailOptions: Mail.Options = {
-                            from: "info@tlftechnology.it",
+                            from: process.env.EMAIL,
                             to: ticket.company.email,
                             subject: "Report ticket di assistenza",
                             html: mailHTML,
