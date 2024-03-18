@@ -1,34 +1,53 @@
-import {InvalidMonth} from "./workItemsErrors";
+import {InvalidDate} from "./workItemsErrors";
 import {getUser} from "../users/userService";
 import {UserNotFound} from "../users/userErrors";
 import {knex} from "../database/db";
 import {Job} from "../jobs/job";
 import {WorkItem} from "./workItem";
-import {use} from "passport";
+import {getJob} from "../jobs/jobService";
+import {JobNotFound} from "../jobs/jobErrors";
 
-export async function getWorkItems(userId: number, month: string) {
+function checkValidMonth(month: string) {
     // check that month is YYYY-MM
-    let formattedMonth = month;
     const splitMonth = month.split("-");
     if (splitMonth.length === 2) {
         const year = parseInt(splitMonth[0]);
-        if (year < 0 || Number.isNaN(year)) {
-            return new InvalidMonth();
-        }
-
         const monthOfYear = parseInt(splitMonth[1]);
-        if (monthOfYear < 0 || monthOfYear > 12 || Number.isNaN(monthOfYear)) {
-            return new InvalidMonth();
+        if (year < 0 || Number.isNaN(year) ||
+            monthOfYear < 0 || monthOfYear > 12 || Number.isNaN(monthOfYear)) {
+            throw new InvalidDate();
         }
 
-        formattedMonth = `${year}-${monthOfYear.toString().padStart(2, "0")}`;
+        return `${year}-${monthOfYear.toString().padStart(2, "0")}`;
     } else {
-        return new InvalidMonth();
+        throw new InvalidDate();
     }
+}
 
+function checkValidDate(date: string) {
+    // check that date is YYYY-MM-DD
+    const splitDate = date.split("-");
+    if (splitDate.length === 3) {
+        const year = parseInt(splitDate[0]);
+        const monthOfYear = parseInt(splitDate[1]);
+        const day = parseInt(splitDate[2]);
+        if (year < 0 || Number.isNaN(year) ||
+            monthOfYear < 0 || monthOfYear > 12 || Number.isNaN(monthOfYear) ||
+            day < 0 || day > 31 || Number.isNaN(day)) {
+            throw new InvalidDate();
+        }
+
+        return `${year}-${monthOfYear.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+    } else {
+        throw new InvalidDate();
+    }
+}
+
+export async function getWorkItems(userId: number, month: string) {
+    const formattedMonth = checkValidMonth(month);
     const user = await getUser(userId);
     if (!user) {
-        return new UserNotFound();
+        throw new UserNotFound();
     }
 
     const workItems = await knex("workItems")
@@ -60,4 +79,50 @@ export async function getWorkItems(userId: number, month: string) {
 
         return new WorkItem(workItem.userId, job, workItem.date, parseFloat(workItem.hours));
     })
+}
+
+export async function getWorkItem(userId: number, jobId: string, date: string) {
+    const formattedDate = checkValidDate(date);
+    const user = await getUser(userId);
+    if (!user) {
+        throw new UserNotFound();
+    }
+
+    const job = await getJob(jobId);
+    if (!job) {
+        throw new JobNotFound();
+    }
+
+    const workItem = await knex("workItems")
+        .join("users", "workItems.userId", "users.id")
+        .join("jobs", "workItems.jobId", "jobs.id")
+        .whereRaw("work_items.user_id = ?", user.id)
+        .andWhereRaw("work_items.job_id = ?", job.id)
+        .andWhereRaw("work_items.date = ?", formattedDate)
+        .first("workItems.userId", "workItems.jobId", "jobs.subject", "jobs.client",
+            "jobs.finalClient", "jobs.orderName", "jobs.orderAmount", "jobs.startDate",
+            "jobs.deliveryDate", "jobs.notes", "jobs.active", "jobs.lost",
+            "jobs.design", "jobs.construction", "workItems.date", "workItems.hours");
+
+    if (!workItem) return
+    return new WorkItem(workItem.userId, job, workItem.date, parseFloat(workItem.hours));
+}
+
+export async function createOrUpdateWorkItem(userId: number, jobId: string, date: string, hours: number) {
+    const existingWorkItem = await getWorkItem(userId, jobId, date);
+
+    if (existingWorkItem) {
+        if (hours === 0) {  // delete
+            await knex("workItems")
+                .where({userId, jobId, date})
+                .delete();
+        } else {            // update
+            await knex("workItems")
+                .where({userId, jobId, date})
+                .update({userId, jobId, date, hours});
+        }
+    } else {                // create
+        await knex("workItems")
+            .insert({userId, jobId, date, hours});
+    }
 }
