@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import "./WorkedHoursTable.css";
 import {WorkItem} from "../models/workItem";
 import workItemApis from "../api/workItemApis";
+import WorkedHoursTableCell from "./WorkedHoursTableCell";
 
 interface WorkedHoursTableProps {
     readonly month: number
@@ -55,12 +56,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
                                 <td className="left-aligned unhoverable"><strong>{job.client}</strong> - {job.subject}</td>
                                 {workdays.map(workday => {
                                     return (
-                                        <td className={(!workday.isBusinessDay() || workday.isHoliday()) ? "holiday" : undefined}>
-                                            {workItems?.find(workItem =>
-                                                workItem.job.id === job.id &&
-                                                workItem.date === workday.format("YYYY-MM-DD")
-                                            )?.hours ?? ""}
-                                        </td>
+                                        <WorkedHoursTableCell job={job} workday={workday} workItems={workItems}/>
                                     );
                                 })}
                                 <td className="unhoverable">0</td>

@@ -27,5 +27,27 @@ async function getUserWorkItems(month: string, userId: number) {
     } else await handleApiError(response);
 }
 
-const workItemApis = {getWorkItems, getUserWorkItems};
+async function createOrUpdateWorkItem(
+    jobId: string,
+    date: string,
+    hours: number,
+    userId: number | undefined = undefined
+) {
+    const workItem = {jobId, date, hours, userId};
+
+    const response = await fetch(new URL("workItems", apiUrl), {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(workItem),
+    });
+    if (response.ok) {
+        return true;
+    } else await handleApiError(response);
+}
+
+const workItemApis = {getWorkItems, getUserWorkItems, createOrUpdateWorkItem};
 export default workItemApis;
