@@ -32,7 +32,7 @@ function NewUserPane(props: NewUserPaneProps) {
     const [invalidSurname, setInvalidSurname] = useState(false);
     const [username, setUsername] = useState("");
     const [role, setRole] = useState<"user" | "admin" | "dev">("user");
-    const [type, setType] = useState<"office" | "workshop">("office");
+    const [type, setType] = useState<"office" | "workshop" | "machine">("office");
     const [email, setEmail] = useState<string>("");
     const [invalidEmail, setInvalidEmail] = useState(false);
     const [phone, setPhone] = useState<string>("");
@@ -146,7 +146,7 @@ function NewUserPane(props: NewUserPaneProps) {
                         <InputGroup.Text><PersonVcard/></InputGroup.Text>
                         <FloatingLabel controlId="floatingInput" label="Tipo">
                             <Form.Select value={type}
-                                         onChange={ev => setType(ev.target.value as "office" | "workshop")}>
+                                         onChange={ev => setType(ev.target.value as "office" | "workshop" | "machine")}>
                                 {User.allTypes.map(type => {
                                     return (
                                         <option key={type.toString()}

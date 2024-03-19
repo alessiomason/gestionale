@@ -29,7 +29,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
 
     useEffect(() => {
         if (dirtyWorkItems) {
-            workItemApis.getWorkItems(`${props.year}-${props.month}`)
+            workItemApis.getWorkItems(`${props.year}-${props.month}`, props.user.id)
                 .then(workItems => {
                     setWorkItems(workItems);
                     setDirtyWorkItems(false);
@@ -40,7 +40,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
 
     useEffect(() => {
         setDirtyWorkItems(true);
-    }, [props.month, props.year]);
+    }, [props.month, props.year, props.user.id]);
 
     function createOrUpdateLocalWorkItem(job: Job, date: string, hours: number) {
         setWorkItems(workItems => {

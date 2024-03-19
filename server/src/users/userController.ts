@@ -7,7 +7,10 @@ import {
     getUser,
     getPublicKeyIdFromUsername,
     getUserFromRegistrationToken,
-    updateUser, saveUserPassword, getFullUser
+    updateUser,
+    saveUserPassword,
+    getFullUser,
+    getAllMachineUsers
 } from "./userService";
 import {body, param, validationResult} from 'express-validator';
 import {UserNotFound, UserWithSameUsernameError} from "./userErrors";
@@ -26,6 +29,17 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
         } catch (err: any) {
             console.error("Error while retrieving users", err.message);
             res.status(InternalServerError.code).json(new InternalServerError("Error while retrieving users"))
+        }
+    })
+
+    // get all machine users
+    app.get(`${baseURL}/machines`, isLoggedIn, async (_: Request, res: Response) => {
+        try {
+            const machineUsers = await getAllMachineUsers()
+            res.status(200).json(machineUsers)
+        } catch (err: any) {
+            console.error("Error while retrieving machine users", err.message);
+            res.status(InternalServerError.code).json(new InternalServerError("Error while retrieving machine users"))
         }
     })
 
@@ -218,7 +232,7 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
 
             const userId = parseInt(req.params.userId);
             const roleName = req.body.role as ("user" | "admin" | "dev" | undefined);
-            const typeName = req.body.type as ("office" | "workshop" | undefined);
+            const typeName = req.body.type as ("office" | "workshop" | "machine" | undefined);
 
             await updateUser(
                 userId,

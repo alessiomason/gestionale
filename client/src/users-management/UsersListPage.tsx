@@ -49,7 +49,7 @@ function UsersListPage() {
 
     const [active, setActive] = useState(false);
     const [role, setRole] = useState<"user" | "admin" | "dev" | "">("");
-    const [type, setType] = useState<"office" | "workshop" | "">("");
+    const [type, setType] = useState<"office" | "workshop" | "machine" | "">("");
     const [email, setEmail] = useState<string>("");
     const [invalidEmail, setInvalidEmail] = useState(false);
     const [phone, setPhone] = useState<string>("");
@@ -200,7 +200,7 @@ function UsersListPage() {
                                         <InputGroup.Text><PersonVcard/></InputGroup.Text>
                                         <FloatingLabel controlId="floatingInput" label="Tipo">
                                             <Form.Select value={type}
-                                                         onChange={ev => setType(ev.target.value as "office" | "workshop")}>
+                                                         onChange={ev => setType(ev.target.value as "office" | "workshop" | "machine")}>
                                                 {User.allTypes.map(type => {
                                                     return (
                                                         <option key={type.toString()}

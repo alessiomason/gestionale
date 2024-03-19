@@ -15,6 +15,19 @@ async function getAllUsers() {
     } else await handleApiError(response);
 }
 
+async function getAllMachineUsers() {
+    const response = await fetch(new URL("users/machines", apiUrl), {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json'
+        }
+    });
+    if (response.ok) {
+        return await response.json();
+    } else await handleApiError(response);
+}
+
 async function getUser(userId: number) {
     const response = await fetch(new URL(`users/${userId}`, apiUrl), {
         method: 'GET',
@@ -84,5 +97,5 @@ async function updatePassword(userId: number, oldPassword: string, newPassword: 
     } else await handleApiError(response);
 }
 
-const userApis = {getAllUsers, getUser, updateUser, updateProfile, updatePassword};
+const userApis = {getAllUsers, getAllMachineUsers, getUser, updateUser, updateProfile, updatePassword};
 export default userApis;

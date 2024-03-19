@@ -31,6 +31,36 @@ export async function getAllUsers() {
     })
 }
 
+export async function getAllMachineUsers() {
+    const machineUsers = await knex<User>("users")
+        .where("type", "machine")
+        .andWhere({active: true})
+        .select();
+
+    return machineUsers.map(user => {
+        return new User(
+            user.id,
+            user.role,
+            user.type,
+            user.name,
+            user.surname,
+            user.username,
+            undefined,
+            undefined,
+            user.registrationToken,
+            user.tokenExpiryDate,
+            user.registrationDate,
+            user.hoursPerDay,
+            user.costPerHour,
+            user.active,
+            user.email,
+            user.phone,
+            user.car,
+            user.costPerKm
+        )
+    })
+}
+
 export async function getUser(id: number) {
     const user = await knex<User>("users")
         .first()
