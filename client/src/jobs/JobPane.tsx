@@ -106,7 +106,7 @@ function JobPane(props: JobPaneProps) {
                                 <div className="d-flex justify-content-center">
                                     <SwitchToggle id="lost-toggle" isOn={lost}
                                                   handleToggle={() => setLost(prevLost => !prevLost)}/>
-                                    <label>{lost ? "Persa" : "Non persa"}</label>
+                                    <label>Persa</label>
                                 </div>
 
                                 <div className="d-flex justify-content-center">
