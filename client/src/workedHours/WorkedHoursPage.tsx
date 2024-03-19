@@ -6,8 +6,13 @@ import {ArrowLeftSquare, ArrowRightSquare, CalendarRange, CalendarX} from "react
 import "./WorkedHoursPage.css";
 import TextButton from "../buttons/TextButton";
 import WorkedHoursTable from "./WorkedHoursTable";
+import {User} from "../models/user";
 
-function WorkedHoursPage() {
+interface WorkedHoursPageProps {
+    readonly user: User
+}
+
+function WorkedHoursPage(props: WorkedHoursPageProps) {
     const currentMonth = parseInt(dayjs().format("M"));
     const currentYear = parseInt(dayjs().format("YYYY"));
     const [month, setMonth] = useState(currentMonth);
@@ -61,7 +66,7 @@ function WorkedHoursPage() {
                 </Row>
 
                 <Row className="mt-2">
-                    <WorkedHoursTable month={month} year={year}/>
+                    <WorkedHoursTable user={props.user} month={month} year={year}/>
                 </Row>
             </Row>
         </>

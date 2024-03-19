@@ -10,12 +10,13 @@ interface WorkedHoursTableCellProps {
     readonly job: Job
     readonly workday: dayjs.Dayjs
     readonly workItems: WorkItem[] | undefined
+    readonly createOrUpdateLocalWorkItem: (job: Job, date: string, hours: number) => void
 }
 
 function WorkedHoursTableCell(props: WorkedHoursTableCellProps) {
+    const date = props.workday.format("YYYY-MM-DD");
     const initialWorkItemHours = props.workItems?.find(workItem =>
-        workItem.job.id === props.job.id &&
-        workItem.date === props.workday.format("YYYY-MM-DD")
+        workItem.job.id === props.job.id && workItem.date === date
     )?.hours.toString() ?? "";
 
     const [workItemHours, setWorkItemHours] = useState(initialWorkItemHours);
@@ -44,8 +45,9 @@ function WorkedHoursTableCell(props: WorkedHoursTableCellProps) {
             }
 
             if (!Number.isNaN(hours)) {
-                workItemApis.createOrUpdateWorkItem(props.job.id, props.workday.format("YYYY-MM-DD"), hours)
+                workItemApis.createOrUpdateWorkItem(props.job.id, date, hours)
                     .catch(err => console.error(err))
+                props.createOrUpdateLocalWorkItem(props.job, date, hours);
             }
         }
 
@@ -54,7 +56,7 @@ function WorkedHoursTableCell(props: WorkedHoursTableCellProps) {
 
     if (editing) {
         return (
-            <td key={`${props.job.id}-${props.workday.format()}`} onBlur={editWorkItem} className="work-item-input-td">
+            <td key={`td-${props.job.id}-${date}`} onBlur={editWorkItem} className="work-item-input-td">
                 <Form.Control size="sm" type="text" maxLength={3} plaintext autoFocus
                               value={workItemHours} onChange={handleInputChange}
                               className="work-item-input-control text-center"/>
@@ -62,7 +64,7 @@ function WorkedHoursTableCell(props: WorkedHoursTableCellProps) {
         );
     } else {
         return (
-            <td key={`${props.job.id}-${props.workday.format()}`}
+            <td key={`td-${props.job.id}-${date}`}
                 className={(!props.workday.isBusinessDay() || props.workday.isHoliday()) ? "holiday" : undefined}
                 onClick={() => setEditing(true)}>
                 {workItemHours}

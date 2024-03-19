@@ -116,7 +116,7 @@ function App2() {
                 <Route path="jobs" element={<JobsPage/>}/>
                 <Route path="jobs/:jobId" element={<JobPage/>}/>
                 <Route path="tickets" element={<TicketsPage/>}/>
-                <Route path="workedHours" element={<WorkedHoursPage/>}/>
+                <Route path="workedHours" element={<WorkedHoursPage user={user!}/>}/>
             </Route>
         </Routes>
     );
