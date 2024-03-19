@@ -4,7 +4,7 @@ import './MyNavbar.css';
 import horizontalWhiteLogo from '../images/logos/horizontal_white_logo.png';
 import {User} from "../models/user";
 import LightGlossyButton from "../buttons/LightGlossyButton";
-import {JournalBookmarkFill, PersonBadge, PersonVcard, TicketPerforated} from "react-bootstrap-icons";
+import {CalendarEvent, JournalBookmarkFill, PersonBadge, PersonVcard, TicketPerforated} from "react-bootstrap-icons";
 
 interface NavbarProps {
     readonly user: User
@@ -28,6 +28,9 @@ function MyNavbar(props: NavbarProps) {
                     </LightGlossyButton>
                     <LightGlossyButton icon={JournalBookmarkFill} className="me-3" onClick={() => navigate("/jobs")}>
                         Commesse
+                    </LightGlossyButton>
+                    <LightGlossyButton icon={CalendarEvent} className="me-3" onClick={() => navigate("/workedHours")}>
+                        Ore
                     </LightGlossyButton>
                     <LightGlossyButton icon={PersonVcard} className="me-3" onClick={() => navigate("/users")}>
                         Gestione utenti

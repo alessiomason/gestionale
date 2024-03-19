@@ -5,15 +5,14 @@ import {InternalServerError, ParameterError} from "../../errors";
 import {closeTicket, createTicket, deleteTicket, getTicket, getTickets} from "./ticketService";
 import {TicketAlreadyClosed, TicketCompanyNotFound, TicketNotFound} from "../ticketErrors";
 import {getTicketCompany} from "../ticketCompanies/ticketCompanyService";
-import dayjs from "dayjs";
 import {humanize} from "../../functions";
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
-import {google} from "googleapis";
-const OAuth2 = google.auth.OAuth2;
+import {OAuth2Client} from "google-auth-library";
+import dayjs from "dayjs";
 
 export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
-    const baseURL = "/api/tickets"
+    const baseURL = "/api/tickets";
 
     // get tickets by company
     app.get(`${baseURL}/company/:ticketCompanyId`,
@@ -109,6 +108,7 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
             if (ticket) {
                 if (!ticket.endTime) {
                     const updatedTicket = await closeTicket(ticket.id, req.body.endTime);
+                    res.status(200).json(updatedTicket)
 
                     // send report
                     if (ticket.company.email) {
@@ -116,7 +116,7 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
                         // followed guide at https://medium.com/@nickroach_50526/sending-emails-with-node-js-using-smtp-gmail-and-oauth2-316fe9c790a1#
                         // additional step at https://github.com/nodemailer/nodemailer/issues/266#issuecomment-542791806
 
-                        const oauth2Client = new OAuth2(
+                        const oauth2Client = new OAuth2Client(
                             process.env.EMAIL_CLIENT_ID, // ClientID
                             process.env.EMAIL_CLIENT_SECRET, // Client Secret
                             "https://developers.google.com/oauthplayground" // Redirect URL
@@ -131,13 +131,28 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
                         let remainingHours = ticketCompany.orderedHours - ticketCompany.usedHours;
                         remainingHours = remainingHours < 0 ? 0 : remainingHours;
 
-                        const mailHTML = `<p>Inviamo resoconto del ticket di assistenza.</p>
+                        const imageURL = `${process.env.APP_URL}/api/system/logo`;
+                        const mailHTML = `
+                            <p>Inviamo resoconto del ticket di assistenza.</p>
                             <h3>Ticket: ${ticket.title}</h3>
-                            <p>Descrizione: ${ticket.description}
+                            <p>Descrizione: ${ticket.description}</p>
                             <p>Inizio: ${dayjs(ticket.startTime).format("LL [alle] LT")}</p>
                             <p>Fine: ${dayjs(ticket.endTime).format("LL [alle] LT")}</p>
                             <p>Durata: ${ticketDuration.humanize()}</p>
-                            <p>Ore di assistenza ancora disponibili: ${humanize(remainingHours, 2)} ore</p>`;
+                            <p>Ore di assistenza ancora disponibili: ${humanize(remainingHours, 2)} ore</p>
+                            <p>&nbsp;&nbsp;</p>
+                            <img src="${imageURL}" style="max-width: 70px; max-height: 70px;" alt="Il logo di TLF Technology">
+                            <p><strong>TLF Technology s.r.l. a Socio Unico</strong></p>
+                            <p>Viale Artigianato, n°4 - 12051 Alba (CN) Italia</p>
+                            <p>Tel. +39 0173 060521 /// Fax +39 0173 061055 /// www.tlftechnology.it</p>`;
+                        const mailText = `
+                            Inviamo resoconto del ticket di assistenza.\n\n
+                            Ticket: ${ticket.title}\n
+                            Descrizione: ${ticket.description}\n
+                            Inizio: ${dayjs(ticket.startTime).format("LL [alle] LT")}\n
+                            Fine: ${dayjs(ticket.endTime).format("LL [alle] LT")}\n
+                            Durata: ${ticketDuration.humanize()}\n
+                            Ore di assistenza ancora disponibili: ${humanize(remainingHours, 2)} ore`;
 
                         const smtpTransport = nodemailer.createTransport({
                             host: "smtp.gmail.com",
@@ -161,16 +176,15 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
 
                         const mailOptions: Mail.Options = {
                             from: "ennio.mason@technomake.it",
-                            to: "alessio.mason@me.com",
+                            to: ticket.company.email,
                             subject: "Report ticket di assistenza",
-                            html: mailHTML
+                            html: mailHTML,
+                            text: mailText
                         };
 
                         const info = await smtpTransport.sendMail(mailOptions);
                         console.log(info)
                     }
-
-                    res.status(200).json(updatedTicket)
                 } else {
                     res.status(TicketAlreadyClosed.code).json(new TicketAlreadyClosed())
                 }

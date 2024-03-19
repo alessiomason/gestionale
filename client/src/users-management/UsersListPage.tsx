@@ -8,7 +8,7 @@ import {
     Clock,
     Coin,
     EnvelopeAt,
-    Icon,
+    Floppy,
     Person,
     PersonAdd,
     PersonBadge,
@@ -20,7 +20,6 @@ import SwitchToggle from "./SwitchToggle";
 import "./UsersListPage.css";
 import NewUserPane from "./NewUserPane";
 import GlossyButton from "../buttons/GlossyButton";
-import Floppy from "../new-bootstrap-icons/Floppy";
 import {RegisteredSection, NoRegistrationSection} from "./UsersListSections";
 import {checkValidEmail} from "../functions";
 
@@ -286,7 +285,7 @@ function UsersListPage() {
 
                             <Row className="d-flex justify-content-center my-4">
                                 <Col sm={4} className="d-flex justify-content-center">
-                                    <GlossyButton icon={Floppy as Icon} onClick={handleSubmit}>
+                                    <GlossyButton icon={Floppy} onClick={handleSubmit}>
                                         {savedUser ? "Salvato" : "Salva"}
                                     </GlossyButton>
                                 </Col>
