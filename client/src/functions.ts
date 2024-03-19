@@ -2,6 +2,10 @@ export function humanize(x: number, fractionDigits: number) {
     return x.toFixed(fractionDigits).replace(/\.?0*$/, '');
 }
 
+export function upperCaseFirst(str: string) {
+    return str[0].toUpperCase() + str.slice(1).toLowerCase();
+}
+
 // Extremely simple email validation function, useful to eliminate major mistakes.
 export function checkValidEmail(email: string) {
     return email.includes("@") && email.includes(".");

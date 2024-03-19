@@ -1,9 +1,8 @@
 import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
-import {Building, Check2, CurrencyEuro, Icon, JournalBookmark, JournalText, Sticky} from "react-bootstrap-icons";
+import {Building, Check2, CurrencyEuro, Floppy, JournalBookmark, JournalText, Sticky} from "react-bootstrap-icons";
 import React, {useState} from "react";
 import SwitchToggle from "../users-management/SwitchToggle";
 import GlossyButton from "../buttons/GlossyButton";
-import Floppy from "../new-bootstrap-icons/Floppy";
 import jobApis from "../api/jobApis";
 import {Job} from "../models/job";
 import {useNavigate} from "react-router-dom";
@@ -206,7 +205,7 @@ function JobPane(props: JobPaneProps) {
 
             <Row className="d-flex justify-content-center my-4">
                 <Col sm={4} className="d-flex justify-content-center">
-                    <GlossyButton type="submit" icon={updated ? Check2 : (Floppy as Icon)} onClick={handleSubmit}>{props.job ? (updated ? "Aggiornato" : "Aggiorna") : "Salva"}</GlossyButton>
+                    <GlossyButton type="submit" icon={updated ? Check2 : (Floppy)} onClick={handleSubmit}>{props.job ? (updated ? "Aggiornato" : "Aggiorna") : "Salva"}</GlossyButton>
                 </Col>
             </Row>
         </Form>

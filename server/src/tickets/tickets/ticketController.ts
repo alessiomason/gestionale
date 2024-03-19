@@ -9,10 +9,9 @@ import {humanize} from "../../functions";
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
 import dayjs from "dayjs";
-import path from "path";
 
 export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
-    const baseURL = "/api/tickets"
+    const baseURL = "/api/tickets";
 
     // get tickets by company
     app.get(`${baseURL}/company/:ticketCompanyId`,

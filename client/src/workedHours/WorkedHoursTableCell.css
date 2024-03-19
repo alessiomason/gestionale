@@ -1,0 +1,13 @@
+.work-item-input-td {
+    width: 4ch !important;
+    padding: 0 !important;
+    background-color: var(--accent-color) !important;
+}
+
+.work-item-input-control {
+    padding-top: .5rem;
+    padding-left: .2rem !important;
+    padding-right: .2rem !important;
+    border: 0;
+    border-radius: 0;
+}
