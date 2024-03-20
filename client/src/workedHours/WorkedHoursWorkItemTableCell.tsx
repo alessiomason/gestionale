@@ -5,20 +5,20 @@ import {Job} from "../models/job";
 import {Form} from "react-bootstrap";
 import "./WorkedHoursTableCell.css";
 import workItemApis from "../api/workItemApis";
+import {User} from "../models/user";
 
-interface WorkedHoursTableCellProps {
-    readonly job: Job
+interface WorkedHoursWorkItemTableCellProps {
     readonly workday: dayjs.Dayjs
-    readonly workItems: WorkItem[] | undefined
+    readonly user: User
+    readonly job: Job
+    readonly workItem: WorkItem | undefined
     readonly setSavingStatus: React.Dispatch<React.SetStateAction<"" | "saving" | "saved">>
     readonly createOrUpdateLocalWorkItem: (job: Job, date: string, hours: number) => void
 }
 
-function WorkedHoursTableCell(props: WorkedHoursTableCellProps) {
+function WorkedHoursWorkItemTableCell(props: WorkedHoursWorkItemTableCellProps) {
     const date = props.workday.format("YYYY-MM-DD");
-    const initialWorkItemHours = props.workItems?.find(workItem =>
-        workItem.job.id === props.job.id && workItem.date === date
-    )?.hours.toString() ?? "";
+    const initialWorkItemHours = props.workItem?.hours.toString() ?? "";
 
     const [workItemHours, setWorkItemHours] = useState(initialWorkItemHours);
     const [editing, setEditing] = useState(false);
@@ -47,7 +47,7 @@ function WorkedHoursTableCell(props: WorkedHoursTableCellProps) {
 
             if (!Number.isNaN(hours)) {
                 props.setSavingStatus("saving");
-                workItemApis.createOrUpdateWorkItem(props.job.id, date, hours)
+                workItemApis.createOrUpdateWorkItem(props.user.id, props.job.id, date, hours)
                     .then(() => props.setSavingStatus("saved"))
                     .catch(err => console.error(err))
                 props.createOrUpdateLocalWorkItem(props.job, date, hours);
@@ -76,4 +76,4 @@ function WorkedHoursTableCell(props: WorkedHoursTableCellProps) {
     }
 }
 
-export default WorkedHoursTableCell;
+export default WorkedHoursWorkItemTableCell;

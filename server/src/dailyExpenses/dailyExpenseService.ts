@@ -11,10 +11,24 @@ export async function getDailyExpenses(userId: number, month: string) {
         throw new UserNotFound();
     }
 
-    return knex<DailyExpense>("dailyExpenses")
+    const dailyExpenses = await knex("dailyExpenses")
         .whereRaw("user_id = ?", user.id)
         .andWhereRaw("date LIKE ?", formattedMonth + "-%")
         .select();
+
+    return dailyExpenses.map(dailyExpense => new DailyExpense(
+        dailyExpense.userId,
+        dailyExpense.date,
+        parseFloat(dailyExpense.expenses),
+        dailyExpense.destination,
+        parseFloat(dailyExpense.kms),
+        parseFloat(dailyExpense.tripCost),
+        parseFloat(dailyExpense.travelHours),
+        parseFloat(dailyExpense.holidayHours),
+        parseFloat(dailyExpense.sickHours),
+        parseFloat(dailyExpense.donationHours),
+        parseFloat(dailyExpense.furloughHours)
+    ));
 }
 
 export async function getDailyExpense(userId: number, date: string) {
@@ -24,10 +38,26 @@ export async function getDailyExpense(userId: number, date: string) {
         throw new UserNotFound();
     }
 
-    return knex<DailyExpense>("dailyExpenses")
+    const dailyExpense = await knex("dailyExpenses")
         .whereRaw("user_id = ?", user.id)
         .andWhereRaw("date LIKE ?", formattedDate + "-%")
         .first();
+
+    if (!dailyExpense) return
+
+    return new DailyExpense(
+        dailyExpense.userId,
+        dailyExpense.date,
+        parseFloat(dailyExpense.expenses),
+        dailyExpense.destination,
+        parseFloat(dailyExpense.kms),
+        parseFloat(dailyExpense.tripCost),
+        parseFloat(dailyExpense.travelHours),
+        parseFloat(dailyExpense.holidayHours),
+        parseFloat(dailyExpense.sickHours),
+        parseFloat(dailyExpense.donationHours),
+        parseFloat(dailyExpense.furloughHours)
+    )
 }
 
 export async function createOrUpdateDailyExpense(newDailyExpense: DailyExpense) {
@@ -37,6 +67,7 @@ export async function createOrUpdateDailyExpense(newDailyExpense: DailyExpense) 
     }
     const existingDailyExpense = await getDailyExpense(newDailyExpense.userId, newDailyExpense.date);
 
+    newDailyExpense.userId = user.id;
     newDailyExpense.tripCost = user.costPerKm ? newDailyExpense.kms * user.costPerKm : undefined;
 
     if (existingDailyExpense) {

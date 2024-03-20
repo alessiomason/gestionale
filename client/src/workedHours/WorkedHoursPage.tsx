@@ -91,7 +91,7 @@ function WorkedHoursPage(props: WorkedHoursPageProps) {
 
                     <Col>
                         {/* this forces the whole Row to always the same height, so that it does not change every time savingStatus is empty */}
-                        <p>&nbsp;</p>
+                        {savingStatus === "" && <p>&nbsp;</p>}
 
                         {savingStatus !== "" && <p className="success d-flex justify-content-end align-items-center">
                             {savingStatus === "saving" ?

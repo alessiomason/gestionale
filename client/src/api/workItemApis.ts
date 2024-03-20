@@ -15,10 +15,10 @@ async function getWorkItems(month: string, userId: number) {
 }
 
 async function createOrUpdateWorkItem(
+    userId: number,
     jobId: string,
     date: string,
-    hours: number,
-    userId: number | undefined = undefined
+    hours: number
 ) {
     const workItem = {jobId, date, hours, userId};
 

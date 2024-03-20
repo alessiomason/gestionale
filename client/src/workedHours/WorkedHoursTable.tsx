@@ -4,9 +4,12 @@ import dayjs from "dayjs";
 import "./WorkedHoursTable.css";
 import {WorkItem} from "../models/workItem";
 import workItemApis from "../api/workItemApis";
-import WorkedHoursTableCell from "./WorkedHoursTableCell";
+import WorkedHoursWorkItemTableCell from "./WorkedHoursWorkItemTableCell";
 import {User} from "../models/user";
 import {Job} from "../models/job";
+import {DailyExpense} from "../models/dailyExpense";
+import dailyExpenseApis from "../api/dailyExpensesApis";
+import WorkedHoursDailyTableCell from "./WorkedHoursDailyTableCell";
 
 interface WorkedHoursTableProps {
     readonly user: User
@@ -23,24 +26,29 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
     }
 
     const [workItems, setWorkItems] = useState<WorkItem[]>();
-    const [dirtyWorkItems, setDirtyWorkItems] = useState(true);
+    const [dailyExpenses, setDailyExpenses] = useState<DailyExpense[]>([]);
+    const [dirty, setDirty] = useState(true);
 
     let monthExtraHours = 0;
     let monthTotalHours = 0;
 
     useEffect(() => {
-        if (dirtyWorkItems) {
+        if (dirty) {
             workItemApis.getWorkItems(`${props.year}-${props.month}`, props.user.id)
                 .then(workItems => {
                     setWorkItems(workItems);
-                    setDirtyWorkItems(false);
+                    setDirty(false);
                 })
                 .catch(err => console.error(err))
+
+            dailyExpenseApis.getDailyExpenses(`${props.year}-${props.month}`, props.user.id)
+                .then(dailyExpenses => setDailyExpenses(dailyExpenses!))
+                .catch(err => console.error(err))
         }
-    }, [dirtyWorkItems]);
+    }, [dirty]);
 
     useEffect(() => {
-        setDirtyWorkItems(true);
+        setDirty(true);
     }, [props.month, props.year, props.user.id]);
 
     function createOrUpdateLocalWorkItem(job: Job, date: string, hours: number) {
@@ -63,6 +71,28 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
             }
 
             return newWorkItems;
+        })
+    }
+
+    function createOrUpdateLocalDailyExpense(newDailyExpense: DailyExpense) {
+        setDailyExpenses(dailyExpenses => {
+            const newDailyExpenses = dailyExpenses ? Array(...dailyExpenses) : [];
+
+            const existingDailyExpenseIndex = dailyExpenses?.findIndex(dailyExpense =>
+                dailyExpense.date === newDailyExpense.date
+            ) ?? -1;
+
+            if (existingDailyExpenseIndex !== -1) {
+                if (newDailyExpense.isEmpty()) {    // delete
+                    newDailyExpenses.splice(existingDailyExpenseIndex, 1);
+                } else {                            // update
+                    newDailyExpenses[existingDailyExpenseIndex] = newDailyExpense;
+                }
+            } else {                                // create
+                newDailyExpenses.push(newDailyExpense);
+            }
+
+            return newDailyExpenses;
         })
     }
 
@@ -95,12 +125,16 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
                             <td className="left-aligned unhoverable">{job.id}</td>
                             <td className="left-aligned unhoverable"><strong>{job.client}</strong> - {job.subject}
                             </td>
-                            {!dirtyWorkItems && workdays.map(workday => {
+                            {!dirty && workdays.map(workday => {
+                                const workItem = workItems?.find(workItem =>
+                                    workItem.job.id === job.id && workItem.date === workday.format("YYYY-MM-DD")
+                                )
+
                                 return (
-                                    <WorkedHoursTableCell key={`cell-${job.id}-${workday.format("YYYY-MM-DD")}`}
-                                                          job={job} workday={workday} workItems={workItems}
-                                                          setSavingStatus={props.setSavingStatus}
-                                                          createOrUpdateLocalWorkItem={createOrUpdateLocalWorkItem}/>
+                                    <WorkedHoursWorkItemTableCell key={`cell-${job.id}-${workday.format("YYYY-MM-DD")}`}
+                                                                  job={job} workday={workday} workItem={workItem}
+                                                                  user={props.user} setSavingStatus={props.setSavingStatus}
+                                                                  createOrUpdateLocalWorkItem={createOrUpdateLocalWorkItem}/>
                                 );
                             })}
                             <td className="unhoverable">
@@ -166,6 +200,23 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
 
             <tr>
                 <td colSpan={daysInMonth + 3} className="unhoverable"/>
+            </tr>
+
+            <tr>
+                <td className="unhoverable"/>
+                <td className="left-aligned unhoverable">Malattia</td>
+                {!dirty && workdays.map(workday => {
+                    const dailyExpense = dailyExpenses.find(dailyExpense =>
+                        dailyExpense.date === workday.format("YYYY-MM-DD")
+                    );
+
+                    return (
+                        <WorkedHoursDailyTableCell key={`cell-sickHours-${workday.format("YYYY-MM-DD")}`}
+                                                   workday={workday} dailyExpense={dailyExpense} field={"sickHours"}
+                                                   user={props.user} setSavingStatus={props.setSavingStatus}
+                                                   createOrUpdateLocalDailyExpense={createOrUpdateLocalDailyExpense}/>
+                    );
+                })}
             </tr>
             </tbody>
         </Table>
