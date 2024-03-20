@@ -45,6 +45,17 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
+function forceSsl(req: Request, res: Response, next: NextFunction) {
+    if (req.headers["x-forwarded-proto"] !== "https") {
+        return res.redirect(301, ["https://", req.get("Host"), req.url].join(""));
+    }
+    return next();
+}
+
+if (process.env.NODE_ENV === "production") {
+    app.use(forceSsl);
+}
+
 // set up the session
 const MySQLSessionStore = require('express-mysql-session')(session);
 const sessionStore = new MySQLSessionStore(dbOptions);
@@ -81,7 +92,7 @@ const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
     if (req.isAuthenticated())
         return next();
 
-    return res.status(401).json({ error: 'This API requires an authenticated request!' });
+    return res.status(401).json({error: 'This API requires an authenticated request!'});
 }
 
 // expose the APIs
