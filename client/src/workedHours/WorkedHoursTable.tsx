@@ -12,6 +12,7 @@ interface WorkedHoursTableProps {
     readonly user: User
     readonly month: number
     readonly year: number
+    readonly setSavingStatus: React.Dispatch<React.SetStateAction<"" | "saving" | "saved">>
 }
 
 function WorkedHoursTable(props: WorkedHoursTableProps) {
@@ -50,7 +51,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
             const existingWorkItemIndex = workItems?.findIndex(workItem =>
                 workItem.job.id === job.id && workItem.date === date
             ) ?? -1;
-            
+
             if (existingWorkItemIndex !== -1) {
                 if (hours === 0) {  // delete
                     newWorkItems.splice(existingWorkItemIndex, 1);
@@ -98,6 +99,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
                                 return (
                                     <WorkedHoursTableCell key={`cell-${job.id}-${workday.format("YYYY-MM-DD")}`}
                                                           job={job} workday={workday} workItems={workItems}
+                                                          setSavingStatus={props.setSavingStatus}
                                                           createOrUpdateLocalWorkItem={createOrUpdateLocalWorkItem}/>
                                 );
                             })}

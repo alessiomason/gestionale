@@ -27,6 +27,14 @@ p {
     color: #d50000;
 }
 
+.warning {
+    color: goldenrod;
+}
+
+.success {
+    color: limegreen;
+}
+
 table {
     --bs-table-bg: transparent !important;
 }

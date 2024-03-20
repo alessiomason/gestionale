@@ -10,6 +10,7 @@ interface WorkedHoursTableCellProps {
     readonly job: Job
     readonly workday: dayjs.Dayjs
     readonly workItems: WorkItem[] | undefined
+    readonly setSavingStatus: React.Dispatch<React.SetStateAction<"" | "saving" | "saved">>
     readonly createOrUpdateLocalWorkItem: (job: Job, date: string, hours: number) => void
 }
 
@@ -45,7 +46,9 @@ function WorkedHoursTableCell(props: WorkedHoursTableCellProps) {
             }
 
             if (!Number.isNaN(hours)) {
+                props.setSavingStatus("saving");
                 workItemApis.createOrUpdateWorkItem(props.job.id, date, hours)
+                    .then(() => props.setSavingStatus("saved"))
                     .catch(err => console.error(err))
                 props.createOrUpdateLocalWorkItem(props.job, date, hours);
             }
