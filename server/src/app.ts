@@ -17,7 +17,8 @@ import {useJobsAPIs} from "./jobs/jobController";
 import {useTicketsAPIs} from "./tickets/tickets/ticketController";
 import {useTicketOrdersAPIs} from "./tickets/ticketOrders/ticketOrderController";
 import {useTicketCompaniesAPIs} from "./tickets/ticketCompanies/ticketCompanyController";
-import {useWorkItemsAPIs} from "./workItems/workItemsController";
+import {useWorkItemsAPIs} from "./workItems/workItemController";
+import {useDailyExpensesAPIs} from "./dailyExpenses/dailyExpenseController";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -104,6 +105,7 @@ useTicketCompaniesAPIs(app, isLoggedIn);
 useTicketOrdersAPIs(app, isLoggedIn);
 useTicketsAPIs(app, isLoggedIn);
 useWorkItemsAPIs(app, isLoggedIn);
+useDailyExpensesAPIs(app, isLoggedIn);
 
 if (process.env.NODE_ENV === "production") {
     const path = require("path");

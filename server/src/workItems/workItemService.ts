@@ -1,4 +1,4 @@
-import {InvalidDate} from "./workItemsErrors";
+import {InvalidDate} from "./workItemErrors";
 import {getUser} from "../users/userService";
 import {UserNotFound} from "../users/userErrors";
 import {knex} from "../database/db";
@@ -7,7 +7,7 @@ import {WorkItem} from "./workItem";
 import {getJob} from "../jobs/jobService";
 import {JobNotFound} from "../jobs/jobErrors";
 
-function checkValidMonth(month: string) {
+export function checkValidMonth(month: string) {
     // check that month is YYYY-MM
     const splitMonth = month.split("-");
     if (splitMonth.length === 2) {
@@ -24,7 +24,7 @@ function checkValidMonth(month: string) {
     }
 }
 
-function checkValidDate(date: string) {
+export function checkValidDate(date: string) {
     // check that date is YYYY-MM-DD
     const splitDate = date.split("-");
     if (splitDate.length === 3) {
@@ -51,14 +51,13 @@ export async function getWorkItems(userId: number, month: string) {
     }
 
     const workItems = await knex("workItems")
-        .join("users", "workItems.userId", "users.id")
         .join("jobs", "workItems.jobId", "jobs.id")
         .whereRaw("work_items.user_id = ?", user.id)
         .andWhereRaw("work_items.date LIKE ?", formattedMonth + "-%")
-        .select("workItems.userId", "workItems.jobId", "jobs.subject", "jobs.client",
+        .select("workItems.*", "jobs.subject", "jobs.client",
             "jobs.finalClient", "jobs.orderName", "jobs.orderAmount", "jobs.startDate",
             "jobs.deliveryDate", "jobs.notes", "jobs.active", "jobs.lost",
-            "jobs.design", "jobs.construction", "workItems.date", "workItems.hours");
+            "jobs.design", "jobs.construction");
 
     return workItems.map(workItem => {
         const job = new Job(
@@ -94,15 +93,10 @@ export async function getWorkItem(userId: number, jobId: string, date: string) {
     }
 
     const workItem = await knex("workItems")
-        .join("users", "workItems.userId", "users.id")
-        .join("jobs", "workItems.jobId", "jobs.id")
         .whereRaw("work_items.user_id = ?", user.id)
         .andWhereRaw("work_items.job_id = ?", job.id)
         .andWhereRaw("work_items.date = ?", formattedDate)
-        .first("workItems.userId", "workItems.jobId", "jobs.subject", "jobs.client",
-            "jobs.finalClient", "jobs.orderName", "jobs.orderAmount", "jobs.startDate",
-            "jobs.deliveryDate", "jobs.notes", "jobs.active", "jobs.lost",
-            "jobs.design", "jobs.construction", "workItems.date", "workItems.hours");
+        .first();
 
     if (!workItem) return
     return new WorkItem(workItem.userId, job, workItem.date, parseFloat(workItem.hours));

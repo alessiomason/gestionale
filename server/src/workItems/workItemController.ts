@@ -6,7 +6,7 @@ import {createOrUpdateWorkItem, getWorkItems} from "./workItemService";
 import {Role, Type, User} from "../users/user";
 import {getUser} from "../users/userService";
 import {UserNotFound} from "../users/userErrors";
-import {UserCannotReadOtherWorkedHours} from "./workItemsErrors";
+import {UserCannotReadOtherWorkedHours} from "./workItemErrors";
 
 export function useWorkItemsAPIs(app: Express, isLoggedIn: RequestHandler) {
     const baseURL = "/api/workItems";
@@ -30,8 +30,8 @@ export function useWorkItemsAPIs(app: Express, isLoggedIn: RequestHandler) {
                 return
             }
 
-            // this is only allowed if a normal user is a workshop user having requested the work items of a machine or
-            // if the requesting user is an administrator
+            // this is only allowed if a normal user is a workshop user having requested their own work items
+            // or the work items of a machine, or if the requesting user is an administrator
             if (requestingUser.id !== requestedUser.id) {
                 if (requestingUser.role === Role.user && requestingUser.type !== Type.workshop && requestedUser.type !== Type.machine) {
                     res.status(UserCannotReadOtherWorkedHours.code).json(new UserCannotReadOtherWorkedHours());
