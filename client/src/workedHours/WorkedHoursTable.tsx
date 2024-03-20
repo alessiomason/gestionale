@@ -137,12 +137,12 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
 
                     return (
                         <td key={`extra-hours-${workday.format()}`}
-                            className={(!workday.isBusinessDay() || workday.isHoliday()) ? "holiday" : undefined}>
+                            className={(!workday.isBusinessDay() || workday.isHoliday()) ? "holiday unhoverable" : "unhoverable"}>
                             {extraHours === 0 ? "" : extraHours}
                         </td>
                     );
                 })}
-                <td>{monthExtraHours}</td>
+                <td className="unhoverable">{monthExtraHours}</td>
             </tr>
 
             <tr>
@@ -156,12 +156,12 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
 
                     return (
                         <td key={`total-hours-${workday.format()}`}
-                            className={(!workday.isBusinessDay() || workday.isHoliday()) ? "holiday" : undefined}>
+                            className={(!workday.isBusinessDay() || workday.isHoliday()) ? "holiday unhoverable" : "unhoverable"}>
                             <strong>{totalHours === 0 ? "" : totalHours}</strong>
                         </td>
                     );
                 })}
-                <td><strong>{monthTotalHours}</strong></td>
+                <td className="unhoverable"><strong>{monthTotalHours}</strong></td>
             </tr>
 
             <tr>
