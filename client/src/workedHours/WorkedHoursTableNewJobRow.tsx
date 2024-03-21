@@ -61,7 +61,7 @@ function WorkedHoursTableNewJobRow(props: WorkedHoursTableNewJobRowProps) {
                                 job.subject.toLowerCase().includes(searchString) ||
                                 job.client.toLowerCase().includes(searchString);
                         })
-                        .map(job => <JobListItem job={job} selectJob={selectJob}/>)}
+                        .map(job => <JobListItem key={job.id} job={job} selectJob={selectJob}/>)}
                 </Modal.Body>
             </Modal>
 

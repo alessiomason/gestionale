@@ -1,10 +1,7 @@
 import React, {useState} from "react";
 import dayjs from "dayjs";
-import {WorkItem} from "../models/workItem";
-import {Job} from "../models/job";
 import {Form} from "react-bootstrap";
 import "./WorkedHoursTableCell.css";
-import workItemApis from "../api/workItemApis";
 import {DailyExpense} from "../models/dailyExpense";
 import dailyExpensesApis from "../api/dailyExpensesApis";
 import {User} from "../models/user";
