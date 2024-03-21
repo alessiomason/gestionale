@@ -5,6 +5,7 @@ import {upperCaseFirst} from "../functions";
 import {
     ArrowLeftSquare,
     ArrowRightSquare,
+    CalendarEvent,
     CalendarRange,
     CalendarX,
     Check2Circle,
@@ -105,10 +106,18 @@ function WorkedHoursPage(props: WorkedHoursPageProps) {
                     <Col className="d-flex justify-content-between align-items-center">
                         <ArrowLeftSquare className="hoverable" onClick={decreaseMonth}/>
 
-                        <TextButton icon={selectingMonth ? CalendarX : CalendarRange}
-                                    onClick={() => setSelectingMonth(prevState => !prevState)}>
-                            Seleziona un mese
-                        </TextButton>
+                        <div className="d-flex">
+                            <TextButton icon={selectingMonth ? CalendarX : CalendarRange}
+                                        onClick={() => setSelectingMonth(prevState => !prevState)}>
+                                {selectingMonth ? "Chiudi" : "Seleziona un mese"}
+                            </TextButton>
+                            <TextButton icon={CalendarEvent} onClick={() => {
+                                setMonth(currentMonth);
+                                setYear(currentYear);
+                            }}>
+                                Oggi
+                            </TextButton>
+                        </div>
 
                         <ArrowRightSquare className="hoverable" onClick={increaseMonth}/>
                     </Col>

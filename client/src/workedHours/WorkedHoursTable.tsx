@@ -358,7 +358,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
                         </td>
                     );
                 })}
-                <td className="unhoverable">{monthTripCost}</td>
+                <td className="unhoverable">{"€ " + monthTripCost}</td>
             </tr>
 
             <tr>
