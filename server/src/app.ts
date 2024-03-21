@@ -47,7 +47,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 function forceSsl(req: Request, res: Response, next: NextFunction) {
-    if (req.headers["x-forwarded-proto"] !== "https" && req.url.startsWith(process.env.APP_URL! + "/")) {
+    if (req.headers["x-forwarded-proto"] !== "https" && req.url.startsWith(process.env.APP_URL!)) {
         return res.redirect(301, ["https://", req.get("Host"), req.url].join(""));
     }
     return next();
