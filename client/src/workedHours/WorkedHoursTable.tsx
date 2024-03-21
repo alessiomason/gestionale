@@ -162,7 +162,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
                     );
                 })}
 
-            <WorkedHoursTableNewJobRow workdays={workdays} setAddedJobs={setAddedJobs}/>
+            <WorkedHoursTableNewJobRow daysInMonth={daysInMonth} setAddedJobs={setAddedJobs}/>
 
             <tr>
                 <td colSpan={daysInMonth + 3} className="unhoverable"/>

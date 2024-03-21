@@ -1,5 +1,4 @@
 import React, {useState} from "react";
-import dayjs from "dayjs";
 import {Job} from "../models/job";
 import TextButton from "../buttons/TextButton";
 import {JournalPlus} from "react-bootstrap-icons";
@@ -8,7 +7,7 @@ import {Card, FloatingLabel, Form, Modal} from "react-bootstrap";
 import jobApis from "../api/jobApis";
 
 interface WorkedHoursTableNewJobRowProps {
-    readonly workdays: dayjs.Dayjs[]
+    readonly daysInMonth: number
     readonly setAddedJobs: React.Dispatch<React.SetStateAction<Job[]>>
 }
 
@@ -16,11 +15,21 @@ function WorkedHoursTableNewJobRow(props: WorkedHoursTableNewJobRowProps) {
     const [showNewJobModal, setShowNewJobModal] = useState(false);
     const [searchText, setSearchText] = useState("");
     const [jobs, setJobs] = useState<Job[]>([]);
-    
+
     function getJobs() {
         jobApis.getActiveJobs()
             .then(jobs => setJobs(jobs))
             .catch(err => console.error(err))
+    }
+
+    function selectJob(job: Job) {
+        props.setAddedJobs(addedJobs => {
+            const newAddedJobs = Array(...addedJobs);
+            newAddedJobs.push(job);
+            return newAddedJobs;
+        });
+        setShowNewJobModal(false);
+        setSearchText("");
     }
 
     return (
@@ -52,8 +61,7 @@ function WorkedHoursTableNewJobRow(props: WorkedHoursTableNewJobRowProps) {
                                 job.subject.toLowerCase().includes(searchString) ||
                                 job.client.toLowerCase().includes(searchString);
                         })
-                        .map(job => <JobListItem job={job} setAddedJobs={props.setAddedJobs}
-                                                 setShowNewJobModal={setShowNewJobModal}/>)}
+                        .map(job => <JobListItem job={job} selectJob={selectJob}/>)}
                 </Modal.Body>
             </Modal>
 
@@ -64,12 +72,7 @@ function WorkedHoursTableNewJobRow(props: WorkedHoursTableNewJobRowProps) {
                                 onClick={() => setShowNewJobModal(true)}>Nuova commessa</TextButton>
                 </td>
 
-                {props.workdays.map(workday => {
-                    return (
-                        <td key={`new-job-${workday.format()}`}
-                            className={(!workday.isBusinessDay() || workday.isHoliday()) ? "holiday unhoverable" : "unhoverable"}/>
-                    );
-                })}
+                <td colSpan={props.daysInMonth} className="unhoverable"/>
                 <td className="unhoverable"/>
             </tr>
         </>
@@ -78,22 +81,13 @@ function WorkedHoursTableNewJobRow(props: WorkedHoursTableNewJobRowProps) {
 
 interface JobListItemProps {
     readonly job: Job
-    readonly setAddedJobs: React.Dispatch<React.SetStateAction<Job[]>>
-    readonly setShowNewJobModal: React.Dispatch<React.SetStateAction<boolean>>
+    readonly selectJob: (job: Job) => void
 }
 
 function JobListItem(props: JobListItemProps) {
-    function selectJob() {
-        props.setAddedJobs(addedJobs => {
-            const newAddedJobs = Array(...addedJobs);
-            newAddedJobs.push(props.job);
-            return newAddedJobs;
-        });
-        props.setShowNewJobModal(false);
-    }
 
     return (
-        <Card key={props.job.id} className="job-card mb-3" onClick={selectJob}>
+        <Card key={props.job.id} className="job-card mb-3" onClick={() => props.selectJob(props.job)}>
             <Card.Body className="px-3 py-1">
                 <p className="p-mt grey">{props.job.id}</p>
                 <p className="p-mt"><strong>{props.job.client}</strong> - {props.job.subject}</p>
