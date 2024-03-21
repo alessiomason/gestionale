@@ -41,13 +41,13 @@ dayjs.locale("it");
 
 app.use(express.json());
 const corsOptions = {
-    origin: [process.env.APP_URL as string, process.env.DB_HOST as string, "https://mail.google.com/", "https://oauth2.googleapis.com"],
+    origin: [process.env.APP_URL!, process.env.DB_HOST!, "https://mail.google.com/", "https://oauth2.googleapis.com"],
     credentials: true
 };
 app.use(cors(corsOptions));
 
 function forceSsl(req: Request, res: Response, next: NextFunction) {
-    if (req.headers["x-forwarded-proto"] !== "https") {
+    if (req.headers["x-forwarded-proto"] !== "https" && req.url.startsWith(process.env.APP_URL!)) {
         return res.redirect(301, ["https://", req.get("Host"), req.url].join(""));
     }
     return next();
