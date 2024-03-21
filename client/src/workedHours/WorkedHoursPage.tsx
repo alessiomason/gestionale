@@ -12,7 +12,6 @@ import {
     ExclamationCircle,
     ThreeDots
 } from "react-bootstrap-icons";
-import "./WorkedHoursPage.css";
 import TextButton from "../buttons/TextButton";
 import WorkedHoursTable from "./WorkedHoursTable";
 import {Type, User} from "../models/user";

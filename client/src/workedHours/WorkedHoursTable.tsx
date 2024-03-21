@@ -11,6 +11,7 @@ import {DailyExpense} from "../models/dailyExpense";
 import dailyExpenseApis from "../api/dailyExpensesApis";
 import WorkedHoursDailyTableCell from "./WorkedHoursDailyTableCell";
 import WorkedHoursDestinationTableCell from "./WorkedHoursDestinationTableCell";
+import WorkedHoursTableNewJobRow from "./WorkedHoursTableNewJobRow";
 
 interface WorkedHoursTableProps {
     readonly user: User
@@ -29,6 +30,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
     const [workItems, setWorkItems] = useState<WorkItem[]>();
     const [dailyExpenses, setDailyExpenses] = useState<DailyExpense[]>([]);
     const [dirty, setDirty] = useState(true);
+    const [addedJobs, setAddedJobs] = useState<Job[]>([]);
 
     let monthExtraHours = 0;
     let monthTotalHours = 0;
@@ -58,6 +60,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
 
     useEffect(() => {
         setDirty(true);
+        setAddedJobs([]);
     }, [props.month, props.year, props.user.id]);
 
     function createOrUpdateLocalWorkItem(job: Job, date: string, hours: number) {
@@ -125,6 +128,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
             </thead>
             <tbody>
             {workItems?.map(workItem => workItem.job)
+                .concat(addedJobs)
                 .filter((job, index, jobs) =>
                     jobs.map(j => j.id).indexOf(job.id) === index)  // distinct
                 .sort((a, b) => a.id.localeCompare(b.id))
@@ -157,6 +161,8 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
                         </tr>
                     );
                 })}
+
+            <WorkedHoursTableNewJobRow workdays={workdays} setAddedJobs={setAddedJobs}/>
 
             <tr>
                 <td colSpan={daysInMonth + 3} className="unhoverable"/>
