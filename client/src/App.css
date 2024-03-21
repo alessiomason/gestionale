@@ -1,6 +1,6 @@
 /* Colors */
 :root {
-    --accent-color: yellow;
+    --accent-color: #b3c801;
 }
 
 body {
@@ -68,6 +68,7 @@ td:not(.worked-hours-table>tbody>tr>td), th:not(.worked-hours-table>thead>tr>th)
 
 .hoverable {
     cursor: pointer;
+}
 
 /* Glossy classes */
 
