@@ -1,0 +1,35 @@
+.modal-fixed-height > .modal-dialog > .modal-content {
+    height: 90vh;
+}
+
+.modal-body-overflow {
+    overflow-y: auto;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.smaller-button {
+    --bs-btn-font-size: small;
+    color: var(--bs-table-color-state, var(--bs-table-color-type, var(--bs-table-color)));
+    padding: 0 5px;
+}
+
+.job-card {
+    background-color: white;
+    transition: all .5s ease;
+}
+
+.job-card:hover {
+    cursor: pointer;
+    background-color: rgba(204, 204, 204, 0.3);
+}
+
+.p-mt {
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+
+.grey {
+    font-size: small;
+    color: grey;
+}

@@ -1,12 +1,21 @@
-import React, {useState} from "react";
-import {Col, Form, Row} from "react-bootstrap";
+import React, {useEffect, useState} from "react";
+import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import dayjs from "dayjs";
 import {upperCaseFirst} from "../functions";
-import {ArrowLeftSquare, ArrowRightSquare, CalendarRange, CalendarX} from "react-bootstrap-icons";
-import "./WorkedHoursPage.css";
+import {
+    ArrowLeftSquare,
+    ArrowRightSquare,
+    CalendarEvent,
+    CalendarRange,
+    CalendarX,
+    Check2Circle,
+    ExclamationCircle,
+    ThreeDots
+} from "react-bootstrap-icons";
 import TextButton from "../buttons/TextButton";
 import WorkedHoursTable from "./WorkedHoursTable";
-import {User} from "../models/user";
+import {Type, User} from "../models/user";
+import WorkedHoursSelectUser from "./WorkedHoursSelectUser";
 
 interface WorkedHoursPageProps {
     readonly user: User
@@ -18,6 +27,15 @@ function WorkedHoursPage(props: WorkedHoursPageProps) {
     const [month, setMonth] = useState(currentMonth);
     const [year, setYear] = useState(currentYear);
     const [selectingMonth, setSelectingMonth] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(props.user);
+    const [savingStatus, setSavingStatus] = useState<"" | "saving" | "saved">("");
+
+    useEffect(() => {
+        // clear savingStatus after 3 seconds
+        if (savingStatus === "saved") {
+            setTimeout(() => setSavingStatus(""), 3000);
+        }
+    }, [savingStatus]);
 
     function decreaseMonth() {
         if (month === 1) {
@@ -45,28 +63,67 @@ function WorkedHoursPage(props: WorkedHoursPageProps) {
 
             <Row className="glossy-background">
                 <Row className="mb-3">
-                    {selectingMonth ?
-                        <MonthSelector month={month} setMonth={setMonth} year={year} setYear={setYear}/> :
-                        <h3 className="text-center mb-0">
-                            {upperCaseFirst(dayjs(`${year}-${month}-01`).format("MMMM YYYY"))}
-                        </h3>
-                    }
+                    <Col>
+                        <WorkedHoursSelectUser user={props.user} selectedUser={selectedUser}
+                                               setSelectedUser={setSelectedUser}/>
+                    </Col>
+
+                    <Col className="d-flex flex-column justify-content-center">
+                        {selectingMonth ?
+                            <MonthSelector month={month} setMonth={setMonth} year={year} setYear={setYear}/> :
+                            <h3 className="text-center mb-0">
+                                {upperCaseFirst(dayjs(`${year}-${month}-01`).format("MMMM YYYY"))}
+                            </h3>
+                        }
+                    </Col>
+
+                    <Col/>
+                </Row>
+
+                <Row>
+                    <Col>
+                        {selectedUser.id !== props.user.id && <p className="warning d-flex align-items-center">
+                            <ExclamationCircle className="mx-1"/>
+                            Attenzione! Stai modificando le ore di
+                            {selectedUser.type === Type.machine ? " una macchina" : " un altro utente"}, non le tue!
+                        </p>}
+                    </Col>
+
+                    <Col>
+                        {/* this forces the whole Row to always the same height, so that it does not change every time savingStatus is empty */}
+                        {savingStatus === "" && <p>&nbsp;</p>}
+
+                        {savingStatus !== "" && <p className="success d-flex justify-content-end align-items-center">
+                            {savingStatus === "saving" ?
+                                <><ThreeDots className="mx-1"/>Salvataggio in corso...</> :
+                                <><Check2Circle className="mx-1"/>Salvato</>}
+                        </p>}
+                    </Col>
                 </Row>
 
                 <Row>
                     <Col className="d-flex justify-content-between align-items-center">
                         <ArrowLeftSquare className="hoverable" onClick={decreaseMonth}/>
 
-                        <TextButton icon={selectingMonth ? CalendarX : CalendarRange} onClick={() => setSelectingMonth(prevState => !prevState)}>
-                            Seleziona un mese
-                        </TextButton>
+                        <div className="d-flex">
+                            <TextButton icon={selectingMonth ? CalendarX : CalendarRange}
+                                        onClick={() => setSelectingMonth(prevState => !prevState)}>
+                                {selectingMonth ? "Chiudi" : "Seleziona un mese"}
+                            </TextButton>
+                            <TextButton icon={CalendarEvent} onClick={() => {
+                                setMonth(currentMonth);
+                                setYear(currentYear);
+                            }}>
+                                Oggi
+                            </TextButton>
+                        </div>
 
                         <ArrowRightSquare className="hoverable" onClick={increaseMonth}/>
                     </Col>
                 </Row>
 
                 <Row className="mt-2">
-                    <WorkedHoursTable user={props.user} month={month} year={year}/>
+                    <WorkedHoursTable user={selectedUser} month={month} year={year} setSavingStatus={setSavingStatus}/>
                 </Row>
             </Row>
         </>
@@ -88,31 +145,39 @@ function MonthSelector(props: MonthSelectorProps) {
     }
 
     return (
-        <>
-            <Col/>
-            <Col sm={4} className="d-flex justify-content-between">
-                <Form.Select className="mx-2" value={props.month}
-                             onChange={ev => props.setMonth(parseInt(ev.target.value))}>
-                    {[...Array(12)].map((_, i) => {
-                        return (
-                            <option key={`month-${i + 1}`} value={i + 1}>
-                                {dayjs(`${props.year}-${i + 1}-01`).format("MMMM")}
-                            </option>
-                        );
-                    })}
-                </Form.Select>
-
-                <Form.Select className="mx-2" value={props.year}
-                             onChange={ev => props.setYear(parseInt(ev.target.value))}>
-                    {years.map(year => {
-                        return (
-                            <option key={`year-${year}`} value={year}>{year}</option>
-                        );
-                    })}
-                </Form.Select>
+        <Row>
+            <Col>
+                <InputGroup>
+                    <FloatingLabel controlId="floatingInput" label="Mese">
+                        <Form.Select value={props.month}
+                                     onChange={ev => props.setMonth(parseInt(ev.target.value))}>
+                            {[...Array(12)].map((_, i) => {
+                                return (
+                                    <option key={`month-${i + 1}`} value={i + 1}>
+                                        {dayjs(`${props.year}-${i + 1}-01`).format("MMMM")}
+                                    </option>
+                                );
+                            })}
+                        </Form.Select>
+                    </FloatingLabel>
+                </InputGroup>
             </Col>
-            <Col/>
-        </>
+
+            <Col>
+                <InputGroup>
+                    <FloatingLabel controlId="floatingInput" label="Anno">
+                        <Form.Select value={props.year}
+                                     onChange={ev => props.setYear(parseInt(ev.target.value))}>
+                            {years.map(year => {
+                                return (
+                                    <option key={`year-${year}`} value={year}>{year}</option>
+                                );
+                            })}
+                        </Form.Select>
+                    </FloatingLabel>
+                </InputGroup>
+            </Col>
+        </Row>
     );
 }
 

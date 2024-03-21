@@ -3,20 +3,21 @@
     backdrop-filter: blur(50px);
 }
 
-.worked-hours-table>thead>tr>th:not(.left-aligned) {
+.worked-hours-table > thead > tr > th:not(.left-aligned) {
     text-align: center;
     font-weight: 600;
 }
 
-.worked-hours-table>thead>tr>th {
+.worked-hours-table > thead > tr > th {
     padding-left: 3px;
     padding-right: 3px;
     border: 1px solid #595959;
 }
 
-.worked-hours-table>tbody>tr>td {
+.worked-hours-table > tbody > tr > td {
     text-overflow: ellipsis;
     overflow: hidden;
+    white-space: nowrap;
     width: min-content;
     max-width: 300px;
     padding-left: 0;
@@ -24,20 +25,30 @@
     border: 1px solid #595959;
 }
 
-.worked-hours-table>tbody>tr>td:not(.left-aligned) {
+.worked-hours-table > tbody > tr > td:not(.left-aligned) {
     text-align: center;
 }
 
-.worked-hours-table>tbody>tr>td:hover:not(.unhoverable) {
+.worked-hours-table > tbody > tr > td:hover:not(.unhoverable) {
     cursor: pointer;
     background-color: #cccccc;
 }
 
-.worked-hours-table>thead>tr>th.holiday,
-.worked-hours-table>tbody>tr>td.holiday {
+.worked-hours-table > thead > tr > th.today,
+.worked-hours-table > tbody > tr > td.today {
+    background-color: rgb(196, 232, 255);
+}
+
+.worked-hours-table > thead > tr > th.holiday,
+.worked-hours-table > tbody > tr > td.holiday {
     background-color: rgba(213, 0, 0, 0.15);
 }
 
 .left-aligned {
     padding-left: 5px !important;
+    padding-right: 5px !important;
+}
+
+.vertical-center {
+    vertical-align: middle;
 }

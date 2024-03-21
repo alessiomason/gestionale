@@ -112,7 +112,7 @@ function App2() {
                 <Route path="profile" element={<ProfilePage user={user!} doLogout={doLogout}/>}/>
                 <Route path="profile/edit" element={<EditProfilePage user={user!} setDirtyUser={setDirtyUser}/>}/>
                 <Route path="profile/password" element={<EditPasswordPage user={user!}/>}/>
-                <Route path="users" element={<UsersListPage/>}/>
+                <Route path="users" element={<UsersListPage user={user!} setDirtyUser={setDirtyUser}/>}/>
                 <Route path="jobs" element={<JobsPage/>}/>
                 <Route path="jobs/:jobId" element={<JobPage/>}/>
                 <Route path="tickets" element={<TicketsPage/>}/>

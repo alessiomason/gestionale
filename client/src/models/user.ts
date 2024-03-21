@@ -6,14 +6,15 @@ export enum Role {
 
 export enum Type {
     office = "office",
-    workshop = "workshop"
+    workshop = "workshop",
+    machine = "machine"
 }
 
 export class User {
     static readonly Role = Role;
     static readonly allRoles = [Role.user, Role.admin, Role.dev];
     static readonly Type = Type;
-    static readonly allTypes = [Type.office, Type.workshop];
+    static readonly allTypes = [Type.office, Type.workshop, Type.machine];
 
     id: number
     role: Role
@@ -85,6 +86,8 @@ export class User {
                 return "Ufficio";
             case Type.workshop:
                 return "Officina";
+            case Type.machine:
+                return "Macchina";
         }
     }
 
