@@ -6,6 +6,7 @@ import {Form} from "react-bootstrap";
 import "./WorkedHoursTableCell.css";
 import workItemApis from "../api/workItemApis";
 import {User} from "../models/user";
+import workdayClassName from "./workedHoursFunctions";
 
 interface WorkedHoursWorkItemTableCellProps {
     readonly workday: dayjs.Dayjs
@@ -67,8 +68,7 @@ function WorkedHoursWorkItemTableCell(props: WorkedHoursWorkItemTableCellProps) 
         );
     } else {
         return (
-            <td key={`td-${props.job.id}-${date}`}
-                className={(!props.workday.isBusinessDay() || props.workday.isHoliday()) ? "holiday" : undefined}
+            <td key={`td-${props.job.id}-${date}`} className={workdayClassName(props.workday, true)}
                 onClick={() => setEditing(true)}>
                 {workItemHours}
             </td>

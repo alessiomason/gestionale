@@ -12,6 +12,7 @@ import dailyExpenseApis from "../api/dailyExpensesApis";
 import WorkedHoursDailyTableCell from "./WorkedHoursDailyTableCell";
 import WorkedHoursDestinationTableCell from "./WorkedHoursDestinationTableCell";
 import WorkedHoursTableNewJobRow from "./WorkedHoursTableNewJobRow";
+import workdayClassName from "./workedHoursFunctions";
 
 interface WorkedHoursTableProps {
     readonly user: User
@@ -116,8 +117,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
                 <th className="left-aligned">Descrizione</th>
                 {workdays.map(workday => {
                     return (
-                        <th key={workday.format()}
-                            className={(!workday.isBusinessDay() || workday.isHoliday()) ? "holiday" : undefined}>
+                        <th key={workday.format()} className={workdayClassName(workday, false)}>
                             {workday.format("dd")}<br/>
                             {workday.format("D")}
                         </th>
@@ -186,8 +186,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
                     monthExtraHours += extraHours;
 
                     return (
-                        <td key={`extra-hours-${workday.format()}`}
-                            className={(!workday.isBusinessDay() || workday.isHoliday()) ? "holiday unhoverable" : "unhoverable"}>
+                        <td key={`extra-hours-${workday.format()}`} className={workdayClassName(workday, false)}>
                             {extraHours === 0 ? "" : extraHours}
                         </td>
                     );
@@ -204,8 +203,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
                     monthTotalHours += totalHours;
 
                     return (
-                        <td key={`total-hours-${workday.format()}`}
-                            className={(!workday.isBusinessDay() || workday.isHoliday()) ? "holiday unhoverable" : "unhoverable"}>
+                        <td key={`total-hours-${workday.format()}`} className={workdayClassName(workday, false)}>
                             <strong>{totalHours === 0 ? "" : totalHours}</strong>
                         </td>
                     );
@@ -359,7 +357,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
 
                     return (
                         <td key={`td-tripCost-${workday.format("YYYY-MM-DD")}`}
-                            className={(!workday.isBusinessDay() || workday.isHoliday()) ? "holiday unhoverable" : "unhoverable"}>
+                            className={workdayClassName(workday, false)}>
                             {(!dailyTripCost || dailyTripCost === 0) ? "" : ("€ " + dailyTripCost)}
                         </td>
                     );

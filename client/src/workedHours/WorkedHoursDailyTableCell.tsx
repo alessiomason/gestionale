@@ -1,13 +1,11 @@
 import React, {useState} from "react";
 import dayjs from "dayjs";
-import {WorkItem} from "../models/workItem";
-import {Job} from "../models/job";
 import {Form} from "react-bootstrap";
 import "./WorkedHoursTableCell.css";
-import workItemApis from "../api/workItemApis";
 import {DailyExpense} from "../models/dailyExpense";
 import dailyExpensesApis from "../api/dailyExpensesApis";
 import {User} from "../models/user";
+import workdayClassName from "./workedHoursFunctions";
 
 interface WorkedHoursDailyTableCellProps {
     readonly workday: dayjs.Dayjs
@@ -88,8 +86,7 @@ function WorkedHoursDailyTableCell(props: WorkedHoursDailyTableCellProps) {
         );
     } else {
         return (
-            <td key={`td-${props.field}-${date}`}
-                className={(!props.workday.isBusinessDay() || props.workday.isHoliday()) ? "holiday" : undefined}
+            <td key={`td-${props.field}-${date}`} className={workdayClassName(props.workday, true)}
                 onClick={() => setEditing(true)}>
                 {cellContent}
             </td>

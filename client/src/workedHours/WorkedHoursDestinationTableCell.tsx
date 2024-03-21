@@ -8,6 +8,7 @@ import workItemApis from "../api/workItemApis";
 import {DailyExpense} from "../models/dailyExpense";
 import dailyExpensesApis from "../api/dailyExpensesApis";
 import {User} from "../models/user";
+import workdayClassName from "./workedHoursFunctions";
 
 interface WorkedHoursDestinationTableCellProps {
     readonly workday: dayjs.Dayjs
@@ -61,8 +62,7 @@ function WorkedHoursDestinationTableCell(props: WorkedHoursDestinationTableCellP
         );
     } else {
         return (
-            <td key={`td-destination-${date}`}
-                className={(!props.workday.isBusinessDay() || props.workday.isHoliday()) ? "holiday" : undefined}
+            <td key={`td-destination-${date}`} className={workdayClassName(props.workday, true)}
                 onClick={() => setEditing(true)}>
                 <div className="vertical-text">{destination}</div>
             </td>
