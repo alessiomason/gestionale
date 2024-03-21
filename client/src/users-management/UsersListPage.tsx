@@ -40,7 +40,12 @@ function compareUsers(a: User, b: User) {
     }
 }
 
-function UsersListPage() {
+interface UsersListPageProps {
+    readonly user: User
+    readonly setDirtyUser: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+function UsersListPage(props: UsersListPageProps) {
     const [users, setUsers] = useState<User[]>([]);
     const [dirty, setDirty] = useState(true);
     const [selectedUser, setSelectedUser] = useState<User>();
@@ -64,6 +69,8 @@ function UsersListPage() {
                 .then(users => {
                     setUsers(users);
                     setDirty(false);
+
+
                 })
                 .catch(err => console.error(err))
         }
@@ -121,6 +128,11 @@ function UsersListPage() {
             .then(_ => {
                 setDirty(true);
                 setSavedUser(true);
+
+                // if own user changed, refresh it
+                if (user.id === props.user.id) {
+                    props.setDirtyUser(true);
+                }
             })
             .catch(err => console.error(err))
     }
