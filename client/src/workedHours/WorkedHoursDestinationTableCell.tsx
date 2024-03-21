@@ -10,7 +10,7 @@ import workdayClassName from "./workedHoursFunctions";
 interface WorkedHoursDestinationTableCellProps {
     readonly workday: dayjs.Dayjs
     readonly dailyExpense: DailyExpense | undefined
-    readonly user: User
+    readonly selectedUser: User
     readonly setSavingStatus: React.Dispatch<React.SetStateAction<"" | "saving" | "saved">>
     readonly createOrUpdateLocalDailyExpense: (newDailyExpense: DailyExpense) => void
 }
@@ -26,7 +26,7 @@ function WorkedHoursDestinationTableCell(props: WorkedHoursDestinationTableCellP
             props.setSavingStatus("saving");
 
             const newDailyExpense = props.dailyExpense ?? new DailyExpense(
-                props.user.id,
+                props.selectedUser.id,
                 date,
                 0,
                 "",
