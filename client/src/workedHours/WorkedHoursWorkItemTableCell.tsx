@@ -10,7 +10,7 @@ import workdayClassName from "./workedHoursFunctions";
 
 interface WorkedHoursWorkItemTableCellProps {
     readonly workday: dayjs.Dayjs
-    readonly user: User
+    readonly selectedUser: User
     readonly job: Job
     readonly workItem: WorkItem | undefined
     readonly setSavingStatus: React.Dispatch<React.SetStateAction<"" | "saving" | "saved">>
@@ -48,7 +48,7 @@ function WorkedHoursWorkItemTableCell(props: WorkedHoursWorkItemTableCellProps) 
 
             if (!Number.isNaN(hours)) {
                 props.setSavingStatus("saving");
-                workItemApis.createOrUpdateWorkItem(props.user.id, props.job.id, date, hours)
+                workItemApis.createOrUpdateWorkItem(props.selectedUser.id, props.job.id, date, hours)
                     .then(() => props.setSavingStatus("saved"))
                     .catch(err => console.error(err))
                 props.createOrUpdateLocalWorkItem(props.job, date, hours);

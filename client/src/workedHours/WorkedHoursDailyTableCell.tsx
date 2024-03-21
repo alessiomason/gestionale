@@ -11,7 +11,7 @@ interface WorkedHoursDailyTableCellProps {
     readonly workday: dayjs.Dayjs
     readonly dailyExpense: DailyExpense | undefined
     readonly field: "expenses" | "kms" | "travelHours" | "holidayHours" | "sickHours" | "donationHours" | "furloughHours"
-    readonly user: User
+    readonly selectedUser: User
     readonly setSavingStatus: React.Dispatch<React.SetStateAction<"" | "saving" | "saved">>
     readonly createOrUpdateLocalDailyExpense: (newDailyExpense: DailyExpense) => void
 }
@@ -49,7 +49,7 @@ function WorkedHoursDailyTableCell(props: WorkedHoursDailyTableCellProps) {
                 props.setSavingStatus("saving");
 
                 const newDailyExpense = props.dailyExpense ?? new DailyExpense(
-                    props.user.id,
+                    props.selectedUser.id,
                     date,
                     0,
                     "",
@@ -63,7 +63,7 @@ function WorkedHoursDailyTableCell(props: WorkedHoursDailyTableCellProps) {
                 );
                 newDailyExpense.set(props.field, numericCellContent);
                 if (props.field === "kms") {
-                    newDailyExpense.tripCost = props.user.costPerKm ? newDailyExpense.kms * props.user.costPerKm : undefined;
+                    newDailyExpense.tripCost = props.selectedUser.costPerKm ? newDailyExpense.kms * props.selectedUser.costPerKm : undefined;
                 }
 
                 dailyExpensesApis.createOrUpdateDailyExpense(newDailyExpense)
