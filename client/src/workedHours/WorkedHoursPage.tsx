@@ -123,7 +123,8 @@ function WorkedHoursPage(props: WorkedHoursPageProps) {
                 </Row>
 
                 <Row className="mt-2">
-                    <WorkedHoursTable user={selectedUser} month={month} year={year} setSavingStatus={setSavingStatus}/>
+                    <WorkedHoursTable user={props.user} selectedUser={selectedUser} month={month} year={year}
+                                      setSavingStatus={setSavingStatus}/>
                 </Row>
             </Row>
         </>
