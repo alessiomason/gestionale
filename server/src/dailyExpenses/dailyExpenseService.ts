@@ -40,7 +40,7 @@ export async function getDailyExpense(userId: number, date: string) {
 
     const dailyExpense = await knex("dailyExpenses")
         .whereRaw("user_id = ?", user.id)
-        .andWhereRaw("date LIKE ?", formattedDate + "-%")
+        .andWhereRaw("date = ?", formattedDate)
         .first();
 
     if (!dailyExpense) return

@@ -11,3 +11,12 @@
     border: 0;
     border-radius: 0;
 }
+
+.vertical-text {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    writing-mode: vertical-lr;
+    -webkit-writing-mode: vertical-lr;
+    white-space: nowrap;
+}

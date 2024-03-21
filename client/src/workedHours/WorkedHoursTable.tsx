@@ -10,6 +10,7 @@ import {Job} from "../models/job";
 import {DailyExpense} from "../models/dailyExpense";
 import dailyExpenseApis from "../api/dailyExpensesApis";
 import WorkedHoursDailyTableCell from "./WorkedHoursDailyTableCell";
+import WorkedHoursDestinationTableCell from "./WorkedHoursDestinationTableCell";
 
 interface WorkedHoursTableProps {
     readonly user: User
@@ -31,6 +32,14 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
 
     let monthExtraHours = 0;
     let monthTotalHours = 0;
+    let monthHolidayHours = 0;
+    let monthSickHours = 0;
+    let monthDonationHours = 0;
+    let monthFurloughHours = 0;
+    let monthTravelHours = 0;
+    let monthExpenses = 0;
+    let monthKms = 0;
+    let monthTripCost = 0;
 
     useEffect(() => {
         if (dirty) {
@@ -133,7 +142,8 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
                                 return (
                                     <WorkedHoursWorkItemTableCell key={`cell-${job.id}-${workday.format("YYYY-MM-DD")}`}
                                                                   job={job} workday={workday} workItem={workItem}
-                                                                  user={props.user} setSavingStatus={props.setSavingStatus}
+                                                                  user={props.user}
+                                                                  setSavingStatus={props.setSavingStatus}
                                                                   createOrUpdateLocalWorkItem={createOrUpdateLocalWorkItem}/>
                                 );
                             })}
@@ -153,7 +163,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
             </tr>
 
             <tr>
-                <td className="unhoverable"/>
+                <td className="unhoverable vertical-center" rowSpan={2}>Totali</td>
                 <td className="left-aligned unhoverable">Straordinari</td>
                 {workdays.map(workday => {
                     const totalHours = workItems?.filter(workItem => workItem.date === workday.format("YYYY-MM-DD"))
@@ -180,7 +190,6 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
             </tr>
 
             <tr>
-                <td className="unhoverable"/>
                 <td className="left-aligned unhoverable"><strong>Totale ore</strong></td>
                 {workdays.map(workday => {
                     const totalHours = workItems?.filter(workItem => workItem.date === workday.format("YYYY-MM-DD"))
@@ -203,12 +212,31 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
             </tr>
 
             <tr>
-                <td className="unhoverable"/>
+                <td className="unhoverable vertical-center" rowSpan={5}>Ore personali</td>
+                <td className="left-aligned unhoverable">Ferie/permessi</td>
+                {!dirty && workdays.map(workday => {
+                    const dailyExpense = dailyExpenses.find(dailyExpense =>
+                        dailyExpense.date === workday.format("YYYY-MM-DD")
+                    );
+                    monthHolidayHours += dailyExpense?.holidayHours ?? 0;
+
+                    return (
+                        <WorkedHoursDailyTableCell key={`cell-holidayHours-${workday.format("YYYY-MM-DD")}`}
+                                                   workday={workday} dailyExpense={dailyExpense} field={"holidayHours"}
+                                                   user={props.user} setSavingStatus={props.setSavingStatus}
+                                                   createOrUpdateLocalDailyExpense={createOrUpdateLocalDailyExpense}/>
+                    );
+                })}
+                <td className="unhoverable">{monthHolidayHours}</td>
+            </tr>
+
+            <tr>
                 <td className="left-aligned unhoverable">Malattia</td>
                 {!dirty && workdays.map(workday => {
                     const dailyExpense = dailyExpenses.find(dailyExpense =>
                         dailyExpense.date === workday.format("YYYY-MM-DD")
                     );
+                    monthSickHours += dailyExpense?.sickHours ?? 0;
 
                     return (
                         <WorkedHoursDailyTableCell key={`cell-sickHours-${workday.format("YYYY-MM-DD")}`}
@@ -217,6 +245,137 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
                                                    createOrUpdateLocalDailyExpense={createOrUpdateLocalDailyExpense}/>
                     );
                 })}
+                <td className="unhoverable">{monthSickHours}</td>
+            </tr>
+
+            <tr>
+                <td className="left-aligned unhoverable">Donazione</td>
+                {!dirty && workdays.map(workday => {
+                    const dailyExpense = dailyExpenses.find(dailyExpense =>
+                        dailyExpense.date === workday.format("YYYY-MM-DD")
+                    );
+                    monthDonationHours += dailyExpense?.donationHours ?? 0;
+
+                    return (
+                        <WorkedHoursDailyTableCell key={`cell-donationHours-${workday.format("YYYY-MM-DD")}`}
+                                                   workday={workday} dailyExpense={dailyExpense} field={"donationHours"}
+                                                   user={props.user} setSavingStatus={props.setSavingStatus}
+                                                   createOrUpdateLocalDailyExpense={createOrUpdateLocalDailyExpense}/>
+                    );
+                })}
+                <td className="unhoverable">{monthDonationHours}</td>
+            </tr>
+
+            <tr>
+                <td className="left-aligned unhoverable">Cassa integrazione</td>
+                {!dirty && workdays.map(workday => {
+                    const dailyExpense = dailyExpenses.find(dailyExpense =>
+                        dailyExpense.date === workday.format("YYYY-MM-DD")
+                    );
+                    monthFurloughHours += dailyExpense?.furloughHours ?? 0;
+
+                    return (
+                        <WorkedHoursDailyTableCell key={`cell-furloughHours-${workday.format("YYYY-MM-DD")}`}
+                                                   workday={workday} dailyExpense={dailyExpense} field={"furloughHours"}
+                                                   user={props.user} setSavingStatus={props.setSavingStatus}
+                                                   createOrUpdateLocalDailyExpense={createOrUpdateLocalDailyExpense}/>
+                    );
+                })}
+                <td className="unhoverable">{monthFurloughHours}</td>
+            </tr>
+
+            <tr>
+                <td className="left-aligned unhoverable">Viaggio</td>
+                {!dirty && workdays.map(workday => {
+                    const dailyExpense = dailyExpenses.find(dailyExpense =>
+                        dailyExpense.date === workday.format("YYYY-MM-DD")
+                    );
+                    monthTravelHours += dailyExpense?.travelHours ?? 0;
+
+                    return (
+                        <WorkedHoursDailyTableCell key={`cell-travelHours-${workday.format("YYYY-MM-DD")}`}
+                                                   workday={workday} dailyExpense={dailyExpense} field={"travelHours"}
+                                                   user={props.user} setSavingStatus={props.setSavingStatus}
+                                                   createOrUpdateLocalDailyExpense={createOrUpdateLocalDailyExpense}/>
+                    );
+                })}
+                <td className="unhoverable">{monthTravelHours}</td>
+            </tr>
+
+            <tr>
+                <td colSpan={daysInMonth + 3} className="unhoverable"/>
+            </tr>
+
+            <tr>
+                <td className="unhoverable vertical-center" rowSpan={5}>Viaggi</td>
+                <td className="left-aligned unhoverable">Spese documentate</td>
+                {!dirty && workdays.map(workday => {
+                    const dailyExpense = dailyExpenses.find(dailyExpense =>
+                        dailyExpense.date === workday.format("YYYY-MM-DD")
+                    );
+                    monthExpenses += dailyExpense?.expenses ?? 0;
+
+                    return (
+                        <WorkedHoursDailyTableCell key={`cell-expenses-${workday.format("YYYY-MM-DD")}`}
+                                                   workday={workday} dailyExpense={dailyExpense} field={"expenses"}
+                                                   user={props.user} setSavingStatus={props.setSavingStatus}
+                                                   createOrUpdateLocalDailyExpense={createOrUpdateLocalDailyExpense}/>
+                    );
+                })}
+                <td className="unhoverable">{monthExpenses}</td>
+            </tr>
+
+            <tr>
+                <td className="left-aligned unhoverable">Chilometri</td>
+                {!dirty && workdays.map(workday => {
+                    const dailyExpense = dailyExpenses.find(dailyExpense =>
+                        dailyExpense.date === workday.format("YYYY-MM-DD")
+                    );
+                    monthKms += dailyExpense?.kms ?? 0;
+
+                    return (
+                        <WorkedHoursDailyTableCell key={`cell-kms-${workday.format("YYYY-MM-DD")}`}
+                                                   workday={workday} dailyExpense={dailyExpense} field={"kms"}
+                                                   user={props.user} setSavingStatus={props.setSavingStatus}
+                                                   createOrUpdateLocalDailyExpense={createOrUpdateLocalDailyExpense}/>
+                    );
+                })}
+                <td className="unhoverable">{monthKms}</td>
+            </tr>
+
+            <tr>
+                <td className="left-aligned unhoverable">Costo del viaggio</td>
+                {!dirty && workdays.map(workday => {
+                    const dailyTripCost = dailyExpenses.find(dailyExpense =>
+                        dailyExpense.date === workday.format("YYYY-MM-DD")
+                    )?.tripCost;
+                    monthTripCost += dailyTripCost ?? 0;
+
+                    return (
+                        <td key={`td-tripCost-${workday.format("YYYY-MM-DD")}`}
+                            className={(!workday.isBusinessDay() || workday.isHoliday()) ? "holiday unhoverable" : "unhoverable"}>
+                            {(!dailyTripCost || dailyTripCost === 0) ? "" : ("€ " + dailyTripCost)}
+                        </td>
+                    );
+                })}
+                <td className="unhoverable">{monthTripCost}</td>
+            </tr>
+
+            <tr>
+                <td className="left-aligned unhoverable">Destinazione</td>
+                {!dirty && workdays.map(workday => {
+                    const dailyExpense = dailyExpenses.find(dailyExpense =>
+                        dailyExpense.date === workday.format("YYYY-MM-DD")
+                    );
+
+                    return (
+                        <WorkedHoursDestinationTableCell key={`cell-destination-${workday.format("YYYY-MM-DD")}`}
+                                                         workday={workday} dailyExpense={dailyExpense}
+                                                         user={props.user} setSavingStatus={props.setSavingStatus}
+                                                         createOrUpdateLocalDailyExpense={createOrUpdateLocalDailyExpense}/>
+                    );
+                })}
+                <td className="unhoverable"/>
             </tr>
             </tbody>
         </Table>

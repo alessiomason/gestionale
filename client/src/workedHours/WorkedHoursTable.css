@@ -41,3 +41,7 @@
 .left-aligned {
     padding-left: 5px !important;
 }
+
+.vertical-center {
+    vertical-align: middle;
+}

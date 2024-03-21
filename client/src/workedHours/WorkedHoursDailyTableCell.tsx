@@ -20,7 +20,8 @@ interface WorkedHoursDailyTableCellProps {
 
 function WorkedHoursDailyTableCell(props: WorkedHoursDailyTableCellProps) {
     const date = props.workday.format("YYYY-MM-DD");
-    const initialCellContent = props.dailyExpense?.get(props.field).toString() ?? "";
+    const fieldValue = props.dailyExpense?.get(props.field);
+    const initialCellContent = (!fieldValue || fieldValue === 0) ? "" : fieldValue.toString();
     const [cellContent, setCellContent] = useState(initialCellContent);
     const [editing, setEditing] = useState(false);
 
@@ -63,6 +64,9 @@ function WorkedHoursDailyTableCell(props: WorkedHoursDailyTableCellProps) {
                     0
                 );
                 newDailyExpense.set(props.field, numericCellContent);
+                if (props.field === "kms") {
+                    newDailyExpense.tripCost = props.user.costPerKm ? newDailyExpense.kms * props.user.costPerKm : undefined;
+                }
 
                 dailyExpensesApis.createOrUpdateDailyExpense(newDailyExpense)
                     .then(() => props.setSavingStatus("saved"))
