@@ -58,11 +58,20 @@ function WorkedHoursWorkItemTableCell(props: WorkedHoursWorkItemTableCellProps) 
         setEditing(false);
     }
 
+    function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
+        if (event.key === "Enter") {
+            editWorkItem();
+        } else if (event.key === "Escape") {
+            setWorkItemHours("");
+            setEditing(false);
+        }
+    }
+
     if (editing) {
         return (
             <td key={`td-${props.job.id}-${date}`} onBlur={editWorkItem} className="work-item-input-td">
                 <Form.Control size="sm" type="text" maxLength={3} plaintext autoFocus
-                              value={workItemHours} onChange={handleInputChange}
+                              value={workItemHours} onChange={handleInputChange} onKeyDown={handleKeyPress}
                               className="work-item-input-control text-center"/>
             </td>
         );

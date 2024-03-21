@@ -52,12 +52,21 @@ function WorkedHoursDestinationTableCell(props: WorkedHoursDestinationTableCellP
         setEditing(false);
     }
 
+    function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
+        if (event.key === "Enter") {
+            editDailyExpense();
+        } else if (event.key === "Escape") {
+            setDestination("");
+            setEditing(false);
+        }
+    }
+
     if (editing) {
         return (
             <td key={`td-destination-${date}`} onBlur={editDailyExpense} className="work-item-input-td">
                 <Form.Control size="sm" type="text" plaintext autoFocus
                               value={destination} onChange={ev => setDestination(ev.target.value)}
-                              className="work-item-input-control vertical-text"/>
+                              onKeyDown={handleKeyPress} className="work-item-input-control vertical-text"/>
             </td>
         );
     } else {

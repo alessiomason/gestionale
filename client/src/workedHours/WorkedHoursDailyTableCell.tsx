@@ -76,11 +76,20 @@ function WorkedHoursDailyTableCell(props: WorkedHoursDailyTableCellProps) {
         setEditing(false);
     }
 
+    function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
+        if (event.key === "Enter") {
+            editDailyExpense();
+        } else if (event.key === "Escape") {
+            setCellContent("");
+            setEditing(false);
+        }
+    }
+
     if (editing) {
         return (
             <td key={`td-${props.field}-${date}`} onBlur={editDailyExpense} className="work-item-input-td">
                 <Form.Control size="sm" type="text" maxLength={3} plaintext autoFocus
-                              value={cellContent} onChange={handleInputChange}
+                              value={cellContent} onChange={handleInputChange} onKeyDown={handleKeyPress}
                               className="work-item-input-control text-center"/>
             </td>
         );
