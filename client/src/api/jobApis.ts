@@ -15,6 +15,19 @@ async function getAllJobs() {
     } else await handleApiError(response);
 }
 
+async function getActiveJobs() {
+    const response = await fetch(new URL("jobs/active", apiUrl), {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json'
+        }
+    });
+    if (response.ok) {
+        return await response.json();
+    } else await handleApiError(response);
+}
+
 async function getJob(jobId: string) {
     const response = await fetch(new URL(`jobs/${jobId}`, apiUrl), {
         method: 'GET',
@@ -83,5 +96,5 @@ async function deleteJob(jobId: string) {
     } else await handleApiError(response);
 }
 
-const jobApis = {getAllJobs, getJob, createJob, updateJob, deleteJob};
+const jobApis = {getAllJobs, getActiveJobs, getJob, createJob, updateJob, deleteJob};
 export default jobApis;

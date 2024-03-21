@@ -5,7 +5,7 @@ import * as crypto from "crypto";
 import dayjs from "dayjs";
 
 export async function getAllUsers() {
-    const users = await knex<User>("users").select();
+    const users = await knex("users").select();
 
     return users.map(user => {
         return new User(
@@ -20,19 +20,49 @@ export async function getAllUsers() {
             user.registrationToken,
             user.tokenExpiryDate,
             user.registrationDate,
-            user.hoursPerDay,
-            user.costPerHour,
+            parseFloat(user.hoursPerDay),
+            parseFloat(user.costPerHour),
             user.active,
             user.email,
             user.phone,
             user.car,
-            user.costPerKm
+            parseFloat(user.costPerKm)
+        )
+    })
+}
+
+export async function getAllMachineUsers() {
+    const machineUsers = await knex("users")
+        .where("type", "machine")
+        .andWhere({active: true})
+        .select();
+
+    return machineUsers.map(user => {
+        return new User(
+            user.id,
+            user.role,
+            user.type,
+            user.name,
+            user.surname,
+            user.username,
+            undefined,
+            undefined,
+            user.registrationToken,
+            user.tokenExpiryDate,
+            user.registrationDate,
+            parseFloat(user.hoursPerDay),
+            parseFloat(user.costPerHour),
+            user.active,
+            user.email,
+            user.phone,
+            user.car,
+            parseFloat(user.costPerKm)
         )
     })
 }
 
 export async function getUser(id: number) {
-    const user = await knex<User>("users")
+    const user = await knex("users")
         .first()
         .where({id: id})
 
@@ -50,13 +80,13 @@ export async function getUser(id: number) {
         undefined,
         undefined,
         user.registrationDate,
-        user.hoursPerDay,
-        user.costPerHour,
+        parseFloat(user.hoursPerDay),
+        parseFloat(user.costPerHour),
         user.active,
         user.email,
         user.phone,
         user.car,
-        user.costPerKm
+        parseFloat(user.costPerKm)
     )
 }
 

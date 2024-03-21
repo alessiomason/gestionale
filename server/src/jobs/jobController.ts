@@ -2,7 +2,7 @@ import {Express, Request, Response} from "express";
 import {RequestHandler} from "express-serve-static-core";
 import {body, param, validationResult} from 'express-validator';
 import {InternalServerError, ParameterError} from "../errors";
-import {createJob, deleteJob, getAllJobs, getJob, updateJob} from "./jobService";
+import {createJob, deleteJob, getActiveJobs, getAllJobs, getJob, updateJob} from "./jobService";
 import {DuplicateJob, JobNotFound} from "./jobErrors";
 import {Job} from "./job";
 
@@ -12,8 +12,19 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler) {
     // get all jobs
     app.get(baseURL, isLoggedIn, async (_: Request, res: Response) => {
         try {
-            const jobs = await getAllJobs()
+            const jobs = await getAllJobs();
             res.status(200).json(jobs)
+        } catch (err: any) {
+            console.error("Error while retrieving jobs", err.message);
+            res.status(InternalServerError.code).json(new InternalServerError("Error while retrieving jobs"))
+        }
+    })
+
+    // get active jobs
+    app.get(`${baseURL}/active`, isLoggedIn, async (_: Request, res: Response) => {
+        try {
+            const activeJobs = await getActiveJobs();
+            res.status(200).json(activeJobs)
         } catch (err: any) {
             console.error("Error while retrieving jobs", err.message);
             res.status(InternalServerError.code).json(new InternalServerError("Error while retrieving jobs"))

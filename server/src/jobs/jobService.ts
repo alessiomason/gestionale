@@ -6,6 +6,12 @@ export async function getAllJobs() {
     return knex<Job>("jobs").select();
 }
 
+export async function getActiveJobs() {
+    return knex<Job>("jobs")
+        .where({active: true})
+        .select();
+}
+
 export async function getJob(id: string) {
     return knex<Job>("jobs")
         .first()
