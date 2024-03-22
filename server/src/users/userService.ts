@@ -199,7 +199,7 @@ export async function createUser(newUser: NewUser) {
     }
 
     const registrationToken = crypto.randomBytes(8).toString("hex");
-    const tokenExpiryDate = dayjs().add(7, "days").format();  // expiry date is in 7 days
+    const tokenExpiryDate = dayjs().add(30, "days").format();  // expiry date is in 30 days
 
     const userToInsert = {
         ...newUser,
