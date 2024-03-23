@@ -16,8 +16,7 @@ async function login(credentials: Credentials) {
         const res = await response.json();
         return res.user;
     } else {    // do not use handleApiError, or it would refresh to the same page
-        const errorDetail = await response.json();
-        throw errorDetail.message;
+        throw await response.json();
     }
 }
 
@@ -39,8 +38,7 @@ async function getUserInfo() {
     if (response.ok) {
         return await response.json();
     } else {    // do not use handleApiError, or it would cause an infinite loop of refreshes on 401 status code
-        const errorDetail = await response.json();
-        throw errorDetail.message;
+        throw await response.json();
     }
 }
 
