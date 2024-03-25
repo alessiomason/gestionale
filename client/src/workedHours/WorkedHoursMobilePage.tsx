@@ -15,7 +15,7 @@ import GlossyButton from "../buttons/GlossyButton";
 import {useNavigate} from "react-router-dom";
 
 function WorkedHoursMobilePage(props: WorkedHoursPageProps) {
-    const currentYear = 2023//parseInt(dayjs().format("YYYY"));
+    const currentYear = parseInt(dayjs().format("YYYY"));
     const currentMonth = parseInt(dayjs().format("M"));
     const daysInMonth = dayjs(`${currentYear}-${currentMonth}-01`).daysInMonth();
     let workdays: dayjs.Dayjs[] = [];
@@ -82,7 +82,7 @@ function WorkedHoursMobilePage(props: WorkedHoursPageProps) {
                                     <thead>
                                     <tr>
                                         <th>Commessa</th>
-                                        <th className="second-column">Ore giornaliere</th>
+                                        <th className="second-column">Ore</th>
                                     </tr>
                                     </thead>
                                     <tbody>

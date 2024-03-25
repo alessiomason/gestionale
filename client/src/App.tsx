@@ -121,7 +121,7 @@ function App2() {
                 <Route path="tickets" element={<TicketsPage/>}/>
                 <Route path="workedHours" element={<WorkedHoursPage user={user!}/>}/>
                 <Route path="editWorkedHours"
-                       element={!isMobile ? <WorkedHoursEditMobile user={user!}/> : <Navigate to="/workedHours"/>}/>
+                       element={isMobile ? <WorkedHoursEditMobile user={user!}/> : <Navigate to="/workedHours"/>}/>
             </Route>
         </Routes>
     );

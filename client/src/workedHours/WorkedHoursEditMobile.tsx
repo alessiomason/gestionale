@@ -13,7 +13,7 @@ import dailyExpenseApis from "../api/dailyExpensesApis";
 import {Type} from "../models/user";
 
 function WorkedHoursEditMobile(props: WorkedHoursPageProps) {
-    const currentYear = 2023//parseInt(dayjs().format("YYYY"));
+    const currentYear = parseInt(dayjs().format("YYYY"));
     const currentMonth = parseInt(dayjs().format("M"));
 
     const isMachine = props.user.type === Type.machine;
@@ -42,7 +42,7 @@ function WorkedHoursEditMobile(props: WorkedHoursPageProps) {
             </Row>
 
             <Row>
-                <Col className="d-flex justify-content-center mb-3">
+                <Col className="d-flex justify-content-center my-3">
                     <ButtonGroup>
                         <GlossyButton icon={JournalPlus} onClick={() => setPage("workItem")}>Ore lavorate</GlossyButton>
                         {!isMachine && <GlossyButton icon={JournalPlus} onClick={() => setPage("dailyExpense")}>Ore

@@ -19,6 +19,11 @@ function WorkedHoursNewJobModal(props: WorkedHoursNewJobModalProps) {
             .catch(err => console.error(err))
     }
 
+    function handleSubmit(job: Job) {
+        props.selectJob(job);
+        props.setShow(false);
+    }
+
     return (
         <Modal className="modal-fixed-height" size="lg" show={props.show} onShow={getJobs}
                onHide={() => props.setShow(false)} onExited={() => setSearchText("")}>
@@ -45,7 +50,7 @@ function WorkedHoursNewJobModal(props: WorkedHoursNewJobModalProps) {
                             job.subject.toLowerCase().includes(searchString) ||
                             job.client.toLowerCase().includes(searchString);
                     })
-                    .map(job => <JobListItem key={job.id} job={job} selectJob={props.selectJob}/>)}
+                    .map(job => <JobListItem key={job.id} job={job} selectJob={handleSubmit}/>)}
             </Modal.Body>
         </Modal>
     );
