@@ -25,18 +25,15 @@ function WorkedHoursMobilePage(props: WorkedHoursPageProps) {
     }
 
     const isMachine = props.user.type === Type.machine;
-    const [workItems, setWorkItems] = useState<WorkItem[]>();
+    const [workItems, setWorkItems] = useState<WorkItem[]>([]);
     const [dailyExpenses, setDailyExpenses] = useState<DailyExpense[]>([]);
-    const [dirty, setDirty] = useState(true);
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (dirty) {
             workItemApis.getWorkItems(`${currentYear}-${currentMonth}`, props.user.id)
                 .then(workItems => {
                     setWorkItems(workItems);
-                    setDirty(false);
                 })
                 .catch(err => console.error(err))
 
@@ -45,8 +42,7 @@ function WorkedHoursMobilePage(props: WorkedHoursPageProps) {
                     .then(dailyExpenses => setDailyExpenses(dailyExpenses!))
                     .catch(err => console.error(err))
             }
-        }
-    }, [dirty]);
+    }, []);
 
     function createOrUpdateLocalWorkItem(job: Job, date: string, hours: number) {
         setWorkItems(workItems => {

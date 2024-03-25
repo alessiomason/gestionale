@@ -1,10 +1,10 @@
 import React from "react";
+import {DailyExpense} from "../models/dailyExpense";
 
 interface WorkedHoursEditDailyExpenseMobileProps {
     readonly month: number
     readonly year: number
-    readonly setSavingStatus: React.Dispatch<React.SetStateAction<"" | "saving" | "saved">>
-
+    readonly dailyExpenses: DailyExpense[]
 }
 
 function WorkedHoursEditDailyExpenseMobile(props: WorkedHoursEditDailyExpenseMobileProps) {
