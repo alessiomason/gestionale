@@ -36,6 +36,8 @@ function WorkedHoursEditWorkItemMobile(props: WorkedHoursEditWorkItemMobileProps
 
         if (existingWorkItem) {
             setHours(existingWorkItem.hours);
+        } else {
+            setHours(0);
         }
     }, [date, job?.id]);
 
@@ -80,8 +82,7 @@ function WorkedHoursEditWorkItemMobile(props: WorkedHoursEditWorkItemMobileProps
                     <InputGroup className="mt-2">
                         <InputGroup.Text><Clock/></InputGroup.Text>
                         <FloatingLabel controlId="floatingInput" label="Ore">
-                            <Form.Control type="number" min={0} step={0.5} placeholder="Ore"
-                                          value={hours}
+                            <Form.Control type="number" min={0} step={0.5} placeholder="Ore" value={hours}
                                           onChange={ev => setHours(parseFloat(ev.target.value))}/>
                         </FloatingLabel>
                     </InputGroup>
@@ -89,7 +90,7 @@ function WorkedHoursEditWorkItemMobile(props: WorkedHoursEditWorkItemMobileProps
             </Row>
 
             <Row>
-                <Col className="d-flex justify-content-center">
+                <Col className="d-flex justify-content-center mb-4">
                     <GlossyButton type="submit" icon={Floppy} onClick={handleSubmit}>Salva</GlossyButton>
                 </Col>
             </Row>

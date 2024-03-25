@@ -19,23 +19,15 @@ function WorkedHoursNewJobModal(props: WorkedHoursNewJobModalProps) {
             .catch(err => console.error(err))
     }
 
-    function handleSubmit(job: Job) {
-        props.selectJob(job);
-        props.setShow(false);
-        setSearchText("");
-    }
-
     return (
-        <Modal className="modal-fixed-height" size="lg" show={props.show}
-               onShow={getJobs}
-               onHide={() => props.setShow(false)}>
+        <Modal className="modal-fixed-height" size="lg" show={props.show} onShow={getJobs}
+               onHide={() => props.setShow(false)} onExited={() => setSearchText("")}>
             <Modal.Header closeButton>
                 <Modal.Title>Seleziona una nuova commessa</Modal.Title>
             </Modal.Header>
             <Modal.Header>
                 <Form className="w-100">
-                    <FloatingLabel controlId="floatingInput"
-                                   label="Cerca per numero di commessa, oggetto o cliente"
+                    <FloatingLabel controlId="floatingInput" label="Cerca per numero di commessa, oggetto o cliente"
                                    className="mb-3">
                         <Form.Control type="search" value={searchText}
                                       onChange={ev => setSearchText(ev.target.value)}
@@ -53,7 +45,7 @@ function WorkedHoursNewJobModal(props: WorkedHoursNewJobModalProps) {
                             job.subject.toLowerCase().includes(searchString) ||
                             job.client.toLowerCase().includes(searchString);
                     })
-                    .map(job => <JobListItem key={job.id} job={job} selectJob={handleSubmit}/>)}
+                    .map(job => <JobListItem key={job.id} job={job} selectJob={props.selectJob}/>)}
             </Modal.Body>
         </Modal>
     );

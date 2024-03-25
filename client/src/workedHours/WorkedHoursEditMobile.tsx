@@ -15,7 +15,7 @@ import {Type} from "../models/user";
 function WorkedHoursEditMobile(props: WorkedHoursPageProps) {
     const currentYear = 2023//parseInt(dayjs().format("YYYY"));
     const currentMonth = parseInt(dayjs().format("M"));
-    
+
     const isMachine = props.user.type === Type.machine;
     const [page, setPage] = useState<"workItem" | "dailyExpense">("workItem");
     const [workItems, setWorkItems] = useState<WorkItem[]>([]);
@@ -53,7 +53,7 @@ function WorkedHoursEditMobile(props: WorkedHoursPageProps) {
 
             {page === "workItem" ?
                 <WorkedHoursEditWorkItemMobile user={props.user} month={currentMonth} year={currentYear} workItems={workItems}/> :
-                <WorkedHoursEditDailyExpenseMobile month={currentMonth} year={currentYear}
+                <WorkedHoursEditDailyExpenseMobile user={props.user} month={currentMonth} year={currentYear}
                                                    dailyExpenses={dailyExpenses}/>
             }
         </>
