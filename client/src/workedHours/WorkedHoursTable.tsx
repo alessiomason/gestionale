@@ -26,7 +26,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
     const daysInMonth = dayjs(`${props.year}-${props.month}-01`).daysInMonth();
     let workdays: dayjs.Dayjs[] = [];
     for (let i = 1; i <= daysInMonth; i++) {
-        workdays.push(dayjs(`${props.year}-${props.month}-${i}`))
+        workdays.push(dayjs(`${props.year}-${props.month}-${i}`));
     }
 
     const isMachine = props.selectedUser.type === Type.machine;

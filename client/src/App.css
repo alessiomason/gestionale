@@ -39,18 +39,21 @@ table {
     --bs-table-bg: transparent !important;
 }
 
-tbody>tr:hover:not(.worked-hours-table>tbody>tr) {
-    cursor: pointer;
-}
+/* not needed for mobile tables */
+@media (min-width: 767px) {
+    tbody>tr:hover:not(.worked-hours-table>tbody>tr) {
+        cursor: pointer;
+    }
 
-td:not(.worked-hours-table>tbody>tr>td), th:not(.worked-hours-table>thead>tr>th) {
-    white-space: pre-line;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    line-height: 1.5em;
-    max-height: 3em;    /* max-height double the line-height, so only two lines shown before wrapping text */
-    width: fit-content;
-    max-width: 8vw;
+    td:not(.worked-hours-table>tbody>tr>td), th:not(.worked-hours-table>thead>tr>th) {
+        white-space: pre-line;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        line-height: 1.5em;
+        max-height: 3em;    /* max-height double the line-height, so only two lines shown before wrapping text */
+        width: fit-content;
+        max-width: 8vw;
+    }
 }
 
 .table-selected-row {
