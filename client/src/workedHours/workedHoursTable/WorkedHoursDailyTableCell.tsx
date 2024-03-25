@@ -2,10 +2,10 @@ import React, {useState} from "react";
 import dayjs from "dayjs";
 import {Form} from "react-bootstrap";
 import "./WorkedHoursTableCell.css";
-import {DailyExpense} from "../models/dailyExpense";
-import dailyExpensesApis from "../api/dailyExpensesApis";
-import {User} from "../models/user";
-import workdayClassName from "./workedHoursFunctions";
+import {DailyExpense} from "../../models/dailyExpense";
+import dailyExpensesApis from "../../api/dailyExpensesApis";
+import {User} from "../../models/user";
+import workdayClassName from "../workedHoursFunctions";
 
 interface WorkedHoursDailyTableCellProps {
     readonly workday: dayjs.Dayjs

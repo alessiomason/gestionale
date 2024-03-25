@@ -25,6 +25,8 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 import "dayjs/locale/it";
 import dayjsBusinessDays from 'dayjs-business-days2';
 import {dayjsBusinessDaysOptions} from "./dayjsBusinessDaysOptions";
+import {useMediaQuery} from "react-responsive";
+import WorkedHoursEditMobile from "./workedHours/workedHoursMobile/WorkedHoursEditMobile";
 
 function App() {
     return (
@@ -41,6 +43,7 @@ function App2() {
     const [message, setMessage] = useState("");
 
     const navigate = useNavigate();
+    const isMobile = useMediaQuery({maxWidth: 767});
 
     useEffect(() => {
         if (loggedIn && dirtyUser) {
@@ -117,6 +120,8 @@ function App2() {
                 <Route path="jobs/:jobId" element={<JobPage/>}/>
                 <Route path="tickets" element={<TicketsPage/>}/>
                 <Route path="workedHours" element={<WorkedHoursPage user={user!}/>}/>
+                <Route path="editWorkedHours"
+                       element={isMobile ? <WorkedHoursEditMobile user={user!}/> : <Navigate to="/workedHours"/>}/>
             </Route>
         </Routes>
     );
