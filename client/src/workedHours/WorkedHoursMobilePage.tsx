@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import React, {useEffect, useState} from "react";
 import {Col, Row, Table} from "react-bootstrap";
 import {upperCaseFirst} from "../functions";
-import {Check2Circle, ThreeDots} from "react-bootstrap-icons";
+import {Check2Circle, JournalPlus, ThreeDots} from "react-bootstrap-icons";
 import {WorkItem} from "../models/workItem";
 import {DailyExpense} from "../models/dailyExpense";
 import {Type} from "../models/user";
@@ -12,9 +12,10 @@ import dailyExpenseApis from "../api/dailyExpensesApis";
 import {Job} from "../models/job";
 import workdayClassName from "./workedHoursFunctions";
 import "./WorkedHoursMobilePage.css";
+import GlossyButton from "../buttons/GlossyButton";
+import {useNavigate} from "react-router-dom";
 
 function WorkedHoursMobilePage(props: WorkedHoursPageProps) {
-    const [savingStatus, setSavingStatus] = useState<"" | "saving" | "saved">("");
     const currentYear = 2023//parseInt(dayjs().format("YYYY"));
     const currentMonth = parseInt(dayjs().format("M"));
     const daysInMonth = dayjs(`${currentYear}-${currentMonth}-01`).daysInMonth();
@@ -28,12 +29,7 @@ function WorkedHoursMobilePage(props: WorkedHoursPageProps) {
     const [dailyExpenses, setDailyExpenses] = useState<DailyExpense[]>([]);
     const [dirty, setDirty] = useState(true);
 
-    useEffect(() => {
-        // clear savingStatus after 3 seconds
-        if (savingStatus === "saved") {
-            setTimeout(() => setSavingStatus(""), 3000);
-        }
-    }, [savingStatus]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (dirty) {
@@ -100,23 +96,20 @@ function WorkedHoursMobilePage(props: WorkedHoursPageProps) {
     return (
         <>
             <Row>
-                <Col>
-                    <h1 className="page-title">Ore</h1>
-                </Col>
-                <Col className="d-flex justify-content-end">
-                    {savingStatus !== "" && <p className="success d-flex justify-content-end align-items-center">
-                        {savingStatus === "saving" ?
-                            <><ThreeDots className="mx-1"/>Salvataggio in corso...</> :
-                            <><Check2Circle className="mx-1"/>Salvato</>}
-                    </p>}
-                </Col>
+                <h1 className="page-title">Ore</h1>
             </Row>
 
             <Row className="glossy-background">
-                <Row className="mb-3">
+                <Row className="mb-4">
                     <h3 className="text-center mb-0">
                         {upperCaseFirst(dayjs(`${currentYear}-${currentMonth}-01`).format("MMMM YYYY"))}
                     </h3>
+                </Row>
+
+                <Row className="mb-3">
+                    <GlossyButton icon={JournalPlus} onClick={() => navigate("/editWorkedHours")}>
+                        Aggiungi o modifica le ore lavorate
+                    </GlossyButton>
                 </Row>
 
                 {workdays
@@ -149,7 +142,8 @@ function WorkedHoursMobilePage(props: WorkedHoursPageProps) {
                                     ).map(workItem => {
                                         return (
                                             <tr>
-                                                <td>{workItem.job.id} - <i>{workItem.job.client}</i> - {workItem.job.subject}</td>
+                                                <td>{workItem.job.id} - <i>{workItem.job.client}</i> - {workItem.job.subject}
+                                                </td>
                                                 <td className="second-column">{workItem.hours}</td>
                                             </tr>
                                         );
