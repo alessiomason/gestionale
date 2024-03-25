@@ -1,17 +1,17 @@
-import {WorkedHoursPageProps} from "./WorkedHoursPage";
+import {WorkedHoursPageProps} from "../WorkedHoursPage";
 import dayjs from "dayjs";
 import React, {useEffect, useState} from "react";
 import {Row, Table} from "react-bootstrap";
-import {upperCaseFirst} from "../functions";
+import {upperCaseFirst} from "../../functions";
 import {JournalPlus} from "react-bootstrap-icons";
-import {WorkItem} from "../models/workItem";
-import {DailyExpense} from "../models/dailyExpense";
-import {Type} from "../models/user";
-import workItemApis from "../api/workItemApis";
-import dailyExpenseApis from "../api/dailyExpensesApis";
-import workdayClassName from "./workedHoursFunctions";
+import {WorkItem} from "../../models/workItem";
+import {DailyExpense} from "../../models/dailyExpense";
+import {Type} from "../../models/user";
+import workItemApis from "../../api/workItemApis";
+import dailyExpenseApis from "../../api/dailyExpensesApis";
+import workdayClassName from "../workedHoursFunctions";
 import "./WorkedHoursMobilePage.css";
-import GlossyButton from "../buttons/GlossyButton";
+import GlossyButton from "../../buttons/GlossyButton";
 import {useNavigate} from "react-router-dom";
 
 function WorkedHoursMobilePage(props: WorkedHoursPageProps) {

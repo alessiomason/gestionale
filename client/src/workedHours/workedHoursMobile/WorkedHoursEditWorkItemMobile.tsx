@@ -2,14 +2,14 @@ import {Button, Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap
 import {Calendar, Clock, Floppy} from "react-bootstrap-icons";
 import React, {useEffect, useState} from "react";
 import dayjs from "dayjs";
-import {Job} from "../models/job";
-import {upperCaseFirst} from "../functions";
-import GlossyButton from "../buttons/GlossyButton";
-import {WorkItem} from "../models/workItem";
-import WorkedHoursNewJobModal from "./WorkedHoursNewJobModal";
-import workItemApis from "../api/workItemApis";
+import {Job} from "../../models/job";
+import {upperCaseFirst} from "../../functions";
+import GlossyButton from "../../buttons/GlossyButton";
+import {WorkItem} from "../../models/workItem";
+import WorkedHoursNewJobModal from "../WorkedHoursNewJobModal";
+import workItemApis from "../../api/workItemApis";
 import {useNavigate} from "react-router-dom";
-import {User} from "../models/user";
+import {User} from "../../models/user";
 
 interface WorkedHoursEditWorkItemMobileProps {
     readonly user: User

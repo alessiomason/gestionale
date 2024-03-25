@@ -1,9 +1,9 @@
 import React, {useState} from "react";
-import {Job} from "../models/job";
-import TextButton from "../buttons/TextButton";
+import {Job} from "../../models/job";
+import TextButton from "../../buttons/TextButton";
 import {JournalPlus} from "react-bootstrap-icons";
 import "./WorkedHoursTableNewJobRow.css";
-import WorkedHoursNewJobModal from "./WorkedHoursNewJobModal";
+import WorkedHoursNewJobModal from "../WorkedHoursNewJobModal";
 
 interface WorkedHoursTableNewJobRowProps {
     readonly daysInMonth: number

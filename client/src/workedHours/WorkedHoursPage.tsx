@@ -1,6 +1,6 @@
 import {useMediaQuery} from "react-responsive";
 import WorkedHoursDesktopPage from "./WorkedHoursDesktopPage";
-import WorkedHoursMobilePage from "./WorkedHoursMobilePage";
+import WorkedHoursMobilePage from "./workedHoursMobile/WorkedHoursMobilePage";
 import {User} from "../models/user";
 
 export interface WorkedHoursPageProps {

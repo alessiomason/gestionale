@@ -26,7 +26,7 @@ import "dayjs/locale/it";
 import dayjsBusinessDays from 'dayjs-business-days2';
 import {dayjsBusinessDaysOptions} from "./dayjsBusinessDaysOptions";
 import {useMediaQuery} from "react-responsive";
-import WorkedHoursEditMobile from "./workedHours/WorkedHoursEditMobile";
+import WorkedHoursEditMobile from "./workedHours/workedHoursMobile/WorkedHoursEditMobile";
 
 function App() {
     return (

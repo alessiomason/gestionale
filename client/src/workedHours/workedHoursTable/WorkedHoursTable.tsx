@@ -2,17 +2,17 @@ import React, {useEffect, useState} from "react";
 import {Table} from "react-bootstrap";
 import dayjs from "dayjs";
 import "./WorkedHoursTable.css";
-import {WorkItem} from "../models/workItem";
-import workItemApis from "../api/workItemApis";
+import {WorkItem} from "../../models/workItem";
+import workItemApis from "../../api/workItemApis";
 import WorkedHoursWorkItemTableCell from "./WorkedHoursWorkItemTableCell";
-import {Role, Type, User} from "../models/user";
-import {Job} from "../models/job";
-import {DailyExpense} from "../models/dailyExpense";
-import dailyExpenseApis from "../api/dailyExpensesApis";
+import {Role, Type, User} from "../../models/user";
+import {Job} from "../../models/job";
+import {DailyExpense} from "../../models/dailyExpense";
+import dailyExpenseApis from "../../api/dailyExpensesApis";
 import WorkedHoursDailyTableCell from "./WorkedHoursDailyTableCell";
 import WorkedHoursDestinationTableCell from "./WorkedHoursDestinationTableCell";
 import WorkedHoursTableNewJobRow from "./WorkedHoursTableNewJobRow";
-import workdayClassName from "./workedHoursFunctions";
+import workdayClassName from "../workedHoursFunctions";
 
 interface WorkedHoursTableProps {
     readonly user: User

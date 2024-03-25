@@ -13,7 +13,7 @@ import {
     ThreeDots
 } from "react-bootstrap-icons";
 import TextButton from "../buttons/TextButton";
-import WorkedHoursTable from "./WorkedHoursTable";
+import WorkedHoursTable from "./workedHoursTable/WorkedHoursTable";
 import {Type} from "../models/user";
 import WorkedHoursSelectUser from "./WorkedHoursSelectUser";
 import {WorkedHoursPageProps} from "./WorkedHoursPage";

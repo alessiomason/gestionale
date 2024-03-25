@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
-import {DailyExpense} from "../models/dailyExpense";
+import {DailyExpense} from "../../models/dailyExpense";
 import dayjs from "dayjs";
 import {useNavigate} from "react-router-dom";
-import dailyExpensesApis from "../api/dailyExpensesApis";
-import {User} from "../models/user";
+import dailyExpensesApis from "../../api/dailyExpensesApis";
+import {User} from "../../models/user";
 import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
-import {upperCaseFirst} from "../functions";
-import GlossyButton from "../buttons/GlossyButton";
+import {upperCaseFirst} from "../../functions";
+import GlossyButton from "../../buttons/GlossyButton";
 import {Calendar, Clock, CurrencyEuro, Floppy} from "react-bootstrap-icons";
 
 interface WorkedHoursEditDailyExpenseMobileProps {
