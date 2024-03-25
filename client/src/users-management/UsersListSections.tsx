@@ -49,7 +49,7 @@ function NoRegistrationSection(props: UsersListSectionProps) {
             <Row className="mt-4">
                 <h3>Registrazione dell'utente</h3>
                 <p>Invia questo link all'utente per completare la procedura di registrazione.</p>
-                <p>Il link scade 7 giorni dopo la generazione:
+                <p>Il link scade 30 giorni dopo la generazione:
                     questo link scadrà {dayjs(props.user.tokenExpiryDate).format("dddd LL [alle] LT")}.</p>
             </Row>
 

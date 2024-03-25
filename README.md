@@ -62,7 +62,7 @@ The server requires several environment variables to operate. These are usually 
 #### Client environment variables
 The client too requires an environment variable, to specify the URL of the server.  
 If the client is run locally, the environment variable can be omitted (as the code defaults to consider the server located at `http://localhost:3000`).  
-Otherwise, the `REACT_APP_BASE_URL` environment variable is needed. If the client is served throught the server, the environment variable has to be specified amongst the other varibales for the server.
+Otherwise, the `REACT_APP_BASE_URL` environment variable is needed. If the client is served through the server, the environment variable has to be specified amongst the other variables for the server.
 
 ---
 

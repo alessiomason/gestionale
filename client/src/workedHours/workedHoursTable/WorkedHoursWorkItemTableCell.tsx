@@ -1,12 +1,12 @@
 import React, {useState} from "react";
 import dayjs from "dayjs";
-import {WorkItem} from "../models/workItem";
-import {Job} from "../models/job";
+import {WorkItem} from "../../models/workItem";
+import {Job} from "../../models/job";
 import {Form} from "react-bootstrap";
 import "./WorkedHoursTableCell.css";
-import workItemApis from "../api/workItemApis";
-import {User} from "../models/user";
-import workdayClassName from "./workedHoursFunctions";
+import workItemApis from "../../api/workItemApis";
+import {User} from "../../models/user";
+import workdayClassName from "../workedHoursFunctions";
 
 interface WorkedHoursWorkItemTableCellProps {
     readonly workday: dayjs.Dayjs
