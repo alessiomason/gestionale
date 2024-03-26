@@ -1,13 +1,13 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import React, {useEffect, useState} from "react";
-import {BrowserRouter as Router, Routes, Route, useNavigate, Navigate} from "react-router-dom";
+import {BrowserRouter as Router, Navigate, Route, Routes, useNavigate} from "react-router-dom";
 import PageLayout from "./PageLayout";
 import LoginPage from "./login/LoginPage";
 import loginApis from "./api/loginApis";
 import "./App.css";
 import SignUpPage from "./signup/SignUpPage";
 import SuccessfulSignUpPage from "./signup/SuccessfulSignUpPage";
-import {User} from "./models/user";
+import {Role, User} from "./models/user";
 import ProfilePage from "./profile/ProfilePage";
 import EditProfilePage from "./profile/EditProfilePage";
 import {Credentials} from "./models/credentials";
@@ -28,6 +28,13 @@ import {dayjsBusinessDaysOptions} from "./dayjsBusinessDaysOptions";
 import {useMediaQuery} from "react-responsive";
 import WorkedHoursEditMobile from "./workedHours/workedHoursMobile/WorkedHoursEditMobile";
 
+// set up dayjs with localization, durations and business days plugins
+dayjs.extend(dayjsBusinessDays, dayjsBusinessDaysOptions);
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
+dayjs.extend(localizedFormat);
+dayjs.locale("it");
+
 function App() {
     return (
         <Router>
@@ -37,9 +44,14 @@ function App() {
 }
 
 function App2() {
-    const [loggedIn, setLoggedIn] = useState(false);
+    // user is initially read from local storage to maintain login state between page refreshes,
+    // but is then always checked by the checkAuth() function (that checks with the server)
+    const initialUserJson = window.localStorage.getItem("user");
+    const initialUser = initialUserJson ? JSON.parse(initialUserJson) as User : undefined;
+    const [user, setUser] = useState(initialUser);
     const [dirtyUser, setDirtyUser] = useState(false);
-    const [user, setUser] = useState<User | undefined>(undefined);
+    const loggedIn = user !== undefined;
+    const isAdministrator = user ? (user.role !== Role.user) : false;
     const [message, setMessage] = useState("");
 
     const navigate = useNavigate();
@@ -56,23 +68,23 @@ function App2() {
         }
     }, [dirtyUser]);
 
+    useEffect(() => {
+        if (user) {
+            window.localStorage.setItem("user", JSON.stringify(user));
+        } else {
+            window.localStorage.removeItem("user");
+        }
+    }, [user]);
+
     // run once, at app load
     useEffect(() => {
         // check if already logged in
         checkAuth();
-
-        // set up dayjs with localization, durations and business days plugins
-        dayjs.extend(dayjsBusinessDays, dayjsBusinessDaysOptions);
-        dayjs.extend(duration);
-        dayjs.extend(relativeTime);
-        dayjs.extend(localizedFormat);
-        dayjs.locale("it");
     }, []);
 
     async function checkAuth() {
         try {
             const user = await loginApis.getUserInfo();
-            setLoggedIn(true);
             setUser(user);
         } catch (_err) {
             // do not log it, otherwise error logged before every login
@@ -82,7 +94,6 @@ function App2() {
     function doLogin(credentials: Credentials) {
         loginApis.login(credentials)
             .then(user => {
-                setLoggedIn(true);
                 setUser(user);
                 setMessage("");
                 navigate("/");
@@ -96,7 +107,6 @@ function App2() {
     function doLogout() {
         loginApis.logout()
             .then(() => {
-                setLoggedIn(false);
                 setUser(undefined);
                 setMessage("");
                 navigate("/login");
@@ -115,9 +125,11 @@ function App2() {
                 <Route path="profile" element={<ProfilePage user={user!} doLogout={doLogout}/>}/>
                 <Route path="profile/edit" element={<EditProfilePage user={user!} setDirtyUser={setDirtyUser}/>}/>
                 <Route path="profile/password" element={<EditPasswordPage user={user!}/>}/>
-                <Route path="users" element={<UsersListPage user={user!} setDirtyUser={setDirtyUser}/>}/>
-                <Route path="jobs" element={<JobsPage/>}/>
-                <Route path="jobs/:jobId" element={<JobPage/>}/>
+                <Route path="users"
+                       element={isAdministrator ? <UsersListPage user={user!} setDirtyUser={setDirtyUser}/> :
+                           <Navigate to="/"/>}/>
+                <Route path="jobs" element={<JobsPage isAdministrator={isAdministrator}/>}/>
+                <Route path="jobs/:jobId" element={isAdministrator ? <JobPage/> : <Navigate to="/"/>}/>
                 <Route path="tickets" element={<TicketsPage/>}/>
                 <Route path="workedHours" element={<WorkedHoursPage user={user!}/>}/>
                 <Route path="editWorkedHours"

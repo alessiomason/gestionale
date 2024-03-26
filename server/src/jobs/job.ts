@@ -12,6 +12,7 @@ export class Job {
     lost: boolean
     design: boolean
     construction: boolean
+    totalWorkedHours: number
 
     constructor(
         id: string,
@@ -26,20 +27,22 @@ export class Job {
         active: boolean = true,
         lost: boolean = false,
         design: boolean = false,
-        construction: boolean = false
+        construction: boolean = false,
+        totalWorkedHours: number = 0
     ) {
-        this.id = id
-        this.subject = subject
-        this.client = client
-        this.finalClient = finalClient
-        this.orderName = orderName
-        this.orderAmount = orderAmount
-        this.startDate = startDate
-        this.deliveryDate = deliveryDate
-        this.notes = notes
-        this.active = active
-        this.lost = lost
-        this.design = design
-        this.construction = construction
+        this.id = id;
+        this.subject = subject;
+        this.client = client;
+        this.finalClient = finalClient;
+        this.orderName = orderName;
+        this.orderAmount = orderAmount;
+        this.startDate = startDate;
+        this.deliveryDate = deliveryDate;
+        this.notes = notes;
+        this.active = active;
+        this.lost = lost;
+        this.design = design;
+        this.construction = construction;
+        this.totalWorkedHours = totalWorkedHours;
     }
 }

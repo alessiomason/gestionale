@@ -70,11 +70,11 @@ function WorkedHoursEditWorkItemMobile(props: WorkedHoursEditWorkItemMobileProps
                     </InputGroup>
 
                     <WorkedHoursNewJobModal show={showNewJobModal} setShow={setShowNewJobModal}
-                                            selectJob={job => setJob(job)}/>
+                                            selectJob={job => setJob(job)} smaller/>
 
                     <InputGroup className="mt-2">
                         <Button variant="outline-secondary" onClick={() => setShowNewJobModal(true)}>
-                            Seleziona commessa
+                            Seleziona<br/>commessa
                         </Button>
                         <Form.Control placeholder="Commessa non selezionata" value={jobDisplayText ?? ""} readOnly/>
                     </InputGroup>

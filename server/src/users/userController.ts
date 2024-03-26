@@ -18,11 +18,11 @@ import {NewUser, Role, Type, User} from "./user";
 import crypto from "crypto";
 import dayjs from "dayjs";
 
-export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
+export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdministrator: RequestHandler) {
     const baseURL = "/api/users"
 
     // get all users
-    app.get(baseURL, isLoggedIn, async (_: Request, res: Response) => {
+    app.get(baseURL, isLoggedIn, isAdministrator, async (_: Request, res: Response) => {
         try {
             const users = await getAllUsers()
             res.status(200).json(users)
@@ -131,6 +131,7 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
     // create a new user
     app.post(baseURL,
         isLoggedIn,
+        isAdministrator,
         body('role').isIn(User.allRoles.map(role => role.toString())),
         body('type').isIn(User.allTypes.map(type => type.toString())),
         body('email').optional({values: "null"}).isEmail(),
@@ -213,6 +214,7 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler) {
     // update user
     app.put(`${baseURL}/:userId`,
         isLoggedIn,
+        isAdministrator,
         param("userId").isInt({min: 1}),
         body("active").optional({values: "null"}).isBoolean(),
         body("role").optional({values: "null"}).isString(),
