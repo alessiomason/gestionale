@@ -3,3 +3,7 @@
     font-size: small;
     color: #595959;
 }
+
+.closed-job {
+    color: #d50000 !important;
+}

@@ -1,7 +1,7 @@
 import {Row, Table} from "react-bootstrap";
 import {Job} from "../models/job";
 import {useNavigate} from "react-router-dom";
-import {CheckCircle, XCircle} from "react-bootstrap-icons";
+import {humanize} from "../functions";
 import "./JobsTable.css";
 
 interface JobsTableProps {
@@ -21,7 +21,7 @@ function JobsTable(props: JobsTableProps) {
                     <th>Cliente finale</th>
                     <th>Oggetto</th>
                     <th>Numero ordine</th>
-                    <th>Attiva</th>
+                    <th>Ore totali</th>
                 </tr>
                 </thead>
 
@@ -32,12 +32,12 @@ function JobsTable(props: JobsTableProps) {
                     .map(job => {
                         return (
                             <tr key={job.id} onClick={() => navigate(`/jobs/${job.id}`)}>
-                                <td>{job.id}</td>
+                                <td className={job.active ? undefined : "closed-job"}>{job.id}</td>
                                 <td>{job.client}</td>
                                 <td>{job.finalClient}</td>
                                 <td>{job.subject}</td>
                                 <td>{job.orderName}</td>
-                                <td>{job.active ? <CheckCircle/> : <XCircle/>}</td>
+                                <td>{humanize(job.totalWorkedHours, 2)}</td>
                             </tr>
                         );
                     })
