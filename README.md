@@ -53,8 +53,6 @@ The server requires several environment variables to operate. These are usually 
 	- `DB_PASSWORD`: the password for the database;
 	- `DB_NAME`: the name of the database;
 	- `SESSION_SECRET`: the secret string used to sign the session ID cookie;
-    - `EMAIL`: the company email used to send reports;
-    - `EMAIL_PASSWORD`: the password to access the company email;
 
 - Optional
 	- `PORT`: the port on which the server has to be served; defaults to `3001` if absent.
