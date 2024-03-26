@@ -4,11 +4,7 @@
 }
 
 body {
-    background-image: url("./images/car-background.jpg");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-attachment: fixed;
+    background-color: #f8f8f8;
 }
 
 p, h1, h2, h3, h4, h5, h6 {
