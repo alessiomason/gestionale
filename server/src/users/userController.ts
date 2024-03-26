@@ -12,7 +12,7 @@ import {
     getFullUser,
     getAllMachineUsers
 } from "./userService";
-import {body, param, validationResult} from 'express-validator';
+import {body, param, validationResult} from "express-validator";
 import {UserNotFound, UserWithSameUsernameError} from "./userErrors";
 import {NewUser, Role, Type, User} from "./user";
 import crypto from "crypto";
@@ -132,16 +132,18 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdminis
     app.post(baseURL,
         isLoggedIn,
         isAdministrator,
-        body('role').isIn(User.allRoles.map(role => role.toString())),
-        body('type').isIn(User.allTypes.map(type => type.toString())),
-        body('email').optional({values: "null"}).isEmail(),
-        body('name').isString(),
-        body('surname').isString(),
-        body('phone').optional({values: "null"}).isString(),
-        body('hoursPerDay').isDecimal(),
-        body('costPerHour').isDecimal(),
-        body('car').optional({values: "null"}).isString(),
-        body('costPerKm').optional({values: "null"}).isDecimal(),
+        body("role").isIn(User.allRoles.map(role => role.toString())),
+        body("type").isIn(User.allTypes.map(type => type.toString())),
+        body("active").optional({values: "null"}).isBoolean(),
+        body("managesTickets").optional({values: "null"}).isBoolean(),
+        body("email").optional({values: "null"}).isEmail(),
+        body("name").isString(),
+        body("surname").isString(),
+        body("phone").optional({values: "null"}).isString(),
+        body("hoursPerDay").isDecimal(),
+        body("costPerHour").isDecimal(),
+        body("car").optional({values: "null"}).isString(),
+        body("costPerKm").optional({values: "null"}).isDecimal(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -163,11 +165,12 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdminis
                 req.body.hoursPerDay,
                 req.body.costPerHour,
                 req.body.active,
+                req.body.managesTickets,
                 req.body.email,
                 req.body.phone,
                 req.body.car,
                 req.body.costPerKm
-            )
+            );
 
             const user = await createUser(newUser);
 
@@ -182,9 +185,9 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdminis
     // update personal information
     app.put(baseURL,
         isLoggedIn,
-        body('email').optional({values: "null"}).isEmail(),
-        body('phone').optional({values: "null"}).isString(),
-        body('car').optional({values: "null"}).isString(),
+        body("email").optional({values: "null"}).isEmail(),
+        body("phone").optional({values: "null"}).isString(),
+        body("car").optional({values: "null"}).isString(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -195,6 +198,7 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdminis
             const userId = (req.user as User).id;
             await updateUser(
                 userId,
+                undefined,
                 undefined,
                 undefined,
                 undefined,
@@ -217,13 +221,14 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdminis
         isAdministrator,
         param("userId").isInt({min: 1}),
         body("active").optional({values: "null"}).isBoolean(),
+        body("managesTickets").optional({values: "null"}).isBoolean(),
         body("role").optional({values: "null"}).isString(),
         body("type").optional({values: "null"}).isString(),
         body("hoursPerDay").optional({values: "null"}).isFloat({min: 0, max: 8}),
         body("costPerHour").optional({values: "null"}).isFloat({min: 0}),
-        body('email').optional({values: "null"}).isEmail(),
-        body('phone').optional({values: "null"}).isString(),
-        body('car').optional({values: "null"}).isString(),
+        body("email").optional({values: "null"}).isEmail(),
+        body("phone").optional({values: "null"}).isString(),
+        body("car").optional({values: "null"}).isString(),
         body("costPerKm").optional({values: "null"}).isFloat({min: 0}),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
@@ -239,6 +244,7 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdminis
             await updateUser(
                 userId,
                 req.body.active,
+                req.body.managesTickets,
                 roleName === undefined ? undefined : Role[roleName],
                 typeName === undefined ? undefined : Type[typeName],
                 undefined,
@@ -255,9 +261,8 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdminis
     )
 
     // update password
-    app.put(`${baseURL}/password/:userId`,
+    app.put(`${baseURL}/password`,
         isLoggedIn,
-        param("userId").isInt({min: 1}),
         body("oldPassword").isString(),
         body("newPassword").isString(),
         async (req: Request, res: Response) => {
@@ -267,7 +272,7 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdminis
                 return
             }
 
-            const userId = parseInt(req.params.userId);
+            const userId = (req.user as User).id;
             const user = await getFullUser(userId);
 
             if (!user) {
