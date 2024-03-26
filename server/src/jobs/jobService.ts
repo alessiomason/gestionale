@@ -17,7 +17,7 @@ function parseJobs(jobs: [{
     lost: boolean | undefined
     design: boolean | undefined
     construction: boolean | undefined
-    totalWorkedHours: string
+    totalWorkedHours: string | null
 }]) {
     return jobs.map(job => new Job(
         job.id,
@@ -33,13 +33,13 @@ function parseJobs(jobs: [{
         job.lost,
         job.design,
         job.construction,
-        parseFloat(job.totalWorkedHours)
+        job.totalWorkedHours ? parseFloat(job.totalWorkedHours) : 0
     ));
 }
 
 export async function getAllJobs() {
     const jobs = await knex<Job>("jobs")
-        .join("workItems", "workItems.jobId", "jobs.id")
+        .leftJoin("workItems", "workItems.jobId", "jobs.id")
         .groupBy("jobs.id")
         .sum({totalWorkedHours: "workItems.hours"})
         .select("jobs.*") as any;
