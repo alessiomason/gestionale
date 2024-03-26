@@ -24,6 +24,8 @@ import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import "dayjs/locale/it";
+import {Role, User} from "./users/user";
+
 
 // setup passport
 const webAuthnStore = new SessionChallengeStore();
@@ -89,18 +91,27 @@ app.use(function (req, res, next) {
     next();
 });
 
-const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
+function isLoggedIn(req: Request, res: Response, next: NextFunction) {
     if (req.isAuthenticated())
         return next();
 
     return res.status(401).json({error: 'This API requires an authenticated request!'});
 }
 
+function isAdministrator(req: Request, res: Response, next: NextFunction) {
+    const user = req.user ? (req.user as User) : undefined;
+    if (user?.role !== Role.user) {     // accept administrators and developers
+        return next();
+    }
+
+    return res.status(401).json({error: 'This API requires administrator privileges!'});
+}
+
 // expose the APIs
 useSystemAPIs(app, isLoggedIn);
 useAuthenticationAPIs(app, webAuthnStore, isLoggedIn);
-useUsersAPIs(app, isLoggedIn);
-useJobsAPIs(app, isLoggedIn);
+useUsersAPIs(app, isLoggedIn, isAdministrator);
+useJobsAPIs(app, isLoggedIn, isAdministrator);
 useTicketCompaniesAPIs(app, isLoggedIn);
 useTicketOrdersAPIs(app, isLoggedIn);
 useTicketsAPIs(app, isLoggedIn);

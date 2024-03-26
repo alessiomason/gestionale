@@ -8,7 +8,11 @@ import JobPane from "./JobPane";
 import JobsTable from "./JobsTable";
 import SwitchToggle from "../users-management/SwitchToggle";
 
-function JobsPage() {
+interface JobsPageProps {
+    readonly isAdministrator: boolean
+}
+
+function JobsPage(props: JobsPageProps) {
     const [jobs, setJobs] = useState<Job[]>([]);
     const [dirty, setDirty] = useState(true);
     const [showingNewJobPane, setShowingNewJobPane] = useState(false);
@@ -38,11 +42,11 @@ function JobsPage() {
 
             <Row>
                 <Col md={4}>
-                    <GlossyButton icon={showingNewJobPane ? JournalX : JournalPlus}
-                                  onClick={() => setShowingNewJobPane(prevShowing => !prevShowing)}
-                                  className="new-user-button">
+                    {props.isAdministrator && <GlossyButton icon={showingNewJobPane ? JournalX : JournalPlus}
+                                                            onClick={() => setShowingNewJobPane(prevShowing => !prevShowing)}
+                                                            className="new-user-button">
                         {showingNewJobPane ? "Chiudi" : "Nuova commessa"}
-                    </GlossyButton>
+                    </GlossyButton>}
 
                     <Row className="glossy-background w-100">
                         <Form>
@@ -93,7 +97,7 @@ function JobsPage() {
                 <Col>
                     {showingNewJobPane ?
                         <JobPane job={undefined} setJobs={setJobs}/> :
-                        <JobsTable jobs={jobs.filter(job => {
+                        <JobsTable isAdministrator={props.isAdministrator} jobs={jobs.filter(job => {
                             let keep = true;
 
                             if (filteringId !== "") {
