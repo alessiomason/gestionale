@@ -2,7 +2,7 @@ import {useNavigate} from 'react-router-dom';
 import {Col, Navbar, Row} from 'react-bootstrap';
 import {useMediaQuery} from "react-responsive";
 import './MyNavbar.css';
-import logo from '../images/logos/logo.png';
+import horizontalWhiteLogo from '../images/logos/horizontal_white_logo.png';
 import {User} from "../models/user";
 import LightGlossyButton from "../buttons/LightGlossyButton";
 import {CalendarEvent, JournalBookmarkFill, PersonBadge, PersonVcard, TicketPerforated} from "react-bootstrap-icons";
@@ -20,7 +20,7 @@ function MyNavbar(props: NavbarProps) {
             <Row className="navbar-row">
                 <Col className={isMobile ? "d-flex justify-content-center" : undefined}>
                     <Navbar.Brand className='text' onClick={() => navigate("/")}>
-                        <img src={logo} className="brand-image" alt="Logo di Technomake"/>
+                        <img src={horizontalWhiteLogo} className="brand-image" alt="Logo di Technomake"/>
                     </Navbar.Brand>
                 </Col>
 
