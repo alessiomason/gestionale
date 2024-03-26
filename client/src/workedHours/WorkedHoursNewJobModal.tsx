@@ -7,11 +7,15 @@ interface WorkedHoursNewJobModalProps {
     readonly show: boolean
     readonly setShow: React.Dispatch<React.SetStateAction<boolean>>
     readonly selectJob: (job: Job) => void
+    readonly smaller?: boolean
 }
 
 function WorkedHoursNewJobModal(props: WorkedHoursNewJobModalProps) {
     const [searchText, setSearchText] = useState("");
     const [jobs, setJobs] = useState<Job[]>([]);
+
+    const searchTextLabel = props.smaller ?
+        "Cerca per commessa, oggetto o cliente" : "Cerca per numero di commessa, oggetto o cliente";
 
     function getJobs() {
         jobApis.getActiveJobs()
@@ -32,11 +36,10 @@ function WorkedHoursNewJobModal(props: WorkedHoursNewJobModalProps) {
             </Modal.Header>
             <Modal.Header>
                 <Form className="w-100">
-                    <FloatingLabel controlId="floatingInput" label="Cerca per numero di commessa, oggetto o cliente"
-                                   className="mb-3">
+                    <FloatingLabel controlId="floatingInput" label={searchTextLabel} className="mb-3">
                         <Form.Control type="search" value={searchText}
                                       onChange={ev => setSearchText(ev.target.value)}
-                                      placeholder="Cerca per numero di commessa, oggetto o cliente"/>
+                                      placeholder={searchTextLabel}/>
                     </FloatingLabel>
                 </Form>
             </Modal.Header>
