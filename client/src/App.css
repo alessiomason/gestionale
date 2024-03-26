@@ -37,7 +37,7 @@ table {
 
 /* not needed for mobile tables */
 @media (min-width: 767px) {
-    tbody>tr:hover:not(.worked-hours-table>tbody>tr) {
+    tbody>tr:hover:not(.worked-hours-table>tbody>tr):not(.unhoverable) {
         cursor: pointer;
     }
 

@@ -9,7 +9,3 @@ export async function pingDB() {
 
     return systemResult?.value
 }
-
-export function closeDbConnection() {
-    void knex.destroy()
-}

@@ -3,7 +3,7 @@ import {Col, Navbar, Row} from 'react-bootstrap';
 import {useMediaQuery} from "react-responsive";
 import './MyNavbar.css';
 import logo from '../images/logos/logo.png';
-import {User} from "../models/user";
+import {Role, User} from "../models/user";
 import LightGlossyButton from "../buttons/LightGlossyButton";
 import {CalendarEvent, JournalBookmarkFill, PersonBadge, PersonVcard, TicketPerforated} from "react-bootstrap-icons";
 
@@ -14,6 +14,7 @@ interface NavbarProps {
 function MyNavbar(props: NavbarProps) {
     const navigate = useNavigate();
     const isMobile = useMediaQuery({maxWidth: 767});
+    const isAdministrator = props.user.role !== Role.user;
 
     return (
         <Navbar className="navbar fixed-top navbar-padding">
@@ -34,9 +35,10 @@ function MyNavbar(props: NavbarProps) {
                     <LightGlossyButton icon={CalendarEvent} className="me-3" onClick={() => navigate("/workedHours")}>
                         Ore
                     </LightGlossyButton>
-                    <LightGlossyButton icon={PersonVcard} className="me-3" onClick={() => navigate("/users")}>
-                        Gestione utenti
-                    </LightGlossyButton>
+                    {isAdministrator &&
+                        <LightGlossyButton icon={PersonVcard} className="me-3" onClick={() => navigate("/users")}>
+                            Gestione utenti
+                        </LightGlossyButton>}
                     <LightGlossyButton icon={PersonBadge} onClick={() => navigate("/profile")}>
                         {`${props.user.name} ${props.user.surname}`}
                     </LightGlossyButton>

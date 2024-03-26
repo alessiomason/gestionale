@@ -6,7 +6,7 @@ import {createJob, deleteJob, getActiveJobs, getAllJobs, getJob, updateJob} from
 import {DuplicateJob, JobNotFound} from "./jobErrors";
 import {Job} from "./job";
 
-export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler) {
+export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler, isAdministrator: RequestHandler) {
     const baseURL = "/api/jobs"
 
     // get all jobs
@@ -60,6 +60,7 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler) {
     // create a new job
     app.post(baseURL,
         isLoggedIn,
+        isAdministrator,
         body("id").isString(),
         body("subject").isString(),
         body("client").isString(),
@@ -109,6 +110,7 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler) {
     // update job
     app.put(`${baseURL}/:jobId`,
         isLoggedIn,
+        isAdministrator,
         param("jobId").isString(),
         body("subject").isString(),
         body("client").isString(),
@@ -165,6 +167,7 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler) {
     // delete job
     app.delete(`${baseURL}/:jobId`,
         isLoggedIn,
+        isAdministrator,
         param("jobId").isString(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);

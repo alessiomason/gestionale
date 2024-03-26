@@ -1,5 +1,7 @@
 export function humanize(x: number, fractionDigits: number) {
-    return x.toFixed(fractionDigits).replace(/\.?0*$/, '');
+    return x.toFixed(fractionDigits)
+        .replace(/\.?0*$/, '')
+        .replace(/\./g, ',');
 }
 
 export function upperCaseFirst(str: string) {
