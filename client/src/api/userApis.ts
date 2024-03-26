@@ -56,7 +56,7 @@ async function updateUser(user: User) {
     } else await handleApiError(response);
 }
 
-async function updateProfile(userId: number, email: string | undefined, phone: string | undefined, car: string | undefined) {
+async function updateProfile(email: string | undefined, phone: string | undefined, car: string | undefined) {
     const body = {
         email: email,
         phone: phone,
@@ -77,13 +77,13 @@ async function updateProfile(userId: number, email: string | undefined, phone: s
     } else await handleApiError(response);
 }
 
-async function updatePassword(userId: number, oldPassword: string, newPassword: string) {
+async function updatePassword(oldPassword: string, newPassword: string) {
     const body = {
         oldPassword: oldPassword,
         newPassword: newPassword
     }
 
-    const response = await fetch(new URL(`users/password/${userId}`, apiUrl), {
+    const response = await fetch(new URL("users/password", apiUrl), {
         method: 'PUT',
         credentials: 'include',
         headers: {

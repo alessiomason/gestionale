@@ -1,5 +1,4 @@
 import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
-import {User} from "../models/user";
 import {Floppy, Lock, LockFill} from "react-bootstrap-icons";
 import {useNavigate} from "react-router-dom";
 import React, {useState} from "react";
@@ -7,11 +6,7 @@ import userApis from "../api/userApis";
 import GlossyButton from "../buttons/GlossyButton";
 import {checkValidPassword} from "../functions";
 
-interface EditPasswordPageProps {
-    readonly user: User
-}
-
-function EditPasswordPage(props: EditPasswordPageProps) {
+function EditPasswordPage() {
     const navigate = useNavigate();
     const [oldPassword, setOldPassword] = useState("");
     const [password, setPassword] = useState("");
@@ -41,7 +36,7 @@ function EditPasswordPage(props: EditPasswordPageProps) {
 
         if (oldPassword === "") return
 
-        userApis.updatePassword(props.user.id, oldPassword, password)
+        userApis.updatePassword(oldPassword, password)
             .then(_ => navigate("/profile"))
             .catch(err => console.error(err))
     }

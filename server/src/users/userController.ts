@@ -261,9 +261,8 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdminis
     )
 
     // update password
-    app.put(`${baseURL}/password/:userId`,
+    app.put(`${baseURL}/password`,
         isLoggedIn,
-        param("userId").isInt({min: 1}),
         body("oldPassword").isString(),
         body("newPassword").isString(),
         async (req: Request, res: Response) => {
@@ -273,7 +272,7 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdminis
                 return
             }
 
-            const userId = parseInt(req.params.userId);
+            const userId = (req.user as User).id;
             const user = await getFullUser(userId);
 
             if (!user) {

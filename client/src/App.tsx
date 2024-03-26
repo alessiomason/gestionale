@@ -125,7 +125,7 @@ function App2() {
                 <Route index element={<Navigate to="/workedHours" replace={true}/>}/>
                 <Route path="profile" element={<ProfilePage user={user!} doLogout={doLogout}/>}/>
                 <Route path="profile/edit" element={<EditProfilePage user={user!} setDirtyUser={setDirtyUser}/>}/>
-                <Route path="profile/password" element={<EditPasswordPage user={user!}/>}/>
+                <Route path="profile/password" element={<EditPasswordPage/>}/>
                 <Route path="users"
                        element={isAdministrator ? <UsersListPage user={user!} setDirtyUser={setDirtyUser}/> :
                            <Navigate to="/"/>}/>
