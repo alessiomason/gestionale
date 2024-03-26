@@ -20,6 +20,7 @@ export class User {
     role: Role
     type: Type
     active: boolean
+    managesTickets: boolean
     email: string | undefined
     name: string
     surname: string
@@ -46,27 +47,29 @@ export class User {
         hoursPerDay: number,
         costPerHour: number,
         active = true,
+        managesTickets = false,
         email: string | undefined = undefined,
         phone: string | undefined = undefined,
         car: string | undefined = undefined,
         costPerKm: number | undefined = undefined
     ) {
-        this.id = id
-        this.role = role
-        this.type = type
-        this.active = active
-        this.email = email
-        this.name = name
-        this.surname = surname
-        this.username = username
+        this.id = id;
+        this.role = role;
+        this.type = type;
+        this.active = active;
+        this.managesTickets = managesTickets;
+        this.email = email;
+        this.name = name;
+        this.surname = surname;
+        this.username = username;
         this.registrationToken = registrationToken;
         this.tokenExpiryDate = tokenExpiryDate;
         this.registrationDate = registrationDate;
-        this.phone = phone
-        this.hoursPerDay = hoursPerDay
-        this.costPerHour = costPerHour
-        this.car = car
-        this.costPerKm = costPerKm
+        this.phone = phone;
+        this.hoursPerDay = hoursPerDay;
+        this.costPerHour = costPerHour;
+        this.car = car;
+        this.costPerKm = costPerKm;
     }
 
     static roleName(role: Role) {

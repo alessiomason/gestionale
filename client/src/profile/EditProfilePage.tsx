@@ -33,7 +33,7 @@ function EditProfilePage(props: EditProfilePageProps) {
 
         handleEmailCheck();
 
-        userApis.updateProfile(props.user.id, email, phone, car)
+        userApis.updateProfile(email, phone, car)
             .then(() => {
                 props.setDirtyUser(true);
                 navigate("/profile");

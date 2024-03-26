@@ -1,14 +1,14 @@
-'use strict';
+"use strict";
 
 import express, {Express, NextFunction, Request, Response} from "express";
-import morgan from 'morgan';
-import cors from 'cors';
+import morgan from "morgan";
+import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config();
-import passport from 'passport';
-import {SessionChallengeStore} from '@forwardemail/passport-fido2-webauthn';
-import session from 'express-session';
-import {useSystemAPIs} from './system/systemController';
+import passport from "passport";
+import {SessionChallengeStore} from "@forwardemail/passport-fido2-webauthn";
+import session from "express-session";
+import {useSystemAPIs} from "./system/systemController";
 import {useUsersAPIs} from "./users/userController";
 import {setupPassport} from "./authentication/passportSetup";
 import {useAuthenticationAPIs} from "./authentication/authenticationController";
@@ -60,7 +60,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 // set up the session
-const MySQLSessionStore = require('express-mysql-session')(session);
+const MySQLSessionStore = require("express-mysql-session")(session);
 const sessionStore = new MySQLSessionStore(dbOptions);
 
 app.use(session({
@@ -80,7 +80,7 @@ app.use(session({
 // then, init passport
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(passport.authenticate('session'));
+app.use(passport.authenticate("session"));
 app.use(function (req, res, next) {
     // @ts-ignore
     const messages = req.session.messages || [];
@@ -95,7 +95,7 @@ function isLoggedIn(req: Request, res: Response, next: NextFunction) {
     if (req.isAuthenticated())
         return next();
 
-    return res.status(401).json({error: 'This API requires an authenticated request!'});
+    return res.status(401).json({error: "This API requires an authenticated request!"});
 }
 
 function isAdministrator(req: Request, res: Response, next: NextFunction) {
@@ -104,7 +104,16 @@ function isAdministrator(req: Request, res: Response, next: NextFunction) {
         return next();
     }
 
-    return res.status(401).json({error: 'This API requires administrator privileges!'});
+    return res.status(401).json({error: "This API requires administrator privileges!"});
+}
+
+function canManageTickets(req: Request, res: Response, next: NextFunction) {
+    const user = req.user ? (req.user as User) : undefined;
+    if (user?.managesTickets || process.env.NODE_ENV === "test") {
+        return next();
+    }
+
+    return res.status(401).json({error: "You are not authorised to manage tickets!"});
 }
 
 // expose the APIs
@@ -112,9 +121,9 @@ useSystemAPIs(app, isLoggedIn);
 useAuthenticationAPIs(app, webAuthnStore, isLoggedIn);
 useUsersAPIs(app, isLoggedIn, isAdministrator);
 useJobsAPIs(app, isLoggedIn, isAdministrator);
-useTicketCompaniesAPIs(app, isLoggedIn);
-useTicketOrdersAPIs(app, isLoggedIn);
-useTicketsAPIs(app, isLoggedIn);
+useTicketCompaniesAPIs(app, isLoggedIn, canManageTickets);
+useTicketOrdersAPIs(app, isLoggedIn, canManageTickets);
+useTicketsAPIs(app, isLoggedIn, canManageTickets);
 useWorkItemsAPIs(app, isLoggedIn);
 useDailyExpensesAPIs(app, isLoggedIn);
 
