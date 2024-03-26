@@ -50,7 +50,7 @@ export async function getAllJobs() {
 export async function getActiveJobs() {
     const activeJobs = await knex<Job>("jobs")
         .where({active: true})
-        .join("workItems", "workItems.jobId", "jobs.id")
+        .leftJoin("workItems", "workItems.jobId", "jobs.id")
         .groupBy("jobs.id")
         .sum({totalWorkedHours: "workItems.hours"})
         .select("jobs.*") as any;
@@ -61,7 +61,7 @@ export async function getActiveJobs() {
 export async function getJob(id: string) {
     const job = await knex<Job>("jobs")
         .where({id: id})
-        .join("workItems", "workItems.jobId", "jobs.id")
+        .leftJoin("workItems", "workItems.jobId", "jobs.id")
         .groupBy("jobs.id")
         .sum({totalWorkedHours: "workItems.hours"})
         .first("jobs.*") as any;
