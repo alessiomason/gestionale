@@ -14,6 +14,7 @@ export class NewUser {
     role: Role
     type: Type
     active: boolean
+    managesTickets: boolean
     email: string | null
     name: string
     surname: string
@@ -45,23 +46,25 @@ export class NewUser {
         hoursPerDay: number,
         costPerHour: number,
         active = true,
+        managesTickets = false,
         email: string | null = null,
         phone: string | null = null,
         car: string | null = null,
         costPerKm: number | null = null
     ) {
-        this.role = role
-        this.type = type
-        this.active = active
-        this.email = email
-        this.name = name
-        this.surname = surname
-        this.username = username
-        this.phone = phone
-        this.hoursPerDay = hoursPerDay
-        this.costPerHour = costPerHour
-        this.car = car
-        this.costPerKm = costPerKm
+        this.role = role;
+        this.type = type;
+        this.active = active;
+        this.managesTickets = managesTickets;
+        this.email = email;
+        this.name = name;
+        this.surname = surname;
+        this.username = username;
+        this.phone = phone;
+        this.hoursPerDay = hoursPerDay;
+        this.costPerHour = costPerHour;
+        this.car = car;
+        this.costPerKm = costPerKm;
     }
 }
 
@@ -93,6 +96,7 @@ export class User extends NewUser {
         hoursPerDay: number,
         costPerHour: number,
         active = true,
+        managesTickets = false,
         email: string | null = null,
         phone: string | null = null,
         car: string | null = null,
@@ -107,6 +111,7 @@ export class User extends NewUser {
             hoursPerDay,
             costPerHour,
             active,
+            managesTickets,
             email,
             phone,
             car,

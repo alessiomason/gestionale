@@ -10,7 +10,7 @@ import dayjs = require("dayjs");
 
 jest.mock('../src/database/db', () => {
     const Knex = require('knex');
-    const { MockClient } = require('knex-mock-client');
+    const {MockClient} = require('knex-mock-client');
     return {
         knex: Knex({client: MockClient}),
     };
@@ -37,6 +37,7 @@ describe("Test users APIs", () => {
         undefined,
         8.0,
         30.0,
+        true,
         true,
         faker.internet.email(),
         faker.phone.number(),
@@ -86,7 +87,7 @@ describe("Test users APIs", () => {
         expect(res.body).toEqual(user);
     })
 
-    test("Get single user not found", async() => {
+    test("Get single user not found", async () => {
         tracker.on.select("users").response(undefined)
 
         const res = await new Request(app).get(`${baseURL}/${faker.number.int()}`).set("Cookie", session);
@@ -131,6 +132,7 @@ describe("Test users APIs", () => {
             User.usernameFromName(firstName, lastName),
             8.0,
             30.0,
+            undefined,
             undefined,
             faker.internet.email(),
             faker.phone.number(),

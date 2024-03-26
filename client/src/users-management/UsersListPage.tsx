@@ -53,6 +53,7 @@ function UsersListPage(props: UsersListPageProps) {
     const [showingNewUser, setShowingNewUser] = useState(false);
 
     const [active, setActive] = useState(false);
+    const [managesTickets, setManagesTickets] = useState(false);
     const [role, setRole] = useState<"user" | "admin" | "dev" | "">("");
     const [type, setType] = useState<"office" | "workshop" | "machine" | "">("");
     const [email, setEmail] = useState<string>("");
@@ -82,6 +83,7 @@ function UsersListPage(props: UsersListPageProps) {
         setShowingNewUser(false);
 
         setActive(user.active);
+        setManagesTickets(user.managesTickets);
         setRole(user.role.toString() as "user" | "admin" | "dev");
         setType(user.type.toString() as "office" | "workshop");
         setEmail(user.email ?? "");
@@ -115,6 +117,7 @@ function UsersListPage(props: UsersListPageProps) {
 
         let user = selectedUser;
         user.active = active;
+        user.managesTickets = managesTickets;
         user.role = Role[role];
         user.type = Type[type];
         user.email = email === "" ? undefined : email;
@@ -189,14 +192,14 @@ function UsersListPage(props: UsersListPageProps) {
                                 </Row>
 
                                 <Row className="d-flex align-items-center">
-                                    <Col sm={2}
+                                    <Col sm={3}
                                          className="glossy-background smaller d-flex justify-content-center align-items-center">
                                         <Person className="me-1"/> Username
                                     </Col>
                                     <Col>{selectedUser.username}</Col>
                                 </Row>
                                 <Row className="d-flex align-items-center">
-                                    <Col sm={2}
+                                    <Col sm={3}
                                          className="glossy-background smaller d-flex justify-content-center align-items-center">
                                         {active ? <CheckCircle className="me-2"/> :
                                             <XCircle className="me-2"/>} {active ? "Attivo" : "Non attivo"}
@@ -204,6 +207,17 @@ function UsersListPage(props: UsersListPageProps) {
                                     <Col className="d-flex align-items-center">
                                         <SwitchToggle id="active-toggle" isOn={active}
                                                       handleToggle={() => setActive(!active)}/>
+                                    </Col>
+                                </Row>
+                                <Row className="d-flex align-items-center">
+                                    <Col sm={3}
+                                         className="glossy-background smaller d-flex justify-content-center align-items-center">
+                                        {managesTickets ? <CheckCircle className="me-2"/> :
+                                            <XCircle className="me-2"/>} Accesso ai ticket
+                                    </Col>
+                                    <Col className="d-flex align-items-center">
+                                        <SwitchToggle id="manages-tickets-toggle" isOn={managesTickets}
+                                                      handleToggle={() => setManagesTickets(prevState => !prevState)}/>
                                     </Col>
                                 </Row>
 

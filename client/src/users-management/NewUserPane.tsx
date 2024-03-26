@@ -26,6 +26,7 @@ interface NewUserPaneProps {
 
 function NewUserPane(props: NewUserPaneProps) {
     const [active, setActive] = useState(true);
+    const [managesTickets, setManagesTickets] = useState(false);
     const [name, setName] = useState("");
     const [invalidName, setInvalidName] = useState(false);
     const [surname, setSurname] = useState("");
@@ -79,11 +80,12 @@ function NewUserPane(props: NewUserPaneProps) {
             hoursPerDay,
             costPerHour,
             active,
+            managesTickets,
             email,
             phone,
             car,
             costPerKm
-        )
+        );
 
         signUpApis.createUser(newUser)
             .then(user => {
@@ -101,14 +103,14 @@ function NewUserPane(props: NewUserPaneProps) {
                 </Row>
 
                 <Row className="d-flex align-items-center">
-                    <Col sm={2}
+                    <Col sm={3}
                          className="glossy-background smaller d-flex justify-content-center align-items-center">
                         <Person className="me-1"/> Username
                     </Col>
                     <Col>{username}</Col>
                 </Row>
                 <Row className="d-flex align-items-center">
-                    <Col sm={2}
+                    <Col sm={3}
                          className="glossy-background smaller d-flex justify-content-center align-items-center">
                         {active ? <CheckCircle className="me-2"/> :
                             <XCircle className="me-2"/>} {active ? "Attivo" : "Non attivo"}
@@ -116,6 +118,17 @@ function NewUserPane(props: NewUserPaneProps) {
                     <Col className="d-flex align-items-center">
                         <SwitchToggle id="active-toggle" isOn={active}
                                       handleToggle={() => setActive(prevActive => !prevActive)}/>
+                    </Col>
+                </Row>
+                <Row className="d-flex align-items-center">
+                    <Col sm={3}
+                         className="glossy-background smaller d-flex justify-content-center align-items-center">
+                        {managesTickets ? <CheckCircle className="me-2"/> :
+                            <XCircle className="me-2"/>} Accesso ai ticket
+                    </Col>
+                    <Col className="d-flex align-items-center">
+                        <SwitchToggle id="manages-tickets-toggle" isOn={managesTickets}
+                                      handleToggle={() => setManagesTickets(prevState => !prevState)}/>
                     </Col>
                 </Row>
 
