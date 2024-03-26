@@ -12,7 +12,7 @@ export class Job {
     lost: boolean
     design: boolean
     construction: boolean
-    totalWorkedHours: number | undefined
+    totalWorkedHours: number
 
     constructor(
         id: string,
@@ -28,7 +28,7 @@ export class Job {
         lost: boolean = false,
         design: boolean = false,
         construction: boolean = false,
-        totalWorkedHours: number | undefined = undefined
+        totalWorkedHours: number = 0
     ) {
         this.id = id;
         this.subject = subject;

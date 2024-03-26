@@ -66,6 +66,8 @@ export async function getJob(id: string) {
         .sum({totalWorkedHours: "workItems.hours"})
         .first("jobs.*") as any;
 
+    if (!job) return
+
     return parseJobs([job])[0];
 }
 
