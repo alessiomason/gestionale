@@ -11,12 +11,13 @@ import Mail from "nodemailer/lib/mailer";
 import {OAuth2Client} from "google-auth-library";
 import dayjs from "dayjs";
 
-export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
+export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler, canManageTickets: RequestHandler) {
     const baseURL = "/api/tickets";
 
     // get tickets by company
     app.get(`${baseURL}/company/:ticketCompanyId`,
         isLoggedIn,
+        canManageTickets,
         param("ticketCompanyId").isInt(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
@@ -43,6 +44,7 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
     // get ticket by id
     app.get(`${baseURL}/:ticketId`,
         isLoggedIn,
+        canManageTickets,
         param("ticketId").isInt(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
@@ -69,6 +71,7 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
     // create a new ticket
     app.post(baseURL,
         isLoggedIn,
+        canManageTickets,
         body("company.id").isInt(),
         body("title").isString(),
         body("description").isString(),
@@ -94,6 +97,7 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
     // close a ticket
     app.post(`${baseURL}/:ticketId/close`,
         isLoggedIn,
+        canManageTickets,
         param("ticketId").isInt(),
         body("endTime").optional({values: "null"}).isString(),
         async (req: Request, res: Response) => {
@@ -197,6 +201,7 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler) {
     // delete ticket
     app.delete(`${baseURL}/:ticketId`,
         isLoggedIn,
+        canManageTickets,
         param("ticketId").isInt(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);

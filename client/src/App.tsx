@@ -52,6 +52,7 @@ function App2() {
     const [dirtyUser, setDirtyUser] = useState(false);
     const loggedIn = user !== undefined;
     const isAdministrator = user ? (user.role !== Role.user) : false;
+    const canManageTickets = user ? user.managesTickets : false;
     const [message, setMessage] = useState("");
 
     const navigate = useNavigate();
@@ -130,7 +131,7 @@ function App2() {
                            <Navigate to="/"/>}/>
                 <Route path="jobs" element={<JobsPage isAdministrator={isAdministrator}/>}/>
                 <Route path="jobs/:jobId" element={isAdministrator ? <JobPage/> : <Navigate to="/"/>}/>
-                <Route path="tickets" element={<TicketsPage/>}/>
+                <Route path="tickets" element={canManageTickets ? <TicketsPage/> : <Navigate to="/"/>}/>
                 <Route path="workedHours" element={<WorkedHoursPage user={user!}/>}/>
                 <Route path="editWorkedHours"
                        element={isMobile ? <WorkedHoursEditMobile user={user!}/> : <Navigate to="/workedHours"/>}/>

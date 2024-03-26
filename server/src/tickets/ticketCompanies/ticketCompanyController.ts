@@ -12,11 +12,11 @@ import {
 } from "./ticketCompanyService";
 import {TicketCompanyWithProgress} from "./ticketCompany";
 
-export function useTicketCompaniesAPIs(app: Express, isLoggedIn: RequestHandler) {
+export function useTicketCompaniesAPIs(app: Express, isLoggedIn: RequestHandler, canManageTickets: RequestHandler) {
     const baseURL = "/api/tickets/companies"
 
     // get all ticket companies
-    app.get(baseURL, isLoggedIn, async (_: Request, res: Response) => {
+    app.get(baseURL, isLoggedIn, canManageTickets, async (_: Request, res: Response) => {
         try {
             const ticketCompanies = await getAllTicketCompanies()
             const ticketCompaniesWithProgress: TicketCompanyWithProgress[] = [];
@@ -35,6 +35,7 @@ export function useTicketCompaniesAPIs(app: Express, isLoggedIn: RequestHandler)
     // get ticket company by id
     app.get(`${baseURL}/:ticketCompanyId`,
         isLoggedIn,
+        canManageTickets,
         param("ticketCompanyId").isInt(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
@@ -61,6 +62,7 @@ export function useTicketCompaniesAPIs(app: Express, isLoggedIn: RequestHandler)
     // create a new ticket company
     app.post(baseURL,
         isLoggedIn,
+        canManageTickets,
         body("name").isString(),
         body("email").optional({values: "null"}).isEmail(),
         body("contact").optional({values: "null"}).isString(),
@@ -92,6 +94,7 @@ export function useTicketCompaniesAPIs(app: Express, isLoggedIn: RequestHandler)
     // update a ticket company
     app.put(`${baseURL}/:ticketCompanyId`,
         isLoggedIn,
+        canManageTickets,
         param("ticketCompanyId").isInt(),
         body("name").optional({values: "null"}).isString(),
         body("email").optional({values: "null"}).isEmail(),
@@ -127,6 +130,7 @@ export function useTicketCompaniesAPIs(app: Express, isLoggedIn: RequestHandler)
     // delete ticket company
     app.delete(`${baseURL}/:ticketCompanyId`,
         isLoggedIn,
+        canManageTickets,
         param("ticketCompanyId").isInt(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);

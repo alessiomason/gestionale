@@ -12,12 +12,13 @@ import {TicketCompanyNotFound, TicketOrderNotFound} from "../ticketErrors";
 import {getTicketCompany} from "../ticketCompanies/ticketCompanyService";
 import dayjs from "dayjs";
 
-export function useTicketOrdersAPIs(app: Express, isLoggedIn: RequestHandler) {
+export function useTicketOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManageTickets: RequestHandler) {
     const baseURL = "/api/tickets/orders"
 
     // get ticket orders by company
     app.get(`${baseURL}/company/:ticketCompanyId`,
         isLoggedIn,
+        canManageTickets,
         param("ticketCompanyId").isInt(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
@@ -44,6 +45,7 @@ export function useTicketOrdersAPIs(app: Express, isLoggedIn: RequestHandler) {
     // get ticket order by id
     app.get(`${baseURL}/:ticketOrderId`,
         isLoggedIn,
+        canManageTickets,
         param("ticketOrderId").isInt(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
@@ -70,6 +72,7 @@ export function useTicketOrdersAPIs(app: Express, isLoggedIn: RequestHandler) {
     // create a new ticket order
     app.post(baseURL,
         isLoggedIn,
+        canManageTickets,
         body("company.id").isInt(),
         body("hours").isFloat(),
         body("date").optional({values: "null"}).isString(),
@@ -94,6 +97,7 @@ export function useTicketOrdersAPIs(app: Express, isLoggedIn: RequestHandler) {
     // delete ticket order
     app.delete(`${baseURL}/:ticketOrderId`,
         isLoggedIn,
+        canManageTickets,
         param("ticketOrderId").isInt(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);

@@ -15,6 +15,7 @@ function MyNavbar(props: NavbarProps) {
     const navigate = useNavigate();
     const isMobile = useMediaQuery({maxWidth: 767});
     const isAdministrator = props.user.role !== Role.user;
+    const canManageTickets = props.user.managesTickets;
 
     return (
         <Navbar className="navbar fixed-top navbar-padding">
@@ -26,9 +27,10 @@ function MyNavbar(props: NavbarProps) {
                 </Col>
 
                 {!isMobile && <Col className="d-flex justify-content-end align-items-center">
-                    <LightGlossyButton icon={TicketPerforated} className="me-3" onClick={() => navigate("/tickets")}>
+                    {canManageTickets && <LightGlossyButton icon={TicketPerforated} className="me-3"
+                                                            onClick={() => navigate("/tickets")}>
                         Assistenza
-                    </LightGlossyButton>
+                    </LightGlossyButton>}
                     <LightGlossyButton icon={JournalBookmarkFill} className="me-3" onClick={() => navigate("/jobs")}>
                         Commesse
                     </LightGlossyButton>
