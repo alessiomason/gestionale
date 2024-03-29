@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import React, {useEffect, useState} from "react";
 import {Col, Row, Table} from "react-bootstrap";
 import {upperCaseFirst} from "../../functions";
-import {ArrowLeftSquare, ArrowRightSquare, JournalPlus} from "react-bootstrap-icons";
+import {ArrowLeftSquare, ArrowRightSquare, ExclamationCircle, JournalPlus} from "react-bootstrap-icons";
 import {WorkItem} from "../../models/workItem";
 import {DailyExpense} from "../../models/dailyExpense";
 import {Type} from "../../models/user";
@@ -13,8 +13,10 @@ import workdayClassName from "../workedHoursFunctions";
 import "./WorkedHoursMobilePage.css";
 import GlossyButton from "../../buttons/GlossyButton";
 import {useNavigate} from "react-router-dom";
+import WorkedHoursSelectUser from "../WorkedHoursSelectUser";
 
 function WorkedHoursMobilePage(props: WorkedHoursPageProps) {
+    const [selectedUser, setSelectedUser] = useState(props.user);
     const currentYear = parseInt(dayjs().format("YYYY"));
     const currentMonth = parseInt(dayjs().format("M"));
     const [month, setMonth] = useState(currentMonth);
@@ -32,18 +34,18 @@ function WorkedHoursMobilePage(props: WorkedHoursPageProps) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        workItemApis.getWorkItems(`${year}-${month}`, props.user.id)
+        workItemApis.getWorkItems(`${year}-${month}`, selectedUser.id)
             .then(workItems => {
                 setWorkItems(workItems);
             })
             .catch(err => console.error(err))
 
         if (!isMachine) {
-            dailyExpenseApis.getDailyExpenses(`${year}-${month}`, props.user.id)
+            dailyExpenseApis.getDailyExpenses(`${year}-${month}`, selectedUser.id)
                 .then(dailyExpenses => setDailyExpenses(dailyExpenses!))
                 .catch(err => console.error(err))
         }
-    }, []);
+    }, [selectedUser.id, month, year]);
 
     function decreaseMonth() {
         if (month === 1) {
@@ -81,6 +83,23 @@ function WorkedHoursMobilePage(props: WorkedHoursPageProps) {
                 </Row>
 
                 <Row className="mb-3">
+                    <Col>
+                        <WorkedHoursSelectUser user={props.user} selectedUser={selectedUser}
+                                               setSelectedUser={setSelectedUser}/>
+                    </Col>
+                </Row>
+
+                {selectedUser.id !== props.user.id && <Row className="mb-3">
+                    <Col xs={2} className="warning d-flex align-items-center"><ExclamationCircle/></Col>
+                    <Col>
+                        <p className="warning d-flex align-items-center">
+                            Attenzione! Stai modificando le ore di
+                            {selectedUser.type === Type.machine ? " una macchina" : " un altro utente"}, non le tue!
+                        </p>
+                    </Col>
+                </Row>}
+
+                <Row className="mt-2 mb-3">
                     <GlossyButton icon={JournalPlus} onClick={() => navigate("/editWorkedHours")}>
                         Aggiungi o modifica le ore lavorate
                     </GlossyButton>
