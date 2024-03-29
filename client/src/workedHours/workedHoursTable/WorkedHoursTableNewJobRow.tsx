@@ -25,7 +25,7 @@ function WorkedHoursTableNewJobRow(props: WorkedHoursTableNewJobRowProps) {
         <>
             <WorkedHoursNewJobModal show={showNewJobModal} setShow={setShowNewJobModal} selectJob={selectJob}/>
 
-            <tr>
+            <tr className="gray-background">
                 <td className="unhoverable"/>
                 <td className="unhoverable">
                     <TextButton icon={JournalPlus} className="smaller-button"

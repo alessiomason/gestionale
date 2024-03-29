@@ -42,7 +42,7 @@ export class DailyExpense {
         return this.expenses === 0 &&
             this.destination === "" &&
             this.kms === 0 &&
-            this.tripCost === 0 &&
+            (this.tripCost === 0 || this.tripCost == undefined) &&
             this.travelHours === 0 &&
             this.holidayHours === 0 &&
             this.sickHours === 0 &&
