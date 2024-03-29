@@ -1,9 +1,9 @@
 import {WorkedHoursPageProps} from "../WorkedHoursPage";
 import dayjs from "dayjs";
 import React, {useEffect, useState} from "react";
-import {Row, Table} from "react-bootstrap";
+import {Col, Row, Table} from "react-bootstrap";
 import {upperCaseFirst} from "../../functions";
-import {JournalPlus} from "react-bootstrap-icons";
+import {ArrowLeftSquare, ArrowRightSquare, JournalPlus} from "react-bootstrap-icons";
 import {WorkItem} from "../../models/workItem";
 import {DailyExpense} from "../../models/dailyExpense";
 import {Type} from "../../models/user";
@@ -17,10 +17,12 @@ import {useNavigate} from "react-router-dom";
 function WorkedHoursMobilePage(props: WorkedHoursPageProps) {
     const currentYear = parseInt(dayjs().format("YYYY"));
     const currentMonth = parseInt(dayjs().format("M"));
-    const daysInMonth = dayjs(`${currentYear}-${currentMonth}-01`).daysInMonth();
+    const [month, setMonth] = useState(currentMonth);
+    const [year, setYear] = useState(currentYear);
+    const daysInMonth = dayjs(`${year}-${month}-01`).daysInMonth();
     let workdays: dayjs.Dayjs[] = [];
     for (let i = 1; i <= daysInMonth; i++) {
-        workdays.push(dayjs(`${currentYear}-${currentMonth}-${i}`));
+        workdays.push(dayjs(`${year}-${month}-${i}`));
     }
 
     const isMachine = props.user.type === Type.machine;
@@ -30,18 +32,37 @@ function WorkedHoursMobilePage(props: WorkedHoursPageProps) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        workItemApis.getWorkItems(`${currentYear}-${currentMonth}`, props.user.id)
+        workItemApis.getWorkItems(`${year}-${month}`, props.user.id)
             .then(workItems => {
                 setWorkItems(workItems);
             })
             .catch(err => console.error(err))
 
         if (!isMachine) {
-            dailyExpenseApis.getDailyExpenses(`${currentYear}-${currentMonth}`, props.user.id)
+            dailyExpenseApis.getDailyExpenses(`${year}-${month}`, props.user.id)
                 .then(dailyExpenses => setDailyExpenses(dailyExpenses!))
                 .catch(err => console.error(err))
         }
     }, []);
+
+    function decreaseMonth() {
+        if (month === 1) {
+            setMonth(12);
+            setYear(selectedYear => selectedYear - 1);
+        } else {
+            setMonth(selectedMonth => selectedMonth - 1);
+        }
+    }
+
+    function increaseMonth() {
+        if (month === 12) {
+            setMonth(1);
+            setYear(selectedYear => selectedYear + 1);
+        } else {
+            setMonth(selectedMonth => selectedMonth + 1);
+        }
+    }
+
     return (
         <>
             <Row>
@@ -50,9 +71,13 @@ function WorkedHoursMobilePage(props: WorkedHoursPageProps) {
 
             <Row className="glossy-background">
                 <Row className="mb-4">
-                    <h3 className="text-center mb-0">
-                        {upperCaseFirst(dayjs(`${currentYear}-${currentMonth}-01`).format("MMMM YYYY"))}
-                    </h3>
+                    <Col xs={1}><ArrowLeftSquare className="hoverable" onClick={decreaseMonth}/></Col>
+                    <Col>
+                        <h3 className="text-center mb-0">
+                            {upperCaseFirst(dayjs(`${year}-${month}-01`).format("MMMM YYYY"))}
+                        </h3>
+                    </Col>
+                    <Col xs={1}><ArrowRightSquare className="hoverable" onClick={increaseMonth}/></Col>
                 </Row>
 
                 <Row className="mb-3">
