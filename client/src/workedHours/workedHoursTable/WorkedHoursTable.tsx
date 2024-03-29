@@ -172,7 +172,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
                 <td colSpan={daysInMonth + 3} className="unhoverable"/>
             </tr>
 
-            {!isMachine && <tr>
+            {!isMachine && <tr className="gray-background">
                 <td className="unhoverable vertical-center" rowSpan={2}>Totali</td>
                 <td className="left-aligned unhoverable">Straordinari</td>
                 {workdays.map(workday => {
@@ -198,7 +198,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
                 <td className="unhoverable">{monthExtraHours}</td>
             </tr>}
 
-            <tr>
+            <tr className="gray-background">
                 {isMachine && <td className="unhoverable"/>}
                 <td className="left-aligned unhoverable"><strong>Totale ore</strong></td>
                 {workdays.map(workday => {

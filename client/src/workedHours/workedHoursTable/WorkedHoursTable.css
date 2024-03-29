@@ -44,6 +44,10 @@
     background-color: rgba(213, 0, 0, 0.15);
 }
 
+.gray-background > td {
+    background-color: rgba(204, 204, 204, 0.6);
+}
+
 .left-aligned {
     padding-left: 5px !important;
     padding-right: 5px !important;
