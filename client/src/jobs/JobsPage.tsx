@@ -7,6 +7,7 @@ import GlossyButton from "../buttons/GlossyButton";
 import JobPane from "./JobPane";
 import JobsTable from "./JobsTable";
 import SwitchToggle from "../users-management/SwitchToggle";
+import Loading from "../Loading";
 
 interface JobsPageProps {
     readonly isAdministrator: boolean
@@ -15,6 +16,7 @@ interface JobsPageProps {
 function JobsPage(props: JobsPageProps) {
     const [jobs, setJobs] = useState<Job[]>([]);
     const [dirty, setDirty] = useState(true);
+    const [loading, setLoading] = useState(true);
     const [showingNewJobPane, setShowingNewJobPane] = useState(false);
 
     const [filteringId, setFilteringId] = useState("");
@@ -29,6 +31,7 @@ function JobsPage(props: JobsPageProps) {
                 .then(jobs => {
                     setJobs(jobs);
                     setDirty(false);
+                    setLoading(false);
                 })
                 .catch(err => console.error(err))
         }
@@ -95,7 +98,8 @@ function JobsPage(props: JobsPageProps) {
                 </Col>
 
                 <Col>
-                    {showingNewJobPane ?
+                    {loading && <Loading/>}
+                    {(!loading && showingNewJobPane) ?
                         <JobPane job={undefined} setJobs={setJobs}/> :
                         <JobsTable isAdministrator={props.isAdministrator} jobs={jobs.filter(job => {
                             let keep = true;

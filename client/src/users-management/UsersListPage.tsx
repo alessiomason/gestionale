@@ -22,6 +22,7 @@ import NewUserPane from "./NewUserPane";
 import GlossyButton from "../buttons/GlossyButton";
 import {RegisteredSection, NoRegistrationSection} from "./UsersListSections";
 import {checkValidEmail} from "../functions";
+import Loading from "../Loading";
 
 function compareUsers(a: User, b: User) {
     // sort active first
@@ -48,6 +49,7 @@ interface UsersListPageProps {
 function UsersListPage(props: UsersListPageProps) {
     const [users, setUsers] = useState<User[]>([]);
     const [dirty, setDirty] = useState(true);
+    const [loading, setLoading] = useState(true);
     const [selectedUser, setSelectedUser] = useState<User>();
     const [savedUser, setSavedUser] = useState(false);
     const [showingNewUser, setShowingNewUser] = useState(false);
@@ -70,8 +72,7 @@ function UsersListPage(props: UsersListPageProps) {
                 .then(users => {
                     setUsers(users);
                     setDirty(false);
-
-
+                    setLoading(false);
                 })
                 .catch(err => console.error(err))
         }
@@ -152,34 +153,36 @@ function UsersListPage(props: UsersListPageProps) {
                         Nuovo utente
                     </GlossyButton>
 
-                    <Row className="glossy-background w-100">
-                        <Table hover responsive>
-                            <thead>
-                            <tr>
-                                <th>Cognome</th>
-                                <th>Nome</th>
-                                <th>Tipo</th>
-                                <th>Mansione</th>
-                                <th>Attivo</th>
-                            </tr>
-                            </thead>
+                    {loading ?
+                        <Loading/> :
+                        <Row className="glossy-background w-100">
+                            <Table hover responsive>
+                                <thead>
+                                <tr>
+                                    <th>Cognome</th>
+                                    <th>Nome</th>
+                                    <th>Tipo</th>
+                                    <th>Mansione</th>
+                                    <th>Attivo</th>
+                                </tr>
+                                </thead>
 
-                            <tbody>
-                            {users.sort(compareUsers).map(user => {
-                                return (
-                                    <tr key={user.id} onClick={() => selectUser(user)}
-                                        className={user === selectedUser ? "table-selected-row" : ""}>
-                                        <td>{user.surname}</td>
-                                        <td>{user.name}</td>
-                                        <td>{User.typeName(user.type)}</td>
-                                        <td>{User.roleName(user.role)}</td>
-                                        <td>{user.active ? <CheckCircle/> : <XCircle/>}</td>
-                                    </tr>
-                                );
-                            })}
-                            </tbody>
-                        </Table>
-                    </Row>
+                                <tbody>
+                                {users.sort(compareUsers).map(user => {
+                                    return (
+                                        <tr key={user.id} onClick={() => selectUser(user)}
+                                            className={user === selectedUser ? "table-selected-row" : ""}>
+                                            <td>{user.surname}</td>
+                                            <td>{user.name}</td>
+                                            <td>{User.typeName(user.type)}</td>
+                                            <td>{User.roleName(user.role)}</td>
+                                            <td>{user.active ? <CheckCircle/> : <XCircle/>}</td>
+                                        </tr>
+                                    );
+                                })}
+                                </tbody>
+                            </Table>
+                        </Row>}
                 </Col>
 
                 <Col>
