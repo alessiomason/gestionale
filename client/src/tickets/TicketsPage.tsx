@@ -6,10 +6,12 @@ import ticketCompanyApis from "../api/ticketCompanyApis";
 import {TicketCompany} from "../models/ticketCompany";
 import EditTicketCompanyPane from "./EditTicketCompanyPane";
 import TicketCompanyModifiablePane from "./TicketCompanyModifiablePane";
+import Loading from "../Loading";
 
 function TicketsPage() {
     const [ticketCompanies, setTicketCompanies] = useState<TicketCompany[]>([]);
     const [dirty, setDirty] = useState(true);
+    const [loading, setLoading] = useState(true);
     const [showingNewTicketCompanyPane, setShowingNewTicketCompanyPane] = useState(false);
     const [selectedTicketCompany, setSelectedTicketCompany] = useState<TicketCompany>();
 
@@ -25,6 +27,7 @@ function TicketsPage() {
 
                     setTicketCompanies(ticketCompanies!);
                     setDirty(false);
+                    setLoading(false);
                 }
             })
             .catch(err => console.error(err))
@@ -69,43 +72,47 @@ function TicketsPage() {
                         Nuova azienda
                     </GlossyButton>
 
-                    <Row className="glossy-background w-100">
-                        <Table hover responsive>
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Nome</th>
-                                <th>Ore rimanenti</th>
-                            </tr>
-                            </thead>
+                    {loading ?
+                        <Loading/> :
+                        <Row className="glossy-background w-100">
+                            <Table hover responsive>
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nome</th>
+                                    <th>Ore rimanenti</th>
+                                </tr>
+                                </thead>
 
-                            <tbody>
-                            {ticketCompanies
-                                .sort((a, b) => a.name.localeCompare(b.name))
-                                .map((ticketCompany, i) => {
-                                    return (
-                                        <tr key={ticketCompany.id} onClick={() => selectTicketCompany(ticketCompany)}
-                                            className={(!showingNewTicketCompanyPane && ticketCompany === selectedTicketCompany) ?
-                                                "table-selected-row" : ""}>
-                                            <td>{i + 1}</td>
-                                            <td>{ticketCompany.name}</td>
-                                            <td>
-                                                {Math.round(ticketCompany.remainingHoursPercentage)}%
-                                                ({Math.round(ticketCompany.remainingHours)} di {Math.round(ticketCompany.orderedHours)})
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </Table>
-                    </Row>
+                                <tbody>
+                                {ticketCompanies
+                                    .sort((a, b) => a.name.localeCompare(b.name))
+                                    .map((ticketCompany, i) => {
+                                        return (
+                                            <tr key={ticketCompany.id}
+                                                onClick={() => selectTicketCompany(ticketCompany)}
+                                                className={(!showingNewTicketCompanyPane && ticketCompany === selectedTicketCompany) ?
+                                                    "table-selected-row" : ""}>
+                                                <td>{i + 1}</td>
+                                                <td>{ticketCompany.name}</td>
+                                                <td>
+                                                    {Math.round(ticketCompany.remainingHoursPercentage)}%
+                                                    ({Math.round(ticketCompany.remainingHours)} di {Math.round(ticketCompany.orderedHours)})
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </Table>
+                        </Row>}
                 </Col>
 
                 <Col>
                     {showingNewTicketCompanyPane &&
                         <EditTicketCompanyPane updateSelectedCompany={updateSelectedCompany}/>}
                     {!showingNewTicketCompanyPane && selectedTicketCompany !== undefined &&
-                        <TicketCompanyModifiablePane ticketCompany={selectedTicketCompany} updateSelectedCompany={updateSelectedCompany}/>
+                        <TicketCompanyModifiablePane ticketCompany={selectedTicketCompany}
+                                                     updateSelectedCompany={updateSelectedCompany}/>
                     }
                 </Col>
             </Row>
