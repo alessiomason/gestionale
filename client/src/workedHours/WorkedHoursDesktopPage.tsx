@@ -17,6 +17,7 @@ import WorkedHoursTable from "./workedHoursTable/WorkedHoursTable";
 import {Type} from "../models/user";
 import WorkedHoursSelectUser from "./WorkedHoursSelectUser";
 import {WorkedHoursPageProps} from "./WorkedHoursPage";
+import {MonthSelector, SelectMonthButtons} from "./MonthSelectingComponents";
 
 function WorkedHoursDesktopPage(props: WorkedHoursPageProps) {
     const currentMonth = parseInt(dayjs().format("M"));
@@ -33,24 +34,6 @@ function WorkedHoursDesktopPage(props: WorkedHoursPageProps) {
             setTimeout(() => setSavingStatus(""), 3000);
         }
     }, [savingStatus]);
-
-    function decreaseMonth() {
-        if (month === 1) {
-            setMonth(12);
-            setYear(selectedYear => selectedYear - 1);
-        } else {
-            setMonth(selectedMonth => selectedMonth - 1);
-        }
-    }
-
-    function increaseMonth() {
-        if (month === 12) {
-            setMonth(1);
-            setYear(selectedYear => selectedYear + 1);
-        } else {
-            setMonth(selectedMonth => selectedMonth + 1);
-        }
-    }
 
     return (
         <>
@@ -98,26 +81,8 @@ function WorkedHoursDesktopPage(props: WorkedHoursPageProps) {
                     </Col>
                 </Row>
 
-                <Row>
-                    <Col className="d-flex justify-content-between align-items-center">
-                        <ArrowLeftSquare className="hoverable" onClick={decreaseMonth}/>
-
-                        <div className="d-flex">
-                            <TextButton icon={selectingMonth ? CalendarX : CalendarRange}
-                                        onClick={() => setSelectingMonth(prevState => !prevState)}>
-                                {selectingMonth ? "Chiudi" : "Seleziona un mese"}
-                            </TextButton>
-                            <TextButton icon={CalendarEvent} onClick={() => {
-                                setMonth(currentMonth);
-                                setYear(currentYear);
-                            }}>
-                                Oggi
-                            </TextButton>
-                        </div>
-
-                        <ArrowRightSquare className="hoverable" onClick={increaseMonth}/>
-                    </Col>
-                </Row>
+                <SelectMonthButtons selectingMonth={selectingMonth} setSelectingMonth={setSelectingMonth} month={month}
+                                    setMonth={setMonth} setYear={setYear}/>
 
                 <Row className="mt-2">
                     <WorkedHoursTable user={props.user} selectedUser={selectedUser} month={month} year={year}
@@ -125,57 +90,6 @@ function WorkedHoursDesktopPage(props: WorkedHoursPageProps) {
                 </Row>
             </Row>
         </>
-    );
-}
-
-interface MonthSelectorProps {
-    readonly month: number
-    readonly setMonth: React.Dispatch<React.SetStateAction<number>>
-    readonly year: number
-    readonly setYear: React.Dispatch<React.SetStateAction<number>>
-}
-
-function MonthSelector(props: MonthSelectorProps) {
-    const currentYear = parseInt(dayjs().format("YYYY"));
-    let years: number[] = [];
-    for (let i = currentYear; i >= 2019; i--) {     // show data up to 2019
-        years.push(i);
-    }
-
-    return (
-        <Row>
-            <Col>
-                <InputGroup>
-                    <FloatingLabel controlId="floatingInput" label="Mese">
-                        <Form.Select value={props.month}
-                                     onChange={ev => props.setMonth(parseInt(ev.target.value))}>
-                            {[...Array(12)].map((_, i) => {
-                                return (
-                                    <option key={`month-${i + 1}`} value={i + 1}>
-                                        {dayjs(`${props.year}-${i + 1}-01`).format("MMMM")}
-                                    </option>
-                                );
-                            })}
-                        </Form.Select>
-                    </FloatingLabel>
-                </InputGroup>
-            </Col>
-
-            <Col>
-                <InputGroup>
-                    <FloatingLabel controlId="floatingInput" label="Anno">
-                        <Form.Select value={props.year}
-                                     onChange={ev => props.setYear(parseInt(ev.target.value))}>
-                            {years.map(year => {
-                                return (
-                                    <option key={`year-${year}`} value={year}>{year}</option>
-                                );
-                            })}
-                        </Form.Select>
-                    </FloatingLabel>
-                </InputGroup>
-            </Col>
-        </Row>
     );
 }
 
