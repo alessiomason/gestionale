@@ -1,18 +1,12 @@
 import React, {useEffect, useState} from "react";
-import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
+import {Col, Row} from "react-bootstrap";
 import dayjs from "dayjs";
 import {upperCaseFirst} from "../functions";
 import {
-    ArrowLeftSquare,
-    ArrowRightSquare,
-    CalendarEvent,
-    CalendarRange,
-    CalendarX,
     Check2Circle,
     ExclamationCircle,
     ThreeDots
 } from "react-bootstrap-icons";
-import TextButton from "../buttons/TextButton";
 import WorkedHoursTable from "./workedHoursTable/WorkedHoursTable";
 import {Type} from "../models/user";
 import WorkedHoursSelectUser from "./WorkedHoursSelectUser";
