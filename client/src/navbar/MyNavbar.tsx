@@ -5,7 +5,15 @@ import './MyNavbar.css';
 import logo from '../images/logos/logo.png';
 import {Role, User} from "../models/user";
 import LightGlossyButton from "../buttons/LightGlossyButton";
-import {CalendarEvent, JournalBookmarkFill, PersonBadge, PersonVcard, TicketPerforated} from "react-bootstrap-icons";
+import {
+    CalendarEvent,
+    CalendarRange,
+    CalendarWeek,
+    JournalBookmarkFill,
+    PersonBadge,
+    PersonVcard,
+    TicketPerforated
+} from "react-bootstrap-icons";
 
 interface NavbarProps {
     readonly user: User
@@ -27,21 +35,29 @@ function MyNavbar(props: NavbarProps) {
                 </Col>
 
                 {!isMobile && <Col className="d-flex justify-content-end align-items-center">
-                    {canManageTickets && <LightGlossyButton icon={TicketPerforated} className="me-3"
+                    {canManageTickets && <LightGlossyButton singleLine icon={TicketPerforated} className="me-3"
                                                             onClick={() => navigate("/tickets")}>
                         Assistenza
                     </LightGlossyButton>}
-                    <LightGlossyButton icon={JournalBookmarkFill} className="me-3" onClick={() => navigate("/jobs")}>
+                    <LightGlossyButton singleLine icon={JournalBookmarkFill} className="me-3" onClick={() => navigate("/jobs")}>
                         Commesse
                     </LightGlossyButton>
-                    <LightGlossyButton icon={CalendarEvent} className="me-3" onClick={() => navigate("/workedHours")}>
+                    {isAdministrator && <LightGlossyButton singleLine icon={CalendarRange} className="me-3"
+                                        onClick={() => navigate("/monthlyWorkedHours")}>
+                        Ore mensili
+                    </LightGlossyButton>}
+                    {isAdministrator && <LightGlossyButton singleLine icon={CalendarWeek} className="me-3"
+                                        onClick={() => navigate("/companyWorkedHours")}>
+                        Ore azienda
+                    </LightGlossyButton>}
+                    <LightGlossyButton singleLine icon={CalendarEvent} className="me-3" onClick={() => navigate("/workedHours")}>
                         Ore
                     </LightGlossyButton>
                     {isAdministrator &&
-                        <LightGlossyButton icon={PersonVcard} className="me-3" onClick={() => navigate("/users")}>
+                        <LightGlossyButton singleLine icon={PersonVcard} className="me-3" onClick={() => navigate("/users")}>
                             Gestione utenti
                         </LightGlossyButton>}
-                    <LightGlossyButton icon={PersonBadge} onClick={() => navigate("/profile")}>
+                    <LightGlossyButton singleLine icon={PersonBadge} onClick={() => navigate("/profile")}>
                         {`${props.user.name} ${props.user.surname}`}
                     </LightGlossyButton>
                 </Col>}

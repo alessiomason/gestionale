@@ -3,8 +3,8 @@ import dayjs from "dayjs";
 const currentYear = parseInt(dayjs().format("YYYY"));
 
 let holidays = [];
-// add recurring Italian holidays since 2019 through next year
-for (let year = 2019; year <= currentYear + 1; year++) {
+// add recurring Italian holidays since 2019 through next 10 years
+for (let year = 2019; year <= currentYear + 10; year++) {
     holidays.push(`${year}-01-01`);
     holidays.push(`${year}-01-06`);
     holidays.push(`${year}-04-25`);

@@ -14,6 +14,19 @@ async function getWorkItems(month: string, userId: number) {
     } else await handleApiError(response);
 }
 
+async function getAllWorkItems(month: string) {
+    const response = await fetch(new URL(`workItems/${month}`, apiUrl), {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json'
+        }
+    });
+    if (response.ok) {
+        return await response.json();
+    } else await handleApiError(response);
+}
+
 async function createOrUpdateWorkItem(
     userId: number,
     jobId: string,
@@ -36,5 +49,5 @@ async function createOrUpdateWorkItem(
     } else await handleApiError(response);
 }
 
-const workItemApis = {getWorkItems, createOrUpdateWorkItem};
+const workItemApis = {getWorkItems, getAllWorkItems, createOrUpdateWorkItem};
 export default workItemApis;

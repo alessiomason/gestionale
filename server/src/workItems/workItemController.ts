@@ -2,13 +2,13 @@ import {Express, Request, Response} from "express";
 import {RequestHandler} from "express-serve-static-core";
 import {body, param, validationResult} from "express-validator";
 import {BaseError, InternalServerError, ParameterError} from "../errors";
-import {createOrUpdateWorkItem, getWorkItems} from "./workItemService";
+import {createOrUpdateWorkItem, getAllWorkItems, getWorkItems} from "./workItemService";
 import {Role, Type, User} from "../users/user";
 import {getUser} from "../users/userService";
 import {UserNotFound} from "../users/userErrors";
 import {UserCannotReadOtherWorkedHours} from "./workItemErrors";
 
-export function useWorkItemsAPIs(app: Express, isLoggedIn: RequestHandler) {
+export function useWorkItemsAPIs(app: Express, isLoggedIn: RequestHandler, isAdministrator: RequestHandler) {
     const baseURL = "/api/workItems";
 
     // get users' work items by user and month
@@ -42,6 +42,30 @@ export function useWorkItemsAPIs(app: Express, isLoggedIn: RequestHandler) {
             try {
                 const workItems = await getWorkItems(requestedUser.id, req.params.month);
                 res.status(200).json(workItems);
+            } catch (err) {
+                if (err instanceof BaseError) {
+                    res.status(err.statusCode).json(err);
+                } else {
+                    res.status(InternalServerError.code).json(new InternalServerError("Error while retrieving work items"));
+                }
+            }
+        })
+
+    // get company's work items by month
+    app.get(`${baseURL}/:month`,
+        isLoggedIn,
+        isAdministrator,
+        param("month").isString(),
+        async (req: Request, res: Response) => {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                res.status(ParameterError.code).json(new ParameterError("There was an error with the parameters!"))
+                return
+            }
+
+            try {
+                const monthWorkItems = await getAllWorkItems(req.params.month);
+                res.status(200).json(monthWorkItems);
             } catch (err) {
                 if (err instanceof BaseError) {
                     res.status(err.statusCode).json(err);

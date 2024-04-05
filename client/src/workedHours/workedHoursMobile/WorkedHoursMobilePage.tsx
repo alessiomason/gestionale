@@ -14,6 +14,7 @@ import "./WorkedHoursMobilePage.css";
 import GlossyButton from "../../buttons/GlossyButton";
 import {useNavigate} from "react-router-dom";
 import WorkedHoursSelectUser from "../WorkedHoursSelectUser";
+import {decreaseMonth, increaseMonth} from "../MonthSelectingComponents";
 
 function WorkedHoursMobilePage(props: WorkedHoursPageProps) {
     const [selectedUser, setSelectedUser] = useState(props.user);
@@ -47,24 +48,6 @@ function WorkedHoursMobilePage(props: WorkedHoursPageProps) {
         }
     }, [selectedUser.id, month, year]);
 
-    function decreaseMonth() {
-        if (month === 1) {
-            setMonth(12);
-            setYear(selectedYear => selectedYear - 1);
-        } else {
-            setMonth(selectedMonth => selectedMonth - 1);
-        }
-    }
-
-    function increaseMonth() {
-        if (month === 12) {
-            setMonth(1);
-            setYear(selectedYear => selectedYear + 1);
-        } else {
-            setMonth(selectedMonth => selectedMonth + 1);
-        }
-    }
-
     return (
         <>
             <Row>
@@ -73,13 +56,21 @@ function WorkedHoursMobilePage(props: WorkedHoursPageProps) {
 
             <Row className="glossy-background">
                 <Row className="mb-4">
-                    <Col xs={1}><ArrowLeftSquare className="hoverable" onClick={decreaseMonth}/></Col>
+                    <Col xs={1}><ArrowLeftSquare className="hoverable" onClick={() => decreaseMonth({
+                        month,
+                        setMonth,
+                        setYear
+                    })}/></Col>
                     <Col>
                         <h3 className="text-center mb-0">
                             {upperCaseFirst(dayjs(`${year}-${month}-01`).format("MMMM YYYY"))}
                         </h3>
                     </Col>
-                    <Col xs={1}><ArrowRightSquare className="hoverable" onClick={increaseMonth}/></Col>
+                    <Col xs={1}><ArrowRightSquare className="hoverable" onClick={() => increaseMonth({
+                        month,
+                        setMonth,
+                        setYear
+                    })}/></Col>
                 </Row>
 
                 <Row className="mb-3">

@@ -1,8 +1,30 @@
 import {getUser} from "../users/userService";
 import {UserNotFound} from "../users/userErrors";
 import {knex} from "../database/db";
-import {checkValidDate, checkValidMonth} from "../workItems/workItemService";
 import {DailyExpense} from "./dailyExpense";
+import {checkValidDate, checkValidMonth} from "../functions";
+
+export async function getAllDailyExpenses(month: string) {
+    const formattedMonth = checkValidMonth(month);
+
+    const dailyExpenses = await knex("dailyExpenses")
+        .whereRaw("date LIKE ?", formattedMonth + "-%")
+        .select();
+
+    return dailyExpenses.map(dailyExpense => new DailyExpense(
+        dailyExpense.userId,
+        dailyExpense.date,
+        parseFloat(dailyExpense.expenses),
+        dailyExpense.destination,
+        parseFloat(dailyExpense.kms),
+        parseFloat(dailyExpense.tripCost),
+        parseFloat(dailyExpense.travelHours),
+        parseFloat(dailyExpense.holidayHours),
+        parseFloat(dailyExpense.sickHours),
+        parseFloat(dailyExpense.donationHours),
+        parseFloat(dailyExpense.furloughHours)
+    ));
+}
 
 export async function getDailyExpenses(userId: number, month: string) {
     const formattedMonth = checkValidMonth(month);
