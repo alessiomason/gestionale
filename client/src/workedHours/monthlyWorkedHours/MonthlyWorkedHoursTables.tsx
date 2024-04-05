@@ -29,7 +29,7 @@ function MonthlyWorkedHoursTables(props: MonthlyWorkedHoursTablesProps) {
                     monthWorkItem.user.id === user.id);
 
                 return (
-                    <MonthWorkItemsTable workItemsUser={user} monthWorkItems={userMonthWorkItems}/>
+                    <MonthWorkItemsTable key={`table-${user.id}`} workItemsUser={user} monthWorkItems={userMonthWorkItems}/>
                 );
             })}
         </>
@@ -38,7 +38,7 @@ function MonthlyWorkedHoursTables(props: MonthlyWorkedHoursTablesProps) {
 
 interface MonthWorkItemsTableProps {
     readonly workItemsUser: User
-    monthWorkItems: MonthWorkItem[]
+    readonly monthWorkItems: MonthWorkItem[]
 }
 
 function MonthWorkItemsTable(props: MonthWorkItemsTableProps) {
@@ -60,7 +60,7 @@ function MonthWorkItemsTable(props: MonthWorkItemsTableProps) {
                     totalHours += monthWorkItem.totalHours;
 
                     return (
-                        <tr className="unhoverable">
+                        <tr key={`user-${props.workItemsUser.id}-job-${monthWorkItem.job.id}`} className="unhoverable">
                             <td>{monthWorkItem.job.id}</td>
                             <td><i>{monthWorkItem.job.client}</i> - {monthWorkItem.job.subject}</td>
                             <td>{monthWorkItem.totalHours}</td>

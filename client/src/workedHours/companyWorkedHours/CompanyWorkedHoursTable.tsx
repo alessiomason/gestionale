@@ -71,7 +71,7 @@ function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
                             }
 
                             return (
-                                <td className="px-1">
+                                <td key={`user-${user.id}-${workday.format()}`} className="px-1">
                                     {companyHoursItem && <>
                                         <div>&nbsp;</div>
                                         <div>{companyHoursItem.workedHours === 0 ? <>&nbsp;</> : companyHoursItem.workedHours}</div>

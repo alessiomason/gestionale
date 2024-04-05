@@ -2,8 +2,7 @@ import {checkValidMonth} from "../functions";
 import {knex} from "../database/db";
 import {CompanyHoursItem} from "./companyHoursItem";
 import {User} from "../users/user";
-import {DailyExpense} from "../dailyExpenses/dailyExpense";
-import {getAllDailyExpenses, getDailyExpense, getDailyExpenses} from "../dailyExpenses/dailyExpenseService";
+import {getAllDailyExpenses} from "../dailyExpenses/dailyExpenseService";
 import {getUser} from "../users/userService";
 import {UserNotFound} from "../users/userErrors";
 
