@@ -9,7 +9,7 @@ export class DailyExpense {
     holidayHours: number    // hours of holiday or paid leave
     sickHours: number       // hours of sick leave
     donationHours: number   // hours of leave for blood donation
-    furloughHours: number   // hours of furloughHours
+    furloughHours: number   // hours of furlough
 
     constructor(
         userId: number,

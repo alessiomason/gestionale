@@ -1,4 +1,3 @@
-import {InvalidDate} from "./workItemErrors";
 import {getUser} from "../users/userService";
 import {UserNotFound} from "../users/userErrors";
 import {knex} from "../database/db";
@@ -7,42 +6,7 @@ import {MonthWorkItem, WorkItem} from "./workItem";
 import {getJob} from "../jobs/jobService";
 import {JobNotFound} from "../jobs/jobErrors";
 import {User} from "../users/user";
-
-export function checkValidMonth(month: string) {
-    // check that month is YYYY-MM
-    const splitMonth = month.split("-");
-    if (splitMonth.length === 2) {
-        const year = parseInt(splitMonth[0]);
-        const monthOfYear = parseInt(splitMonth[1]);
-        if (year < 0 || Number.isNaN(year) ||
-            monthOfYear < 0 || monthOfYear > 12 || Number.isNaN(monthOfYear)) {
-            throw new InvalidDate();
-        }
-
-        return `${year}-${monthOfYear.toString().padStart(2, "0")}`;
-    } else {
-        throw new InvalidDate();
-    }
-}
-
-export function checkValidDate(date: string) {
-    // check that date is YYYY-MM-DD
-    const splitDate = date.split("-");
-    if (splitDate.length === 3) {
-        const year = parseInt(splitDate[0]);
-        const monthOfYear = parseInt(splitDate[1]);
-        const day = parseInt(splitDate[2]);
-        if (year < 0 || Number.isNaN(year) ||
-            monthOfYear < 0 || monthOfYear > 12 || Number.isNaN(monthOfYear) ||
-            day < 0 || day > 31 || Number.isNaN(day)) {
-            throw new InvalidDate();
-        }
-
-        return `${year}-${monthOfYear.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
-    } else {
-        throw new InvalidDate();
-    }
-}
+import {checkValidDate, checkValidMonth} from "../functions";
 
 export async function getWorkItems(userId: number, month: string) {
     const formattedMonth = checkValidMonth(month);
@@ -88,7 +52,7 @@ export async function getAllWorkItems(month: string) {
     const workItems = await knex("workItems")
         .join("jobs", "workItems.jobId", "jobs.id")
         .join("users", "workItems.userId", "users.id")
-        .andWhereRaw("work_items.date LIKE ?", formattedMonth + "-%")
+        .whereRaw("work_items.date LIKE ?", formattedMonth + "-%")
         .groupBy("jobs.id", "jobs.subject", "jobs.client", "jobs.finalClient", "jobs.orderName",
             "jobs.orderAmount", "jobs.startDate", "jobs.deliveryDate", "jobs.notes", "jobs.active", "jobs.lost",
             "jobs.design", "jobs.construction", "users.id", "users.role", "users.type", "users.active",
