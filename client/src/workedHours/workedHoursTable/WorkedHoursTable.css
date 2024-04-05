@@ -29,7 +29,7 @@
     text-align: center;
 }
 
-.worked-hours-table > tbody > tr > td:hover:not(.unhoverable) {
+.worked-hours-table > tbody > tr:not(.unhoverable) > td:hover:not(.unhoverable) {
     cursor: pointer;
     background-color: #cccccc;
 }

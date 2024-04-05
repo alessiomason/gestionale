@@ -25,6 +25,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import "dayjs/locale/it";
 import {Role, User} from "./users/user";
+import {useCompanyHoursAPIs} from "./companyHours/companyHoursController";
 
 
 // setup passport
@@ -124,8 +125,9 @@ useJobsAPIs(app, isLoggedIn, isAdministrator);
 useTicketCompaniesAPIs(app, isLoggedIn, canManageTickets);
 useTicketOrdersAPIs(app, isLoggedIn, canManageTickets);
 useTicketsAPIs(app, isLoggedIn, canManageTickets);
-useWorkItemsAPIs(app, isLoggedIn);
+useWorkItemsAPIs(app, isLoggedIn, isAdministrator);
 useDailyExpensesAPIs(app, isLoggedIn);
+useCompanyHoursAPIs(app, isLoggedIn, isAdministrator);
 
 if (process.env.NODE_ENV === "production") {
     const path = require("path");

@@ -1,47 +1,12 @@
-import {InvalidDate} from "./workItemErrors";
 import {getUser} from "../users/userService";
 import {UserNotFound} from "../users/userErrors";
 import {knex} from "../database/db";
 import {Job} from "../jobs/job";
-import {WorkItem} from "./workItem";
+import {MonthWorkItem, WorkItem} from "./workItem";
 import {getJob} from "../jobs/jobService";
 import {JobNotFound} from "../jobs/jobErrors";
-
-export function checkValidMonth(month: string) {
-    // check that month is YYYY-MM
-    const splitMonth = month.split("-");
-    if (splitMonth.length === 2) {
-        const year = parseInt(splitMonth[0]);
-        const monthOfYear = parseInt(splitMonth[1]);
-        if (year < 0 || Number.isNaN(year) ||
-            monthOfYear < 0 || monthOfYear > 12 || Number.isNaN(monthOfYear)) {
-            throw new InvalidDate();
-        }
-
-        return `${year}-${monthOfYear.toString().padStart(2, "0")}`;
-    } else {
-        throw new InvalidDate();
-    }
-}
-
-export function checkValidDate(date: string) {
-    // check that date is YYYY-MM-DD
-    const splitDate = date.split("-");
-    if (splitDate.length === 3) {
-        const year = parseInt(splitDate[0]);
-        const monthOfYear = parseInt(splitDate[1]);
-        const day = parseInt(splitDate[2]);
-        if (year < 0 || Number.isNaN(year) ||
-            monthOfYear < 0 || monthOfYear > 12 || Number.isNaN(monthOfYear) ||
-            day < 0 || day > 31 || Number.isNaN(day)) {
-            throw new InvalidDate();
-        }
-
-        return `${year}-${monthOfYear.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
-    } else {
-        throw new InvalidDate();
-    }
-}
+import {User} from "../users/user";
+import {checkValidDate, checkValidMonth} from "../functions";
 
 export async function getWorkItems(userId: number, month: string) {
     const formattedMonth = checkValidMonth(month);
@@ -77,6 +42,71 @@ export async function getWorkItems(userId: number, month: string) {
         );
 
         return new WorkItem(workItem.userId, job, workItem.date, parseFloat(workItem.hours));
+    })
+}
+
+export async function getAllWorkItems(month: string) {
+    const formattedMonth = checkValidMonth(month);
+    console.log(formattedMonth)
+
+    const workItems = await knex("workItems")
+        .join("jobs", "workItems.jobId", "jobs.id")
+        .join("users", "workItems.userId", "users.id")
+        .whereRaw("work_items.date LIKE ?", formattedMonth + "-%")
+        .groupBy("jobs.id", "jobs.subject", "jobs.client", "jobs.finalClient", "jobs.orderName",
+            "jobs.orderAmount", "jobs.startDate", "jobs.deliveryDate", "jobs.notes", "jobs.active", "jobs.lost",
+            "jobs.design", "jobs.construction", "users.id", "users.role", "users.type", "users.active",
+            "users.managesTickets", "users.email", "users.name", "users.surname", "users.username",
+            "users.phone", "users.hoursPerDay", "users.costPerHour", "users.car", "users.costPerKm")
+        .select("jobs.id as jobId", "jobs.subject", "jobs.client", "jobs.finalClient",
+            "jobs.orderName", "jobs.orderAmount", "jobs.startDate", "jobs.deliveryDate",
+            "jobs.notes", "jobs.active", "jobs.lost", "jobs.design",
+            "jobs.construction", "users.id as userId", "users.role", "users.type",
+            "users.active", "users.managesTickets", "users.email", "users.name",
+            "users.surname", "users.username", "users.phone", "users.hoursPerDay",
+            "users.costPerHour", "users.car", "users.costPerKm",
+            knex.raw("SUM(work_items.hours) as totalHours"));
+
+    return workItems.map(workItem => {
+        const user = new User(
+            workItem.userId,
+            workItem.role,
+            workItem.type,
+            workItem.name,
+            workItem.surname,
+            workItem.username,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            parseFloat(workItem.hoursPerDay),
+            parseFloat(workItem.costPerHour),
+            workItem.active === 1,
+            workItem.managesTickets === 1,
+            workItem.email,
+            workItem.phone,
+            workItem.car,
+            parseFloat(workItem.costPerKm)
+        );
+
+        const job = new Job(
+            workItem.jobId,
+            workItem.subject,
+            workItem.client,
+            workItem.finalClient === "" ? undefined : workItem.finalClient,
+            workItem.orderName === "" ? undefined : workItem.orderName,
+            parseFloat(workItem.orderAmount),
+            workItem.startDate === "" ? null : workItem.startDate,
+            workItem.deliveryDate === "" ? null : workItem.deliveryDate,
+            workItem.notes,
+            workItem.active === 1,
+            workItem.lost === 1,
+            workItem.design === 1,
+            workItem.construction === 1
+        );
+
+        return new MonthWorkItem(user, job, formattedMonth, parseFloat(workItem.totalHours));
     })
 }
 
