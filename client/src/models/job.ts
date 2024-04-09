@@ -81,7 +81,7 @@ export class DetailedJob extends Job {
         construction: boolean = false,
         totalWorkedHours: number = 0,
         totalCost: number = 0,
-        userHours: JobUserHours[]
+        userHours: JobUserHours[] = []
     ) {
         super(
             id,
