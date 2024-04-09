@@ -2,7 +2,7 @@ import {Express, Request, Response} from "express";
 import {RequestHandler} from "express-serve-static-core";
 import {body, param, validationResult} from 'express-validator';
 import {InternalServerError, ParameterError} from "../errors";
-import {createJob, deleteJob, getActiveJobs, getAllJobs, getJob, updateJob} from "./jobService";
+import {createJob, deleteJob, getActiveJobs, getAllJobs, getDetailedJob, getJob, updateJob} from "./jobService";
 import {DuplicateJob, JobNotFound} from "./jobErrors";
 import {Job} from "./job";
 
@@ -49,6 +49,32 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler, isAdminist
                     res.status(200).json(job)
                 } else {
                     res.status(JobNotFound.code).json(new JobNotFound())
+                }
+            } catch (err: any) {
+                console.error("Error while retrieving jobs: ", err.message);
+                res.status(InternalServerError.code).json(new InternalServerError("Error while retrieving jobs"))
+            }
+        }
+    )
+
+    // get detailed job by id
+    app.get(`${baseURL}/:jobId/details`,
+        isLoggedIn,
+        param("jobId").isString(),
+        async (req: Request, res: Response) => {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                res.status(ParameterError.code).json(new ParameterError("There was an error with the job id!"))
+                return
+            }
+
+            try {
+                const detailedJob = await getDetailedJob(req.params.jobId)
+
+                if (detailedJob) {
+                    res.status(200).json(detailedJob);
+                } else {
+                    res.status(JobNotFound.code).json(new JobNotFound());
                 }
             } catch (err: any) {
                 console.error("Error while retrieving jobs: ", err.message);

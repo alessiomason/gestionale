@@ -1,16 +1,16 @@
-import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
+import {Col, FloatingLabel, Form, InputGroup, Row, Table} from "react-bootstrap";
 import {Building, Check2, CurrencyEuro, Floppy, JournalBookmark, JournalText, Sticky} from "react-bootstrap-icons";
 import React, {useState} from "react";
 import SwitchToggle from "../users-management/SwitchToggle";
 import GlossyButton from "../buttons/GlossyButton";
 import jobApis from "../api/jobApis";
-import {Job} from "../models/job";
+import {DetailedJob, Job} from "../models/job";
 import {useNavigate} from "react-router-dom";
 
 interface JobPaneProps {
-    readonly job: Job | undefined
+    readonly job: Job | DetailedJob | undefined
     readonly setJobs?: React.Dispatch<React.SetStateAction<Job[]>>
-    readonly setJob?: React.Dispatch<React.SetStateAction<Job | undefined>>
+    readonly setJob?: React.Dispatch<React.SetStateAction<DetailedJob | undefined>>
 }
 
 function JobPane(props: JobPaneProps) {
@@ -54,10 +54,29 @@ function JobPane(props: JobPaneProps) {
         );
 
         if (props.job) {    // existing job, update
+            const detailedJob = new DetailedJob(
+                id,
+                subject,
+                client,
+                finalClient,
+                orderName,
+                orderAmount,
+                startDate,
+                deliveryDate,
+                notes,
+                active,
+                lost,
+                design,
+                construction,
+                props.job.totalWorkedHours,
+                (props.job as DetailedJob).totalCost,
+                (props.job as DetailedJob).userHours
+            );
+
             setErrorMessage("");
             jobApis.updateJob(job)
                 .then(_ => {
-                    props.setJob!(job);
+                    props.setJob!(detailedJob);
                     setUpdated(true);
                 })
                 .catch(err => {
@@ -195,11 +214,7 @@ function JobPane(props: JobPaneProps) {
 
                     </Col>
 
-                    {props.job &&
-                        <Col>
-                            Dettagli costi
-                        </Col>
-                    }
+                    {props.job && <JobPaneDetails job={(props.job as DetailedJob)}/>}
                 </Row>
             </Row>
 
@@ -209,6 +224,55 @@ function JobPane(props: JobPaneProps) {
                 </Col>
             </Row>
         </Form>
+    );
+}
+
+interface JobPaneDetailsProps {
+    readonly job: DetailedJob
+}
+
+function JobPaneDetails (props: JobPaneDetailsProps) {
+    return (
+        <Col>
+            <Row>
+                <Col>
+                    <h4>Dettaglio costi</h4>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <Row className="d-flex align-items-center">
+                        <Col xs={3} className="glossy-background smaller text-center">Totale ore</Col>
+                        <Col>{props.job.totalWorkedHours}</Col>
+                    </Row>
+                    <Row className="d-flex align-items-center">
+                        <Col xs={3} className="glossy-background smaller text-center">Totale costi</Col>
+                        <Col>{props.job.totalCost} euro</Col>
+                    </Row>
+
+                    <Table responsive className="mt-4">
+                        <thead>
+                        <tr>
+                            <th>Personale</th>
+                            <th className="text-center">Ore</th>
+                            <th className="text-center">Costo</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {props.job.userHours.map(userHoursItem => {
+                            return (
+                                <tr key={userHoursItem.user.id} className="unhoverable">
+                                    <td>{userHoursItem.user.surname} {userHoursItem.user.name}</td>
+                                    <td className="text-center">{userHoursItem.hours}</td>
+                                    <td className="text-center">€ {userHoursItem.cost}</td>
+                                </tr>
+                            );
+                        })}
+                        </tbody>
+                    </Table>
+                </Col>
+            </Row>
+        </Col>
     );
 }
 

@@ -1,19 +1,19 @@
 import {useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import jobApis from "../api/jobApis";
-import {Job} from "../models/job";
+import {DetailedJob} from "../models/job";
 import JobPane from "./JobPane";
 import {Row} from "react-bootstrap";
 import Loading from "../Loading";
 
 function JobPage() {
     const {jobId} = useParams();
-    const [job, setJob] = useState<Job>();
+    const [job, setJob] = useState<DetailedJob>();
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (jobId) {
-            jobApis.getJob(jobId)
+            jobApis.getDetailedJob(jobId)
                 .then(job => {
                     setJob(job);
                     setLoading(false);
