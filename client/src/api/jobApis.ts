@@ -41,6 +41,19 @@ async function getJob(jobId: string) {
     } else await handleApiError(response);
 }
 
+async function getDetailedJob(jobId: string) {
+    const response = await fetch(new URL(`jobs/${jobId}/details`, apiUrl), {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json'
+        }
+    });
+    if (response.ok) {
+        return await response.json();
+    } else await handleApiError(response);
+}
+
 function prepareJobForServer(job: Job) {
     job.finalClient = job.finalClient === "" ? undefined : job.finalClient;
     job.orderName = job.orderName === "" ? undefined : job.orderName;
@@ -96,5 +109,5 @@ async function deleteJob(jobId: string) {
     } else await handleApiError(response);
 }
 
-const jobApis = {getAllJobs, getActiveJobs, getJob, createJob, updateJob, deleteJob};
+const jobApis = {getAllJobs, getActiveJobs, getJob, getDetailedJob, createJob, updateJob, deleteJob};
 export default jobApis;

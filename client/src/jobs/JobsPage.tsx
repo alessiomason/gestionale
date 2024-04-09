@@ -99,7 +99,7 @@ function JobsPage(props: JobsPageProps) {
 
                 <Col>
                     {loading && <Loading/>}
-                    {(!loading && showingNewJobPane) ?
+                    {showingNewJobPane ?
                         <JobPane job={undefined} setJobs={setJobs}/> :
                         <JobsTable isAdministrator={props.isAdministrator} jobs={jobs.filter(job => {
                             let keep = true;
