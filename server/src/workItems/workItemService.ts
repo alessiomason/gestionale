@@ -41,13 +41,12 @@ export async function getWorkItems(userId: number, month: string) {
             workItem.construction === 1
         );
 
-        return new WorkItem(workItem.userId, job, workItem.date, parseFloat(workItem.hours));
+        return new WorkItem(workItem.userId, job, workItem.date, parseFloat(workItem.hours), parseFloat(workItem.cost));
     })
 }
 
 export async function getAllWorkItems(month: string) {
     const formattedMonth = checkValidMonth(month);
-    console.log(formattedMonth)
 
     const workItems = await knex("workItems")
         .join("jobs", "workItems.jobId", "jobs.id")
@@ -65,7 +64,8 @@ export async function getAllWorkItems(month: string) {
             "users.active", "users.managesTickets", "users.email", "users.name",
             "users.surname", "users.username", "users.phone", "users.hoursPerDay",
             "users.costPerHour", "users.car", "users.costPerKm",
-            knex.raw("SUM(work_items.hours) as totalHours"));
+            knex.raw("SUM(work_items.hours) as totalHours"),
+            knex.raw("SUM(work_items.cost) as totalCost"));
 
     return workItems.map(workItem => {
         const user = new User(
@@ -106,7 +106,7 @@ export async function getAllWorkItems(month: string) {
             workItem.construction === 1
         );
 
-        return new MonthWorkItem(user, job, formattedMonth, parseFloat(workItem.totalHours));
+        return new MonthWorkItem(user, job, formattedMonth, parseFloat(workItem.totalHours), parseFloat(workItem.totalCost));
     })
 }
 
@@ -129,10 +129,14 @@ export async function getWorkItem(userId: number, jobId: string, date: string) {
         .first();
 
     if (!workItem) return
-    return new WorkItem(workItem.userId, job, workItem.date, parseFloat(workItem.hours));
+    return new WorkItem(workItem.userId, job, workItem.date, parseFloat(workItem.hours), parseFloat(workItem.cost));
 }
 
 export async function createOrUpdateWorkItem(userId: number, jobId: string, date: string, hours: number) {
+    const user = await getUser(userId);
+    if (!user) throw new UserNotFound();
+
+    const cost = hours * user.costPerHour;
     const existingWorkItem = await getWorkItem(userId, jobId, date);
 
     if (existingWorkItem) {
@@ -143,10 +147,10 @@ export async function createOrUpdateWorkItem(userId: number, jobId: string, date
         } else {            // update
             await knex("workItems")
                 .where({userId, jobId, date})
-                .update({userId, jobId, date, hours});
+                .update({userId, jobId, date, hours, cost});
         }
     } else {                // create
         await knex("workItems")
-            .insert({userId, jobId, date, hours});
+            .insert({userId, jobId, date, hours, cost});
     }
 }

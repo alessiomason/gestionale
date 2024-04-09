@@ -140,7 +140,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
                     return (
                         <tr key={job.id}>
                             <td className="left-aligned unhoverable">{job.id}</td>
-                            <td className="left-aligned unhoverable"><strong>{job.client}</strong> - {job.subject}</td>
+                            <td className="left-aligned unhoverable"><i>{job.client}</i> - {job.subject}</td>
                             {!dirty && workdays.map(workday => {
                                 const workItem = workItems?.find(workItem =>
                                     workItem.job.id === job.id && workItem.date === workday.format("YYYY-MM-DD")
