@@ -157,9 +157,10 @@ export async function createJob(newJob: Job) {
 }
 
 export async function updateJob(job: Job) {
+    const updatingJob = {...job, totalWorkedHours: undefined};
     await knex("jobs")
         .where({id: job.id})
-        .update(job);
+        .update(updatingJob);
 }
 
 export async function deleteJob(id: string) {
