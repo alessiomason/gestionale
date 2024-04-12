@@ -108,6 +108,15 @@ function isAdministrator(req: Request, res: Response, next: NextFunction) {
     return res.status(401).json({error: "This API requires administrator privileges!"});
 }
 
+function isDeveloper(req: Request, res: Response, next: NextFunction) {
+    const user = req.user ? (req.user as User) : undefined;
+    if (user?.role === Role.dev) {     // only accept developers
+        return next();
+    }
+
+    return res.status(401).json({error: "This API requires developer privileges!"});
+}
+
 function canManageTickets(req: Request, res: Response, next: NextFunction) {
     const user = req.user ? (req.user as User) : undefined;
     if (user?.managesTickets || process.env.NODE_ENV === "test") {
@@ -125,7 +134,7 @@ useJobsAPIs(app, isLoggedIn, isAdministrator);
 useTicketCompaniesAPIs(app, isLoggedIn, canManageTickets);
 useTicketOrdersAPIs(app, isLoggedIn, canManageTickets);
 useTicketsAPIs(app, isLoggedIn, canManageTickets);
-useWorkItemsAPIs(app, isLoggedIn, isAdministrator);
+useWorkItemsAPIs(app, isLoggedIn, isAdministrator, isDeveloper);
 useDailyExpensesAPIs(app, isLoggedIn);
 useCompanyHoursAPIs(app, isLoggedIn, isAdministrator);
 
