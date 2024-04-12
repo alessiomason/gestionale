@@ -2,13 +2,18 @@ import {Express, Request, Response} from "express";
 import {RequestHandler} from "express-serve-static-core";
 import {body, param, validationResult} from "express-validator";
 import {BaseError, InternalServerError, ParameterError} from "../errors";
-import {createOrUpdateWorkItem, getAllWorkItems, getWorkItems} from "./workItemService";
+import {createOrUpdateWorkItem, getAllWorkItems, getWorkItems, updateWorkItemsCosts} from "./workItemService";
 import {Role, Type, User} from "../users/user";
 import {getUser} from "../users/userService";
 import {UserNotFound} from "../users/userErrors";
 import {UserCannotReadOtherWorkedHours} from "./workItemErrors";
 
-export function useWorkItemsAPIs(app: Express, isLoggedIn: RequestHandler, isAdministrator: RequestHandler) {
+export function useWorkItemsAPIs(
+    app: Express,
+    isLoggedIn: RequestHandler,
+    isAdministrator: RequestHandler,
+    isDeveloper: RequestHandler
+) {
     const baseURL = "/api/workItems";
 
     // get users' work items by user and month
@@ -123,4 +128,16 @@ export function useWorkItemsAPIs(app: Express, isLoggedIn: RequestHandler, isAdm
                 }
             }
         })
+
+    // Updates all work items that have a cost equal to 0 to the current cost for the specific user.
+    // A service endpoint destined to developers alone; useful after importing data.
+    app.put(baseURL, isLoggedIn, isDeveloper, async (_: Request, res: Response) => {
+        try {
+            await updateWorkItemsCosts();
+            res.status(200).end();
+        } catch (err: any) {
+            console.error("Error while updating work items", err.message);
+            res.status(InternalServerError.code).json(new InternalServerError("Error while updating work items"))
+        }
+    })
 }
