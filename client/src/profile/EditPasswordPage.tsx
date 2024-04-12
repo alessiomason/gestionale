@@ -18,12 +18,13 @@ function EditPasswordPage() {
         setInvalidPassword(false);
         setShowPasswordRequirements(false);
 
-        const valid = checkValidPassword(password);
-        if (!valid) {
+        if (!checkValidPassword(password)) {
             setInvalidPassword(true);
             setShowPasswordRequirements(true);
+            return false;
         }
-        return valid;
+
+        return true;
     }
 
     function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {

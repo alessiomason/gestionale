@@ -29,7 +29,10 @@ function SignUpPage() {
         // empty email is allowed
         if (email && !checkValidEmail(email)) {
             setInvalidEmail(true);
+            return false;
         }
+
+        return true;
     }
 
     function handlePasswordCheck() {
@@ -39,14 +42,16 @@ function SignUpPage() {
         if (!checkValidPassword(password)) {
             setInvalidPassword(true);
             setShowPasswordRequirements(true);
+            return false;
         }
+
+        return true;
     }
 
     function doSignUp(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
 
-        handleEmailCheck();
-        handlePasswordCheck();
+        if (!handleEmailCheck() || !handlePasswordCheck()) return;
         if (password !== confirmPassword) {
             setInvalidPassword(true);
             return
@@ -97,7 +102,7 @@ function SignUpPage() {
                         <Col/>
                     </Row>
 
-                    {registrationToken !== undefined && <Row>
+                    {registrationToken !== undefined && !expired && <Row>
                         <Col className="d-flex justify-content-center">
                             <Button type="submit" className="glossy-button mb-5"
                                     onClick={ev => doSignUp(ev)}>Registrati</Button>

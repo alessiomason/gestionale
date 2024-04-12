@@ -25,13 +25,16 @@ function EditProfilePage(props: EditProfilePageProps) {
         // empty email is allowed
         if (email && !checkValidEmail(email)) {
             setInvalidEmail(true);
+            return false;
         }
+
+        return true;
     }
 
     function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
 
-        handleEmailCheck();
+        if (!handleEmailCheck()) return;
 
         userApis.updateProfile(email, phone, car)
             .then(() => {
