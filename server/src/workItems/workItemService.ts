@@ -1,4 +1,4 @@
-import {getUser} from "../users/userService";
+import {getAllUsers, getUser} from "../users/userService";
 import {UserNotFound} from "../users/userErrors";
 import {knex} from "../database/db";
 import {Job} from "../jobs/job";
@@ -152,5 +152,29 @@ export async function createOrUpdateWorkItem(userId: number, jobId: string, date
     } else {                // create
         await knex("workItems")
             .insert({userId, jobId, date, hours, cost});
+    }
+}
+
+// Updates all work items that have a cost equal to 0 to the current cost for the specific user.
+// A service function destined to developers alone; useful after importing data.
+export async function updateWorkItemsCosts() {
+    const users = await getAllUsers();
+    const workItems = await knex("workItems").select();
+
+    for (let workItem of workItems) {
+        // only update if cost is zero: only happens with imported data
+        if (parseFloat(workItem.cost) === 0) {
+            const user = users.find(user => user.id === workItem.userId);
+            if (!user) throw new UserNotFound();
+
+            const newCost = parseFloat(workItem.hours) * user.costPerHour;
+            await knex("workItems")
+                .where({
+                    userId: workItem.userId,
+                    jobId: workItem.jobId,
+                    date: workItem.date
+                })
+                .update({cost: newCost});
+        }
     }
 }
