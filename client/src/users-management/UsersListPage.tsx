@@ -106,7 +106,10 @@ function UsersListPage(props: UsersListPageProps) {
         // empty email is allowed
         if (email && !checkValidEmail(email)) {
             setInvalidEmail(true);
+            return false;
         }
+
+        return true;
     }
 
     function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
@@ -114,7 +117,7 @@ function UsersListPage(props: UsersListPageProps) {
 
         if (selectedUser === undefined || role === "" || type === "") return
 
-        handleEmailCheck();
+        if (!handleEmailCheck()) return;
 
         let user = selectedUser;
         user.active = active;
