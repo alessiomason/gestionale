@@ -23,7 +23,10 @@ function EditTicketCompanyPane(props: EditTicketCompanyPaneProps) {
         // empty email is allowed
         if (email && !checkValidEmail(email)) {
             setInvalidEmail(true);
+            return false;
         }
+
+        return true;
     }
 
     function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
@@ -31,7 +34,7 @@ function EditTicketCompanyPane(props: EditTicketCompanyPaneProps) {
 
         if (name.trim() === "") return
 
-        handleEmailCheck();
+        if (!handleEmailCheck()) return;
 
         if (props.ticketCompany) {
             const updatedTicketCompany = new TicketCompany(

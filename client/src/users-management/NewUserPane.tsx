@@ -48,7 +48,10 @@ function NewUserPane(props: NewUserPaneProps) {
         // empty email is allowed
         if (email && !checkValidEmail(email)) {
             setInvalidEmail(true);
+            return false;
         }
+
+        return true;
     }
 
     function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
@@ -65,7 +68,7 @@ function NewUserPane(props: NewUserPaneProps) {
             return
         }
 
-        handleEmailCheck();
+        if (!handleEmailCheck()) return;
 
         const newUser = new User(
             0,
