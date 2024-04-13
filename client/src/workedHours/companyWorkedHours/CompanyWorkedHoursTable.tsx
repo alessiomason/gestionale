@@ -5,6 +5,7 @@ import React, {useEffect, useState} from "react";
 import companyHoursApis from "../../api/companyHoursApis";
 import {CompanyHoursItem} from "../../models/companyHoursItem";
 import {exportCompanyWorkedHoursExcel} from "./exportCompanyWorkedHoursExcel";
+import {compareUsers} from "../../functions";
 
 interface CompanyWorkedHoursTableProps {
     readonly month: number
@@ -20,7 +21,8 @@ function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
     const [companyHours, setCompanyHours] = useState<CompanyHoursItem[]>([]);
     const users = companyHours.map(companyHoursItem => companyHoursItem.user)
         .filter((user, index, users) =>
-            users.map(u => u.id).indexOf(user.id) === index);  // distinct
+            users.map(u => u.id).indexOf(user.id) === index)    // distinct
+        .sort(compareUsers);
 
     useEffect(() => {
         companyHoursApis.getCompanyHours(`${props.year}-${props.month}`)
