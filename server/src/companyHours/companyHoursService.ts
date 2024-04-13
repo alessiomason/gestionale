@@ -5,25 +5,21 @@ import {User} from "../users/user";
 import {getAllDailyExpenses} from "../dailyExpenses/dailyExpenseService";
 import {getUser} from "../users/userService";
 import {UserNotFound} from "../users/userErrors";
+import dayjs from "dayjs";
 
 export async function getCompanyHours(month: string) {
     const formattedMonth = checkValidMonth(month);
 
     const companyHoursResult = await knex("workItems")
         .join("users", "workItems.userId", "users.id")
-        .leftJoin("dailyExpenses", {"dailyExpenses.userId": "workItems.userId", "dailyExpenses.date": "workItems.date"})
         .whereRaw("work_items.date LIKE ?", formattedMonth + "-%")
         .groupBy("users.id", "users.role", "users.type", "users.active", "users.managesTickets",
             "users.email", "users.name", "users.surname", "users.username", "users.phone", "users.hoursPerDay",
-            "users.costPerHour", "users.car", "users.costPerKm", "workItems.date", "dailyExpenses.expenses",
-            "dailyExpenses.travelHours", "dailyExpenses.holidayHours", "dailyExpenses.sickHours",
-            "dailyExpenses.donationHours", "dailyExpenses.furloughHours")
+            "users.costPerHour", "users.car", "users.costPerKm", "workItems.date")
         .select("users.id as userId", "users.role", "users.type", "users.active",
             "users.managesTickets", "users.email", "users.name", "users.surname",
             "users.username", "users.phone", "users.hoursPerDay", "users.costPerHour",
-            "users.car", "users.costPerKm", "workItems.date", "dailyExpenses.expenses",
-            "dailyExpenses.travelHours", "dailyExpenses.holidayHours", "dailyExpenses.sickHours",
-            "dailyExpenses.donationHours", "dailyExpenses.furloughHours",
+            "users.car", "users.costPerKm", "workItems.date",
             knex.raw("SUM(work_items.hours) as workedHours"));
 
     const companyHours = companyHoursResult.map(companyHoursItem => {
@@ -65,8 +61,10 @@ export async function getCompanyHours(month: string) {
     const companyDailyExpenses = await getAllDailyExpenses(formattedMonth);
 
     for (let companyDailyExpense of companyDailyExpenses) {
-        const companyHoursItem = companyHours.find(companyWorkedHoursItem =>
-        companyWorkedHoursItem.user.id === companyDailyExpense.userId);
+        const companyHoursItem = companyHours.find(companyWorkedHoursItem => {
+            return companyWorkedHoursItem.user.id === companyDailyExpense.userId &&
+                dayjs(companyWorkedHoursItem.date).isSame(dayjs(companyDailyExpense.date), "day");
+        });
 
         // only attach daily expenses to company worked hours item, otherwise create a new item and push it in the array
         if (companyHoursItem) {
