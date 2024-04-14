@@ -98,14 +98,14 @@ function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
                 </Table>
             </Row>
 
-            <Row className="mt-2">
+            {/*<Row className="mt-2">
                 <Col className="d-flex justify-content-center">
                     <Button
                         onClick={() => exportCompanyWorkedHoursExcel(props.month, props.year, workdays, companyHours, users)}>
                         Excel
                     </Button>
                 </Col>
-            </Row>
+            </Row>*/}
         </>
     );
 }
