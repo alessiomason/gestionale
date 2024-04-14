@@ -1,3 +1,5 @@
+import {User} from "./models/user";
+
 export function humanize(x: number, fractionDigits: number) {
     return x.toFixed(fractionDigits)
         .replace(/\.?0*$/, '')
@@ -20,4 +22,21 @@ export function checkValidPassword(password: string) {
     const numbers = /[0-9]/g;
 
     return password.length >= 8 && password.match(lowercaseLetters) && password.match(uppercaseLetters) && password.match(numbers);
+}
+
+export function compareUsers(a: User, b: User) {
+    // sort active first
+    if (!a.active && b.active) {
+        return 1;
+    } else if (a.active && !b.active) {
+        return -1;
+    }
+
+    // sort by surname and name
+    const surnameComparison = a.surname.localeCompare(b.surname);
+    if (surnameComparison !== 0) {
+        return surnameComparison;
+    } else {
+        return a.name.localeCompare(b.name);
+    }
 }

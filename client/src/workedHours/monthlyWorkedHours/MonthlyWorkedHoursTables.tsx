@@ -4,6 +4,7 @@ import workItemApis from "../../api/workItemApis";
 import {User} from "../../models/user";
 import {Table} from "react-bootstrap";
 import "./MonthlyWorkedHoursTables.css";
+import {compareUsers} from "../../functions";
 
 interface MonthlyWorkedHoursTablesProps {
     readonly month: number
@@ -14,7 +15,8 @@ function MonthlyWorkedHoursTables(props: MonthlyWorkedHoursTablesProps) {
     const [monthWorkItems, setMonthWorkItems] = useState<MonthWorkItem[]>([]);
     const users = monthWorkItems.map(monthWorkItem => monthWorkItem.user)
         .filter((user, index, users) =>
-            users.map(u => u.id).indexOf(user.id) === index);  // distinct
+            users.map(u => u.id).indexOf(user.id) === index)    // distinct
+        .sort(compareUsers);
 
     useEffect(() => {
         workItemApis.getAllWorkItems(`${props.year}-${props.month}`)

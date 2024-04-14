@@ -21,25 +21,8 @@ import "./UsersListPage.css";
 import NewUserPane from "./NewUserPane";
 import GlossyButton from "../buttons/GlossyButton";
 import {RegisteredSection, NoRegistrationSection} from "./UsersListSections";
-import {checkValidEmail} from "../functions";
+import {checkValidEmail, compareUsers} from "../functions";
 import Loading from "../Loading";
-
-function compareUsers(a: User, b: User) {
-    // sort active first
-    if (!a.active && b.active) {
-        return 1
-    } else if (a.active && !b.active) {
-        return -1
-    }
-
-    // sort by surname and name
-    const surnameComparison = a.surname.localeCompare(b.surname);
-    if (surnameComparison !== 0) {
-        return surnameComparison;
-    } else {
-        return a.name.localeCompare(b.name);
-    }
-}
 
 interface UsersListPageProps {
     readonly user: User

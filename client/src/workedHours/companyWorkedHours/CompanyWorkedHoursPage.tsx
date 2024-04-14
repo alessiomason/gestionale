@@ -15,7 +15,7 @@ function CompanyWorkedHoursPage() {
     return (
         <>
             <Row>
-                <h1 className="page-title">Ore mensili</h1>
+                <h1 className="page-title">Ore azienda</h1>
             </Row>
 
             <Row className="glossy-background">
@@ -35,9 +35,7 @@ function CompanyWorkedHoursPage() {
                 <SelectMonthButtons selectingMonth={selectingMonth} setSelectingMonth={setSelectingMonth} month={month}
                                     setMonth={setMonth} setYear={setYear}/>
 
-                <Row className="mt-2">
-                    <CompanyWorkedHoursTable month={month} year={year}/>
-                </Row>
+                <CompanyWorkedHoursTable month={month} year={year}/>
             </Row>
         </>
     );

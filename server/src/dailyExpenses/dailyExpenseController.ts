@@ -6,10 +6,10 @@ import {getUser} from "../users/userService";
 import {Role, User} from "../users/user";
 import {UserNotFound} from "../users/userErrors";
 import {UserCannotReadOtherWorkedHours} from "../workItems/workItemErrors";
-import {createOrUpdateDailyExpense, getDailyExpenses} from "./dailyExpenseService";
+import {createOrUpdateDailyExpense, getDailyExpenses, updateTripCosts} from "./dailyExpenseService";
 import {DailyExpense} from "./dailyExpense";
 
-export function useDailyExpensesAPIs(app: Express, isLoggedIn: RequestHandler) {
+export function useDailyExpensesAPIs(app: Express, isLoggedIn: RequestHandler, isDeveloper: RequestHandler) {
     const baseURL = "/api/dailyExpenses";
 
     // get users' daily expenses by user and month
@@ -109,4 +109,16 @@ export function useDailyExpensesAPIs(app: Express, isLoggedIn: RequestHandler) {
                 }
             }
         })
+
+    // Updates all daily expenses that have a trip cost equal to 0 to the current trip cost for the specific user.
+    // A service endpoint destined to developers alone; useful after importing data.
+    app.put(baseURL, isLoggedIn, isDeveloper, async (_: Request, res: Response) => {
+        try {
+            await updateTripCosts();
+            res.status(200).end();
+        } catch (err: any) {
+            console.error("Error while updating daily expenses", err.message);
+            res.status(InternalServerError.code).json(new InternalServerError("Error while updating daily expenses"))
+        }
+    })
 }
