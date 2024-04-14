@@ -135,7 +135,7 @@ useTicketCompaniesAPIs(app, isLoggedIn, canManageTickets);
 useTicketOrdersAPIs(app, isLoggedIn, canManageTickets);
 useTicketsAPIs(app, isLoggedIn, canManageTickets);
 useWorkItemsAPIs(app, isLoggedIn, isAdministrator, isDeveloper);
-useDailyExpensesAPIs(app, isLoggedIn);
+useDailyExpensesAPIs(app, isLoggedIn, isDeveloper);
 useCompanyHoursAPIs(app, isLoggedIn, isAdministrator);
 
 if (process.env.NODE_ENV === "production") {
