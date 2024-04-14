@@ -1,4 +1,4 @@
-import {getUser} from "../users/userService";
+import {getAllUsers, getUser} from "../users/userService";
 import {UserNotFound} from "../users/userErrors";
 import {knex} from "../database/db";
 import {DailyExpense} from "./dailyExpense";
@@ -111,5 +111,25 @@ export async function createOrUpdateDailyExpense(newDailyExpense: DailyExpense) 
     } else {                                // create
         await knex("dailyExpenses")
             .insert(newDailyExpense);
+    }
+}
+
+// Updates all daily expenses that have a trip cost equal to 0 to the current trip cost for the specific user.
+// A service function destined to developers alone; useful after importing data.
+export async function updateTripCosts() {
+    const users = await getAllUsers();
+    const dailyExpenses = await knex("dailyExpenses").select();
+
+    for (let dailyExpense of dailyExpenses) {
+        // only update if cost is zero: only happens with imported data
+        if (parseFloat(dailyExpense.tripCost) === 0) {
+            const user = users.find(user => dailyExpense.userId === user.id);
+            if (!user) throw new UserNotFound();
+
+            const newTripCost = user.costPerKm ? parseFloat(dailyExpense.kms) * user.costPerKm : undefined;
+            await knex("tripCosts")
+                .where({userId: dailyExpense.userId, date: dailyExpense.date})
+                .update({tripCost: newTripCost});
+        }
     }
 }
