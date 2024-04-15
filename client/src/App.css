@@ -1,11 +1,10 @@
 /* Colors */
 :root {
-    --accent-color: #b3c801;
+    --accent-color: yellow;
 }
 
 body {
-    background-color: #f8f8f8;
-    background-image: url("./images/background.jpg");
+    background-image: url("./images/car-background.jpg");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
