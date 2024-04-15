@@ -148,13 +148,13 @@ export async function getDetailedJob(id: string) {
     );
 }
 
-export async function createJob(job: Job) {
-    const existingJob = await getJob(job.id);
+export async function createJob(newJob: Job) {
+    const existingJob = await getJob(newJob.id);
     if (existingJob) return new DuplicateJob();
 
-    const newJob = {...job, totalWorkedHours: undefined};
-    delete newJob.totalWorkedHours;
-    await knex("jobs").insert(newJob);
+    // do not insert totalWorkedHours in new job
+    const {totalWorkedHours, ...creatingJob} = newJob;
+    await knex("jobs").insert(creatingJob);
     return newJob;
 }
 
