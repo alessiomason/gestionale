@@ -3,7 +3,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import {Badge, Button, Col, Container, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import {CarFront, EnvelopeAt, Lock, Telephone} from "react-bootstrap-icons";
 import './SignUpPage.css';
-import logo from "../images/logos/logo.png";
+import roundLogo from "../images/logos/round_logo.png";
 import signUpApis from "../api/signUpApis";
 import {User} from "../models/user";
 import {checkValidEmail, checkValidPassword} from "../functions";
@@ -73,7 +73,7 @@ function SignUpPage() {
     return (
         <Container>
             <Row className="d-flex justify-content-center">
-                <img src={logo} alt="The logo of the company" className="signup-logo"/>
+                <img src={roundLogo} alt="The logo of the company" className="signup-logo"/>
             </Row>
 
             <Row className="mt-4">
