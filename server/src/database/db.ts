@@ -1,11 +1,11 @@
 import Knex from "knex";
-import {knexSnakeCaseMappers} from 'objection';
+import {knexSnakeCaseMappers} from "objection";
 
 export const dbOptions = {
-    host: process.env.DB_HOST,
-    user: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
+    host: process.env.DB_HOST as string,
+    user: process.env.DB_USERNAME as string,
+    password: process.env.DB_PASSWORD as string,
+    database: process.env.DB_NAME as string,
     port: parseInt(process.env.DB_PORT as string)
 }
 
