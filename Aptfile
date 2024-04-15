@@ -1,0 +1,4 @@
+# Aptfile
+# Specifies which additional Apt packages have to be installed
+# Necessary for the mysqldump command to back up the database
+mysql-client
