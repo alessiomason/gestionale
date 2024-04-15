@@ -53,6 +53,11 @@ The server requires several environment variables to operate. These are usually 
 	- `DB_PASSWORD`: the password for the database;
 	- `DB_NAME`: the name of the database;
 	- `SESSION_SECRET`: the secret string used to sign the session ID cookie;
+    - `FTP_HOST`
+	- `FTP_USER`
+	- `FTP_PASSWORD`
+	- `FTP_SERVERNAME`
+	- `FTP_BACKUP_FOLDER`
 
 - Optional
 	- `PORT`: the port on which the server has to be served; defaults to `3001` if absent.

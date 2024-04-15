@@ -7,7 +7,7 @@ import {DuplicateJob, JobNotFound} from "./jobErrors";
 import {Job} from "./job";
 
 export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler, isAdministrator: RequestHandler) {
-    const baseURL = "/api/jobs"
+    const baseURL = "/api/jobs";
 
     // get all jobs
     app.get(baseURL, isLoggedIn, async (_: Request, res: Response) => {
