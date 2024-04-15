@@ -148,8 +148,8 @@ export async function getDetailedJob(id: string) {
     );
 }
 
-export async function createJob(newJob: Job) {
-    const existingJob = await getJob(newJob.id);
+export async function createJob(job: Job) {
+    const existingJob = await getJob(job.id);
     if (existingJob) return new DuplicateJob();
 
     // do not insert totalWorkedHours in new job
