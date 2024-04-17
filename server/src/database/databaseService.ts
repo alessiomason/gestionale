@@ -10,7 +10,7 @@ export async function backupDatabase() {
     const {
         _,  // stdout
         stderr
-    } = await exec(`mysqldump -h ${dbOptions.host} -P ${dbOptions.port} -u ${dbOptions.user} -p${dbOptions.password} ${dbOptions.database} --column-statistics=0 > ${fileName}`);
+    } = await exec(`mysqldump -h ${dbOptions.host} -P ${dbOptions.port} -u ${dbOptions.user} -p${dbOptions.password} ${dbOptions.database} --column-statistics=0 --no-tablespaces --single-transaction --set-gtid-purged=OFF > ${fileName}`);
     console.error(stderr);
 
     const client = new Client();
@@ -18,7 +18,7 @@ export async function backupDatabase() {
     try {
         await client.access({
             host: process.env.FTP_HOST,
-            port: 2121,     // QuotaGard static IP is used, tunnel from ftp.tlftechnology.it:2121 to ftp.tlftechnology.it:21
+            port: process.env.NODE_ENV === "production" ? 2121 : 21,     // QuotaGard static IP is used, tunnel from ftp.tlftechnology.it:2121 to ftp.tlftechnology.it:21
             user: process.env.FTP_USER,
             password: process.env.FTP_PASSWORD,
             secure: true,
