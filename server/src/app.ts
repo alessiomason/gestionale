@@ -44,8 +44,16 @@ dayjs.extend(localizedFormat);
 dayjs.locale("it");
 
 app.use(express.json());
+
+const dbBackupUrl = new URL(process.env.DB_BACKUP_UPLOAD as string);
 const corsOptions = {
-    origin: [process.env.APP_URL!, process.env.DB_HOST!, "https://mail.google.com/", "https://oauth2.googleapis.com"],
+    origin: [
+        process.env.APP_URL!,
+        process.env.DB_HOST!,
+        dbBackupUrl.hostname,
+        "https://mail.google.com/",
+        "https://oauth2.googleapis.com"
+    ],
     credentials: true
 };
 app.use(cors(corsOptions));
