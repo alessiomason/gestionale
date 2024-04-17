@@ -44,11 +44,21 @@ dayjs.extend(localizedFormat);
 dayjs.locale("it");
 
 app.use(express.json());
-const corsOptions = {
-    origin: [process.env.APP_URL!, process.env.DB_HOST!, "https://mail.google.com/", "https://oauth2.googleapis.com"],
-    credentials: true
-};
-app.use(cors(corsOptions));
+
+if (process.env.NODE_ENV !== "test") {
+    const dbBackupUrl = new URL(process.env.DB_BACKUP_UPLOAD as string);
+    const corsOptions = {
+        origin: [
+            process.env.APP_URL!,
+            process.env.DB_HOST!,
+            dbBackupUrl.hostname,
+            "https://mail.google.com/",
+            "https://oauth2.googleapis.com"
+        ],
+        credentials: true
+    };
+    app.use(cors(corsOptions));
+}
 
 function forceSsl(req: Request, res: Response, next: NextFunction) {
     if (req.headers["x-forwarded-proto"] !== "https" && req.url.startsWith(process.env.APP_URL!)) {
