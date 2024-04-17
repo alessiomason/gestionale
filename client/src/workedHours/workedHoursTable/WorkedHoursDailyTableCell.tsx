@@ -21,7 +21,13 @@ function WorkedHoursDailyTableCell(props: WorkedHoursDailyTableCellProps) {
     const fieldValue = props.dailyExpense?.get(props.field);
     const initialCellContent = (!fieldValue || fieldValue === 0) ? "" : fieldValue.toString();
     const [cellContent, setCellContent] = useState(initialCellContent);
+    const [cellContentBeforeEditing, setCellContentBeforeEditing] = useState(initialCellContent);
     const [editing, setEditing] = useState(false);
+
+    function startEditing() {
+        setCellContentBeforeEditing(cellContent);
+        setEditing(true);
+    }
 
     function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
         const input = event.target.value;
@@ -33,7 +39,7 @@ function WorkedHoursDailyTableCell(props: WorkedHoursDailyTableCellProps) {
 
             // lastInput has to be a valid number
             if (!Number.isNaN(parseInt(lastInput)) || lastInput === "." || lastInput === ",") {
-                setCellContent(input);
+                setCellContent(input.replace(/,/g, "."));
             }
         }
     }
@@ -80,7 +86,7 @@ function WorkedHoursDailyTableCell(props: WorkedHoursDailyTableCellProps) {
         if (event.key === "Enter") {
             editDailyExpense();
         } else if (event.key === "Escape") {
-            setCellContent("");
+            setCellContent(cellContentBeforeEditing);
             setEditing(false);
         }
     }
@@ -88,7 +94,7 @@ function WorkedHoursDailyTableCell(props: WorkedHoursDailyTableCellProps) {
     if (editing) {
         return (
             <td key={`td-${props.field}-${date}`} onBlur={editDailyExpense} className="work-item-input-td">
-                <Form.Control size="sm" type="text" maxLength={3} plaintext autoFocus
+                <Form.Control size="sm" type="text" maxLength={4} plaintext autoFocus
                               value={cellContent} onChange={handleInputChange} onKeyDown={handleKeyPress}
                               className="work-item-input-control text-center"/>
             </td>
@@ -96,7 +102,7 @@ function WorkedHoursDailyTableCell(props: WorkedHoursDailyTableCellProps) {
     } else {
         return (
             <td key={`td-${props.field}-${date}`} className={workdayClassName(props.workday, true)}
-                onClick={() => setEditing(true)}>
+                onClick={startEditing}>
                 {cellContent}
             </td>
         );
