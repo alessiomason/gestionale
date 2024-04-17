@@ -40,7 +40,7 @@ function WorkedHoursWorkItemTableCell(props: WorkedHoursWorkItemTableCellProps) 
 
             // lastInput has to be a valid number
             if (!Number.isNaN(parseInt(lastInput)) || lastInput === "." || lastInput === ",") {
-                setWorkItemHours(input);
+                setWorkItemHours(input.replace(/,/g, "."));
             }
         }
     }

@@ -39,7 +39,7 @@ function WorkedHoursDailyTableCell(props: WorkedHoursDailyTableCellProps) {
 
             // lastInput has to be a valid number
             if (!Number.isNaN(parseInt(lastInput)) || lastInput === "." || lastInput === ",") {
-                setCellContent(input);
+                setCellContent(input.replace(/,/g, "."));
             }
         }
     }
