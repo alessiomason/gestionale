@@ -22,7 +22,13 @@ function WorkedHoursWorkItemTableCell(props: WorkedHoursWorkItemTableCellProps) 
     const initialWorkItemHours = props.workItem?.hours.toString() ?? "";
 
     const [workItemHours, setWorkItemHours] = useState(initialWorkItemHours);
+    const [hoursBeforeEditing, setHoursBeforeEditing] = useState(initialWorkItemHours);
     const [editing, setEditing] = useState(false);
+
+    function startEditing() {
+        setHoursBeforeEditing(workItemHours);
+        setEditing(true);
+    }
 
     function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
         const input = event.target.value;
@@ -62,7 +68,7 @@ function WorkedHoursWorkItemTableCell(props: WorkedHoursWorkItemTableCellProps) 
         if (event.key === "Enter") {
             editWorkItem();
         } else if (event.key === "Escape") {
-            setWorkItemHours("");
+            setWorkItemHours(hoursBeforeEditing);
             setEditing(false);
         }
     }
@@ -70,7 +76,7 @@ function WorkedHoursWorkItemTableCell(props: WorkedHoursWorkItemTableCellProps) 
     if (editing) {
         return (
             <td key={`td-${props.job.id}-${date}`} onBlur={editWorkItem} className="work-item-input-td">
-                <Form.Control size="sm" type="text" maxLength={3} plaintext autoFocus
+                <Form.Control size="sm" type="text" maxLength={4} plaintext autoFocus
                               value={workItemHours} onChange={handleInputChange} onKeyDown={handleKeyPress}
                               className="work-item-input-control text-center"/>
             </td>
@@ -78,7 +84,7 @@ function WorkedHoursWorkItemTableCell(props: WorkedHoursWorkItemTableCellProps) 
     } else {
         return (
             <td key={`td-${props.job.id}-${date}`} className={workdayClassName(props.workday, true)}
-                onClick={() => setEditing(true)}>
+                onClick={startEditing}>
                 {workItemHours}
             </td>
         );
