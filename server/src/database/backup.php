@@ -6,9 +6,10 @@ if (!isset($_FILES["backupFile"])) {
     return;
 }
 
+$uploadDir = "backups/";
 $fileName = basename($_FILES["backupFile"]["name"]);
 
-if (!move_uploaded_file($_FILES["backupFile"]["tmp_name"], $fileName)) {
+if (!move_uploaded_file($_FILES["backupFile"]["tmp_name"], $uploadDir . $fileName)) {
     http_response_code(422);
     return;
 }
