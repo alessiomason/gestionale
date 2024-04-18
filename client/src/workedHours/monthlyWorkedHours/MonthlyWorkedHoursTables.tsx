@@ -2,9 +2,12 @@ import React, {useEffect, useState} from "react";
 import {MonthWorkItem} from "../../models/workItem";
 import workItemApis from "../../api/workItemApis";
 import {User} from "../../models/user";
-import {Table} from "react-bootstrap";
+import {Col, Row, Table} from "react-bootstrap";
 import "./MonthlyWorkedHoursTables.css";
 import {compareUsers} from "../../functions";
+import GlossyButton from "../../buttons/GlossyButton";
+import {FileEarmarkSpreadsheet} from "react-bootstrap-icons";
+import {exportMonthlyWorkedHoursExcel} from "./exportMonthlyWorkedHoursExcel";
 
 interface MonthlyWorkedHoursTablesProps {
     readonly month: number
@@ -34,6 +37,16 @@ function MonthlyWorkedHoursTables(props: MonthlyWorkedHoursTablesProps) {
                     <MonthWorkItemsTable key={`table-${user.id}`} workItemsUser={user} monthWorkItems={userMonthWorkItems}/>
                 );
             })}
+
+            <Row className="mt-5">
+                <Col className="d-flex justify-content-center">
+                    <GlossyButton
+                        icon={FileEarmarkSpreadsheet}
+                        onClick={() => exportMonthlyWorkedHoursExcel(props.month, props.year, monthWorkItems, users)}>
+                        Esporta Excel
+                    </GlossyButton>
+                </Col>
+            </Row>
         </>
     );
 }

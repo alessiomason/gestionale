@@ -6,6 +6,8 @@ import companyHoursApis from "../../api/companyHoursApis";
 import {CompanyHoursItem} from "../../models/companyHoursItem";
 import {exportCompanyWorkedHoursExcel} from "./exportCompanyWorkedHoursExcel";
 import {compareUsers} from "../../functions";
+import GlossyButton from "../../buttons/GlossyButton";
+import {FileEarmarkSpreadsheet} from "react-bootstrap-icons";
 
 interface CompanyWorkedHoursTableProps {
     readonly month: number
@@ -98,14 +100,15 @@ function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
                 </Table>
             </Row>
 
-            {/*<Row className="mt-2">
+            <Row className="mt-3">
                 <Col className="d-flex justify-content-center">
-                    <Button
+                    <GlossyButton
+                        icon={FileEarmarkSpreadsheet}
                         onClick={() => exportCompanyWorkedHoursExcel(props.month, props.year, workdays, companyHours, users)}>
-                        Excel
-                    </Button>
+                        Esporta Excel
+                    </GlossyButton>
                 </Col>
-            </Row>*/}
+            </Row>
         </>
     );
 }

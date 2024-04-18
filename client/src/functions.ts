@@ -1,4 +1,5 @@
 import {User} from "./models/user";
+import ExcelJS from "exceljs";
 
 export function humanize(x: number, fractionDigits: number) {
     return x.toFixed(fractionDigits)
@@ -24,6 +25,7 @@ export function checkValidPassword(password: string) {
     return password.length >= 8 && password.match(lowercaseLetters) && password.match(uppercaseLetters) && password.match(numbers);
 }
 
+// Compares users, sorting active users first and then sorting by surname and name.
 export function compareUsers(a: User, b: User) {
     // sort active first
     if (!a.active && b.active) {
@@ -39,4 +41,20 @@ export function compareUsers(a: User, b: User) {
     } else {
         return a.name.localeCompare(b.name);
     }
+}
+
+// Exports an Excel file and downloads it.
+export async function downloadExcel(workbook: ExcelJS.Workbook, fileName: string) {
+    const buffer = await workbook.xlsx.writeBuffer();
+    const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8";
+    const blob = new Blob([buffer], {type: fileType});
+
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `${fileName}.xlsx`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
