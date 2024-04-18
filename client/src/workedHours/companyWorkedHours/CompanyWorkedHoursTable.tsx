@@ -8,6 +8,7 @@ import {exportCompanyWorkedHoursExcel} from "./exportCompanyWorkedHoursExcel";
 import {compareUsers} from "../../functions";
 import GlossyButton from "../../buttons/GlossyButton";
 import {FileEarmarkSpreadsheet} from "react-bootstrap-icons";
+import "./CompanyWorkedHoursTable.css";
 
 interface CompanyWorkedHoursTableProps {
     readonly month: number
@@ -35,7 +36,7 @@ function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
     return (
         <>
             <Row className="mt-2">
-                <Table responsive className="worked-hours-table">
+                <Table responsive className="worked-hours-table company-worked-hours-table">
                     <thead>
                     <tr>
                         <th className="left-aligned">Dipendente</th>
