@@ -1,4 +1,4 @@
-import {Button, Col, Row, Table} from "react-bootstrap";
+import {Col, Row, Table} from "react-bootstrap";
 import dayjs from "dayjs";
 import workdayClassName from "../workedHoursFunctions";
 import React, {useEffect, useState} from "react";
@@ -98,18 +98,17 @@ function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
                                     totalExpenses += companyHoursItem?.expenses ?? 0;
 
                                     return (
-                                        <td key={`user-${user.id}-${workday.format()}`} className={`px-1 ${workdayClassName(workday, false)}`}>
-                                            {companyHoursItem && <>
-                                                <div>&nbsp;</div>
-                                                <div>{companyHoursItem.workedHours === 0 ? <>&nbsp;</> : companyHoursItem.workedHours}</div>
-                                                <div>{extraHours === 0 ? <>&nbsp;</> : extraHours}</div>
-                                                <div>{companyHoursItem.holidayHours === 0 ? <>&nbsp;</> : companyHoursItem.holidayHours}</div>
-                                                <div>{companyHoursItem.sickHours === 0 ? <>&nbsp;</> : companyHoursItem.sickHours}</div>
-                                                <div>{companyHoursItem.donationHours === 0 ? <>&nbsp;</> : companyHoursItem.donationHours}</div>
-                                                <div>{companyHoursItem.furloughHours === 0 ? <>&nbsp;</> : companyHoursItem.furloughHours}</div>
-                                                <div>{companyHoursItem.travelHours === 0 ? <>&nbsp;</> : companyHoursItem.travelHours}</div>
-                                                <div>{companyHoursItem.expenses === 0 ? <>&nbsp;</> : `€ ${companyHoursItem.expenses}`}</div>
-                                            </>}
+                                        <td key={`user-${user.id}-${workday.format()}`}
+                                            className={workdayClassName(workday, false)}>
+                                            <div>&nbsp;</div>
+                                            <div>{(companyHoursItem && companyHoursItem.workedHours !== 0) ? companyHoursItem.workedHours : <>&nbsp;</>}</div>
+                                            <div>{extraHours === 0 ? <>&nbsp;</> : extraHours}</div>
+                                            <div>{(companyHoursItem && companyHoursItem.holidayHours !== 0) ? companyHoursItem.holidayHours : <>&nbsp;</>}</div>
+                                            <div>{(companyHoursItem && companyHoursItem.sickHours !== 0) ? companyHoursItem.sickHours : <>&nbsp;</>}</div>
+                                            <div>{(companyHoursItem && companyHoursItem.donationHours !== 0) ? companyHoursItem.donationHours : <>&nbsp;</>}</div>
+                                            <div>{(companyHoursItem && companyHoursItem.furloughHours !== 0) ? companyHoursItem.furloughHours : <>&nbsp;</>}</div>
+                                            <div>{(companyHoursItem && companyHoursItem.travelHours !== 0) ? companyHoursItem.travelHours : <>&nbsp;</>}</div>
+                                            <div>{(companyHoursItem && companyHoursItem.expenses !== 0) ? `€ ${companyHoursItem.expenses}` : <>&nbsp;</>}</div>
                                         </td>
                                     );
                                 })}
