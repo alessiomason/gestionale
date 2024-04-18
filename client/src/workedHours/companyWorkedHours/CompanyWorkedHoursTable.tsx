@@ -47,10 +47,20 @@ function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
                                 </th>
                             );
                         })}
+                        <th>Totale</th>
                     </tr>
                     </thead>
                     <tbody>
                     {users.map(user => {
+                        let totalWorkedHours = 0;
+                        let totalExtraHours = 0;
+                        let totalHolidayHours = 0;
+                        let totalSickHours = 0;
+                        let totalDonationHours = 0;
+                        let totalFurloughHours = 0;
+                        let totalTravelHours = 0;
+                        let totalExpenses = 0;
+
                         return (
                             <tr key={user.id} className="unhoverable">
                                 <td className="px-1">
@@ -77,6 +87,15 @@ function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
                                         extraHours = companyHoursItem.workedHours - companyHoursItem.user.hoursPerDay;
                                     }
 
+                                    totalWorkedHours += companyHoursItem?.workedHours ?? 0;
+                                    totalExtraHours += extraHours;
+                                    totalHolidayHours += companyHoursItem?.holidayHours ?? 0;
+                                    totalSickHours += companyHoursItem?.sickHours ?? 0;
+                                    totalDonationHours += companyHoursItem?.donationHours ?? 0;
+                                    totalFurloughHours += companyHoursItem?.furloughHours ?? 0;
+                                    totalTravelHours += companyHoursItem?.travelHours ?? 0;
+                                    totalExpenses += companyHoursItem?.expenses ?? 0;
+
                                     return (
                                         <td key={`user-${user.id}-${workday.format()}`} className={`px-1 ${workdayClassName(workday, false)}`}>
                                             {companyHoursItem && <>
@@ -93,6 +112,18 @@ function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
                                         </td>
                                     );
                                 })}
+
+                                <td>
+                                    <div>&nbsp;</div>
+                                    <div>{totalWorkedHours === 0 ? <>&nbsp;</> : totalWorkedHours}</div>
+                                    <div>{totalExtraHours === 0 ? <>&nbsp;</> : totalExtraHours}</div>
+                                    <div>{totalHolidayHours === 0 ? <>&nbsp;</> : totalHolidayHours}</div>
+                                    <div>{totalSickHours === 0 ? <>&nbsp;</> : totalSickHours}</div>
+                                    <div>{totalDonationHours === 0 ? <>&nbsp;</> : totalDonationHours}</div>
+                                    <div>{totalFurloughHours === 0 ? <>&nbsp;</> : totalFurloughHours}</div>
+                                    <div>{totalTravelHours === 0 ? <>&nbsp;</> : totalTravelHours}</div>
+                                    <div>{totalExpenses === 0 ? <>&nbsp;</> : `€ ${totalExpenses}`}</div>
+                                </td>
                             </tr>
                         );
                     })}
