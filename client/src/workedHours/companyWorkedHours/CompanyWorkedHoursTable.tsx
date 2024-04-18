@@ -1,4 +1,4 @@
-import {Button, Col, Row, Table} from "react-bootstrap";
+import {Col, Row, Table} from "react-bootstrap";
 import dayjs from "dayjs";
 import workdayClassName from "../workedHoursFunctions";
 import React, {useEffect, useState} from "react";
@@ -6,6 +6,9 @@ import companyHoursApis from "../../api/companyHoursApis";
 import {CompanyHoursItem} from "../../models/companyHoursItem";
 import {exportCompanyWorkedHoursExcel} from "./exportCompanyWorkedHoursExcel";
 import {compareUsers} from "../../functions";
+import GlossyButton from "../../buttons/GlossyButton";
+import {FileEarmarkSpreadsheet} from "react-bootstrap-icons";
+import "./CompanyWorkedHoursTable.css";
 
 interface CompanyWorkedHoursTableProps {
     readonly month: number
@@ -33,7 +36,7 @@ function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
     return (
         <>
             <Row className="mt-2">
-                <Table responsive className="worked-hours-table">
+                <Table responsive className="worked-hours-table company-worked-hours-table">
                     <thead>
                     <tr>
                         <th className="left-aligned">Dipendente</th>
@@ -45,10 +48,20 @@ function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
                                 </th>
                             );
                         })}
+                        <th>Totale</th>
                     </tr>
                     </thead>
                     <tbody>
                     {users.map(user => {
+                        let totalWorkedHours = 0;
+                        let totalExtraHours = 0;
+                        let totalHolidayHours = 0;
+                        let totalSickHours = 0;
+                        let totalDonationHours = 0;
+                        let totalFurloughHours = 0;
+                        let totalTravelHours = 0;
+                        let totalExpenses = 0;
+
                         return (
                             <tr key={user.id} className="unhoverable">
                                 <td className="px-1">
@@ -75,22 +88,42 @@ function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
                                         extraHours = companyHoursItem.workedHours - companyHoursItem.user.hoursPerDay;
                                     }
 
+                                    totalWorkedHours += companyHoursItem?.workedHours ?? 0;
+                                    totalExtraHours += extraHours;
+                                    totalHolidayHours += companyHoursItem?.holidayHours ?? 0;
+                                    totalSickHours += companyHoursItem?.sickHours ?? 0;
+                                    totalDonationHours += companyHoursItem?.donationHours ?? 0;
+                                    totalFurloughHours += companyHoursItem?.furloughHours ?? 0;
+                                    totalTravelHours += companyHoursItem?.travelHours ?? 0;
+                                    totalExpenses += companyHoursItem?.expenses ?? 0;
+
                                     return (
-                                        <td key={`user-${user.id}-${workday.format()}`} className={`px-1 ${workdayClassName(workday, false)}`}>
-                                            {companyHoursItem && <>
-                                                <div>&nbsp;</div>
-                                                <div>{companyHoursItem.workedHours === 0 ? <>&nbsp;</> : companyHoursItem.workedHours}</div>
-                                                <div>{extraHours === 0 ? <>&nbsp;</> : extraHours}</div>
-                                                <div>{companyHoursItem.holidayHours === 0 ? <>&nbsp;</> : companyHoursItem.holidayHours}</div>
-                                                <div>{companyHoursItem.sickHours === 0 ? <>&nbsp;</> : companyHoursItem.sickHours}</div>
-                                                <div>{companyHoursItem.donationHours === 0 ? <>&nbsp;</> : companyHoursItem.donationHours}</div>
-                                                <div>{companyHoursItem.furloughHours === 0 ? <>&nbsp;</> : companyHoursItem.furloughHours}</div>
-                                                <div>{companyHoursItem.travelHours === 0 ? <>&nbsp;</> : companyHoursItem.travelHours}</div>
-                                                <div>{companyHoursItem.expenses === 0 ? <>&nbsp;</> : `€ ${companyHoursItem.expenses}`}</div>
-                                            </>}
+                                        <td key={`user-${user.id}-${workday.format()}`}
+                                            className={workdayClassName(workday, false)}>
+                                            <div>&nbsp;</div>
+                                            <div>{(companyHoursItem && companyHoursItem.workedHours !== 0) ? companyHoursItem.workedHours : <>&nbsp;</>}</div>
+                                            <div>{extraHours === 0 ? <>&nbsp;</> : extraHours}</div>
+                                            <div>{(companyHoursItem && companyHoursItem.holidayHours !== 0) ? companyHoursItem.holidayHours : <>&nbsp;</>}</div>
+                                            <div>{(companyHoursItem && companyHoursItem.sickHours !== 0) ? companyHoursItem.sickHours : <>&nbsp;</>}</div>
+                                            <div>{(companyHoursItem && companyHoursItem.donationHours !== 0) ? companyHoursItem.donationHours : <>&nbsp;</>}</div>
+                                            <div>{(companyHoursItem && companyHoursItem.furloughHours !== 0) ? companyHoursItem.furloughHours : <>&nbsp;</>}</div>
+                                            <div>{(companyHoursItem && companyHoursItem.travelHours !== 0) ? companyHoursItem.travelHours : <>&nbsp;</>}</div>
+                                            <div>{(companyHoursItem && companyHoursItem.expenses !== 0) ? `€ ${companyHoursItem.expenses}` : <>&nbsp;</>}</div>
                                         </td>
                                     );
                                 })}
+
+                                <td>
+                                    <div>&nbsp;</div>
+                                    <div>{totalWorkedHours === 0 ? <>&nbsp;</> : totalWorkedHours}</div>
+                                    <div>{totalExtraHours === 0 ? <>&nbsp;</> : totalExtraHours}</div>
+                                    <div>{totalHolidayHours === 0 ? <>&nbsp;</> : totalHolidayHours}</div>
+                                    <div>{totalSickHours === 0 ? <>&nbsp;</> : totalSickHours}</div>
+                                    <div>{totalDonationHours === 0 ? <>&nbsp;</> : totalDonationHours}</div>
+                                    <div>{totalFurloughHours === 0 ? <>&nbsp;</> : totalFurloughHours}</div>
+                                    <div>{totalTravelHours === 0 ? <>&nbsp;</> : totalTravelHours}</div>
+                                    <div>{totalExpenses === 0 ? <>&nbsp;</> : `€ ${totalExpenses}`}</div>
+                                </td>
                             </tr>
                         );
                     })}
@@ -98,14 +131,15 @@ function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
                 </Table>
             </Row>
 
-            {/*<Row className="mt-2">
+            <Row className="mt-3">
                 <Col className="d-flex justify-content-center">
-                    <Button
+                    <GlossyButton
+                        icon={FileEarmarkSpreadsheet}
                         onClick={() => exportCompanyWorkedHoursExcel(props.month, props.year, workdays, companyHours, users)}>
-                        Excel
-                    </Button>
+                        Esporta Excel
+                    </GlossyButton>
                 </Col>
-            </Row>*/}
+            </Row>
         </>
     );
 }

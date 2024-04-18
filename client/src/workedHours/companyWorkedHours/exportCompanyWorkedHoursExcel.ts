@@ -2,6 +2,13 @@ import ExcelJS from "exceljs";
 import dayjs from "dayjs";
 import {CompanyHoursItem} from "../../models/companyHoursItem";
 import {User} from "../../models/user";
+import {downloadExcel} from "../../functions";
+
+function addTotalToRow(row: ExcelJS.Row, firstDayIndex: number, lastDayIndex: number) {
+    const firstDayCellAddress = row.getCell(firstDayIndex).address;
+    const lastDayCellAddress = row.getCell(lastDayIndex).address;
+    row.getCell(lastDayIndex + 1).value = {formula: `SUM(${firstDayCellAddress}:${lastDayCellAddress})`};
+}
 
 export async function exportCompanyWorkedHoursExcel(
     month: number,
@@ -15,26 +22,31 @@ export async function exportCompanyWorkedHoursExcel(
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet(fileName);
 
-    // Set column widths
+    // set column widths
     worksheet.getColumn(1).width = 20;
     worksheet.getColumn(1).alignment = {vertical: "middle", horizontal: "center"};
-    worksheet.getColumn(2).width = 20;
-    worksheet.getColumn(2).alignment = {vertical: "middle", horizontal: "center"};
     worksheet.getColumn(2).width = 20;
     worksheet.getColumn(2).alignment = {vertical: "middle", horizontal: "center"};
     for (let i = 3; i <= workdays.length + 2; i++) {
         worksheet.getColumn(i).width = 8;
         worksheet.getColumn(i).alignment = {vertical: "middle", horizontal: "center"};
     }
+    worksheet.getColumn(workdays.length + 3).width = 8;
+    worksheet.getColumn(workdays.length + 3).alignment = {vertical: "middle", horizontal: "right"};
 
     // header row
     const firstDayOfMonth = `${year}-${month}-01`;
-    const hoursTitle = `Ore ${dayjs(firstDayOfMonth).format("MMMM")} ${year}`;
-    worksheet.addRow(["Dipendente", hoursTitle, ...workdays.map(workday => workday.format("dd D"))]);
+    const hoursTitle = `Ore ${dayjs(firstDayOfMonth).format("MMMM YYYY")}`;
+    worksheet.addRow([
+        "Dipendente",
+        hoursTitle,
+        ...workdays.map(workday => workday.format("dd D")),
+        "Totale"
+    ]);
     worksheet.getRow(1).font = {bold: true};
 
     // one section per user
-    users.forEach(user => {
+    for (let user of users) {
         const workedHours = workdays.map(workday => {
             const companyHoursItem = companyHours.find(companyHoursItem =>
                 companyHoursItem.user.id === user.id && dayjs(companyHoursItem.date).isSame(workday, "day"));
@@ -99,30 +111,26 @@ export async function exportCompanyWorkedHoursExcel(
             else return null;
         });
 
-        const firstRow = worksheet.addRow([`${user.surname} ${user.name}`, "Ore lavorate", ...workedHours]);
-        worksheet.addRow([null, "Ore straordinario", ...extraHours]);
-        worksheet.addRow([null, "Ore ferie/permessi", ...holidayHours]);
-        worksheet.addRow([null, "Ore malattia", ...sickHours]);
-        worksheet.addRow([null, "Ore donazione", ...donationHours]);
-        worksheet.addRow([null, "Ore cassa integrazione", ...furloughHours]);
-        worksheet.addRow([null, "Ore viaggio", ...travelHours]);
-        const lastRow = worksheet.addRow([null, "Spese documentate", ...expenses]);
-        worksheet.mergeCells(`${firstRow.getCell(1).address}:${lastRow.getCell(1).address}`);
+        const firstDayIndex = 3;
+        const lastDayIndex = workdays.length + 2;
+        let userRows: ExcelJS.Row[] = [];
+
+        userRows.push(worksheet.addRow([`${user.surname} ${user.name}`, "Ore lavorate", ...workedHours]));
+        userRows.push(worksheet.addRow([null, "Ore straordinario", ...extraHours]));
+        userRows.push(worksheet.addRow([null, "Ore ferie/permessi", ...holidayHours]));
+        userRows.push(worksheet.addRow([null, "Ore malattia", ...sickHours]));
+        userRows.push(worksheet.addRow([null, "Ore donazione", ...donationHours]));
+        userRows.push(worksheet.addRow([null, "Ore cassa integrazione", ...furloughHours]));
+        userRows.push(worksheet.addRow([null, "Ore viaggio", ...travelHours]));
+        userRows.push(worksheet.addRow([null, "Spese documentate", ...expenses]));
+
+        worksheet.mergeCells(`${userRows[0].getCell(1).address}:${userRows[userRows.length - 1].getCell(1).address}`);
+        for (let row of userRows) {
+            addTotalToRow(row, firstDayIndex, lastDayIndex);
+        }
 
         worksheet.addRow(null);
-    })
+    }
 
-    // download file
-    const buffer = await workbook.xlsx.writeBuffer();
-    const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
-    const blob = new Blob([buffer], {type: fileType});
-
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute("download", `${fileName}.xlsx`);
-    link.style.visibility = "hidden";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    await downloadExcel(workbook, fileName);
 }
