@@ -21,19 +21,19 @@ function JobsPage(props: JobsPageProps) {
 
     const [filteringId, setFilteringId] = useState(() => {
         const filter = sessionStorage.getItem("filteringId");
-        return filter ? filter : "";
+        return filter ?? "";
     });
     const [filteringSubject, setFilteringSubject] = useState(() => {
         const filter = sessionStorage.getItem("filteringSubject");
-        return filter ? filter : "";
+        return filter ?? "";
     });
     const [filteringClient, setFilteringClient] = useState(() => {
         const filter = sessionStorage.getItem("filteringClient");
-        return filter ? filter : "";
+        return filter ?? "";
     });
     const [filteringFinalClient, setFilteringFinalClient] = useState(() => {
         const filter = sessionStorage.getItem("filteringFinalClient");
-        return filter ? filter : "";
+        return filter ?? "";
     });
     const [filteringOnlyActive, setFilteringOnlyActive] = useState(() => {
         const filtering = sessionStorage.getItem("filteringOnlyActive");

@@ -33,6 +33,11 @@ function JobPane(props: JobPaneProps) {
     const [updated, setUpdated] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
+    let buttonLabel = "Salva";
+    if (props.job) {
+        buttonLabel = updated ? "Modifiche salvate" : "Salva modifiche";
+    }
+
     const navigate = useNavigate();
 
     function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
@@ -221,7 +226,7 @@ function JobPane(props: JobPaneProps) {
 
             <Row className="d-flex justify-content-center my-4">
                 <Col sm={4} className="d-flex justify-content-center">
-                    <GlossyButton type="submit" icon={updated ? Check2 : (Floppy)} onClick={handleSubmit}>{props.job ? (updated ? "Modifiche salvate" : "Salva modifiche") : "Salva"}</GlossyButton>
+                    <GlossyButton type="submit" icon={updated ? Check2 : (Floppy)} onClick={handleSubmit}>{buttonLabel}</GlossyButton>
                 </Col>
             </Row>
         </Form>
