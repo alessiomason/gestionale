@@ -159,22 +159,8 @@ function NewUserPane(props: NewUserPaneProps) {
                         </FloatingLabel>
                     </InputGroup>
                     <InputGroup className="mt-2">
-                        <InputGroup.Text><PersonVcard/></InputGroup.Text>
-                        <FloatingLabel controlId="floatingInput" label="Tipo">
-                            <Form.Select value={type}
-                                         onChange={ev => setType(ev.target.value as "office" | "workshop" | "machine")}>
-                                {User.allTypes.map(type => {
-                                    return (
-                                        <option key={type.toString()}
-                                                value={type.toString()}>{User.typeName(type)}</option>
-                                    );
-                                })}
-                            </Form.Select>
-                        </FloatingLabel>
-                    </InputGroup>
-                    <InputGroup className="mt-2">
                         <InputGroup.Text><PersonBadge/></InputGroup.Text>
-                        <FloatingLabel controlId="floatingInput" label="Mansione">
+                        <FloatingLabel controlId="floatingInput" label="Accesso">
                             <Form.Select value={role}
                                          onChange={ev => setRole(ev.target.value as "user" | "admin")}>
                                 {User.allRoles.filter(role => role !== Role.dev).map(role => {
@@ -182,6 +168,20 @@ function NewUserPane(props: NewUserPaneProps) {
                                         <option key={role.toString()}
                                                 disabled={role === Role.dev}
                                                 value={role.toString()}>{User.roleName(role)}</option>
+                                    );
+                                })}
+                            </Form.Select>
+                        </FloatingLabel>
+                    </InputGroup>
+                    <InputGroup className="mt-2">
+                        <InputGroup.Text><PersonVcard/></InputGroup.Text>
+                        <FloatingLabel controlId="floatingInput" label="Mansione">
+                            <Form.Select value={type}
+                                         onChange={ev => setType(ev.target.value as "office" | "workshop" | "machine")}>
+                                {User.allTypes.map(type => {
+                                    return (
+                                        <option key={type.toString()}
+                                                value={type.toString()}>{User.typeName(type)}</option>
                                     );
                                 })}
                             </Form.Select>

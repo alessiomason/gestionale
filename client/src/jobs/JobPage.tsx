@@ -9,7 +9,7 @@ import Loading from "../Loading";
 function JobPage() {
     const {jobId} = useParams();
     const [job, setJob] = useState<DetailedJob>();
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (jobId) {

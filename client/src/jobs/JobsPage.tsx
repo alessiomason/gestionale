@@ -19,11 +19,47 @@ function JobsPage(props: JobsPageProps) {
     const [loading, setLoading] = useState(true);
     const [showingNewJobPane, setShowingNewJobPane] = useState(false);
 
-    const [filteringId, setFilteringId] = useState("");
-    const [filteringSubject, setFilteringSubject] = useState("");
-    const [filteringClient, setFilteringClient] = useState("");
-    const [filteringFinalClient, setFilteringFinalClient] = useState("");
-    const [filteringOnlyActive, setFilteringOnlyActive] = useState(false);
+    const [filteringId, setFilteringId] = useState(() => {
+        const filter = sessionStorage.getItem("filteringId");
+        return filter ?? "";
+    });
+    const [filteringSubject, setFilteringSubject] = useState(() => {
+        const filter = sessionStorage.getItem("filteringSubject");
+        return filter ?? "";
+    });
+    const [filteringClient, setFilteringClient] = useState(() => {
+        const filter = sessionStorage.getItem("filteringClient");
+        return filter ?? "";
+    });
+    const [filteringFinalClient, setFilteringFinalClient] = useState(() => {
+        const filter = sessionStorage.getItem("filteringFinalClient");
+        return filter ?? "";
+    });
+    const [filteringOnlyActive, setFilteringOnlyActive] = useState(() => {
+        const filtering = sessionStorage.getItem("filteringOnlyActive");
+        return filtering === "true";    // this way, default is false
+    });
+
+    // Save all filters for the whole session
+    useEffect(() => {
+        sessionStorage.setItem("filteringId", filteringId);
+    }, [filteringId]);
+
+    useEffect(() => {
+        sessionStorage.setItem("filteringSubject", filteringSubject);
+    }, [filteringSubject]);
+
+    useEffect(() => {
+        sessionStorage.setItem("filteringClient", filteringClient);
+    }, [filteringClient]);
+
+    useEffect(() => {
+        sessionStorage.setItem("filteringFinalClient", filteringFinalClient);
+    }, [filteringFinalClient]);
+
+    useEffect(() => {
+        sessionStorage.setItem("filteringOnlyActive", String(filteringOnlyActive));
+    }, [filteringOnlyActive]);
 
     useEffect(() => {
         if (dirty) {
@@ -35,7 +71,7 @@ function JobsPage(props: JobsPageProps) {
                 })
                 .catch(err => console.error(err))
         }
-    }, []);
+    }, [dirty]);
 
     return (
         <>

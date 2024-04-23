@@ -6,8 +6,10 @@ import {Col, Row, Table} from "react-bootstrap";
 import "./MonthlyWorkedHoursTables.css";
 import {compareUsers} from "../../functions";
 import GlossyButton from "../../buttons/GlossyButton";
-import {FileEarmarkSpreadsheet} from "react-bootstrap-icons";
+import {CalendarEvent, FileEarmarkSpreadsheet} from "react-bootstrap-icons";
 import {exportMonthlyWorkedHoursExcel} from "./exportMonthlyWorkedHoursExcel";
+import {useNavigate} from "react-router-dom";
+import dayjs from "dayjs";
 
 interface MonthlyWorkedHoursTablesProps {
     readonly month: number
@@ -34,7 +36,8 @@ function MonthlyWorkedHoursTables(props: MonthlyWorkedHoursTablesProps) {
                     monthWorkItem.user.id === user.id);
 
                 return (
-                    <MonthWorkItemsTable key={`table-${user.id}`} workItemsUser={user} monthWorkItems={userMonthWorkItems}/>
+                    <MonthWorkItemsTable key={`table-${user.id}`} month={props.month} year={props.year}
+                                         workItemsUser={user} monthWorkItems={userMonthWorkItems}/>
                 );
             })}
 
@@ -52,16 +55,35 @@ function MonthlyWorkedHoursTables(props: MonthlyWorkedHoursTablesProps) {
 }
 
 interface MonthWorkItemsTableProps {
+    readonly month: number
+    readonly year: number
     readonly workItemsUser: User
     readonly monthWorkItems: MonthWorkItem[]
 }
 
 function MonthWorkItemsTable(props: MonthWorkItemsTableProps) {
+    const navigate = useNavigate();
+    const currentMonth = parseInt(dayjs().format("M"));
+    const currentYear = parseInt(dayjs().format("YYYY"));
+    let userHoursLink = `/workedHours?u=${props.workItemsUser.id}`;
+    if (props.month !== currentMonth) userHoursLink += `&m=${props.month}`;
+    if (props.year !== currentYear) userHoursLink += `&y=${props.year}`;
+
     let totalHours = 0;
 
     return (
         <>
-            <h4 className="mt-5 mb-3">{props.workItemsUser.surname} {props.workItemsUser.name}</h4>
+            <Row className="mt-5 mb-3">
+                <Col className="d-flex align-items-center">
+                    <h4 className="m-0">{props.workItemsUser.surname} {props.workItemsUser.name}</h4>
+                </Col>
+                <Col className="d-flex justify-content-end">
+                    <GlossyButton icon={CalendarEvent} onClick={() => navigate(userHoursLink)}>
+                        Dettaglio ore
+                    </GlossyButton>
+                </Col>
+            </Row>
+
             <Table responsive className="month-work-items-table">
                 <thead>
                 <tr>
