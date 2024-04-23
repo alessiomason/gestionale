@@ -9,6 +9,7 @@ import {compareUsers} from "../../functions";
 import GlossyButton from "../../buttons/GlossyButton";
 import {FileEarmarkSpreadsheet} from "react-bootstrap-icons";
 import "./CompanyWorkedHoursTable.css";
+import {useNavigate} from "react-router-dom";
 
 interface CompanyWorkedHoursTableProps {
     readonly month: number
@@ -16,11 +17,15 @@ interface CompanyWorkedHoursTableProps {
 }
 
 function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
+    const navigate = useNavigate();
+    const currentMonth = parseInt(dayjs().format("M"));
+    const currentYear = parseInt(dayjs().format("YYYY"));
     const daysInMonth = dayjs(`${props.year}-${props.month}-01`).daysInMonth();
     let workdays: dayjs.Dayjs[] = [];
     for (let i = 1; i <= daysInMonth; i++) {
         workdays.push(dayjs(`${props.year}-${props.month}-${i}`));
     }
+
     const [companyHours, setCompanyHours] = useState<CompanyHoursItem[]>([]);
     const users = companyHours.map(companyHoursItem => companyHoursItem.user)
         .filter((user, index, users) =>
@@ -62,10 +67,16 @@ function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
                         let totalTravelHours = 0;
                         let totalExpenses = 0;
 
+                        let userHoursLink = `/workedHours?u=${user.id}`;
+                        if (props.month !== currentMonth) userHoursLink += `&m=${props.month}`;
+                        if (props.year !== currentYear) userHoursLink += `&y=${props.year}`;
+
                         return (
                             <tr key={user.id} className="unhoverable">
                                 <td className="px-1">
-                                    <div className="text-start"><strong>{user.surname} {user.name}</strong></div>
+                                    <div className="text-start clickable" onClick={() => navigate(userHoursLink)}>
+                                        <strong>{user.surname} {user.name}</strong>
+                                    </div>
                                     <div className="text-end">Ore lavorate</div>
                                     <div className="text-end">Ore straordinario</div>
                                     <div className="text-end">Ore ferie/permessi</div>

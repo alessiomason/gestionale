@@ -32,3 +32,8 @@
 .company-worked-hours-table > tbody > tr > td > div:nth-child(9) {
     color: rebeccapurple;
 }
+
+.clickable:hover {
+    cursor: pointer;
+    color: var(--accent-color);
+}
