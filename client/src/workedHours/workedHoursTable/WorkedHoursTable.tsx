@@ -48,25 +48,34 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
 
     useEffect(() => {
         if (dirty) {
-            workItemApis.getWorkItems(`${props.year}-${props.month}`, props.selectedUser.id)
-                .then(workItems => {
-                    setWorkItems(workItems);
-                    setDirty(false);
-                })
-                .catch(err => console.error(err))
-
-            if (!isMachine && (props.user.id === props.selectedUser.id || props.user.role !== Role.user)) {
-                dailyExpenseApis.getDailyExpenses(`${props.year}-${props.month}`, props.selectedUser.id)
-                    .then(dailyExpenses => setDailyExpenses(dailyExpenses!))
-                    .catch(err => console.error(err))
-            }
+            getData();
         }
     }, [dirty]);
 
     useEffect(() => {
         setDirty(true);
         setAddedJobs([]);
-    }, [props.month, props.year, props.selectedUser.id]);
+    }, [props.month, props.year]);
+
+    useEffect(() => {
+        getData();
+        setAddedJobs([]);
+    }, [props.selectedUser.id]);
+
+    function getData() {
+        workItemApis.getWorkItems(`${props.year}-${props.month}`, props.selectedUser.id)
+            .then(workItems => {
+                setWorkItems(workItems);
+                setDirty(false);
+            })
+            .catch(err => console.error(err))
+
+        if (!isMachine && (props.user.id === props.selectedUser.id || props.user.role !== Role.user)) {
+            dailyExpenseApis.getDailyExpenses(`${props.year}-${props.month}`, props.selectedUser.id)
+                .then(dailyExpenses => setDailyExpenses(dailyExpenses!))
+                .catch(err => console.error(err))
+        }
+    }
 
     function createOrUpdateLocalWorkItem(job: Job, date: string, hours: number) {
         setWorkItems(workItems => {

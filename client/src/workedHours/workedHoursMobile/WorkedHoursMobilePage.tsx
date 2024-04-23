@@ -12,16 +12,20 @@ import dailyExpenseApis from "../../api/dailyExpensesApis";
 import workdayClassName from "../workedHoursFunctions";
 import "./WorkedHoursMobilePage.css";
 import GlossyButton from "../../buttons/GlossyButton";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useSearchParams} from "react-router-dom";
 import WorkedHoursSelectUser from "../WorkedHoursSelectUser";
 import {decreaseMonth, increaseMonth} from "../MonthSelectingComponents";
 
 function WorkedHoursMobilePage(props: WorkedHoursPageProps) {
     const [selectedUser, setSelectedUser] = useState(props.user);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const searchMonth = searchParams.get("m");
+    const searchYear = searchParams.get("y");
     const currentYear = parseInt(dayjs().format("YYYY"));
     const currentMonth = parseInt(dayjs().format("M"));
-    const [month, setMonth] = useState(currentMonth);
-    const [year, setYear] = useState(currentYear);
+    const [month, setMonth] = useState(searchMonth ? parseInt(searchMonth) : currentMonth);
+    const [year, setYear] = useState(searchYear ? parseInt(searchYear) : currentYear);
+
     const daysInMonth = dayjs(`${year}-${month}-01`).daysInMonth();
     let workdays: dayjs.Dayjs[] = [];
     for (let i = 1; i <= daysInMonth; i++) {
@@ -59,7 +63,9 @@ function WorkedHoursMobilePage(props: WorkedHoursPageProps) {
                     <Col xs={1}><ArrowLeftSquare className="hoverable" onClick={() => decreaseMonth({
                         month,
                         setMonth,
-                        setYear
+                        setYear,
+                        searchParams,
+                        setSearchParams
                     })}/></Col>
                     <Col>
                         <h3 className="text-center mb-0">
@@ -69,7 +75,9 @@ function WorkedHoursMobilePage(props: WorkedHoursPageProps) {
                     <Col xs={1}><ArrowRightSquare className="hoverable" onClick={() => increaseMonth({
                         month,
                         setMonth,
-                        setYear
+                        setYear,
+                        searchParams,
+                        setSearchParams
                     })}/></Col>
                 </Row>
 

@@ -6,6 +6,7 @@ import GlossyButton from "../buttons/GlossyButton";
 import jobApis from "../api/jobApis";
 import {DetailedJob, Job} from "../models/job";
 import {useNavigate} from "react-router-dom";
+import {humanize} from "../functions";
 
 interface JobPaneProps {
     readonly job: Job | DetailedJob | undefined
@@ -31,6 +32,11 @@ function JobPane(props: JobPaneProps) {
 
     const [updated, setUpdated] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+
+    let buttonLabel = "Salva";
+    if (props.job) {
+        buttonLabel = updated ? "Modifiche salvate" : "Salva modifiche";
+    }
 
     const navigate = useNavigate();
 
@@ -119,7 +125,7 @@ function JobPane(props: JobPaneProps) {
                                 <div className="d-flex justify-content-center">
                                     <SwitchToggle id="active-toggle" isOn={active}
                                                   handleToggle={() => setActive(prevActive => !prevActive)}/>
-                                    <label>{active ? "Attiva" : "Non attiva"}</label>
+                                    <label>Attiva</label>
                                 </div>
 
                                 <div className="d-flex justify-content-center">
@@ -220,7 +226,7 @@ function JobPane(props: JobPaneProps) {
 
             <Row className="d-flex justify-content-center my-4">
                 <Col sm={4} className="d-flex justify-content-center">
-                    <GlossyButton type="submit" icon={updated ? Check2 : (Floppy)} onClick={handleSubmit}>{props.job ? (updated ? "Aggiornato" : "Aggiorna") : "Salva"}</GlossyButton>
+                    <GlossyButton type="submit" icon={updated ? Check2 : (Floppy)} onClick={handleSubmit}>{buttonLabel}</GlossyButton>
                 </Col>
             </Row>
         </Form>
@@ -243,11 +249,11 @@ function JobPaneDetails (props: JobPaneDetailsProps) {
                 <Col>
                     <Row className="d-flex align-items-center">
                         <Col xs={3} className="glossy-background smaller text-center">Totale ore</Col>
-                        <Col>{props.job.totalWorkedHours}</Col>
+                        <Col>{humanize(props.job.totalWorkedHours, 2)}</Col>
                     </Row>
                     <Row className="d-flex align-items-center">
                         <Col xs={3} className="glossy-background smaller text-center">Totale costi</Col>
-                        <Col>{props.job.totalCost} euro</Col>
+                        <Col>{humanize(props.job.totalCost, 2)} euro</Col>
                     </Row>
 
                     <Table responsive className="mt-4">

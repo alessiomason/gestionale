@@ -4,12 +4,16 @@ import {upperCaseFirst} from "../../functions";
 import dayjs from "dayjs";
 import React, {useState} from "react";
 import CompanyWorkedHoursTable from "./CompanyWorkedHoursTable";
+import {useSearchParams} from "react-router-dom";
 
 function CompanyWorkedHoursPage() {
+    const [searchParams] = useSearchParams();
+    const searchMonth = searchParams.get("m");
+    const searchYear = searchParams.get("y");
     const currentMonth = parseInt(dayjs().format("M"));
     const currentYear = parseInt(dayjs().format("YYYY"));
-    const [month, setMonth] = useState(currentMonth);
-    const [year, setYear] = useState(currentYear);
+    const [month, setMonth] = useState(searchMonth ? parseInt(searchMonth) : currentMonth);
+    const [year, setYear] = useState(searchYear ? parseInt(searchYear) : currentYear);
     const [selectingMonth, setSelectingMonth] = useState(false);
 
     return (
