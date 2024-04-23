@@ -12,12 +12,17 @@ import {Type} from "../models/user";
 import WorkedHoursSelectUser from "./WorkedHoursSelectUser";
 import {WorkedHoursPageProps} from "./WorkedHoursPage";
 import {MonthSelector, SelectMonthButtons} from "./MonthSelectingComponents";
+import {useSearchParams} from "react-router-dom";
 
 function WorkedHoursDesktopPage(props: WorkedHoursPageProps) {
+    const [searchParams] = useSearchParams();
+    const searchMonth = searchParams.get("m");
+    const searchYear = searchParams.get("y");
     const currentMonth = parseInt(dayjs().format("M"));
     const currentYear = parseInt(dayjs().format("YYYY"));
-    const [month, setMonth] = useState(currentMonth);
-    const [year, setYear] = useState(currentYear);
+
+    const [month, setMonth] = useState(searchMonth ? parseInt(searchMonth) : currentMonth);
+    const [year, setYear] = useState(searchYear ? parseInt(searchYear) : currentYear);
     const [selectingMonth, setSelectingMonth] = useState(false);
     const [selectedUser, setSelectedUser] = useState(props.user);
     const [savingStatus, setSavingStatus] = useState<"" | "saving" | "saved">("");

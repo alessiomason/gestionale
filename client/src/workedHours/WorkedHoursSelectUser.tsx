@@ -1,4 +1,4 @@
-import {useSearchParams} from "react-router-dom";
+import {SetURLSearchParams, useSearchParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import {FloatingLabel, Form, InputGroup} from "react-bootstrap";
 import {PersonFill} from "react-bootstrap-icons";
@@ -39,19 +39,34 @@ function WorkedHoursSelectUser(props: WorkedHoursSelectUserProps) {
         }
     }, [users.length]);
 
+    function setSearchUser(userId: number) {
+        let newSearchParams: any = {};
+        for (let [key, value] of searchParams.entries()) {
+            newSearchParams[key] = value;
+        }
+
+        if (userId === props.user.id) {
+            delete newSearchParams["u"];
+        } else {
+            newSearchParams["u"] = userId.toString();
+        }
+
+        setSearchParams(newSearchParams);
+    }
+
     function selectUser(event: React.ChangeEvent<HTMLSelectElement>) {
         const id = parseInt(event.target.value);
 
         if (id === props.user.id) {
             props.setSelectedUser(props.user);
-            setSearchParams(undefined);
         } else {
             const user = users.find(user => user.id === id);
             if (user) {
                 props.setSelectedUser(user);
-                setSearchParams({u: user.id.toString()});
             }
         }
+
+        setSearchUser(id);
     }
 
     // only administrators or workshop users can edit machines' hours
