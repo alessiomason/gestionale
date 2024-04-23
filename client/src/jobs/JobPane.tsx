@@ -119,7 +119,7 @@ function JobPane(props: JobPaneProps) {
                                 <div className="d-flex justify-content-center">
                                     <SwitchToggle id="active-toggle" isOn={active}
                                                   handleToggle={() => setActive(prevActive => !prevActive)}/>
-                                    <label>{active ? "Attiva" : "Non attiva"}</label>
+                                    <label>Attiva</label>
                                 </div>
 
                                 <div className="d-flex justify-content-center">
