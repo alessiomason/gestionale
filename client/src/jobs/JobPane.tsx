@@ -6,6 +6,7 @@ import GlossyButton from "../buttons/GlossyButton";
 import jobApis from "../api/jobApis";
 import {DetailedJob, Job} from "../models/job";
 import {useNavigate} from "react-router-dom";
+import {humanize} from "../functions";
 
 interface JobPaneProps {
     readonly job: Job | DetailedJob | undefined
@@ -243,11 +244,11 @@ function JobPaneDetails (props: JobPaneDetailsProps) {
                 <Col>
                     <Row className="d-flex align-items-center">
                         <Col xs={3} className="glossy-background smaller text-center">Totale ore</Col>
-                        <Col>{props.job.totalWorkedHours}</Col>
+                        <Col>{humanize(props.job.totalWorkedHours, 2)}</Col>
                     </Row>
                     <Row className="d-flex align-items-center">
                         <Col xs={3} className="glossy-background smaller text-center">Totale costi</Col>
-                        <Col>{props.job.totalCost} euro</Col>
+                        <Col>{humanize(props.job.totalCost, 2)} euro</Col>
                     </Row>
 
                     <Table responsive className="mt-4">

@@ -1,12 +1,14 @@
 import {Type, User} from "./models/user";
 import ExcelJS from "exceljs";
 
+// Round a number to the specified number of `fractionDigits`.
 export function humanize(x: number, fractionDigits: number) {
     return x.toFixed(fractionDigits)
         .replace(/\.?0*$/, '')
         .replace(/\./g, ',');
 }
 
+// Uppercase the first letter of a string.
 export function upperCaseFirst(str: string) {
     return str[0].toUpperCase() + str.slice(1).toLowerCase();
 }
