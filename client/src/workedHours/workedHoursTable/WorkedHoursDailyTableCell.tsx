@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import dayjs from "dayjs";
 import {Form} from "react-bootstrap";
 import "./WorkedHoursTableCell.css";
@@ -23,6 +23,12 @@ function WorkedHoursDailyTableCell(props: WorkedHoursDailyTableCellProps) {
     const [cellContent, setCellContent] = useState(initialCellContent);
     const [cellContentBeforeEditing, setCellContentBeforeEditing] = useState(initialCellContent);
     const [editing, setEditing] = useState(false);
+
+    // needed because dailyExpenses get loaded in at a later time
+    useEffect(() => {
+        setCellContent(initialCellContent);
+        setCellContentBeforeEditing(initialCellContent);
+    }, [initialCellContent]);
 
     function startEditing() {
         setCellContentBeforeEditing(cellContent);
