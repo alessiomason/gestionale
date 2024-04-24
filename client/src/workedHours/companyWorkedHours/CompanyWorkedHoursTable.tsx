@@ -74,7 +74,7 @@ function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
                         return (
                             <tr key={user.id} className="unhoverable">
                                 <td className="px-1">
-                                    <div className="text-start clickable" role="button"
+                                    <div className="text-start clickable" role="link"
                                          onClick={() => navigate(userHoursLink)}>
                                         <strong>{user.surname} {user.name}</strong>
                                     </div>
