@@ -27,6 +27,7 @@ import "dayjs/locale/it";
 import {Role, User} from "./users/user";
 import {useCompanyHoursAPIs} from "./companyHours/companyHoursController";
 import {useDatabaseAPIs} from "./database/databaseController";
+import {useOrdersAPIs} from "./orders/orderController";
 
 
 // setup passport
@@ -139,6 +140,7 @@ function canManageTickets(req: Request, res: Response, next: NextFunction) {
 
 // expose the APIs
 useSystemAPIs(app, isLoggedIn);
+useDatabaseAPIs(app, isLoggedIn, isDeveloper);
 useAuthenticationAPIs(app, webAuthnStore, isLoggedIn);
 useUsersAPIs(app, isLoggedIn, isAdministrator);
 useJobsAPIs(app, isLoggedIn, isAdministrator);
@@ -148,7 +150,7 @@ useTicketsAPIs(app, isLoggedIn, canManageTickets);
 useWorkItemsAPIs(app, isLoggedIn, isAdministrator, isDeveloper);
 useDailyExpensesAPIs(app, isLoggedIn, isDeveloper);
 useCompanyHoursAPIs(app, isLoggedIn, isAdministrator);
-useDatabaseAPIs(app, isLoggedIn, isDeveloper);
+useOrdersAPIs(app, isLoggedIn);
 
 if (process.env.NODE_ENV === "production") {
     const path = require("path");
