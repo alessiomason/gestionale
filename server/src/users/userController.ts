@@ -249,7 +249,7 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdminis
                 userId,
                 req.body.active,
                 req.body.managesTickets,
-                req.body.managesTickets,
+                req.body.managesOrders,
                 roleName === undefined ? undefined : Role[roleName],
                 typeName === undefined ? undefined : Type[typeName],
                 undefined,

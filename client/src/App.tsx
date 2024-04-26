@@ -56,6 +56,7 @@ function App2() {
     const loggedIn = user !== undefined;
     const isAdministrator = user ? (user.role !== Role.user) : false;
     const canManageTickets = user ? user.managesTickets : false;
+    const canManageOrders = user ? user.managesOrders : false;
     const [message, setMessage] = useState("");
 
     const navigate = useNavigate();
@@ -140,7 +141,7 @@ function App2() {
                        element={isMobile ? <WorkedHoursEditMobile user={user!}/> : <Navigate to="/workedHours"/>}/>
                 <Route path="monthlyWorkedHours" element={<MonthlyWorkedHoursPage/>}/>
                 <Route path="companyWorkedHours" element={<CompanyWorkedHoursPage/>}/>
-                <Route path="orders" element={<OrdersPage user={user!}/>}/>
+                <Route path="orders" element={canManageOrders ? <OrdersPage user={user!}/> : <Navigate to="/"/>}/>
             </Route>
         </Routes>
     );

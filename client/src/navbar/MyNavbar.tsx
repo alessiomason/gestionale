@@ -25,6 +25,7 @@ function MyNavbar(props: NavbarProps) {
     const isMobile = useMediaQuery({maxWidth: 767});
     const isAdministrator = props.user.role !== Role.user;
     const canManageTickets = props.user.managesTickets;
+    const canManageOrders = props.user.managesOrders;
 
     return (
         <Navbar className="navbar fixed-top navbar-padding">
@@ -40,9 +41,10 @@ function MyNavbar(props: NavbarProps) {
                                                             onClick={() => navigate("/tickets")}>
                         Assistenza
                     </LightGlossyButton>}
-                    <LightGlossyButton singleLine icon={Clipboard} className="me-3" onClick={() => navigate("/orders")}>
+                    {canManageOrders && <LightGlossyButton singleLine icon={Clipboard} className="me-3"
+                                        onClick={() => navigate("/orders")}>
                         Ordini
-                    </LightGlossyButton>
+                    </LightGlossyButton>}
                     <LightGlossyButton singleLine icon={JournalBookmarkFill} className="me-3" onClick={() => navigate("/jobs")}>
                         Commesse
                     </LightGlossyButton>
