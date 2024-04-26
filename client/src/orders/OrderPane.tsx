@@ -1,146 +1,83 @@
-import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import {Order} from "../models/order";
-import React, {useState} from "react";
-import {Buildings, CarFront, Check2, Clipboard, Floppy, JournalBookmarkFill, Sticky} from "react-bootstrap-icons";
-import WorkedHoursNewJobModal from "../workedHours/WorkedHoursNewJobModal";
-import {Job} from "../models/job";
-import GlossyButton from "../buttons/GlossyButton";
-import orderApis from "../api/orderApis";
-import {User} from "../models/user";
+import {Col, Row} from "react-bootstrap";
+import React from "react";
+import {Buildings, Clipboard, JournalBookmarkFill, Person, Sticky} from "react-bootstrap-icons";
 
 interface OrderPaneProps {
-    readonly user: User
-    readonly order: Order | undefined
-    readonly afterSubmit: (order: Order) => void
+    readonly order: Order
 }
 
 function OrderPane(props: OrderPaneProps) {
-    const [orderDate, setOrderDate] = useState(props.order?.date ?? "");
-    const [showNewJobModal, setShowNewJobModal] = useState(false);
-    const [job, setJob] = useState<Job | undefined>(props.order?.job);
-    const [supplier, setSupplier] = useState(props.order?.supplier ?? "");
-    const [description, setDescription] = useState(props.order?.description ?? "");
-    const [scheduledDeliveryDate, setScheduledDeliveryDate] = useState(props.order?.scheduledDeliveryDate ?? "");
-
-    const [updated, setUpdated] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
-
-    let buttonLabel = "Salva";
-    if (props.order) {
-        buttonLabel = updated ? "Modifiche salvate" : "Salva modifiche";
-    }
-
-    function openModal(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-        event.preventDefault();
-        setShowNewJobModal(true);
-    }
-
-    function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-        event.preventDefault();
-        setErrorMessage("");
-
-        if (!job) {
-            setErrorMessage("Nessuna commessa selezionata!");
-            return
-        }
-        if (supplier === "") {
-            setErrorMessage("Inserire un fornitore!");
-            return;
-        }
-
-        const order = new Order(
-            props.order?.id ?? -1,
-            orderDate,
-            job,
-            supplier,
-            description,
-            props.order?.by ?? props.user,
-            scheduledDeliveryDate
-        );
-
-        orderApis.createOrder(order)
-            .then(order => props.afterSubmit(order))
-            .catch(err => console.error(err));
-    }
-
     return (
-        <Form>
-            <Row className="glossy-background">
-                <Row>
-                    <h3>{props.order ? `Ordine ${props.order.id}` : "Nuovo ordine"}</h3>
-                </Row>
-
-                {errorMessage !== "" && <Row className="glossy-error-background">
-                    <Col>{errorMessage}</Col>
-                </Row>}
-
-
-                {props.order && <Row className="d-flex align-items-center">
-                    <Col sm={3}
-                         className="glossy-background smaller d-flex justify-content-center align-items-center">
-                        <Clipboard className="me-1"/> Ordine n°
-                    </Col>
-                    <Col>{props.order?.id}</Col>
-                </Row>}
-
-                <Row className="mt-3">
-                    <InputGroup>
-                        <InputGroup.Text>Data dell'ordine</InputGroup.Text>
-                        <Form.Control type="date" value={orderDate}
-                                      onChange={event => setOrderDate(event.target.value)}/>
-                    </InputGroup>
-                </Row>
-
-                <Row className="mt-3">
-                    <Col sm={4}>
-                        <GlossyButton icon={JournalBookmarkFill} onClick={openModal}>Seleziona
-                            commessa</GlossyButton>
-                        <WorkedHoursNewJobModal show={showNewJobModal} setShow={setShowNewJobModal}
-                                                selectJob={job => setJob(job)}/>
-                    </Col>
-                    <Col className="d-flex align-items-center">
-                        {job ? <p className="m-0"><strong>Commessa selezionata: </strong>
-                                <i>{job.client}</i> - {job.subject}</p> :
-                            <p className="m-0">Nessuna commessa selezionata</p>}
-                    </Col>
-                </Row>
-
-                <Row className="mt-3">
-                    <InputGroup>
-                        <InputGroup.Text><Buildings/></InputGroup.Text>
-                        <FloatingLabel controlId="floatingInput" label="Fornitore">
-                            <Form.Control type="text" placeholder="Fornitore" value={supplier}
-                                          onChange={ev => setSupplier(ev.target.value)}/>
-                        </FloatingLabel>
-                    </InputGroup>
-                </Row>
-
-                <Row className="mt-3">
-                    <InputGroup>
-                        <InputGroup.Text><Sticky/></InputGroup.Text>
-                        <FloatingLabel controlId="floatingInput" label="Descrizione">
-                            <Form.Control type="text" placeholder="Descrizione" value={description}
-                                          onChange={ev => setDescription(ev.target.value)}/>
-                        </FloatingLabel>
-                    </InputGroup>
-                </Row>
-
-                <Row className="mt-3">
-                    <InputGroup>
-                        <InputGroup.Text>Data prevista di consegna</InputGroup.Text>
-                        <Form.Control type="date" value={scheduledDeliveryDate}
-                                      onChange={event => setScheduledDeliveryDate(event.target.value)}/>
-                    </InputGroup>
-                </Row>
+        <Row className="glossy-background">
+            <Row>
+                <h3>Ordine {props.order.id}{props.order.clearingDate && " (evaso)"}</h3>
             </Row>
 
-            <Row className="d-flex justify-content-center my-4">
-                <Col sm={4} className="d-flex justify-content-center">
-                    <GlossyButton type="submit" icon={updated ? Check2 : Floppy}
-                                  onClick={handleSubmit}>{buttonLabel}</GlossyButton>
+            <Row className="d-flex align-items-center">
+                <Col sm={3}
+                     className="glossy-background smaller d-flex justify-content-center align-items-center">
+                    <Clipboard className="me-1"/> Data dell'ordine
                 </Col>
+                <Col>{props.order.date}</Col>
             </Row>
-        </Form>
+
+            <Row className="d-flex align-items-center">
+                <Col sm={3}
+                     className="glossy-background smaller d-flex justify-content-center align-items-center">
+                    <JournalBookmarkFill className="me-1"/> Commessa
+                </Col>
+                <Col>{props.order.job.id} - <i>{props.order.job.client}</i> - {props.order.job.subject}</Col>
+            </Row>
+
+            <Row className="d-flex align-items-center">
+                <Col sm={3}
+                     className="glossy-background smaller d-flex justify-content-center align-items-center">
+                    <Buildings className="me-1"/> Fornitore
+                </Col>
+                <Col>{props.order.supplier}</Col>
+            </Row>
+
+            <Row className="d-flex align-items-center">
+                <Col sm={3}
+                     className="glossy-background smaller d-flex justify-content-center align-items-center">
+                    <Sticky className="me-1"/> Descrizione
+                </Col>
+                <Col>{props.order.description}</Col>
+            </Row>
+
+            <Row className="d-flex align-items-center">
+                <Col sm={3}
+                     className="glossy-background smaller d-flex justify-content-center align-items-center">
+                    <Person className="me-1"/> Presa in carico da
+                </Col>
+                <Col>{props.order.by.surname} {props.order.by.name}</Col>
+            </Row>
+
+            <Row className="d-flex align-items-center">
+                <Col sm={3}
+                     className="glossy-background smaller d-flex justify-content-center align-items-center">
+                    <Person className="me-1"/> Consegna prevista
+                </Col>
+                <Col>{props.order.scheduledDeliveryDate ?? "Nessuna data prevista"}</Col>
+            </Row>
+
+            {props.order.clearedBy && <Row className="d-flex align-items-center">
+                <Col sm={3}
+                     className="glossy-background smaller d-flex justify-content-center align-items-center">
+                    <Person className="me-1"/> Evasa da
+                </Col>
+                <Col>{props.order.clearedBy.surname} {props.order.clearedBy.name}</Col>
+            </Row>}
+
+            {props.order.clearingDate && <Row className="d-flex align-items-center">
+                <Col sm={3}
+                     className="glossy-background smaller d-flex justify-content-center align-items-center">
+                    <Person className="me-1"/> Data di evasione
+                </Col>
+                <Col>{props.order.clearingDate}</Col>
+            </Row>}
+        </Row>
     );
 }
 

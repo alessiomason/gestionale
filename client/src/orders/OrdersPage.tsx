@@ -5,8 +5,9 @@ import {Col, Row, Table} from "react-bootstrap";
 import GlossyButton from "../buttons/GlossyButton";
 import {ClipboardPlus, ClipboardX} from "react-bootstrap-icons";
 import Loading from "../Loading";
-import OrderPane from "./OrderPane";
+import EditOrderPane from "./EditOrderPane";
 import {User} from "../models/user";
+import OrderPane from "./OrderPane";
 
 interface OrdersPageProps {
     readonly user: User
@@ -105,9 +106,9 @@ function OrdersPage(props: OrdersPageProps) {
 
                 <Col>
                     {showingNewOrderPane &&
-                        <OrderPane order={undefined} afterSubmit={selectNewlyCreatedOrder} user={props.user}/>}
+                        <EditOrderPane order={undefined} afterSubmit={selectNewlyCreatedOrder} user={props.user}/>}
                     {!showingNewOrderPane && selectedOrder &&
-                        <OrderPane order={selectedOrder} afterSubmit={updateSelectedOrder} user={props.user}/>}
+                        <OrderPane order={selectedOrder}/>}
                 </Col>
             </Row>
         </>
