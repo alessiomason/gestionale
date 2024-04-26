@@ -39,6 +39,7 @@ function UsersListPage(props: UsersListPageProps) {
 
     const [active, setActive] = useState(false);
     const [managesTickets, setManagesTickets] = useState(false);
+    const [managesOrders, setManagesOrders] = useState(false);
     const [role, setRole] = useState<"user" | "admin" | "dev" | "">("");
     const [type, setType] = useState<"office" | "workshop" | "machine" | "">("");
     const [email, setEmail] = useState<string>("");
@@ -68,6 +69,7 @@ function UsersListPage(props: UsersListPageProps) {
 
         setActive(user.active);
         setManagesTickets(user.managesTickets);
+        setManagesOrders(user.managesOrders);
         setRole(user.role.toString() as "user" | "admin" | "dev");
         setType(user.type.toString() as "office" | "workshop");
         setEmail(user.email ?? "");
@@ -105,6 +107,7 @@ function UsersListPage(props: UsersListPageProps) {
         let user = selectedUser;
         user.active = active;
         user.managesTickets = managesTickets;
+        user.managesOrders = managesOrders;
         user.role = Role[role];
         user.type = Type[type];
         user.email = email === "" ? undefined : email;
@@ -207,6 +210,17 @@ function UsersListPage(props: UsersListPageProps) {
                                     <Col className="d-flex align-items-center">
                                         <SwitchToggle id="manages-tickets-toggle" isOn={managesTickets}
                                                       handleToggle={() => setManagesTickets(prevState => !prevState)}/>
+                                    </Col>
+                                </Row>
+                                <Row className="d-flex align-items-center">
+                                    <Col sm={3}
+                                         className="glossy-background smaller d-flex justify-content-center align-items-center">
+                                        {managesOrders ? <CheckCircle className="me-2"/> :
+                                            <XCircle className="me-2"/>} Accesso agli ordini
+                                    </Col>
+                                    <Col className="d-flex align-items-center">
+                                        <SwitchToggle id="manages-orders-toggle" isOn={managesOrders}
+                                                      handleToggle={() => setManagesOrders(prevState => !prevState)}/>
                                     </Col>
                                 </Row>
 

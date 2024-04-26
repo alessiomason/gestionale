@@ -14,12 +14,12 @@ export async function getCompanyHours(month: string) {
         .join("users", "workItems.userId", "users.id")
         .whereRaw("work_items.date LIKE ?", formattedMonth + "-%")
         .groupBy("users.id", "users.role", "users.type", "users.active", "users.managesTickets",
-            "users.email", "users.name", "users.surname", "users.username", "users.phone", "users.hoursPerDay",
-            "users.costPerHour", "users.car", "users.costPerKm", "workItems.date")
+            "users.managesOrders", "users.email", "users.name", "users.surname", "users.username", "users.phone",
+            "users.hoursPerDay", "users.costPerHour", "users.car", "users.costPerKm", "workItems.date")
         .select("users.id as userId", "users.role", "users.type", "users.active",
-            "users.managesTickets", "users.email", "users.name", "users.surname",
-            "users.username", "users.phone", "users.hoursPerDay", "users.costPerHour",
-            "users.car", "users.costPerKm", "workItems.date",
+            "users.managesTickets", "users.managesOrders", "users.email", "users.name",
+            "users.surname", "users.username", "users.phone", "users.hoursPerDay",
+            "users.costPerHour", "users.car", "users.costPerKm", "workItems.date",
             knex.raw("SUM(work_items.hours) as workedHours"));
 
     const companyHours = companyHoursResult.map(companyHoursItem => {
@@ -39,6 +39,7 @@ export async function getCompanyHours(month: string) {
             parseFloat(companyHoursItem.costPerHour),
             companyHoursItem.active === 1,
             companyHoursItem.managesTickets === 1,
+            companyHoursItem.managesOrders === 1,
             companyHoursItem.email,
             companyHoursItem.phone,
             companyHoursItem.car,

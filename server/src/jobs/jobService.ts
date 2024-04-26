@@ -117,6 +117,7 @@ export async function getDetailedJob(id: string) {
                 parseFloat(jobUserHours.costPerHour),
                 !!jobUserHours.activeUser,
                 !!jobUserHours.managesTickets,
+                !!jobUserHours.managesOrders,
                 jobUserHours.email,
                 jobUserHours.phone,
                 jobUserHours.car,
