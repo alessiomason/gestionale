@@ -6,8 +6,9 @@ import {getJob} from "../jobs/jobService";
 import {JobNotFound} from "../jobs/jobErrors";
 import {getUser} from "../users/userService";
 import {UserNotFound} from "../users/userErrors";
+import {User} from "../users/user";
 
-function parseOrder(order: any) {
+async function parseOrder(order: any) {
     const job = new Job(
         order.jobId,
         order.subject,
@@ -25,15 +26,23 @@ function parseOrder(order: any) {
         order.totalWorkedHours ? parseFloat(order.totalWorkedHours) : 0
     );
 
+    const by = await getUser(order.byId);
+    if (!by) throw new UserNotFound();
+    let clearedBy: User | undefined = undefined;
+    if (order.clearedById) {
+        clearedBy = await getUser(order.clearedById);
+        if (!clearedBy) throw new UserNotFound();
+    }
+
     return new Order(
         order.id,
         order.date,
         job,
         order.supplier,
         order.description,
-        order.by,
+        by,
         order.scheduledDeliveryDate,
-        order.clearedBy,
+        clearedBy,
         order.clearingDate
     );
 }
@@ -45,7 +54,7 @@ export async function getAllOrders() {
             "jobs.orderName", "jobs.orderAmount", "jobs.startDate", "jobs.deliveryDate",
             "jobs.notes", "jobs.active", "jobs.lost", "jobs.design", "jobs.construction");
 
-    return orders.map(order => parseOrder(order));
+    return await Promise.all(orders.map(async order => await parseOrder(order)));
 }
 
 export async function getOrder(id: number) {
@@ -58,7 +67,7 @@ export async function getOrder(id: number) {
 
     if (!order) throw new OrderNotFound();
 
-    return parseOrder(order);
+    return await parseOrder(order);
 }
 
 export async function createOrder(newOrder: NewOrder) {
