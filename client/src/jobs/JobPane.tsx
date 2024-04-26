@@ -226,7 +226,7 @@ function JobPane(props: JobPaneProps) {
 
             <Row className="d-flex justify-content-center my-4">
                 <Col sm={4} className="d-flex justify-content-center">
-                    <GlossyButton type="submit" icon={updated ? Check2 : (Floppy)} onClick={handleSubmit}>{buttonLabel}</GlossyButton>
+                    <GlossyButton type="submit" icon={updated ? Check2 : Floppy} onClick={handleSubmit}>{buttonLabel}</GlossyButton>
                 </Col>
             </Row>
         </Form>

@@ -4,6 +4,7 @@ import {BaseError, InternalServerError, ParameterError} from "../errors";
 import {createOrder, getAllOrders, getOrder} from "./orderService";
 import {body, param, validationResult} from "express-validator";
 import {NewOrder} from "./order";
+import dayjs from "dayjs";
 
 export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler) {
     const baseURL = "/api/orders";
@@ -49,7 +50,7 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler) {
     // create an order
     app.post(baseURL,
         isLoggedIn,
-        body("date").isString(),
+        body("date").optional({values: "null"}).isDate(),
         body("jobId").isString(),
         body("supplier").isString(),
         body("description").isString(),
@@ -65,7 +66,7 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler) {
             }
 
             const newOrder = new NewOrder(
-                req.body.date,
+                req.body.date ?? dayjs().format("YYYY-MM-DD"),
                 req.body.jobId,
                 req.body.supplier,
                 req.body.description,

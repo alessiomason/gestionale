@@ -9,6 +9,7 @@ import {
     CalendarEvent,
     CalendarRange,
     CalendarWeek,
+    Clipboard,
     JournalBookmarkFill,
     PersonBadge,
     PersonVcard,
@@ -39,6 +40,9 @@ function MyNavbar(props: NavbarProps) {
                                                             onClick={() => navigate("/tickets")}>
                         Assistenza
                     </LightGlossyButton>}
+                    <LightGlossyButton singleLine icon={Clipboard} className="me-3" onClick={() => navigate("/orders")}>
+                        Ordini
+                    </LightGlossyButton>
                     <LightGlossyButton singleLine icon={JournalBookmarkFill} className="me-3" onClick={() => navigate("/jobs")}>
                         Commesse
                     </LightGlossyButton>

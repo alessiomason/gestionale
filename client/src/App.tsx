@@ -29,6 +29,7 @@ import {useMediaQuery} from "react-responsive";
 import WorkedHoursEditMobile from "./workedHours/workedHoursMobile/WorkedHoursEditMobile";
 import MonthlyWorkedHoursPage from "./workedHours/monthlyWorkedHours/MonthlyWorkedHoursPage";
 import CompanyWorkedHoursPage from "./workedHours/companyWorkedHours/CompanyWorkedHoursPage";
+import OrdersPage from "./orders/OrdersPage";
 
 // set up dayjs with localization, durations and business days plugins
 dayjs.extend(dayjsBusinessDays, dayjsBusinessDaysOptions);
@@ -139,6 +140,7 @@ function App2() {
                        element={isMobile ? <WorkedHoursEditMobile user={user!}/> : <Navigate to="/workedHours"/>}/>
                 <Route path="monthlyWorkedHours" element={<MonthlyWorkedHoursPage/>}/>
                 <Route path="companyWorkedHours" element={<CompanyWorkedHoursPage/>}/>
+                <Route path="orders" element={<OrdersPage user={user!}/>}/>
             </Route>
         </Routes>
     );
