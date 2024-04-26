@@ -75,7 +75,7 @@ export function useTicketOrdersAPIs(app: Express, isLoggedIn: RequestHandler, ca
         canManageTickets,
         body("company.id").isInt(),
         body("hours").isFloat(),
-        body("date").optional({values: "null"}).isString(),
+        body("date").optional({values: "null"}).isDate(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
