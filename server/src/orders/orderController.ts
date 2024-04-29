@@ -3,9 +3,9 @@ import {RequestHandler} from "express-serve-static-core";
 import {BaseError, InternalServerError, ParameterError} from "../errors";
 import {createOrder, deleteOrder, getAllOrders, getOrder, updateOrder} from "./orderService";
 import {body, param, validationResult} from "express-validator";
-import {NewOrder, Order} from "./order";
+import {NewOrder} from "./order";
 import dayjs from "dayjs";
-import {OrderNotFound} from "./orderErrors";
+import {User} from "../users/user";
 
 export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler) {
     const baseURL = "/api/orders";
@@ -55,9 +55,7 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler) {
         body("jobId").isString(),
         body("supplier").isString(),
         body("description").isString(),
-        body("byId").isInt(),
         body("scheduledDeliveryDate").optional({values: "null"}).isDate(),
-        body("clearedById").optional({values: "null"}).isInt(),
         body("clearingDate").optional({values: "null"}).isDate(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
@@ -66,14 +64,15 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler) {
                 return
             }
 
+            const user = req.user as User;
             const newOrder = new NewOrder(
                 req.body.date ?? dayjs().format("YYYY-MM-DD"),
                 req.body.jobId,
                 req.body.supplier,
                 req.body.description,
-                req.body.byId,
+                user.id,
                 req.body.scheduledDeliveryDate,
-                req.body.clearedById,
+                req.body.clearingDate ? user.id : undefined,
                 req.body.clearingDate
             );
 
@@ -98,10 +97,7 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler) {
         body("jobId").isString(),
         body("supplier").isString(),
         body("description").isString(),
-        body("byId").isInt(),
         body("scheduledDeliveryDate").optional({values: "null"}).isDate(),
-        body("clearedById").optional({values: "null"}).isInt(),
-        body("clearingDate").optional({values: "null"}).isDate(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -110,19 +106,17 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler) {
                 return
             }
 
-            const updatedOrder = new NewOrder(
-                req.body.date ?? dayjs().format("YYYY-MM-DD"),
-                req.body.jobId,
-                req.body.supplier,
-                req.body.description,
-                req.body.byId,
-                req.body.scheduledDeliveryDate,
-                req.body.clearedById,
-                req.body.clearingDate
-            );
-
             try {
                 const order = await getOrder(parseInt(req.params.id));
+
+                const updatedOrder = new NewOrder(
+                    req.body.date ?? dayjs().format("YYYY-MM-DD"),
+                    req.body.jobId,
+                    req.body.supplier,
+                    req.body.description,
+                    order.by.id,
+                    req.body.scheduledDeliveryDate
+                );
                 await updateOrder(order.id, updatedOrder);
                 res.status(200).end();
             } catch (err: any) {

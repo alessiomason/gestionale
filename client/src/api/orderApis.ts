@@ -34,9 +34,7 @@ async function createOrder(order: Order) {
         jobId: order.job.id,
         supplier: order.supplier,
         description: order.description,
-        byId: order.by.id,
         scheduledDeliveryDate: order.scheduledDeliveryDate === "" ? undefined : order.scheduledDeliveryDate,
-        clearedById: order.clearedBy?.id,
         clearingDate: order.clearingDate === "" ? undefined : order.clearingDate
     };
 

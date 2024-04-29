@@ -93,9 +93,10 @@ export async function createOrder(newOrder: NewOrder) {
 }
 
 export async function updateOrder(id: number, updatedOrder: NewOrder) {
+    const updatingOrder = {...updatedOrder, byId: undefined};
     await knex("orders")
         .where({id})
-        .update(updatedOrder);
+        .update(updatingOrder);
 }
 
 export async function deleteOrder(id: number) {
