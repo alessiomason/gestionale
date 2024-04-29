@@ -7,6 +7,7 @@ import {JobNotFound} from "../jobs/jobErrors";
 import {getUser} from "../users/userService";
 import {UserNotFound} from "../users/userErrors";
 import {User} from "../users/user";
+import dayjs from "dayjs";
 
 async function parseOrder(order: any) {
     const job = new Job(
@@ -97,6 +98,13 @@ export async function updateOrder(id: number, updatedOrder: NewOrder) {
     await knex("orders")
         .where({id})
         .update(updatingOrder);
+}
+
+export async function clearOrder(id: number, clearedById: number) {
+    const clearingDate = dayjs().format("YYYY-MM-DD");
+    await knex("orders")
+        .where({id})
+        .update({clearedById, clearingDate});
 }
 
 export async function deleteOrder(id: number) {

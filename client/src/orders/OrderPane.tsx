@@ -14,6 +14,7 @@ import GlossyButton from "../buttons/GlossyButton";
 import {formatDate} from "../functions";
 import EditOrderPane from "./EditOrderPane";
 import {User} from "../models/user";
+import orderApis from "../api/orderApis";
 
 interface OrderPaneProps {
     readonly user: User
@@ -27,6 +28,12 @@ function OrderPane(props: OrderPaneProps) {
     function afterEdit(updatedOrder: Order) {
         props.afterSubmitEdit(updatedOrder);
         setModifying(false);
+    }
+
+    function clearOrder() {
+        orderApis.clearOrder(props.order)
+            .then(order => props.afterSubmitEdit(order))
+            .catch(err => console.error(err));
     }
 
     if (modifying) {
@@ -97,7 +104,7 @@ function OrderPane(props: OrderPaneProps) {
                 {props.order.clearedBy && <Row className="d-flex align-items-center">
                     <Col sm={3}
                          className="glossy-background smaller d-flex justify-content-center align-items-center">
-                        <Person className="me-1"/> Evasa da
+                        <Person className="me-1"/> Evaso da
                     </Col>
                     <Col>{props.order.clearedBy.surname} {props.order.clearedBy.name}</Col>
                 </Row>}
@@ -119,8 +126,7 @@ function OrderPane(props: OrderPaneProps) {
                     </GlossyButton>
                 </Col>
                 <Col sm={4} className="d-flex justify-content-center">
-                    <GlossyButton icon={ClipboardCheck} onClick={() => {
-                    }}>Evadi l'ordine</GlossyButton>
+                    <GlossyButton icon={ClipboardCheck} onClick={clearOrder}>Evadi l'ordine</GlossyButton>
                 </Col>
                 <Col/>
             </Row>

@@ -45,7 +45,7 @@ async function createOrder(order: Order) {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         },
-        body: JSON.stringify(newOrder),
+        body: JSON.stringify(newOrder)
     });
     if (response.ok) {
         return await response.json();
@@ -71,12 +71,26 @@ async function updateOrder(order: Order) {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         },
-        body: JSON.stringify(updatedOrder),
+        body: JSON.stringify(updatedOrder)
     });
     if (response.ok) {
         return true;
     } else await handleApiError(response);
 }
 
-const orderApis = {getAllOrders, getOrder, createOrder, updateOrder};
+async function clearOrder(order: Order) {
+    const response = await fetch(new URL(`orders/${order.id}`, apiUrl), {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+    });
+    if (response.ok) {
+        return await response.json();
+    } else await handleApiError(response);
+}
+
+const orderApis = {getAllOrders, getOrder, createOrder, updateOrder, clearOrder};
 export default orderApis;
