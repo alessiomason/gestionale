@@ -7,11 +7,11 @@ import {NewOrder} from "./order";
 import dayjs from "dayjs";
 import {User} from "../users/user";
 
-export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler) {
+export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManageOrders: RequestHandler) {
     const baseURL = "/api/orders";
 
     // get all orders
-    app.get(baseURL, isLoggedIn, async (_: Request, res: Response) => {
+    app.get(baseURL, isLoggedIn, canManageOrders, async (_: Request, res: Response) => {
         try {
             const orders = await getAllOrders();
             res.status(200).json(orders)
@@ -27,6 +27,7 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler) {
     // get order by id
     app.get(`${baseURL}/:orderId`,
         isLoggedIn,
+        canManageOrders,
         param("orderId").isInt(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
@@ -51,6 +52,7 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler) {
     // create an order
     app.post(baseURL,
         isLoggedIn,
+        canManageOrders,
         body("date").optional({values: "null"}).isDate(),
         body("jobId").isString(),
         body("supplier").isString(),
@@ -92,6 +94,7 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler) {
     // update order
     app.put(`${baseURL}/:id`,
         isLoggedIn,
+        canManageOrders,
         param("id").isInt(),
         body("date").optional({values: "null"}).isDate(),
         body("jobId").isString(),
@@ -132,6 +135,7 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler) {
     // clear order
     app.patch(`${baseURL}/:id`,
         isLoggedIn,
+        canManageOrders,
         param("id").isInt(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
@@ -161,6 +165,7 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler) {
     // delete order
     app.delete(`${baseURL}/:id`,
         isLoggedIn,
+        canManageOrders,
         param("id").isString(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);

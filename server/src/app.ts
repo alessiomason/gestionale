@@ -138,6 +138,15 @@ function canManageTickets(req: Request, res: Response, next: NextFunction) {
     return res.status(401).json({error: "You are not authorised to manage tickets!"});
 }
 
+function canManageOrders(req: Request, res: Response, next: NextFunction) {
+    const user = req.user ? (req.user as User) : undefined;
+    if (user?.managesOrders || process.env.NODE_ENV === "test") {
+        return next();
+    }
+
+    return res.status(401).json({error: "You are not authorised to manage orders!"});
+}
+
 // expose the APIs
 useSystemAPIs(app, isLoggedIn);
 useDatabaseAPIs(app, isLoggedIn, isDeveloper);
@@ -150,7 +159,7 @@ useTicketsAPIs(app, isLoggedIn, canManageTickets);
 useWorkItemsAPIs(app, isLoggedIn, isAdministrator, isDeveloper);
 useDailyExpensesAPIs(app, isLoggedIn, isDeveloper);
 useCompanyHoursAPIs(app, isLoggedIn, isAdministrator);
-useOrdersAPIs(app, isLoggedIn);
+useOrdersAPIs(app, isLoggedIn, canManageOrders);
 
 if (process.env.NODE_ENV === "production") {
     const path = require("path");
