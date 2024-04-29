@@ -139,7 +139,7 @@ function OrdersPage(props: OrdersPageProps) {
                     </Col>}
                 {!showingNewOrderPane && selectedOrder &&
                     <Col>
-                        <OrderPane order={selectedOrder}/>
+                        <OrderPane order={selectedOrder} afterSubmitEdit={updateSelectedOrder} user={props.user}/>
                     </Col>}
             </Row>
         </>

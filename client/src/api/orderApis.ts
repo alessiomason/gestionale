@@ -54,5 +54,31 @@ async function createOrder(order: Order) {
     } else await handleApiError(response);
 }
 
-const orderApis = {getAllOrders, getOrder, createOrder};
+async function updateOrder(order: Order) {
+    const updatedOrder = {
+        date: order.date === "" ? undefined : order.date,
+        jobId: order.job.id,
+        supplier: order.supplier,
+        description: order.description,
+        byId: order.by.id,
+        scheduledDeliveryDate: order.scheduledDeliveryDate === "" ? undefined : order.scheduledDeliveryDate,
+        clearedById: order.clearedBy?.id,
+        clearingDate: order.clearingDate === "" ? undefined : order.clearingDate
+    };
+
+    const response = await fetch(new URL(`orders/${order.id}`, apiUrl), {
+        method: 'PUT',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(updatedOrder),
+    });
+    if (response.ok) {
+        return true;
+    } else await handleApiError(response);
+}
+
+const orderApis = {getAllOrders, getOrder, createOrder, updateOrder};
 export default orderApis;

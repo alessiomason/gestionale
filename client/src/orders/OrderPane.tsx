@@ -1,22 +1,40 @@
 import {Order} from "../models/order";
 import {Col, Row} from "react-bootstrap";
-import React from "react";
+import React, {useState} from "react";
 import {
     Buildings,
     Clipboard,
     ClipboardCheck,
     JournalBookmarkFill,
+    PencilSquare,
     Person,
     Sticky
 } from "react-bootstrap-icons";
 import GlossyButton from "../buttons/GlossyButton";
 import {formatDate} from "../functions";
+import EditOrderPane from "./EditOrderPane";
+import {User} from "../models/user";
 
 interface OrderPaneProps {
+    readonly user: User
     readonly order: Order
+    readonly afterSubmitEdit: (order: Order) => void
 }
 
 function OrderPane(props: OrderPaneProps) {
+    const [modifying, setModifying] = useState(false);
+
+    function afterEdit(updatedOrder: Order) {
+        props.afterSubmitEdit(updatedOrder);
+        setModifying(false);
+    }
+
+    if (modifying) {
+        return (
+            <EditOrderPane user={props.user} order={props.order} afterSubmit={afterEdit}/>
+        );
+    }
+
     return (
         <>
             <Row className="glossy-background">
@@ -93,11 +111,18 @@ function OrderPane(props: OrderPaneProps) {
                 </Row>}
             </Row>
 
-            <Row className="d-flex justify-content-center my-3">
+            <Row className="my-3">
+                <Col/>
+                <Col sm={4} className="d-flex justify-content-center">
+                    <GlossyButton icon={PencilSquare} onClick={() => setModifying(true)}>
+                        Modifica l'ordine
+                    </GlossyButton>
+                </Col>
                 <Col sm={4} className="d-flex justify-content-center">
                     <GlossyButton icon={ClipboardCheck} onClick={() => {
                     }}>Evadi l'ordine</GlossyButton>
                 </Col>
+                <Col/>
             </Row>
 
         </>

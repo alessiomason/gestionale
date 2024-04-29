@@ -60,7 +60,7 @@ export async function getAllOrders() {
 export async function getOrder(id: number) {
     const order = await knex("orders")
         .join("jobs", "jobs.id", "orders.jobId")
-        .where({id: id})
+        .whereRaw("orders.id = ?", [id])
         .first("orders.*", "jobs.subject", "jobs.client", "jobs.finalClient",
             "jobs.orderName", "jobs.orderAmount", "jobs.startDate", "jobs.deliveryDate",
             "jobs.notes", "jobs.active", "jobs.lost", "jobs.design", "jobs.construction");

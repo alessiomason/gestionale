@@ -58,9 +58,15 @@ function EditOrderPane(props: EditOrderPaneProps) {
             scheduledDeliveryDate
         );
 
-        orderApis.createOrder(order)
-            .then(order => props.afterSubmit(order))
-            .catch(err => console.error(err));
+        if (props.order) {      // editing
+            orderApis.updateOrder(order)
+                .then(() => props.afterSubmit(order))
+                .catch(err => console.error(err));
+        } else {
+            orderApis.createOrder(order)
+                .then(order => props.afterSubmit(order))
+                .catch(err => console.error(err));
+        }
     }
 
     return (
