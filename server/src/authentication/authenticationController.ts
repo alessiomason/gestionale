@@ -133,6 +133,7 @@ export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.Sess
                 undefined,
                 undefined,
                 undefined,
+                undefined,
                 registrationDate,
                 undefined,
                 undefined,

@@ -54,7 +54,7 @@ export function useDailyExpensesAPIs(app: Express, isLoggedIn: RequestHandler, i
     app.post(baseURL,
         isLoggedIn,
         body("userId").optional({values: "null"}).isInt(),
-        body("date").isString(),
+        body("date").isDate(),
         body("expenses").isNumeric(),
         body("destination").isString(),
         body("kms").isNumeric(),

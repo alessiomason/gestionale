@@ -15,6 +15,7 @@ export class NewUser {
     type: Type
     active: boolean
     managesTickets: boolean
+    managesOrders: boolean
     email: string | null
     name: string
     surname: string
@@ -47,6 +48,7 @@ export class NewUser {
         costPerHour: number,
         active = true,
         managesTickets = false,
+        managesOrders = false,
         email: string | null = null,
         phone: string | null = null,
         car: string | null = null,
@@ -56,6 +58,7 @@ export class NewUser {
         this.type = type;
         this.active = active;
         this.managesTickets = managesTickets;
+        this.managesOrders = managesOrders;
         this.email = email;
         this.name = name;
         this.surname = surname;
@@ -97,6 +100,7 @@ export class User extends NewUser {
         costPerHour: number,
         active = true,
         managesTickets = false,
+        managesOrders = false,
         email: string | null = null,
         phone: string | null = null,
         car: string | null = null,
@@ -112,6 +116,7 @@ export class User extends NewUser {
             costPerHour,
             active,
             managesTickets,
+            managesOrders,
             email,
             phone,
             car,

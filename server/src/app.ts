@@ -27,6 +27,7 @@ import "dayjs/locale/it";
 import {Role, User} from "./users/user";
 import {useCompanyHoursAPIs} from "./companyHours/companyHoursController";
 import {useDatabaseAPIs} from "./database/databaseController";
+import {useOrdersAPIs} from "./orders/orderController";
 
 
 // setup passport
@@ -137,8 +138,18 @@ function canManageTickets(req: Request, res: Response, next: NextFunction) {
     return res.status(401).json({error: "You are not authorised to manage tickets!"});
 }
 
+function canManageOrders(req: Request, res: Response, next: NextFunction) {
+    const user = req.user ? (req.user as User) : undefined;
+    if (user?.managesOrders || process.env.NODE_ENV === "test") {
+        return next();
+    }
+
+    return res.status(401).json({error: "You are not authorised to manage orders!"});
+}
+
 // expose the APIs
 useSystemAPIs(app, isLoggedIn);
+useDatabaseAPIs(app, isLoggedIn, isDeveloper);
 useAuthenticationAPIs(app, webAuthnStore, isLoggedIn);
 useUsersAPIs(app, isLoggedIn, isAdministrator);
 useJobsAPIs(app, isLoggedIn, isAdministrator);
@@ -148,7 +159,7 @@ useTicketsAPIs(app, isLoggedIn, canManageTickets);
 useWorkItemsAPIs(app, isLoggedIn, isAdministrator, isDeveloper);
 useDailyExpensesAPIs(app, isLoggedIn, isDeveloper);
 useCompanyHoursAPIs(app, isLoggedIn, isAdministrator);
-useDatabaseAPIs(app, isLoggedIn, isDeveloper);
+useOrdersAPIs(app, isLoggedIn, canManageOrders);
 
 if (process.env.NODE_ENV === "production") {
     const path = require("path");

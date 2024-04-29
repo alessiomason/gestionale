@@ -24,6 +24,7 @@ export async function getAllUsers() {
             parseFloat(user.costPerHour),
             !!user.active,
             !!user.managesTickets,
+            !!user.managesOrders,
             user.email,
             user.phone,
             user.car,
@@ -55,6 +56,7 @@ export async function getAllMachineUsers() {
             parseFloat(user.costPerHour),
             !!user.active,
             !!user.managesTickets,
+            !!user.managesOrders,
             user.email,
             user.phone,
             user.car,
@@ -86,6 +88,7 @@ export async function getUser(id: number) {
         parseFloat(user.costPerHour),
         !!user.active,
         !!user.managesTickets,
+        !!user.managesOrders,
         user.email,
         user.phone,
         user.car,
@@ -116,6 +119,7 @@ export async function getFullUser(id: number) {
         user.costPerHour,
         !!user.active,
         !!user.managesTickets,
+        !!user.managesOrders,
         user.email,
         user.phone,
         user.car,
@@ -146,6 +150,7 @@ export async function getUserFromUsername(username: string) {
         user.costPerHour,
         !!user.active,
         !!user.managesTickets,
+        !!user.managesOrders,
         user.email,
         user.phone,
         user.car,
@@ -176,6 +181,7 @@ export async function getUserFromRegistrationToken(registrationToken: string) {
         user.costPerHour,
         !!user.active,
         !!user.managesTickets,
+        !!user.managesOrders,
         user.email,
         user.phone,
         user.car,
@@ -233,6 +239,7 @@ export async function createUser(newUser: NewUser) {
         newUser.costPerHour,
         newUser.active,
         newUser.managesTickets,
+        newUser.managesOrders,
         newUser.email,
         newUser.phone,
         newUser.car,
@@ -245,6 +252,7 @@ export async function updateUser(
     id: number,
     active: boolean | undefined,
     managesTickets: boolean | undefined,
+    managesOrders: boolean | undefined,
     role: Role | undefined,
     type: Type | undefined,
     registrationDate: string | undefined,
@@ -256,8 +264,8 @@ export async function updateUser(
     costPerKm: number | undefined
 ) {
     // check that at least one field is changing to avoid a faulty query
-    if (active !== undefined || managesTickets !== undefined || role !== undefined || type !== undefined ||
-        registrationDate !== undefined || hoursPerDay !== undefined || costPerHour !== undefined ||
+    if (active !== undefined || managesTickets !== undefined || managesOrders !== undefined || role !== undefined ||
+        type !== undefined || registrationDate !== undefined || hoursPerDay !== undefined ||costPerHour !== undefined ||
         email !== undefined || phone !== undefined || car !== undefined || costPerKm !== undefined
 ) {
         await knex("users")
@@ -265,6 +273,7 @@ export async function updateUser(
             .update({
                 active: active,
                 managesTickets: managesTickets,
+                managesOrders: managesOrders,
                 role: role,
                 type: type,
                 registrationDate: registrationDate,

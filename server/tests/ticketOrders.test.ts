@@ -5,7 +5,7 @@ import {faker} from '@faker-js/faker';
 import {TicketCompany} from "../src/tickets/ticketCompanies/ticketCompany";
 import {TicketCompanyNotFound, TicketOrderNotFound} from "../src/tickets/ticketErrors";
 import {TicketOrder} from "../src/tickets/ticketOrders/ticketOrder";
-import {clearTests, setupTests} from "./setupTests";
+import {clearTests, formatDate, setupTests} from "./setupTests";
 
 jest.mock('../src/database/db', () => {
     const Knex = require('knex');
@@ -30,8 +30,8 @@ describe("Test ticket orders APIs", () => {
         faker.number.int(),
         ticketCompany,
         faker.number.float(),
-        faker.date.recent().toISOString()
-    )
+        formatDate(faker.date.recent())
+    );
     const responseTicketOrder = {
         id: ticketOrder.id,
         companyId: ticketCompany.id,

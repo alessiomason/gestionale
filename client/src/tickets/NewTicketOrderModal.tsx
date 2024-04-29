@@ -4,7 +4,7 @@ import {TicketCompany} from "../models/ticketCompany";
 import {Clock, Floppy} from "react-bootstrap-icons";
 import GlossyButton from "../buttons/GlossyButton";
 import ticketOrderApis from "../api/ticketOrderApis";
-import {TicketOrder} from "../models/ticketOrder";
+import {NewTicketOrder, TicketOrder} from "../models/ticketOrder";
 import LightGlossyButton from "../buttons/LightGlossyButton";
 
 interface NewTicketOrderModalProps {
@@ -23,7 +23,7 @@ function NewTicketOrderModal(props: NewTicketOrderModalProps) {
 
         if (hours === 0) return
 
-        const ticketOrder = new TicketOrder(-1, props.ticketCompany, hours, "");
+        const ticketOrder = new NewTicketOrder(props.ticketCompany, hours);
 
         ticketOrderApis.createTicketOrder(ticketOrder)
             .then(ticketOrder => {

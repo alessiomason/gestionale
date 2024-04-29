@@ -75,7 +75,7 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler, canMana
         body("company.id").isInt(),
         body("title").isString(),
         body("description").isString(),
-        body("startTime").optional({values: "null"}).isString(),
+        body("startTime").optional({values: "null"}).isISO8601(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -99,7 +99,7 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler, canMana
         isLoggedIn,
         canManageTickets,
         param("ticketId").isInt(),
-        body("endTime").optional({values: "null"}).isString(),
+        body("endTime").optional({values: "null"}).isISO8601(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {

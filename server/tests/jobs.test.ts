@@ -4,7 +4,7 @@ import {Tracker} from 'knex-mock-client';
 import {faker} from '@faker-js/faker';
 import {Job} from "../src/jobs/job";
 import {DuplicateJob, JobNotFound} from "../src/jobs/jobErrors";
-import {clearTests, setupTests} from "./setupTests";
+import {clearTests, formatDate, setupTests} from "./setupTests";
 
 jest.mock('../src/database/db', () => {
     const Knex = require('knex');
@@ -26,14 +26,14 @@ describe("Test jobs APIs", () => {
         faker.company.name(),
         faker.word.words(5),
         faker.number.float(),
-        faker.date.soon().toISOString(),
-        faker.date.recent().toISOString(),
+        formatDate(faker.date.soon()),
+        formatDate(faker.date.recent()),
         faker.lorem.sentences(),
         true,
         false,
         true,
         true
-    )
+    );
 
     beforeAll(async () => {
         const setupResult = await setupTests();
