@@ -91,3 +91,15 @@ export async function createOrder(newOrder: NewOrder) {
         newOrder.clearingDate
     );
 }
+
+export async function updateOrder(id: number, updatedOrder: NewOrder) {
+    await knex("orders")
+        .where({id})
+        .update(updatedOrder);
+}
+
+export async function deleteOrder(id: number) {
+    await knex("orders")
+        .where({id})
+        .delete();
+}
