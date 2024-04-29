@@ -1,5 +1,5 @@
 import {apiUrl} from "./apisValues";
-import {TicketOrder} from "../models/ticketOrder";
+import {NewTicketOrder} from "../models/ticketOrder";
 import {handleApiError} from "./handleApiError";
 
 async function getTicketOrders(ticketCompanyId: number) {
@@ -28,7 +28,7 @@ async function getTicketOrder(ticketOrderId: string) {
     } else await handleApiError(response);
 }
 
-async function createTicketOrder(ticketOrder: TicketOrder) {
+async function createTicketOrder(ticketOrder: NewTicketOrder) {
     const response = await fetch(new URL("tickets/orders", apiUrl), {
         method: 'POST',
         credentials: 'include',

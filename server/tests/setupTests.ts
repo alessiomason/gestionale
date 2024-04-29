@@ -2,6 +2,7 @@ import {createTracker, Tracker} from "knex-mock-client";
 import {knex as db} from "../src/database/db";
 import {agent as Request} from "supertest";
 import app from "../src/app";
+import {faker} from "@faker-js/faker";
 
 export async function setupTests() {
     const tracker = createTracker(db);
@@ -17,4 +18,11 @@ export async function setupTests() {
 
 export function clearTests(tracker: Tracker) {
     tracker.reset();
+}
+
+export function formatDate(date: Date) {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
+    return `${year}-${month}-${day}`;
 }

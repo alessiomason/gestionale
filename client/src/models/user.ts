@@ -21,6 +21,7 @@ export class User {
     type: Type
     active: boolean
     managesTickets: boolean
+    managesOrders: boolean
     email: string | undefined
     name: string
     surname: string
@@ -48,6 +49,7 @@ export class User {
         costPerHour: number,
         active = true,
         managesTickets = false,
+        managesOrders = false,
         email: string | undefined = undefined,
         phone: string | undefined = undefined,
         car: string | undefined = undefined,
@@ -58,6 +60,7 @@ export class User {
         this.type = type;
         this.active = active;
         this.managesTickets = managesTickets;
+        this.managesOrders = managesOrders;
         this.email = email;
         this.name = name;
         this.surname = surname;

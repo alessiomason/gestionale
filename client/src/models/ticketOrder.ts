@@ -13,3 +13,13 @@ export class TicketOrder {
         this.date = date;
     }
 }
+
+export class NewTicketOrder {
+    company: TicketCompany
+    hours: number
+
+    constructor(company: TicketCompany, hours: number) {
+        this.company = company;
+        this.hours = hours;
+    }
+}

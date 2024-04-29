@@ -1,0 +1,21 @@
+.orders-page-first-column {
+    transition: all .25s ease;
+}
+
+.orders-page-second-column {
+    opacity: 0;
+    animation: appear-animation .25s ease .125s 1 normal forwards;
+}
+
+.cleared > td {
+    color: forestgreen;
+}
+
+@keyframes appear-animation {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}

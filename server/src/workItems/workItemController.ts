@@ -85,7 +85,7 @@ export function useWorkItemsAPIs(
         isLoggedIn,
         body("userId").optional({values: "null"}).isInt(),
         body("jobId").isString(),
-        body("date").isString(),
+        body("date").isDate(),
         body("hours").isNumeric(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);

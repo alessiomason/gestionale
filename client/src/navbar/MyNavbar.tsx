@@ -9,6 +9,7 @@ import {
     CalendarEvent,
     CalendarRange,
     CalendarWeek,
+    Clipboard,
     JournalBookmarkFill,
     PersonBadge,
     PersonVcard,
@@ -24,6 +25,7 @@ function MyNavbar(props: NavbarProps) {
     const isMobile = useMediaQuery({maxWidth: 767});
     const isAdministrator = props.user.role !== Role.user;
     const canManageTickets = props.user.managesTickets;
+    const canManageOrders = props.user.managesOrders;
 
     return (
         <Navbar className="navbar fixed-top navbar-padding">
@@ -38,6 +40,10 @@ function MyNavbar(props: NavbarProps) {
                     {canManageTickets && <LightGlossyButton singleLine icon={TicketPerforated} className="me-3"
                                                             onClick={() => navigate("/tickets")}>
                         Assistenza
+                    </LightGlossyButton>}
+                    {canManageOrders && <LightGlossyButton singleLine icon={Clipboard} className="me-3"
+                                        onClick={() => navigate("/orders")}>
+                        Ordini
                     </LightGlossyButton>}
                     <LightGlossyButton singleLine icon={JournalBookmarkFill} className="me-3" onClick={() => navigate("/jobs")}>
                         Commesse

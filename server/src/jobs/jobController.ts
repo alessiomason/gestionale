@@ -93,8 +93,8 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler, isAdminist
         body("finalClient").optional({values: "null"}).isString(),
         body("orderName").optional({values: "null"}).isString(),
         body("orderAmount").optional({values: "null"}).isFloat(),
-        body("startDate").optional({values: "null"}).isString(),
-        body("deliveryDate").optional({values: "null"}).isString(),
+        body("startDate").optional({values: "null"}).isDate(),
+        body("deliveryDate").optional({values: "null"}).isDate(),
         body("notes").optional({values: "null"}).isString(),
         body("active").isBoolean(),
         body("lost").isBoolean(),
@@ -121,7 +121,7 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler, isAdminist
                 req.body.lost,
                 req.body.design,
                 req.body.construction
-            )
+            );
 
             const job = await createJob(newJob);
 
@@ -143,8 +143,8 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler, isAdminist
         body("finalClient").optional({values: "null"}).isString(),
         body("orderName").optional({values: "null"}).isString(),
         body("orderAmount").optional({values: "null"}).isFloat(),
-        body("startDate").optional({values: "null"}).isString(),
-        body("deliveryDate").optional({values: "null"}).isString(),
+        body("startDate").optional({values: "null"}).isDate(),
+        body("deliveryDate").optional({values: "null"}).isDate(),
         body("notes").optional({values: "null"}).isString(),
         body("active").isBoolean(),
         body("lost").isBoolean(),
@@ -172,7 +172,7 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler, isAdminist
                 req.body.lost,
                 req.body.design,
                 req.body.construction
-            )
+            );
 
             try {
                 const job = await getJob(req.params.jobId);

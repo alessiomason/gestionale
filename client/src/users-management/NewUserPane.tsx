@@ -27,6 +27,7 @@ interface NewUserPaneProps {
 function NewUserPane(props: NewUserPaneProps) {
     const [active, setActive] = useState(true);
     const [managesTickets, setManagesTickets] = useState(false);
+    const [managesOrders, setManagesOrders] = useState(false);
     const [name, setName] = useState("");
     const [invalidName, setInvalidName] = useState(false);
     const [surname, setSurname] = useState("");
@@ -84,6 +85,7 @@ function NewUserPane(props: NewUserPaneProps) {
             costPerHour,
             active,
             managesTickets,
+            managesOrders,
             email,
             phone,
             car,
@@ -132,6 +134,17 @@ function NewUserPane(props: NewUserPaneProps) {
                     <Col className="d-flex align-items-center">
                         <SwitchToggle id="manages-tickets-toggle" isOn={managesTickets}
                                       handleToggle={() => setManagesTickets(prevState => !prevState)}/>
+                    </Col>
+                </Row>
+                <Row className="d-flex align-items-center">
+                    <Col sm={3}
+                         className="glossy-background smaller d-flex justify-content-center align-items-center">
+                        {managesOrders ? <CheckCircle className="me-2"/> :
+                            <XCircle className="me-2"/>} Accesso agli ordini
+                    </Col>
+                    <Col className="d-flex align-items-center">
+                        <SwitchToggle id="manages-orders-toggle" isOn={managesOrders}
+                                      handleToggle={() => setManagesOrders(prevState => !prevState)}/>
                     </Col>
                 </Row>
 
