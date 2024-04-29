@@ -1,5 +1,6 @@
 import {Type, User} from "./models/user";
 import ExcelJS from "exceljs";
+import dayjs from "dayjs";
 
 // Round a number to the specified number of `fractionDigits`.
 export function humanize(x: number, fractionDigits: number) {
@@ -11,6 +12,11 @@ export function humanize(x: number, fractionDigits: number) {
 // Uppercase the first letter of a string.
 export function upperCaseFirst(str: string) {
     return str[0].toUpperCase() + str.slice(1).toLowerCase();
+}
+
+// Formats a date YYYY-MM-DD to DD/MM/YYYY.
+export function formatDate(date: string | undefined) {
+    return date ? dayjs(date).format("DD/MM/YYYY") : "";
 }
 
 // Extremely simple email validation function, useful to eliminate major mistakes.

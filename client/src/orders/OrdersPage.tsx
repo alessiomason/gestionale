@@ -9,6 +9,7 @@ import EditOrderPane from "./EditOrderPane";
 import {User} from "../models/user";
 import OrderPane from "./OrderPane";
 import "./OrdersPage.css";
+import {formatDate} from "../functions";
 
 interface OrdersPageProps {
     readonly user: User
@@ -115,14 +116,14 @@ function OrdersPage(props: OrdersPageProps) {
                                                 className={selectedOrder?.id === order.id ? "table-selected-row" : ""}>
                                                 <td>{order.id}</td>
                                                 <td>{order.job.id}</td>
-                                                {!shrunkTable && <td>{order.date}</td>}
+                                                {!shrunkTable && <td>{formatDate(order.date)}</td>}
                                                 <td>{order.supplier}</td>
                                                 {!shrunkTable && <>
                                                     <td>{order.description}</td>
                                                     <td>{order.by.surname} {order.by.name}</td>
-                                                    <td>{order.scheduledDeliveryDate}</td>
+                                                    <td>{formatDate(order.scheduledDeliveryDate)}</td>
                                                     <td>{order.clearedBy?.surname} {order.clearedBy?.name}</td>
-                                                    <td>{order.clearingDate}</td>
+                                                    <td>{formatDate(order.clearingDate)}</td>
                                                 </>}
                                             </tr>
                                         );

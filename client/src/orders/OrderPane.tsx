@@ -10,6 +10,7 @@ import {
     Sticky
 } from "react-bootstrap-icons";
 import GlossyButton from "../buttons/GlossyButton";
+import {formatDate} from "../functions";
 
 interface OrderPaneProps {
     readonly order: Order
@@ -28,7 +29,7 @@ function OrderPane(props: OrderPaneProps) {
                          className="glossy-background smaller d-flex justify-content-center align-items-center">
                         <Clipboard className="me-1"/> Data dell'ordine
                     </Col>
-                    <Col>{props.order.date}</Col>
+                    <Col>{formatDate(props.order.date)}</Col>
                 </Row>
 
                 <Row className="d-flex align-items-center">
@@ -68,7 +69,11 @@ function OrderPane(props: OrderPaneProps) {
                          className="glossy-background smaller d-flex justify-content-center align-items-center">
                         <Person className="me-1"/> Consegna prevista
                     </Col>
-                    <Col>{props.order.scheduledDeliveryDate ?? "Nessuna data prevista"}</Col>
+                    <Col>
+                        {props.order.scheduledDeliveryDate ?
+                            formatDate(props.order.scheduledDeliveryDate) :
+                            "Nessuna data prevista"}
+                    </Col>
                 </Row>
 
                 {props.order.clearedBy && <Row className="d-flex align-items-center">
@@ -84,13 +89,14 @@ function OrderPane(props: OrderPaneProps) {
                          className="glossy-background smaller d-flex justify-content-center align-items-center">
                         <Person className="me-1"/> Data di evasione
                     </Col>
-                    <Col>{props.order.clearingDate}</Col>
+                    <Col>{formatDate(props.order.clearingDate)}</Col>
                 </Row>}
             </Row>
 
             <Row className="d-flex justify-content-center my-3">
                 <Col sm={4} className="d-flex justify-content-center">
-                    <GlossyButton icon={ClipboardCheck} onClick={() => {}}>Evadi l'ordine</GlossyButton>
+                    <GlossyButton icon={ClipboardCheck} onClick={() => {
+                    }}>Evadi l'ordine</GlossyButton>
                 </Col>
             </Row>
 
