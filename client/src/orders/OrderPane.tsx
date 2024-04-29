@@ -118,16 +118,17 @@ function OrderPane(props: OrderPaneProps) {
                 </Row>}
             </Row>
 
-            <Row className="my-3">
+            <Row className="mt-3 mb-4">
                 <Col/>
                 <Col sm={4} className="d-flex justify-content-center">
                     <GlossyButton icon={PencilSquare} onClick={() => setModifying(true)}>
                         Modifica l'ordine
                     </GlossyButton>
                 </Col>
-                <Col sm={4} className="d-flex justify-content-center">
-                    <GlossyButton icon={ClipboardCheck} onClick={clearOrder}>Evadi l'ordine</GlossyButton>
-                </Col>
+                {!props.order.clearedBy && !props.order.clearingDate &&
+                    <Col sm={4} className="d-flex justify-content-center">
+                        <GlossyButton icon={ClipboardCheck} onClick={clearOrder}>Evadi l'ordine</GlossyButton>
+                    </Col>}
                 <Col/>
             </Row>
 
