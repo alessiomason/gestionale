@@ -7,6 +7,10 @@
     animation: appear-animation .25s ease .125s 1 normal forwards;
 }
 
+.cleared > td {
+    color: forestgreen;
+}
+
 @keyframes appear-animation {
     0% {
         opacity: 0;

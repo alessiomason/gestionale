@@ -111,9 +111,16 @@ function OrdersPage(props: OrdersPageProps) {
                                 <tbody>
                                 {orders.sort((a, b) => a.id - b.id)
                                     .map(order => {
+                                        let className = "";
+                                        if (order.id === selectedOrder?.id) {
+                                            className = "table-selected-row";
+                                        }
+                                        if (order.clearedBy && order.clearingDate) {
+                                            className += " cleared";
+                                        }
+
                                         return (
-                                            <tr key={order.id} onClick={() => selectOrder(order)}
-                                                className={selectedOrder?.id === order.id ? "table-selected-row" : ""}>
+                                            <tr key={order.id} onClick={() => selectOrder(order)} className={className}>
                                                 <td>{order.id}</td>
                                                 <td>{order.job.id}</td>
                                                 {!shrunkTable && <td>{formatDate(order.date)}</td>}
