@@ -73,7 +73,7 @@ async function createOrder(order: Order) {
     } else await handleApiError(response);
 }
 
-async function updateOrder(order: Order) {
+async function updateOrder(id:number, year: number, order: Order) {
     const updatedOrder = {
         id: order.id,
         year: order.year,
@@ -87,7 +87,7 @@ async function updateOrder(order: Order) {
         clearingDate: order.clearingDate === "" ? undefined : order.clearingDate
     };
 
-    const response = await fetch(new URL(`orders/${order.year}/${order.id}`, apiUrl), {
+    const response = await fetch(new URL(`orders/${year}/${id}`, apiUrl), {
         method: 'PUT',
         credentials: 'include',
         headers: {

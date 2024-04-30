@@ -62,8 +62,7 @@ export async function getAllOrders() {
 export async function getOrder(id: number, year: number) {
     const order = await knex("orders")
         .join("jobs", "jobs.id", "orders.jobId")
-        .whereRaw("orders.id = ?", [id])
-        .andWhereRaw("orders.year = ?", [year])
+        .whereRaw("orders.id = ? AND year = ?", [id, year])
         .first("orders.*", "jobs.subject", "jobs.client", "jobs.finalClient",
             "jobs.orderName", "jobs.orderAmount", "jobs.startDate", "jobs.deliveryDate",
             "jobs.notes", "jobs.active", "jobs.lost", "jobs.design", "jobs.construction");
@@ -78,7 +77,7 @@ async function checkValidId(id: number, year: number) {
         await getOrder(id, year);     // if new id, throws OrderNotFound
         throw new DuplicateOrder();
     } catch (err: any) {
-        if (err !instanceof OrderNotFound) {
+        if (!(err instanceof OrderNotFound)) {
             throw err;
         }
     }
@@ -109,11 +108,14 @@ export async function createOrder(newOrder: NewOrder) {
     );
 }
 
-export async function updateOrder(id: number, updatedOrder: NewOrder) {
-    await checkValidId(updatedOrder.id, updatedOrder.year);
+export async function updateOrder(id: number, year: number, updatedOrder: NewOrder) {
+    if (id !== updatedOrder.id || year !== updatedOrder.year) {
+        await checkValidId(updatedOrder.id, updatedOrder.year);
+    }
+
     const updatingOrder = {...updatedOrder, byId: undefined};
     await knex("orders")
-        .where({id})
+        .where({id, year})
         .update(updatingOrder);
 }
 

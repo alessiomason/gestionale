@@ -97,11 +97,13 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManag
     )
 
     // update order
-    app.put(`${baseURL}/:year/:id`,
+    app.put(`${baseURL}/:oldYear/:oldId`,
         isLoggedIn,
         canManageOrders,
-        param("year").isInt(),
-        param("id").isInt(),
+        param("oldYear").isInt(),
+        param("oldId").isInt(),
+        body("year").isInt(),
+        body("id").isInt(),
         body("date").optional({values: "null"}).isDate(),
         body("jobId").isString(),
         body("supplier").isString(),
@@ -115,15 +117,15 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManag
                 return
             }
 
-            const orderId = parseInt(req.params.id);
-            const year = parseInt(req.params.year);
+            const oldOrderId = parseInt(req.params.oldId);
+            const oldYear = parseInt(req.params.oldYear);
 
             try {
-                const order = await getOrder(orderId, year);
+                const order = await getOrder(oldOrderId, oldYear);
 
                 const updatedOrder = new NewOrder(
-                    orderId,
-                    year,
+                    parseInt(req.body.id),
+                    parseInt(req.body.year),
                     req.body.date ?? dayjs().format("YYYY-MM-DD"),
                     req.body.jobId,
                     req.body.supplier,
@@ -131,7 +133,7 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManag
                     order.by.id,
                     req.body.scheduledDeliveryDate
                 );
-                await updateOrder(order.id, updatedOrder);
+                await updateOrder(oldOrderId, oldYear, updatedOrder);
                 res.status(200).end();
             } catch (err: any) {
                 if (err instanceof BaseError) {

@@ -59,14 +59,19 @@ function OrdersPage(props: OrdersPageProps) {
         setShowingNewOrderPane(false);
     }
 
-    function updateSelectedOrder(updatedOrder: Order) {
+    function updateSelectedOrder(oldOrderId: number, updatedOrder: Order) {
         setOrders(orders => {
-            const index = orders.findIndex(o => o.id === updatedOrder.id);
+            const index = orders.findIndex(o => o.id === oldOrderId);
 
             if (index === -1) {
                 orders.push(updatedOrder);
             } else {
-                orders[index] = updatedOrder;
+                if (oldOrderId === updatedOrder.id) {
+                    orders[index] = updatedOrder;
+                } else {
+                    orders.splice(index, 1);
+                    orders.push(updatedOrder);
+                }
             }
             return orders;
         });

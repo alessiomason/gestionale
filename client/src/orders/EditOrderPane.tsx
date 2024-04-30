@@ -59,11 +59,13 @@ function EditOrderPane(props: EditOrderPaneProps) {
             supplier,
             description,
             props.order?.by ?? props.user,
-            scheduledDeliveryDate
+            scheduledDeliveryDate,
+            props.order?.clearedBy,
+            props.order?.clearingDate
         );
 
         if (props.order) {      // editing
-            orderApis.updateOrder(order)
+            orderApis.updateOrder(props.order.id, props.order.year, order)
                 .then(() => props.afterSubmit(order))
                 .catch(err => console.error(err));
         } else {
@@ -77,7 +79,9 @@ function EditOrderPane(props: EditOrderPaneProps) {
         <Form>
             <Row className="glossy-background">
                 <Row>
-                    <h3>{props.order ? `Ordine ${props.order.id}` : "Nuovo ordine"}</h3>
+                    <h3>
+                        {props.order ? `Ordine ${props.order.name}${props.order.clearingDate ? " (evaso)" : ""}` : "Nuovo ordine"}
+                    </h3>
                 </Row>
 
                 {errorMessage !== "" && <Row className="glossy-error-background">
