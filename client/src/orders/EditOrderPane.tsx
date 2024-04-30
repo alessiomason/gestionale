@@ -76,13 +76,16 @@ function EditOrderPane(props: EditOrderPaneProps) {
         }
     }
 
+    let title = "Nuovo ordine";
+    if (props.order) {
+        title = `Ordine ${props.order.name}${props.order.clearingDate ? " (evaso)" : ""}`;
+    }
+
     return (
         <Form>
             <Row className="glossy-background">
                 <Row>
-                    <h3>
-                        {props.order ? `Ordine ${props.order.name}${props.order.clearingDate ? " (evaso)" : ""}` : "Nuovo ordine"}
-                    </h3>
+                    <h3>{title}</h3>
                 </Row>
 
                 {errorMessage !== "" && <Row>
