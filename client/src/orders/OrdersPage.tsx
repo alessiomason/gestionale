@@ -9,7 +9,7 @@ import EditOrderPane from "./EditOrderPane";
 import {User} from "../models/user";
 import OrderPane from "./OrderPane";
 import "./OrdersPage.css";
-import {formatDate} from "../functions";
+import {compareOrders, formatDate} from "../functions";
 
 interface OrdersPageProps {
     readonly user: User
@@ -27,7 +27,7 @@ function OrdersPage(props: OrdersPageProps) {
         if (dirty) {
             orderApis.getAllOrders()
                 .then(orders => {
-                    setOrders(orders);
+                    setOrders(orders!);
                     setDirty(false);
                     setLoading(false);
                 })
@@ -109,7 +109,7 @@ function OrdersPage(props: OrdersPageProps) {
                                 </thead>
 
                                 <tbody>
-                                {orders.sort((a, b) => a.id - b.id)
+                                {orders.sort(compareOrders)
                                     .map(order => {
                                         let className = "";
                                         if (order.id === selectedOrder?.id) {
@@ -120,8 +120,8 @@ function OrdersPage(props: OrdersPageProps) {
                                         }
 
                                         return (
-                                            <tr key={order.id} onClick={() => selectOrder(order)} className={className}>
-                                                <td>{order.id}</td>
+                                            <tr key={order.name} onClick={() => selectOrder(order)} className={className}>
+                                                <td>{order.name}</td>
                                                 <td>{order.job.id}</td>
                                                 {!shrunkTable && <td>{formatDate(order.date)}</td>}
                                                 <td>{order.supplier}</td>

@@ -2,6 +2,22 @@ import {apiUrl} from "./apisValues";
 import {handleApiError} from "./handleApiError";
 import {Order} from "../models/order";
 
+// The passed-in order was built from a json, this function returns a properly built Order.
+function rebuildOrder(order: Order) {
+    return new Order(
+        order.id,
+        order.year,
+        order.date,
+        order.job,
+        order.supplier,
+        order.description,
+        order.by,
+        order.scheduledDeliveryDate,
+        order.clearedBy,
+        order.clearingDate
+    );
+}
+
 async function getAllOrders() {
     const response = await fetch(new URL("orders", apiUrl), {
         method: 'GET',
@@ -11,12 +27,13 @@ async function getAllOrders() {
         }
     });
     if (response.ok) {
-        return await response.json();
+        const orders = await response.json() as Order[];
+        return orders.map(order => rebuildOrder(order));
     } else await handleApiError(response);
 }
 
-async function getOrder(orderId: string) {
-    const response = await fetch(new URL(`orders/${orderId}`, apiUrl), {
+async function getOrder(orderId: number, year: number) {
+    const response = await fetch(new URL(`orders/${year}/${orderId}`, apiUrl), {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -24,12 +41,15 @@ async function getOrder(orderId: string) {
         }
     });
     if (response.ok) {
-        return await response.json();
+        const order = await response.json() as Order;
+        return rebuildOrder(order);
     } else await handleApiError(response);
 }
 
 async function createOrder(order: Order) {
     const newOrder = {
+        id: order.id,
+        year: order.year,
         date: order.date === "" ? undefined : order.date,
         jobId: order.job.id,
         supplier: order.supplier,
@@ -48,12 +68,15 @@ async function createOrder(order: Order) {
         body: JSON.stringify(newOrder)
     });
     if (response.ok) {
-        return await response.json();
+        const order = await response.json() as Order;
+        return rebuildOrder(order);
     } else await handleApiError(response);
 }
 
 async function updateOrder(order: Order) {
     const updatedOrder = {
+        id: order.id,
+        year: order.year,
         date: order.date === "" ? undefined : order.date,
         jobId: order.job.id,
         supplier: order.supplier,
@@ -64,7 +87,7 @@ async function updateOrder(order: Order) {
         clearingDate: order.clearingDate === "" ? undefined : order.clearingDate
     };
 
-    const response = await fetch(new URL(`orders/${order.id}`, apiUrl), {
+    const response = await fetch(new URL(`orders/${order.year}/${order.id}`, apiUrl), {
         method: 'PUT',
         credentials: 'include',
         headers: {
@@ -79,7 +102,7 @@ async function updateOrder(order: Order) {
 }
 
 async function clearOrder(order: Order) {
-    const response = await fetch(new URL(`orders/${order.id}`, apiUrl), {
+    const response = await fetch(new URL(`orders/${order.year}/${order.id}`, apiUrl), {
         method: 'PATCH',
         credentials: 'include',
         headers: {
@@ -88,7 +111,8 @@ async function clearOrder(order: Order) {
         }
     });
     if (response.ok) {
-        return await response.json();
+        const order = await response.json() as Order;
+        return rebuildOrder(order);
     } else await handleApiError(response);
 }
 

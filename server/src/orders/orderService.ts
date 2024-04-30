@@ -1,7 +1,7 @@
 import {knex} from "../database/db";
 import {NewOrder, Order} from "./order";
 import {Job} from "../jobs/job";
-import {OrderNotFound} from "./orderErrors";
+import {DuplicateOrder, OrderNotFound} from "./orderErrors";
 import {getJob} from "../jobs/jobService";
 import {JobNotFound} from "../jobs/jobErrors";
 import {getUser} from "../users/userService";
@@ -37,6 +37,7 @@ async function parseOrder(order: any) {
 
     return new Order(
         order.id,
+        parseInt(order.year),
         order.date,
         job,
         order.supplier,
@@ -58,10 +59,11 @@ export async function getAllOrders() {
     return await Promise.all(orders.map(async order => await parseOrder(order)));
 }
 
-export async function getOrder(id: number) {
+export async function getOrder(id: number, year: number) {
     const order = await knex("orders")
         .join("jobs", "jobs.id", "orders.jobId")
         .whereRaw("orders.id = ?", [id])
+        .andWhereRaw("orders.year = ?", [year])
         .first("orders.*", "jobs.subject", "jobs.client", "jobs.finalClient",
             "jobs.orderName", "jobs.orderAmount", "jobs.startDate", "jobs.deliveryDate",
             "jobs.notes", "jobs.active", "jobs.lost", "jobs.design", "jobs.construction");
@@ -71,8 +73,19 @@ export async function getOrder(id: number) {
     return await parseOrder(order);
 }
 
+async function checkValidId(id: number, year: number) {
+    try {
+        await getOrder(id, year);     // if new id, throws OrderNotFound
+        throw new DuplicateOrder();
+    } catch (err: any) {
+        if (err !instanceof OrderNotFound) {
+            throw err;
+        }
+    }
+}
+
 export async function createOrder(newOrder: NewOrder) {
-    const orderIds = await knex("orders").insert(newOrder);
+    await checkValidId(newOrder.id, newOrder.year);
 
     const job = await getJob(newOrder.jobId);
     if (!job) throw new JobNotFound();
@@ -80,8 +93,11 @@ export async function createOrder(newOrder: NewOrder) {
     if (!byUser) throw new UserNotFound();
     const clearedByUser = newOrder.clearedById ? await getUser(newOrder.clearedById) : undefined;
 
+    await knex("orders").insert(newOrder);
+
     return new Order(
-        orderIds[0],
+        newOrder.id,
+        newOrder.year,
         newOrder.date,
         job,
         newOrder.supplier,
@@ -94,21 +110,22 @@ export async function createOrder(newOrder: NewOrder) {
 }
 
 export async function updateOrder(id: number, updatedOrder: NewOrder) {
+    await checkValidId(updatedOrder.id, updatedOrder.year);
     const updatingOrder = {...updatedOrder, byId: undefined};
     await knex("orders")
         .where({id})
         .update(updatingOrder);
 }
 
-export async function clearOrder(id: number, clearedById: number) {
+export async function clearOrder(id: number, year: number, clearedById: number) {
     const clearingDate = dayjs().format("YYYY-MM-DD");
     await knex("orders")
-        .where({id})
+        .where({id, year})
         .update({clearedById, clearingDate});
 }
 
-export async function deleteOrder(id: number) {
+export async function deleteOrder(id: number, year: number) {
     await knex("orders")
-        .where({id})
+        .where({id, year})
         .delete();
 }

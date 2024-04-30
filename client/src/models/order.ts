@@ -3,6 +3,8 @@ import {User} from "./user";
 
 export class Order {
     id: number
+    year: number
+    name: string
     date: string
     job: Job
     supplier: string
@@ -14,6 +16,7 @@ export class Order {
 
     constructor(
         id: number,
+        year: number,
         date: string,
         job: Job,
         supplier: string,
@@ -24,6 +27,8 @@ export class Order {
         clearingDate: string | undefined = undefined
     ) {
         this.id = id;
+        this.year = year;
+        this.name = `${id}/${year.toString().substring(2)}`;
         this.date = date;
         this.job = job;
         this.supplier = supplier;

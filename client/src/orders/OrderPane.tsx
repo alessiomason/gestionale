@@ -32,7 +32,7 @@ function OrderPane(props: OrderPaneProps) {
 
     function clearOrder() {
         orderApis.clearOrder(props.order)
-            .then(order => props.afterSubmitEdit(order))
+            .then(order => props.afterSubmitEdit(order!))
             .catch(err => console.error(err));
     }
 
@@ -46,7 +46,7 @@ function OrderPane(props: OrderPaneProps) {
         <>
             <Row className="glossy-background">
                 <Row>
-                    <h3>Ordine {props.order.id}{props.order.clearingDate && " (evaso)"}</h3>
+                    <h3>Ordine {props.order.name}{props.order.clearingDate && " (evaso)"}</h3>
                 </Row>
 
                 <Row className="d-flex align-items-center">

@@ -1,12 +1,13 @@
 import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import {Order} from "../models/order";
 import React, {useState} from "react";
-import {Buildings, Check2, Clipboard, Floppy, JournalBookmarkFill, Sticky} from "react-bootstrap-icons";
+import {Buildings, Calendar, Check2, Clipboard, Floppy, JournalBookmarkFill, Sticky} from "react-bootstrap-icons";
 import WorkedHoursNewJobModal from "../workedHours/WorkedHoursNewJobModal";
 import {Job} from "../models/job";
 import GlossyButton from "../buttons/GlossyButton";
 import orderApis from "../api/orderApis";
 import {User} from "../models/user";
+import dayjs from "dayjs";
 
 interface EditOrderPaneProps {
     readonly user: User
@@ -15,6 +16,8 @@ interface EditOrderPaneProps {
 }
 
 function EditOrderPane(props: EditOrderPaneProps) {
+    const [id, setId] = useState(props.order?.id ?? -1);
+    const [year, setYear] = useState(props.order?.year ?? parseInt(dayjs().format("YYYY")));
     const [orderDate, setOrderDate] = useState(props.order?.date ?? "");
     const [showNewJobModal, setShowNewJobModal] = useState(false);
     const [job, setJob] = useState<Job | undefined>(props.order?.job);
@@ -49,7 +52,8 @@ function EditOrderPane(props: EditOrderPaneProps) {
         }
 
         const order = new Order(
-            props.order?.id ?? -1,
+            id,
+            year,
             orderDate,
             job,
             supplier,
@@ -64,7 +68,7 @@ function EditOrderPane(props: EditOrderPaneProps) {
                 .catch(err => console.error(err));
         } else {
             orderApis.createOrder(order)
-                .then(order => props.afterSubmit(order))
+                .then(order => props.afterSubmit(order!))
                 .catch(err => console.error(err));
         }
     }
@@ -81,13 +85,25 @@ function EditOrderPane(props: EditOrderPaneProps) {
                 </Row>}
 
 
-                {props.order && <Row className="d-flex align-items-center">
-                    <Col sm={3}
-                         className="glossy-background smaller d-flex justify-content-center align-items-center">
-                        <Clipboard className="me-1"/> Ordine n°
-                    </Col>
-                    <Col>{props.order?.id}</Col>
-                </Row>}
+                <Row className="mt-3">
+                    <InputGroup>
+                        <InputGroup.Text><Clipboard/></InputGroup.Text>
+                        <FloatingLabel controlId="floatingInput" label="Identificativo ordine">
+                            <Form.Control type="number" placeholder="Identificativo ordine" value={id}
+                                          onChange={ev => setId(parseInt(ev.target.value))}/>
+                        </FloatingLabel>
+                    </InputGroup>
+                </Row>
+
+                <Row className="mt-3">
+                    <InputGroup>
+                        <InputGroup.Text><Calendar/></InputGroup.Text>
+                        <FloatingLabel controlId="floatingInput" label="Anno">
+                            <Form.Control type="number" placeholder="Anno" value={year}
+                                          onChange={ev => setYear(parseInt(ev.target.value))}/>
+                        </FloatingLabel>
+                    </InputGroup>
+                </Row>
 
                 <Row className="mt-3">
                     <InputGroup>
