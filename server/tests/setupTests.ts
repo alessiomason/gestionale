@@ -2,7 +2,6 @@ import {createTracker, Tracker} from "knex-mock-client";
 import {knex as db} from "../src/database/db";
 import {agent as Request} from "supertest";
 import app from "../src/app";
-import {faker} from "@faker-js/faker";
 
 export async function setupTests() {
     const tracker = createTracker(db);

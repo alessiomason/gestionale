@@ -114,8 +114,8 @@ function JobPane(props: JobPaneProps) {
                     <h3>{props.job ? `Commessa ${props.job.id}` : "Nuova commessa"}</h3>
                 </Row>
 
-                {errorMessage !== "" && <Row className="glossy-error-background">
-                    <Col>{errorMessage}</Col>
+                {errorMessage !== "" && <Row>
+                    <Col className="glossy-error-background">{errorMessage}</Col>
                 </Row>}
 
                 <Row>

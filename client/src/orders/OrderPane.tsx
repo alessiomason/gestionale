@@ -1,6 +1,6 @@
 import {Order} from "../models/order";
 import {Col, Row} from "react-bootstrap";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     Buildings,
     Clipboard,
@@ -19,20 +19,25 @@ import orderApis from "../api/orderApis";
 interface OrderPaneProps {
     readonly user: User
     readonly order: Order
-    readonly afterSubmitEdit: (order: Order) => void
+    readonly afterSubmitEdit: (oldOrderId: number, oldYear: number, updatedOrder: Order) => void
 }
 
 function OrderPane(props: OrderPaneProps) {
     const [modifying, setModifying] = useState(false);
 
+    // exit editing mode when selecting another order
+    useEffect(() => {
+        setModifying(false);
+    }, [props.order.id]);
+
     function afterEdit(updatedOrder: Order) {
-        props.afterSubmitEdit(updatedOrder);
+        props.afterSubmitEdit(props.order.id, props.order.year, updatedOrder);
         setModifying(false);
     }
 
     function clearOrder() {
         orderApis.clearOrder(props.order)
-            .then(order => props.afterSubmitEdit(order))
+            .then(order => props.afterSubmitEdit(order!.id, order!.year, order!))
             .catch(err => console.error(err));
     }
 
@@ -46,7 +51,7 @@ function OrderPane(props: OrderPaneProps) {
         <>
             <Row className="glossy-background">
                 <Row>
-                    <h3>Ordine {props.order.id}{props.order.clearingDate && " (evaso)"}</h3>
+                    <h3>Ordine {props.order.name}{props.order.clearingDate && " (evaso)"}</h3>
                 </Row>
 
                 <Row className="d-flex align-items-center">

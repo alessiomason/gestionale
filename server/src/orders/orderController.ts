@@ -25,10 +25,11 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManag
     })
 
     // get order by id
-    app.get(`${baseURL}/:orderId`,
+    app.get(`${baseURL}/:year/:id`,
         isLoggedIn,
         canManageOrders,
-        param("orderId").isInt(),
+        param("year").isInt(),
+        param("id").isInt(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -37,7 +38,7 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManag
             }
 
             try {
-                const order = await getOrder(parseInt(req.params.orderId));
+                const order = await getOrder(parseInt(req.params.id), parseInt(req.params.year));
                 res.status(200).json(order);
             } catch (err: any) {
                 if (err instanceof BaseError) {
@@ -53,6 +54,8 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManag
     app.post(baseURL,
         isLoggedIn,
         canManageOrders,
+        body("id").isInt(),
+        body("year").isInt(),
         body("date").optional({values: "null"}).isDate(),
         body("jobId").isString(),
         body("supplier").isString(),
@@ -68,6 +71,8 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManag
 
             const user = req.user as User;
             const newOrder = new NewOrder(
+                parseInt(req.params.id),
+                parseInt(req.params.year),
                 req.body.date ?? dayjs().format("YYYY-MM-DD"),
                 req.body.jobId,
                 req.body.supplier,
@@ -92,10 +97,13 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManag
     )
 
     // update order
-    app.put(`${baseURL}/:id`,
+    app.put(`${baseURL}/:oldYear/:oldId`,
         isLoggedIn,
         canManageOrders,
-        param("id").isInt(),
+        param("oldYear").isInt(),
+        param("oldId").isInt(),
+        body("year").isInt(),
+        body("id").isInt(),
         body("date").optional({values: "null"}).isDate(),
         body("jobId").isString(),
         body("supplier").isString(),
@@ -109,10 +117,15 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManag
                 return
             }
 
+            const oldOrderId = parseInt(req.params.oldId);
+            const oldYear = parseInt(req.params.oldYear);
+
             try {
-                const order = await getOrder(parseInt(req.params.id));
+                const order = await getOrder(oldOrderId, oldYear);
 
                 const updatedOrder = new NewOrder(
+                    parseInt(req.body.id),
+                    parseInt(req.body.year),
                     req.body.date ?? dayjs().format("YYYY-MM-DD"),
                     req.body.jobId,
                     req.body.supplier,
@@ -120,7 +133,7 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManag
                     order.by.id,
                     req.body.scheduledDeliveryDate
                 );
-                await updateOrder(order.id, updatedOrder);
+                await updateOrder(oldOrderId, oldYear, updatedOrder);
                 res.status(200).end();
             } catch (err: any) {
                 if (err instanceof BaseError) {
@@ -133,9 +146,10 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManag
     )
 
     // clear order
-    app.patch(`${baseURL}/:id`,
+    app.patch(`${baseURL}/:year/:id`,
         isLoggedIn,
         canManageOrders,
+        param("year").isInt(),
         param("id").isInt(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
@@ -146,11 +160,12 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManag
             }
 
             const orderId = parseInt(req.params.id);
+            const year = parseInt(req.params.year);
             const user = req.user as User;
 
             try {
-                await clearOrder(orderId, user.id);
-                const order = await getOrder(orderId);
+                await clearOrder(orderId, year, user.id);
+                const order = await getOrder(orderId, year);
                 res.status(200).json(order);
             } catch (err: any) {
                 if (err instanceof BaseError) {
@@ -163,9 +178,10 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManag
     )
 
     // delete order
-    app.delete(`${baseURL}/:id`,
+    app.delete(`${baseURL}/:year/:id`,
         isLoggedIn,
         canManageOrders,
+        param("year").isInt(),
         param("id").isString(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
@@ -175,8 +191,8 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManag
             }
 
             try {
-                const order = await getOrder(parseInt(req.params.id));
-                await deleteOrder(order.id);
+                const order = await getOrder(parseInt(req.params.id), parseInt(req.params.year));
+                await deleteOrder(order.id, order.year);
                 res.status(200).end();
             } catch (err: any) {
                 if (err instanceof BaseError) {

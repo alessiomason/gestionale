@@ -3,6 +3,7 @@ import {User} from "../users/user";
 
 export class Order {
     id: number
+    year: number
     date: string
     job: Job
     supplier: string
@@ -14,6 +15,7 @@ export class Order {
 
     constructor(
         id: number,
+        year: number,
         date: string,
         job: Job,
         supplier: string,
@@ -24,6 +26,7 @@ export class Order {
         clearingDate: string | undefined = undefined
     ) {
         this.id = id;
+        this.year = year;
         this.date = date;
         this.job = job;
         this.supplier = supplier;
@@ -36,6 +39,8 @@ export class Order {
 }
 
 export class NewOrder {
+    id: number
+    year: number
     date: string
     jobId: string
     supplier: string
@@ -46,6 +51,8 @@ export class NewOrder {
     clearingDate: string | undefined
 
     constructor(
+        id: number,
+        year: number,
         date: string,
         jobId: string,
         supplier: string,
@@ -55,6 +62,8 @@ export class NewOrder {
         clearedById: number | undefined = undefined,
         clearingDate: string | undefined = undefined
     ) {
+        this.id = id;
+        this.year = year;
         this.date = date;
         this.jobId = jobId;
         this.supplier = supplier;
