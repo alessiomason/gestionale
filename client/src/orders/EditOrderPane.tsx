@@ -11,12 +11,13 @@ import dayjs from "dayjs";
 
 interface EditOrderPaneProps {
     readonly user: User
-    readonly order: Order | undefined
+    readonly order?: Order
+    readonly nextOrderId?: number
     readonly afterSubmit: (order: Order) => void
 }
 
 function EditOrderPane(props: EditOrderPaneProps) {
-    const [id, setId] = useState(props.order?.id ?? -1);
+    const [id, setId] = useState(props.order?.id ?? props.nextOrderId!);
     const [year, setYear] = useState(props.order?.year ?? parseInt(dayjs().format("YYYY")));
     const [orderDate, setOrderDate] = useState(props.order?.date ?? "");
     const [showNewJobModal, setShowNewJobModal] = useState(false);

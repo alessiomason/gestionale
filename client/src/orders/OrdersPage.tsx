@@ -10,6 +10,7 @@ import {User} from "../models/user";
 import OrderPane from "./OrderPane";
 import "./OrdersPage.css";
 import {compareOrders, formatDate} from "../functions";
+import dayjs from "dayjs";
 
 interface OrdersPageProps {
     readonly user: User
@@ -17,6 +18,7 @@ interface OrdersPageProps {
 
 function OrdersPage(props: OrdersPageProps) {
     const [orders, setOrders] = useState<Order[]>([]);
+    const [nextOrderId, setNextOrderId] = useState(1);
     const [dirty, setDirty] = useState(true);
     const [loading, setLoading] = useState(true);
     const [showingNewOrderPane, setShowingNewOrderPane] = useState(false);
@@ -30,6 +32,7 @@ function OrdersPage(props: OrdersPageProps) {
                     setOrders(orders!);
                     setDirty(false);
                     setLoading(false);
+                    updateNextOrderId(orders!);
                 })
                 .catch(err => console.error(err))
         }
@@ -50,8 +53,18 @@ function OrdersPage(props: OrdersPageProps) {
         setShowingNewOrderPane(false);
     }
 
+    function updateNextOrderId(orders: Order[]) {
+        const currentYear = parseInt(dayjs().format("YYYY"));
+        const maxId = orders
+            .filter(order => order.year === currentYear)
+            .map(order => order.id)
+            .reduce((a, b) => a < b ? b : a, 0);    // find max value
+        setNextOrderId(maxId + 1);
+    }
+
     function selectNewlyCreatedOrder(newOrder: Order) {
         setOrders(orders => {
+            updateNextOrderId(orders);
             orders.push(newOrder);
             return orders;
         })
@@ -73,6 +86,8 @@ function OrdersPage(props: OrdersPageProps) {
                     orders.push(updatedOrder);
                 }
             }
+
+            updateNextOrderId(orders);
             return orders;
         });
         setSelectedOrder(updatedOrder);
@@ -125,7 +140,8 @@ function OrdersPage(props: OrdersPageProps) {
                                         }
 
                                         return (
-                                            <tr key={order.name} onClick={() => selectOrder(order)} className={className}>
+                                            <tr key={order.name} onClick={() => selectOrder(order)}
+                                                className={className}>
                                                 <td>{order.name}</td>
                                                 <td>{order.job.id}</td>
                                                 {!shrunkTable && <td>{formatDate(order.date)}</td>}
@@ -147,7 +163,7 @@ function OrdersPage(props: OrdersPageProps) {
 
                 {showingNewOrderPane &&
                     <Col className="orders-page-second-column">
-                        <EditOrderPane order={undefined} afterSubmit={selectNewlyCreatedOrder} user={props.user}/>
+                        <EditOrderPane nextOrderId={nextOrderId} afterSubmit={selectNewlyCreatedOrder} user={props.user}/>
                     </Col>}
                 {!showingNewOrderPane && selectedOrder &&
                     <Col>
