@@ -9,7 +9,8 @@ import EditOrderPane from "./EditOrderPane";
 import {User} from "../models/user";
 import OrderPane from "./OrderPane";
 import "./OrdersPage.css";
-import {formatDate} from "../functions";
+import {compareOrders, formatDate} from "../functions";
+import dayjs from "dayjs";
 
 interface OrdersPageProps {
     readonly user: User
@@ -17,6 +18,7 @@ interface OrdersPageProps {
 
 function OrdersPage(props: OrdersPageProps) {
     const [orders, setOrders] = useState<Order[]>([]);
+    const [nextOrderId, setNextOrderId] = useState(1);
     const [dirty, setDirty] = useState(true);
     const [loading, setLoading] = useState(true);
     const [showingNewOrderPane, setShowingNewOrderPane] = useState(false);
@@ -27,9 +29,10 @@ function OrdersPage(props: OrdersPageProps) {
         if (dirty) {
             orderApis.getAllOrders()
                 .then(orders => {
-                    setOrders(orders);
+                    setOrders(orders!);
                     setDirty(false);
                     setLoading(false);
+                    updateNextOrderId(orders!);
                 })
                 .catch(err => console.error(err))
         }
@@ -50,8 +53,18 @@ function OrdersPage(props: OrdersPageProps) {
         setShowingNewOrderPane(false);
     }
 
+    function updateNextOrderId(orders: Order[]) {
+        const currentYear = parseInt(dayjs().format("YYYY"));
+        const maxId = orders
+            .filter(order => order.year === currentYear)
+            .map(order => order.id)
+            .reduce((a, b) => a < b ? b : a, 0);    // find max value
+        setNextOrderId(maxId + 1);
+    }
+
     function selectNewlyCreatedOrder(newOrder: Order) {
         setOrders(orders => {
+            updateNextOrderId(orders);
             orders.push(newOrder);
             return orders;
         })
@@ -59,15 +72,20 @@ function OrdersPage(props: OrdersPageProps) {
         setShowingNewOrderPane(false);
     }
 
-    function updateSelectedOrder(updatedOrder: Order) {
+    function updateSelectedOrder(oldOrderId: number, oldYear: number, updatedOrder: Order) {
         setOrders(orders => {
-            const index = orders.findIndex(o => o.id === updatedOrder.id);
+            const index = orders.findIndex(o => o.id === oldOrderId && o.year === oldYear);
 
-            if (index === -1) {
+            if (index === -1) {     // not found , won't happen
                 orders.push(updatedOrder);
-            } else {
+            } else if (oldOrderId === updatedOrder.id && oldYear === updatedOrder.year) {   // did not update id nor year
                 orders[index] = updatedOrder;
+            } else {        // updated id or year
+                orders.splice(index, 1);
+                orders.push(updatedOrder);
             }
+
+            updateNextOrderId(orders);
             return orders;
         });
         setSelectedOrder(updatedOrder);
@@ -109,7 +127,7 @@ function OrdersPage(props: OrdersPageProps) {
                                 </thead>
 
                                 <tbody>
-                                {orders.sort((a, b) => a.id - b.id)
+                                {orders.sort(compareOrders)
                                     .map(order => {
                                         let className = "";
                                         if (order.id === selectedOrder?.id) {
@@ -120,8 +138,9 @@ function OrdersPage(props: OrdersPageProps) {
                                         }
 
                                         return (
-                                            <tr key={order.id} onClick={() => selectOrder(order)} className={className}>
-                                                <td>{order.id}</td>
+                                            <tr key={order.name} onClick={() => selectOrder(order)}
+                                                className={className}>
+                                                <td>{order.name}</td>
                                                 <td>{order.job.id}</td>
                                                 {!shrunkTable && <td>{formatDate(order.date)}</td>}
                                                 <td>{order.supplier}</td>
@@ -142,7 +161,8 @@ function OrdersPage(props: OrdersPageProps) {
 
                 {showingNewOrderPane &&
                     <Col className="orders-page-second-column">
-                        <EditOrderPane order={undefined} afterSubmit={selectNewlyCreatedOrder} user={props.user}/>
+                        <EditOrderPane nextOrderId={nextOrderId} afterSubmit={selectNewlyCreatedOrder}
+                                       user={props.user}/>
                     </Col>}
                 {!showingNewOrderPane && selectedOrder &&
                     <Col>

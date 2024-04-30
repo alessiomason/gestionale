@@ -1,20 +1,24 @@
 import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import {Order} from "../models/order";
 import React, {useState} from "react";
-import {Buildings, Check2, Clipboard, Floppy, JournalBookmarkFill, Sticky} from "react-bootstrap-icons";
+import {Buildings, Calendar, Clipboard, Floppy, JournalBookmarkFill, Sticky} from "react-bootstrap-icons";
 import WorkedHoursNewJobModal from "../workedHours/WorkedHoursNewJobModal";
 import {Job} from "../models/job";
 import GlossyButton from "../buttons/GlossyButton";
 import orderApis from "../api/orderApis";
 import {User} from "../models/user";
+import dayjs from "dayjs";
 
 interface EditOrderPaneProps {
     readonly user: User
-    readonly order: Order | undefined
+    readonly order?: Order
+    readonly nextOrderId?: number
     readonly afterSubmit: (order: Order) => void
 }
 
 function EditOrderPane(props: EditOrderPaneProps) {
+    const [id, setId] = useState(props.order?.id ?? props.nextOrderId!);
+    const [year, setYear] = useState(props.order?.year ?? parseInt(dayjs().format("YYYY")));
     const [orderDate, setOrderDate] = useState(props.order?.date ?? "");
     const [showNewJobModal, setShowNewJobModal] = useState(false);
     const [job, setJob] = useState<Job | undefined>(props.order?.job);
@@ -22,13 +26,7 @@ function EditOrderPane(props: EditOrderPaneProps) {
     const [description, setDescription] = useState(props.order?.description ?? "");
     const [scheduledDeliveryDate, setScheduledDeliveryDate] = useState(props.order?.scheduledDeliveryDate ?? "");
 
-    const [updated, setUpdated] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-
-    let buttonLabel = "Salva";
-    if (props.order) {
-        buttonLabel = updated ? "Modifiche salvate" : "Salva modifiche";
-    }
 
     function openModal(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
@@ -49,45 +47,71 @@ function EditOrderPane(props: EditOrderPaneProps) {
         }
 
         const order = new Order(
-            props.order?.id ?? -1,
+            id,
+            year,
             orderDate,
             job,
             supplier,
             description,
             props.order?.by ?? props.user,
-            scheduledDeliveryDate
+            scheduledDeliveryDate,
+            props.order?.clearedBy,
+            props.order?.clearingDate
         );
 
         if (props.order) {      // editing
-            orderApis.updateOrder(order)
+            orderApis.updateOrder(props.order.id, props.order.year, order)
                 .then(() => props.afterSubmit(order))
-                .catch(err => console.error(err));
+                .catch(err => {
+                    console.error(err);
+                    setErrorMessage(err);
+                });
         } else {
             orderApis.createOrder(order)
-                .then(order => props.afterSubmit(order))
-                .catch(err => console.error(err));
+                .then(order => props.afterSubmit(order!))
+                .catch(err => {
+                    console.error(err);
+                    setErrorMessage(err);
+                });
         }
+    }
+
+    let title = "Nuovo ordine";
+    if (props.order) {
+        title = `Ordine ${props.order.name}${props.order.clearingDate ? " (evaso)" : ""}`;
     }
 
     return (
         <Form>
             <Row className="glossy-background">
                 <Row>
-                    <h3>{props.order ? `Ordine ${props.order.id}` : "Nuovo ordine"}</h3>
+                    <h3>{title}</h3>
                 </Row>
 
-                {errorMessage !== "" && <Row className="glossy-error-background">
-                    <Col>{errorMessage}</Col>
+                {errorMessage !== "" && <Row>
+                    <Col className="glossy-error-background">{errorMessage}</Col>
                 </Row>}
 
 
-                {props.order && <Row className="d-flex align-items-center">
-                    <Col sm={3}
-                         className="glossy-background smaller d-flex justify-content-center align-items-center">
-                        <Clipboard className="me-1"/> Ordine n°
-                    </Col>
-                    <Col>{props.order?.id}</Col>
-                </Row>}
+                <Row className="mt-3">
+                    <InputGroup>
+                        <InputGroup.Text><Clipboard/></InputGroup.Text>
+                        <FloatingLabel controlId="floatingInput" label="Identificativo ordine">
+                            <Form.Control type="number" placeholder="Identificativo ordine" value={id}
+                                          onChange={ev => setId(parseInt(ev.target.value))}/>
+                        </FloatingLabel>
+                    </InputGroup>
+                </Row>
+
+                <Row className="mt-3">
+                    <InputGroup>
+                        <InputGroup.Text><Calendar/></InputGroup.Text>
+                        <FloatingLabel controlId="floatingInput" label="Anno">
+                            <Form.Control type="number" placeholder="Anno" value={year}
+                                          onChange={ev => setYear(parseInt(ev.target.value))}/>
+                        </FloatingLabel>
+                    </InputGroup>
+                </Row>
 
                 <Row className="mt-3">
                     <InputGroup>
@@ -142,8 +166,8 @@ function EditOrderPane(props: EditOrderPaneProps) {
 
             <Row className="d-flex justify-content-center my-4">
                 <Col sm={4} className="d-flex justify-content-center">
-                    <GlossyButton type="submit" icon={updated ? Check2 : Floppy}
-                                  onClick={handleSubmit}>{buttonLabel}</GlossyButton>
+                    <GlossyButton type="submit" icon={Floppy}
+                                  onClick={handleSubmit}>{props.order ? "Salva modifiche" : "Salva"}</GlossyButton>
                 </Col>
             </Row>
         </Form>
