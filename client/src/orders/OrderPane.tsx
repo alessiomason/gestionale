@@ -19,7 +19,7 @@ import orderApis from "../api/orderApis";
 interface OrderPaneProps {
     readonly user: User
     readonly order: Order
-    readonly afterSubmitEdit: (oldOrderId: number, updatedOrder: Order) => void
+    readonly afterSubmitEdit: (oldOrderId: number, oldYear: number, updatedOrder: Order) => void
 }
 
 function OrderPane(props: OrderPaneProps) {
@@ -31,13 +31,13 @@ function OrderPane(props: OrderPaneProps) {
     }, [props.order.id]);
 
     function afterEdit(updatedOrder: Order) {
-        props.afterSubmitEdit(props.order.id, updatedOrder);
+        props.afterSubmitEdit(props.order.id, props.order.year, updatedOrder);
         setModifying(false);
     }
 
     function clearOrder() {
         orderApis.clearOrder(props.order)
-            .then(order => props.afterSubmitEdit(order!.id, order!))
+            .then(order => props.afterSubmitEdit(order!.id, order!.year, order!))
             .catch(err => console.error(err));
     }
 

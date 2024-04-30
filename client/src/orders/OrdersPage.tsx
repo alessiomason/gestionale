@@ -72,19 +72,17 @@ function OrdersPage(props: OrdersPageProps) {
         setShowingNewOrderPane(false);
     }
 
-    function updateSelectedOrder(oldOrderId: number, updatedOrder: Order) {
+    function updateSelectedOrder(oldOrderId: number, oldYear: number, updatedOrder: Order) {
         setOrders(orders => {
-            const index = orders.findIndex(o => o.id === oldOrderId);
+            const index = orders.findIndex(o => o.id === oldOrderId && o.year === oldYear);
 
-            if (index === -1) {
+            if (index === -1) {     // not found , won't happen
                 orders.push(updatedOrder);
-            } else {
-                if (oldOrderId === updatedOrder.id) {
-                    orders[index] = updatedOrder;
-                } else {
-                    orders.splice(index, 1);
-                    orders.push(updatedOrder);
-                }
+            } else if (oldOrderId === updatedOrder.id && oldYear === updatedOrder.year) {   // did not update id nor year
+                orders[index] = updatedOrder;
+            } else {        // updated id or year
+                orders.splice(index, 1);
+                orders.push(updatedOrder);
             }
 
             updateNextOrderId(orders);
@@ -163,7 +161,8 @@ function OrdersPage(props: OrdersPageProps) {
 
                 {showingNewOrderPane &&
                     <Col className="orders-page-second-column">
-                        <EditOrderPane nextOrderId={nextOrderId} afterSubmit={selectNewlyCreatedOrder} user={props.user}/>
+                        <EditOrderPane nextOrderId={nextOrderId} afterSubmit={selectNewlyCreatedOrder}
+                                       user={props.user}/>
                     </Col>}
                 {!showingNewOrderPane && selectedOrder &&
                     <Col>
