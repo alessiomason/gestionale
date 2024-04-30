@@ -1,6 +1,6 @@
 import {Order} from "../models/order";
 import {Col, Row} from "react-bootstrap";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     Buildings,
     Clipboard,
@@ -24,6 +24,11 @@ interface OrderPaneProps {
 
 function OrderPane(props: OrderPaneProps) {
     const [modifying, setModifying] = useState(false);
+
+    // exit editing mode when selecting another order
+    useEffect(() => {
+        setModifying(false);
+    }, [props.order.id]);
 
     function afterEdit(updatedOrder: Order) {
         props.afterSubmitEdit(props.order.id, updatedOrder);
