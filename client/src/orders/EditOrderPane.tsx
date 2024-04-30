@@ -1,7 +1,7 @@
 import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import {Order} from "../models/order";
 import React, {useState} from "react";
-import {Buildings, Calendar, Check2, Clipboard, Floppy, JournalBookmarkFill, Sticky} from "react-bootstrap-icons";
+import {Buildings, Calendar, Clipboard, Floppy, JournalBookmarkFill, Sticky} from "react-bootstrap-icons";
 import WorkedHoursNewJobModal from "../workedHours/WorkedHoursNewJobModal";
 import {Job} from "../models/job";
 import GlossyButton from "../buttons/GlossyButton";
@@ -25,13 +25,7 @@ function EditOrderPane(props: EditOrderPaneProps) {
     const [description, setDescription] = useState(props.order?.description ?? "");
     const [scheduledDeliveryDate, setScheduledDeliveryDate] = useState(props.order?.scheduledDeliveryDate ?? "");
 
-    const [updated, setUpdated] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-
-    let buttonLabel = "Salva";
-    if (props.order) {
-        buttonLabel = updated ? "Modifiche salvate" : "Salva modifiche";
-    }
 
     function openModal(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
@@ -67,11 +61,17 @@ function EditOrderPane(props: EditOrderPaneProps) {
         if (props.order) {      // editing
             orderApis.updateOrder(props.order.id, props.order.year, order)
                 .then(() => props.afterSubmit(order))
-                .catch(err => console.error(err));
+                .catch(err => {
+                    console.error(err);
+                    setErrorMessage(err);
+                });
         } else {
             orderApis.createOrder(order)
                 .then(order => props.afterSubmit(order!))
-                .catch(err => console.error(err));
+                .catch(err => {
+                    console.error(err);
+                    setErrorMessage(err);
+                });
         }
     }
 
@@ -84,8 +84,8 @@ function EditOrderPane(props: EditOrderPaneProps) {
                     </h3>
                 </Row>
 
-                {errorMessage !== "" && <Row className="glossy-error-background">
-                    <Col>{errorMessage}</Col>
+                {errorMessage !== "" && <Row>
+                    <Col className="glossy-error-background">{errorMessage}</Col>
                 </Row>}
 
 
@@ -162,8 +162,8 @@ function EditOrderPane(props: EditOrderPaneProps) {
 
             <Row className="d-flex justify-content-center my-4">
                 <Col sm={4} className="d-flex justify-content-center">
-                    <GlossyButton type="submit" icon={updated ? Check2 : Floppy}
-                                  onClick={handleSubmit}>{buttonLabel}</GlossyButton>
+                    <GlossyButton type="submit" icon={Floppy}
+                                  onClick={handleSubmit}>{props.order ? "Salva modifiche" : "Salva"}</GlossyButton>
                 </Col>
             </Row>
         </Form>
