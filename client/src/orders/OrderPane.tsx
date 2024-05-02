@@ -20,6 +20,7 @@ interface OrderPaneProps {
     readonly user: User
     readonly order: Order
     readonly afterSubmitEdit: (oldOrderId: number, oldYear: number, updatedOrder: Order) => void
+    readonly afterDelete: (order: Order) => void
 }
 
 function OrderPane(props: OrderPaneProps) {
@@ -43,12 +44,13 @@ function OrderPane(props: OrderPaneProps) {
 
     if (modifying) {
         return (
-            <EditOrderPane user={props.user} order={props.order} afterSubmit={afterEdit}/>
+            <EditOrderPane user={props.user} order={props.order} afterSubmit={afterEdit}
+                           afterDelete={props.afterDelete}/>
         );
     }
 
     return (
-        <>
+        <div className="order-pane">
             <Row className="glossy-background">
                 <Row>
                     <h3>Ordine {props.order.name}{props.order.clearingDate && " (evaso)"}</h3>
@@ -137,7 +139,7 @@ function OrderPane(props: OrderPaneProps) {
                 <Col/>
             </Row>
 
-        </>
+        </div>
     );
 }
 
