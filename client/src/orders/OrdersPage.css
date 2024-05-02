@@ -19,3 +19,20 @@
         opacity: 1;
     }
 }
+
+.order-pane {
+    position: sticky;
+    top: 115px;
+}
+
+.clickable-arrow {
+    color: black;
+}
+
+.clickable-arrow:hover {
+    cursor: pointer;
+}
+
+.unclickable-arrow {
+    color: lightgray;
+}

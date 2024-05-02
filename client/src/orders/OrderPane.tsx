@@ -50,7 +50,7 @@ function OrderPane(props: OrderPaneProps) {
     }
 
     return (
-        <>
+        <div className="order-pane">
             <Row className="glossy-background">
                 <Row>
                     <h3>Ordine {props.order.name}{props.order.clearingDate && " (evaso)"}</h3>
@@ -139,7 +139,7 @@ function OrderPane(props: OrderPaneProps) {
                 <Col/>
             </Row>
 
-        </>
+        </div>
     );
 }
 

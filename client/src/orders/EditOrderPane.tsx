@@ -90,7 +90,7 @@ function EditOrderPane(props: EditOrderPaneProps) {
     }
 
     return (
-        <Form>
+        <Form className="order-pane">
             <Row className="glossy-background">
                 <Row>
                     <h3>{title}</h3>
