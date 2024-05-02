@@ -92,6 +92,16 @@ function OrdersPage(props: OrdersPageProps) {
         setShowingNewOrderPane(false);
     }
 
+    function deleteSelectedOrder(order: Order) {
+        setOrders(orders => {
+            const index = orders.findIndex(o => o.id === order.id && o.year === order.year);
+            orders.splice(index, 1);
+            return orders;
+        });
+        setSelectedOrder(undefined);
+        setShowingNewOrderPane(false);
+    }
+
     return (
         <>
             <Row>
@@ -162,11 +172,12 @@ function OrdersPage(props: OrdersPageProps) {
                 {showingNewOrderPane &&
                     <Col className="orders-page-second-column">
                         <EditOrderPane nextOrderId={nextOrderId} afterSubmit={selectNewlyCreatedOrder}
-                                       user={props.user}/>
+                                       afterDelete={deleteSelectedOrder} user={props.user}/>
                     </Col>}
                 {!showingNewOrderPane && selectedOrder &&
                     <Col>
-                        <OrderPane order={selectedOrder} afterSubmitEdit={updateSelectedOrder} user={props.user}/>
+                        <OrderPane order={selectedOrder} afterSubmitEdit={updateSelectedOrder}
+                                   afterDelete={deleteSelectedOrder} user={props.user}/>
                     </Col>}
             </Row>
         </>

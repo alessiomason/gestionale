@@ -1,7 +1,7 @@
 import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import {Order} from "../models/order";
 import React, {useState} from "react";
-import {Buildings, Calendar, Clipboard, Floppy, JournalBookmarkFill, Sticky} from "react-bootstrap-icons";
+import {Buildings, Calendar, Clipboard, Floppy, JournalBookmarkFill, Sticky, Trash} from "react-bootstrap-icons";
 import WorkedHoursNewJobModal from "../workedHours/WorkedHoursNewJobModal";
 import {Job} from "../models/job";
 import GlossyButton from "../buttons/GlossyButton";
@@ -14,6 +14,7 @@ interface EditOrderPaneProps {
     readonly order?: Order
     readonly nextOrderId?: number
     readonly afterSubmit: (order: Order) => void
+    readonly afterDelete: (order: Order) => void
 }
 
 function EditOrderPane(props: EditOrderPaneProps) {
@@ -74,6 +75,13 @@ function EditOrderPane(props: EditOrderPaneProps) {
                     setErrorMessage(err);
                 });
         }
+    }
+
+    function handleDelete(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        event.preventDefault();
+        orderApis.deleteOrder(props.order!.id, props.order!.year)
+            .then(() => props.afterDelete(props.order!))
+            .catch(err => console.error(err));
     }
 
     let title = "Nuovo ordine";
@@ -169,6 +177,9 @@ function EditOrderPane(props: EditOrderPaneProps) {
                     <GlossyButton type="submit" icon={Floppy}
                                   onClick={handleSubmit}>{props.order ? "Salva modifiche" : "Salva"}</GlossyButton>
                 </Col>
+                {props.order && <Col sm={4} className="d-flex justify-content-center">
+                    <GlossyButton icon={Trash} onClick={handleDelete}>Elimina ordine</GlossyButton>
+                </Col>}
             </Row>
         </Form>
     );
