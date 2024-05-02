@@ -49,10 +49,10 @@ export function compareUsers(a: User, b: User) {
     return surnameComparison !== 0 ? surnameComparison : a.name.localeCompare(b.name);
 }
 
-// Compares orders, sorting by year and id.
+// Compares orders, sorting by year and id in descending order.
 export function compareOrders(a: Order, b: Order) {
-    const yearComparison = a.year - b.year;
-    return yearComparison === 0 ? a.id - b.id : yearComparison;
+    const yearComparison = b.year - a.year;
+    return yearComparison === 0 ? b.id - a.id : yearComparison;
 }
 
 // Exports an Excel file and downloads it.

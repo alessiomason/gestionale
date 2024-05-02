@@ -3,7 +3,7 @@ import {Order} from "../models/order";
 import orderApis from "../api/orderApis";
 import {Col, Row, Table} from "react-bootstrap";
 import GlossyButton from "../buttons/GlossyButton";
-import {ClipboardPlus, ClipboardX} from "react-bootstrap-icons";
+import {ArrowLeftSquare, ArrowRightSquare, ClipboardPlus, ClipboardX} from "react-bootstrap-icons";
 import Loading from "../Loading";
 import EditOrderPane from "./EditOrderPane";
 import {User} from "../models/user";
@@ -18,6 +18,9 @@ interface OrdersPageProps {
 
 function OrdersPage(props: OrdersPageProps) {
     const [orders, setOrders] = useState<Order[]>([]);
+    const [pageNumber, setPageNumber] = useState(0);
+    const increasablePageNumber = (pageNumber + 1) * 100 <= orders.length;
+    const decreasablePageNumber = pageNumber > 0;
     const [nextOrderId, setNextOrderId] = useState(1);
     const [dirty, setDirty] = useState(true);
     const [loading, setLoading] = useState(true);
@@ -92,6 +95,28 @@ function OrdersPage(props: OrdersPageProps) {
         setShowingNewOrderPane(false);
     }
 
+    function deleteSelectedOrder(order: Order) {
+        setOrders(orders => {
+            const index = orders.findIndex(o => o.id === order.id && o.year === order.year);
+            orders.splice(index, 1);
+            return orders;
+        });
+        setSelectedOrder(undefined);
+        setShowingNewOrderPane(false);
+    }
+
+    function increasePageNumber() {
+        if (increasablePageNumber) {
+            setPageNumber(prevPageNumber => prevPageNumber + 1);
+        }
+    }
+
+    function decreasePageNumber() {
+        if (decreasablePageNumber) {
+            setPageNumber(prevPageNumber => prevPageNumber - 1);
+        }
+    }
+
     return (
         <>
             <Row>
@@ -109,6 +134,18 @@ function OrdersPage(props: OrdersPageProps) {
                     {loading ?
                         <Loading/> :
                         <Row className="glossy-background w-100">
+                            <Row className="mb-2">
+                                <Col className="d-flex justify-content-between">
+                                    <ArrowLeftSquare className={decreasablePageNumber ? "clickable-arrow" : "unclickable-arrow"}
+                                                     onClick={decreasePageNumber}/>
+                                    <p className="text-center">
+                                        Pagina {pageNumber + 1} di {Math.ceil(orders.length / 100)}
+                                    </p>
+                                    <ArrowRightSquare className={increasablePageNumber ? "clickable-arrow" : "unclickable-arrow"}
+                                                      onClick={increasePageNumber}/>
+                                </Col>
+                            </Row>
+
                             <Table hover responsive>
                                 <thead>
                                 <tr>
@@ -128,6 +165,7 @@ function OrdersPage(props: OrdersPageProps) {
 
                                 <tbody>
                                 {orders.sort(compareOrders)
+                                    .slice(pageNumber * 100, (pageNumber + 1) * 100)
                                     .map(order => {
                                         let className = "";
                                         if (order.id === selectedOrder?.id) {
@@ -162,11 +200,12 @@ function OrdersPage(props: OrdersPageProps) {
                 {showingNewOrderPane &&
                     <Col className="orders-page-second-column">
                         <EditOrderPane nextOrderId={nextOrderId} afterSubmit={selectNewlyCreatedOrder}
-                                       user={props.user}/>
+                                       afterDelete={deleteSelectedOrder} user={props.user}/>
                     </Col>}
                 {!showingNewOrderPane && selectedOrder &&
                     <Col>
-                        <OrderPane order={selectedOrder} afterSubmitEdit={updateSelectedOrder} user={props.user}/>
+                        <OrderPane order={selectedOrder} afterSubmitEdit={updateSelectedOrder}
+                                   afterDelete={deleteSelectedOrder} user={props.user}/>
                     </Col>}
             </Row>
         </>

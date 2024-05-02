@@ -116,5 +116,18 @@ async function clearOrder(order: Order) {
     } else await handleApiError(response);
 }
 
-const orderApis = {getAllOrders, getOrder, createOrder, updateOrder, clearOrder};
+async function deleteOrder(id:number, year: number) {
+    const response = await fetch(new URL(`orders/${year}/${id}`, apiUrl), {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json'
+        }
+    });
+    if (response.ok) {
+        return true;
+    } else await handleApiError(response);
+}
+
+const orderApis = {getAllOrders, getOrder, createOrder, updateOrder, clearOrder, deleteOrder};
 export default orderApis;

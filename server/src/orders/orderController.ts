@@ -71,8 +71,8 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManag
 
             const user = req.user as User;
             const newOrder = new NewOrder(
-                parseInt(req.params.id),
-                parseInt(req.params.year),
+                parseInt(req.body.id),
+                parseInt(req.body.year),
                 req.body.date ?? dayjs().format("YYYY-MM-DD"),
                 req.body.jobId,
                 req.body.supplier,
