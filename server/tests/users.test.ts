@@ -102,7 +102,7 @@ describe("Test users APIs", () => {
         const registrationToken = crypto.randomBytes(8).toString("hex");
         const registeredUser = user;
         registeredUser.registrationToken = registrationToken;
-        registeredUser.tokenExpiryDate = dayjs().add(7, "days").format();
+        registeredUser.tokenExpiryDate = dayjs().add(2, "days").format();
         tracker.on.select("users").response(registeredUser);
 
         const res = await new Request(app).get(`${baseURL}/registrationToken/${registrationToken}`);

@@ -188,9 +188,9 @@ export async function getUserFromRegistrationToken(registrationToken: string) {
         user.username,
         user.hashedPassword,
         user.salt,
-        registeredUser ? user.registrationDate : undefined,   // set only for registered users
+        user.registrationToken,
         user.tokenExpiryDate,
-        user.registrationDate,
+        registeredUser ? user.registrationDate : undefined,   // set only for registered users
         user.hoursPerDay,
         user.costPerHour,
         !!user.active,
