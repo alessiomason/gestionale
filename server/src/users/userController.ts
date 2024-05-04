@@ -85,8 +85,8 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdminis
 
                 if (user) {
                     // user already registered or token expired
-                    if (user.registrationDate || dayjs(user.tokenExpiryDate).isBefore(dayjs())) {
-                        res.status(403).json(new BaseError(403, "Il link di registrazione è scaduto o non è più valido!"))
+                    if ((user.hashedPassword && user.salt) || dayjs(user.tokenExpiryDate).isBefore(dayjs())) {
+                        res.status(403).json(new BaseError(403, "Il link di registrazione è scaduto o non è più valido!"));
                         return
                     }
 
