@@ -4,6 +4,8 @@ import {UserNotFound, UserWithSameUsernameError} from "./userErrors";
 import * as crypto from "crypto";
 import dayjs from "dayjs";
 
+const tokenExpiresAfterDays = 2;
+
 export async function getAllUsers() {
     const users = await knex("users").select();
 
@@ -223,7 +225,7 @@ export async function createUser(newUser: NewUser) {
     }
 
     const registrationToken = crypto.randomBytes(8).toString("hex");
-    const tokenExpiryDate = dayjs().add(30, "days").format();  // expiry date is in 30 days
+    const tokenExpiryDate = dayjs().add(tokenExpiresAfterDays, "days").format();
 
     const userToInsert = {
         ...newUser,
@@ -277,9 +279,9 @@ export async function updateUser(
 ) {
     // check that at least one field is changing to avoid a faulty query
     if (active !== undefined || managesTickets !== undefined || managesOrders !== undefined || role !== undefined ||
-        type !== undefined || registrationDate !== undefined || hoursPerDay !== undefined ||costPerHour !== undefined ||
+        type !== undefined || registrationDate !== undefined || hoursPerDay !== undefined || costPerHour !== undefined ||
         email !== undefined || phone !== undefined || car !== undefined || costPerKm !== undefined
-) {
+    ) {
         await knex("users")
             .where("id", id)
             .update({
