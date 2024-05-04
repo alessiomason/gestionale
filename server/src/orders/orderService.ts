@@ -27,12 +27,53 @@ async function parseOrder(order: any) {
         order.totalWorkedHours ? parseFloat(order.totalWorkedHours) : 0
     );
 
-    const by = await getUser(order.byId);
-    if (!by) throw new UserNotFound();
+    const by = new User(
+        order.userId,
+        order.role,
+        order.type,
+        order.name,
+        order.surname,
+        order.username,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        parseFloat(order.hoursPerDay),
+        parseFloat(order.costPerHour),
+        order.active === 1,
+        order.managesTickets === 1,
+        order.managesOrders === 1,
+        order.email,
+        order.phone,
+        order.car,
+        parseFloat(order.costPerKm)
+    );
+
     let clearedBy: User | undefined = undefined;
     if (order.clearedById) {
-        clearedBy = await getUser(order.clearedById);
-        if (!clearedBy) throw new UserNotFound();
+        clearedBy = new User(
+            order.userId2,
+            order.role2,
+            order.type2,
+            order.name2,
+            order.surname2,
+            order.username2,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            parseFloat(order.hoursPerDay2),
+            parseFloat(order.costPerHour2),
+            order.active2 === 1,
+            order.managesTickets2 === 1,
+            order.managesOrders2 === 1,
+            order.email2,
+            order.phone2,
+            order.car2,
+            parseFloat(order.costPerKm2)
+        );
     }
 
     return new Order(
@@ -52,9 +93,20 @@ async function parseOrder(order: any) {
 export async function getAllOrders() {
     const orders = await knex("orders")
         .join("jobs", "jobs.id", "orders.jobId")
+        .join("users AS u1", "u1.id", "orders.byId")
+        .leftJoin("users AS u2", "u2.id", "orders.clearedById")
         .select("orders.*", "jobs.subject", "jobs.client", "jobs.finalClient",
             "jobs.orderName", "jobs.orderAmount", "jobs.startDate", "jobs.deliveryDate",
-            "jobs.notes", "jobs.active", "jobs.lost", "jobs.design", "jobs.construction");
+            "jobs.notes", "jobs.active", "jobs.lost", "jobs.design", "jobs.construction",
+            "u1.role", "u1.type", "u1.name", "u1.surname", "u1.username",
+            "u1.hoursPerDay", "u1.costPerHour", "u1.active", "u1.managesTickets",
+            "u1.managesOrders", "u1.email", "u1.phone", "u1.car", "u1.costPerKm",
+            "u2.role AS role2", "u2.type AS type2", "u2.name AS name2",
+            "u2.surname AS surname2", "u2.username AS username2", "u2.hoursPerDay AS hoursPerDay2",
+            "u2.costPerHour AS costPerHour2", "u2.active AS active2",
+            "u2.managesTickets AS managesTickets2", "u2.managesOrders AS managesOrders2",
+            "u2.email AS email2", "u2.phone AS phone2", "u2.car AS car2",
+            "u2.costPerKm AS costPerKm2");
 
     return await Promise.all(orders.map(async order => await parseOrder(order)));
 }
@@ -62,10 +114,21 @@ export async function getAllOrders() {
 export async function getOrder(id: number, year: number) {
     const order = await knex("orders")
         .join("jobs", "jobs.id", "orders.jobId")
+        .join("users AS u1", "u1.id", "orders.byId")
+        .leftJoin("users AS u2", "u2.id", "orders.clearedById")
         .whereRaw("orders.id = ? AND year = ?", [id, year])
         .first("orders.*", "jobs.subject", "jobs.client", "jobs.finalClient",
             "jobs.orderName", "jobs.orderAmount", "jobs.startDate", "jobs.deliveryDate",
-            "jobs.notes", "jobs.active", "jobs.lost", "jobs.design", "jobs.construction");
+            "jobs.notes", "jobs.active", "jobs.lost", "jobs.design", "jobs.construction",
+            "u1.role", "u1.type", "u1.name", "u1.surname", "u1.username",
+            "u1.hoursPerDay", "u1.costPerHour", "u1.active", "u1.managesTickets",
+            "u1.managesOrders", "u1.email", "u1.phone", "u1.car", "u1.costPerKm",
+            "u2.role AS role2", "u2.type AS type2", "u2.name AS name2",
+            "u2.surname AS surname2", "u2.username AS username2", "u2.hoursPerDay AS hoursPerDay2",
+            "u2.costPerHour AS costPerHour2", "u2.active AS active2",
+            "u2.managesTickets AS managesTickets2", "u2.managesOrders AS managesOrders2",
+            "u2.email AS email2", "u2.phone AS phone2", "u2.car AS car2",
+            "u2.costPerKm AS costPerKm2");
 
     if (!order) throw new OrderNotFound();
 
