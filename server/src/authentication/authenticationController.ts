@@ -111,7 +111,7 @@ export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.Sess
             }
 
             // check password already existing
-            if (user.hashedPassword || user.registrationDate) {
+            if (user.hashedPassword && user.salt) {
                 res.status(403).json(new BaseError(403, "L'utente è già registrato!"))
                 return
             }
@@ -126,7 +126,7 @@ export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.Sess
             const email = req.body.email as string | undefined
             const phone = req.body.phone as string | undefined
             const car = req.body.car as string | undefined
-            const registrationDate = dayjs().format();
+            const newRegistrationDate = dayjs().format();
             await updateUser(
                 user.id,
                 undefined,
@@ -134,7 +134,7 @@ export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.Sess
                 undefined,
                 undefined,
                 undefined,
-                registrationDate,
+                user.registrationDate ? undefined : newRegistrationDate,       // if not present       2024-04-15T06:59:03+00:00
                 undefined,
                 undefined,
                 email,
@@ -146,7 +146,7 @@ export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.Sess
             const salt = crypto.randomBytes(16);
             crypto.pbkdf2(req.body.password, salt, 31000, 32, "sha256", function (err, hashedPassword) {
                 saveUserPassword(user.id, hashedPassword, salt);
-                res.status(200).end()
+                res.status(200).end();
             })
         });
 

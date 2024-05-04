@@ -4,10 +4,14 @@ import {UserNotFound, UserWithSameUsernameError} from "./userErrors";
 import * as crypto from "crypto";
 import dayjs from "dayjs";
 
+const tokenExpiresAfterDays = 2;
+
 export async function getAllUsers() {
     const users = await knex("users").select();
 
     return users.map(user => {
+        const registeredUser = user.hashedPassword && user.salt;
+
         return new User(
             user.id,
             user.role,
@@ -19,7 +23,7 @@ export async function getAllUsers() {
             undefined,
             user.registrationToken,
             user.tokenExpiryDate,
-            user.registrationDate,
+            registeredUser ? user.registrationDate : undefined,   // set only for registered users
             parseFloat(user.hoursPerDay),
             parseFloat(user.costPerHour),
             !!user.active,
@@ -40,6 +44,8 @@ export async function getAllMachineUsers() {
         .select();
 
     return machineUsers.map(user => {
+        const registeredUser = user.hashedPassword && user.salt;
+
         return new User(
             user.id,
             user.role,
@@ -51,7 +57,7 @@ export async function getAllMachineUsers() {
             undefined,
             user.registrationToken,
             user.tokenExpiryDate,
-            user.registrationDate,
+            registeredUser ? user.registrationDate : undefined,   // set only for registered users
             parseFloat(user.hoursPerDay),
             parseFloat(user.costPerHour),
             !!user.active,
@@ -67,10 +73,12 @@ export async function getAllMachineUsers() {
 
 export async function getUser(id: number) {
     const user = await knex("users")
-        .first()
-        .where({id: id})
+        .where({id})
+        .first();
 
     if (!user) return
+
+    const registeredUser = user.hashedPassword && user.salt;
 
     return new User(
         user.id,
@@ -83,7 +91,7 @@ export async function getUser(id: number) {
         undefined,
         undefined,
         undefined,
-        user.registrationDate,
+        registeredUser ? user.registrationDate : undefined,   // set only for registered users
         parseFloat(user.hoursPerDay),
         parseFloat(user.costPerHour),
         !!user.active,
@@ -103,6 +111,8 @@ export async function getFullUser(id: number) {
 
     if (!user) return
 
+    const registeredUser = user.hashedPassword && user.salt;
+
     return new User(
         user.id,
         user.role,
@@ -114,7 +124,7 @@ export async function getFullUser(id: number) {
         user.salt,
         user.registrationToken,
         user.tokenExpiryDate,
-        user.registrationDate,
+        registeredUser ? user.registrationDate : undefined,   // set only for registered users
         user.hoursPerDay,
         user.costPerHour,
         !!user.active,
@@ -134,6 +144,8 @@ export async function getUserFromUsername(username: string) {
 
     if (!user) return
 
+    const registeredUser = user.hashedPassword && user.salt;
+
     return new User(
         user.id,
         user.role,
@@ -145,7 +157,7 @@ export async function getUserFromUsername(username: string) {
         user.salt,
         undefined,
         undefined,
-        user.registrationDate,
+        registeredUser ? user.registrationDate : undefined,   // set only for registered users
         user.hoursPerDay,
         user.costPerHour,
         !!user.active,
@@ -165,6 +177,8 @@ export async function getUserFromRegistrationToken(registrationToken: string) {
 
     if (!user) return
 
+    const registeredUser = user.hashedPassword && user.salt;
+
     return new User(
         user.id,
         user.role,
@@ -176,7 +190,7 @@ export async function getUserFromRegistrationToken(registrationToken: string) {
         user.salt,
         user.registrationToken,
         user.tokenExpiryDate,
-        user.registrationDate,
+        registeredUser ? user.registrationDate : undefined,   // set only for registered users
         user.hoursPerDay,
         user.costPerHour,
         !!user.active,
@@ -186,7 +200,7 @@ export async function getUserFromRegistrationToken(registrationToken: string) {
         user.phone,
         user.car,
         user.costPerKm
-    )
+    );
 }
 
 export async function getPublicKeyIdFromUsername(username: string) {
@@ -198,7 +212,7 @@ export async function getPublicKeyIdFromUsername(username: string) {
     if (!publicKeyId)
         return new UserNotFound()
 
-    return publicKeyId
+    return publicKeyId;
 }
 
 export async function createUser(newUser: NewUser) {
@@ -211,7 +225,7 @@ export async function createUser(newUser: NewUser) {
     }
 
     const registrationToken = crypto.randomBytes(8).toString("hex");
-    const tokenExpiryDate = dayjs().add(30, "days").format();  // expiry date is in 30 days
+    const tokenExpiryDate = dayjs().add(tokenExpiresAfterDays, "days").format();
 
     const userToInsert = {
         ...newUser,
@@ -244,7 +258,7 @@ export async function createUser(newUser: NewUser) {
         newUser.phone,
         newUser.car,
         newUser.costPerKm
-    )
+    );
 }
 
 // `undefined` values are skipped, not updated
@@ -265,9 +279,9 @@ export async function updateUser(
 ) {
     // check that at least one field is changing to avoid a faulty query
     if (active !== undefined || managesTickets !== undefined || managesOrders !== undefined || role !== undefined ||
-        type !== undefined || registrationDate !== undefined || hoursPerDay !== undefined ||costPerHour !== undefined ||
+        type !== undefined || registrationDate !== undefined || hoursPerDay !== undefined || costPerHour !== undefined ||
         email !== undefined || phone !== undefined || car !== undefined || costPerKm !== undefined
-) {
+    ) {
         await knex("users")
             .where("id", id)
             .update({
@@ -283,7 +297,7 @@ export async function updateUser(
                 phone: phone,
                 car: car,
                 costPerKm: costPerKm
-            })
+            });
     }
 }
 
@@ -293,5 +307,19 @@ export async function saveUserPassword(userId: number, hashedPassword: Buffer, s
         .update({
             hashedPassword: hashedPassword,
             salt: salt
-        })
+        });
+}
+
+export async function resetPassword(userId: number) {
+    const registrationToken = crypto.randomBytes(8).toString("hex");
+    const tokenExpiryDate = dayjs().add(tokenExpiresAfterDays, "days").format();
+
+    await knex("users")
+        .where({id: userId})
+        .update({
+            registrationToken: registrationToken,
+            tokenExpiryDate: tokenExpiryDate,
+            hashedPassword: null,
+            salt: null
+        });
 }

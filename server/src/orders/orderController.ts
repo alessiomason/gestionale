@@ -1,7 +1,7 @@
 import {Express, Request, Response} from "express";
 import {RequestHandler} from "express-serve-static-core";
 import {BaseError, InternalServerError, ParameterError} from "../errors";
-import {clearOrder, createOrder, deleteOrder, getAllOrders, getOrder, updateOrder} from "./orderService";
+import {clearOrder, createOrder, deleteOrder, getAllOrders, getOrder, unclearOrder, updateOrder} from "./orderService";
 import {body, param, validationResult} from "express-validator";
 import {NewOrder} from "./order";
 import dayjs from "dayjs";
@@ -165,6 +165,37 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManag
 
             try {
                 await clearOrder(orderId, year, user.id);
+                const order = await getOrder(orderId, year);
+                res.status(200).json(order);
+            } catch (err: any) {
+                if (err instanceof BaseError) {
+                    res.status(err.statusCode).json(err);
+                } else {
+                    res.status(InternalServerError.code).json(new InternalServerError("Error while updating the order"));
+                }
+            }
+        }
+    )
+
+    // unclear order
+    app.patch(`${baseURL}/:year/:id/unclear`,
+        isLoggedIn,
+        canManageOrders,
+        param("year").isInt(),
+        param("id").isInt(),
+        async (req: Request, res: Response) => {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                console.log(errors)
+                res.status(ParameterError.code).json(new ParameterError("There was an error with the parameters!"))
+                return
+            }
+
+            const orderId = parseInt(req.params.id);
+            const year = parseInt(req.params.year);
+
+            try {
+                await unclearOrder(orderId, year);
                 const order = await getOrder(orderId, year);
                 res.status(200).json(order);
             } catch (err: any) {

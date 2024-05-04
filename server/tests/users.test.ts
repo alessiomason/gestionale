@@ -17,7 +17,7 @@ jest.mock('../src/database/db', () => {
 });
 
 describe("Test users APIs", () => {
-    const baseURL = "/api/users"
+    const baseURL = "/api/users";
     let tracker: Tracker;
     let session = "";
 
@@ -30,8 +30,8 @@ describe("Test users APIs", () => {
         firstName,
         lastName,
         User.usernameFromName(firstName, lastName),
-        undefined,
-        undefined,
+        Buffer.from([0]),   // sample buffer, password is never user to login in tests
+        Buffer.from([0]),
         undefined,
         undefined,
         undefined,
@@ -44,7 +44,11 @@ describe("Test users APIs", () => {
         faker.phone.number(),
         faker.vehicle.model(),
         10.0
-    )
+    );
+
+    const expectedUser = {...user};
+    expectedUser.hashedPassword = undefined;
+    expectedUser.salt = undefined;
 
     const newUser = new NewUser(
         User.Role.user,
@@ -78,14 +82,14 @@ describe("Test users APIs", () => {
         tracker.on.select("users").response([user]);
 
         const res = await new Request(app).get(baseURL).set("Cookie", session);
-        expect(res.body).toEqual([user]);
+        expect(res.body).toEqual([expectedUser]);
     })
 
     test("Get single user", async () => {
         tracker.on.select("users").response(user);
 
         const res = await new Request(app).get(`${baseURL}/${user.id}`).set("Cookie", session);
-        expect(res.body).toEqual(user);
+        expect(res.body).toEqual(expectedUser);
     })
 
     test("Get single user not found", async () => {
@@ -101,12 +105,14 @@ describe("Test users APIs", () => {
     test("Get single user from registration token", async () => {
         const registrationToken = crypto.randomBytes(8).toString("hex");
         const registeredUser = user;
+        registeredUser.hashedPassword = undefined;
+        registeredUser.salt = undefined;
         registeredUser.registrationToken = registrationToken;
         registeredUser.tokenExpiryDate = dayjs().add(7, "days").format();
         tracker.on.select("users").response(registeredUser);
 
         const res = await new Request(app).get(`${baseURL}/registrationToken/${registrationToken}`);
-        expect(res.body).toEqual(user);
+        expect(res.body).toEqual(registeredUser);
     })
 
     test("Create user", async () => {

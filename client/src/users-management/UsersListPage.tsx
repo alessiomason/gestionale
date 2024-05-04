@@ -130,6 +130,22 @@ function UsersListPage(props: UsersListPageProps) {
             .catch(err => console.error(err))
     }
 
+    function resetPassword(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        event.preventDefault();
+
+        userApis.resetPassword(selectedUser!.id)
+            .then(user => {
+                setDirty(true);
+                setSavedUser(true);
+
+                // if own user changed, refresh it
+                if (user.id === props.user.id) {
+                    props.setDirtyUser(true);
+                }
+            })
+            .catch(err => console.error(err))
+    }
+
     return (
         <>
             <Row>
@@ -308,7 +324,7 @@ function UsersListPage(props: UsersListPageProps) {
                                 </Row>
 
                                 {selectedUser.registrationDate ?
-                                    <RegisteredSection user={selectedUser}/> :
+                                    <RegisteredSection user={selectedUser} resetPassword={resetPassword}/> :
                                     <NoRegistrationSection user={selectedUser}/>}
                             </Row>
 
