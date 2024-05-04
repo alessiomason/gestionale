@@ -5,6 +5,7 @@ import {
     Buildings,
     Clipboard,
     ClipboardCheck,
+    ClipboardX,
     JournalBookmarkFill,
     PencilSquare,
     Person,
@@ -38,6 +39,12 @@ function OrderPane(props: OrderPaneProps) {
 
     function clearOrder() {
         orderApis.clearOrder(props.order)
+            .then(order => props.afterSubmitEdit(order!.id, order!.year, order!))
+            .catch(err => console.error(err));
+    }
+
+    function unclearOrder() {
+        orderApis.unclearOrder(props.order)
             .then(order => props.afterSubmitEdit(order!.id, order!.year, order!))
             .catch(err => console.error(err));
     }
@@ -135,6 +142,10 @@ function OrderPane(props: OrderPaneProps) {
                 {!props.order.clearedBy && !props.order.clearingDate &&
                     <Col sm={4} className="d-flex justify-content-center">
                         <GlossyButton icon={ClipboardCheck} onClick={clearOrder}>Evadi l'ordine</GlossyButton>
+                    </Col>}
+                {props.order.clearedBy && props.order.clearingDate &&
+                    <Col sm={4} className="d-flex justify-content-center">
+                        <GlossyButton icon={ClipboardX} onClick={unclearOrder}>Marca l'ordine come non evaso</GlossyButton>
                     </Col>}
                 <Col/>
             </Row>

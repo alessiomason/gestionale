@@ -116,6 +116,21 @@ async function clearOrder(order: Order) {
     } else await handleApiError(response);
 }
 
+async function unclearOrder(order: Order) {
+    const response = await fetch(new URL(`orders/${order.year}/${order.id}/unclear`, apiUrl), {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+    });
+    if (response.ok) {
+        const order = await response.json() as Order;
+        return rebuildOrder(order);
+    } else await handleApiError(response);
+}
+
 async function deleteOrder(id:number, year: number) {
     const response = await fetch(new URL(`orders/${year}/${id}`, apiUrl), {
         method: 'DELETE',
@@ -129,5 +144,5 @@ async function deleteOrder(id:number, year: number) {
     } else await handleApiError(response);
 }
 
-const orderApis = {getAllOrders, getOrder, createOrder, updateOrder, clearOrder, deleteOrder};
+const orderApis = {getAllOrders, getOrder, createOrder, updateOrder, clearOrder, unclearOrder, deleteOrder};
 export default orderApis;

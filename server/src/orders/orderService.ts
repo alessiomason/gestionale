@@ -86,7 +86,7 @@ async function parseOrder(order: any) {
         by,
         order.scheduledDeliveryDate,
         clearedBy,
-        order.clearingDate
+        order.clearingDate ? order.clearingDate : undefined     // if null, set undefined
     );
 }
 
@@ -187,6 +187,12 @@ export async function clearOrder(id: number, year: number, clearedById: number) 
     await knex("orders")
         .where({id, year})
         .update({clearedById, clearingDate});
+}
+
+export async function unclearOrder(id: number, year: number) {
+    await knex("orders")
+        .where({id, year})
+        .update({clearedById: null, clearingDate: null});
 }
 
 export async function deleteOrder(id: number, year: number) {
