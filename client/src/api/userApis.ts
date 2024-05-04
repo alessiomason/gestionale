@@ -97,5 +97,20 @@ async function updatePassword(oldPassword: string, newPassword: string) {
     } else await handleApiError(response);
 }
 
-const userApis = {getAllUsers, getAllMachineUsers, getUser, updateUser, updateProfile, updatePassword};
+async function resetPassword(userId: number) {
+    const response = await fetch(new URL(`users/${userId}/password`, apiUrl), {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+    });
+    if (response.ok) {
+        return await response.json();
+    } else await handleApiError(response);
+}
+
+
+const userApis = {getAllUsers, getAllMachineUsers, getUser, updateUser, updateProfile, updatePassword, resetPassword};
 export default userApis;

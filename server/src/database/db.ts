@@ -17,7 +17,7 @@ export const knex = Knex({
     },
     pool: {
         min: 0,
-        max: 7,
+        max: 7
     },
     ...knexSnakeCaseMappers()
 });
