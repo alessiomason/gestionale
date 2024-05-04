@@ -7,11 +7,12 @@ import GlossyButton from "../buttons/GlossyButton";
 import LightGlossyButton from "../buttons/LightGlossyButton";
 import {publicUrl} from "../api/apisValues";
 
-interface UsersListSectionProps {
+interface RegisteredSectionProps {
     readonly user: User
+    readonly resetPassword: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
 }
 
-function RegisteredSection(props: UsersListSectionProps) {
+function RegisteredSection(props: RegisteredSectionProps) {
     return (
         <>
             <Row className="mt-5">
@@ -26,8 +27,7 @@ function RegisteredSection(props: UsersListSectionProps) {
             <Row className="mt-3">
                 <Col/>
                 <Col sm={8} className="d-flex justify-content-center">
-                    <GlossyButton icon={Key} onClick={() => {
-                    }}>Reimposta password (non disponibile)</GlossyButton>
+                    <GlossyButton icon={Key} onClick={props.resetPassword}>Reimposta password</GlossyButton>
                 </Col>
                 <Col/>
             </Row>
@@ -35,7 +35,11 @@ function RegisteredSection(props: UsersListSectionProps) {
     );
 }
 
-function NoRegistrationSection(props: UsersListSectionProps) {
+interface NoRegistrationSectionProps {
+    readonly user: User
+}
+
+function NoRegistrationSection(props: NoRegistrationSectionProps) {
     const registrationLink = `${publicUrl}signup/${props.user.registrationToken}`;
     const [copied, setCopied] = useState(false);
 

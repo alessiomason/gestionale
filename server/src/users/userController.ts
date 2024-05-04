@@ -10,7 +10,8 @@ import {
     updateUser,
     saveUserPassword,
     getFullUser,
-    getAllMachineUsers
+    getAllMachineUsers,
+    resetPassword
 } from "./userService";
 import {body, param, validationResult} from "express-validator";
 import {UserNotFound, UserWithSameUsernameError} from "./userErrors";
@@ -297,6 +298,30 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdminis
                     res.status(200).end()
                 })
             })
+        }
+    )
+
+    // reset another user's password
+    app.delete(`${baseURL}/:userId/password`,
+        isLoggedIn,
+        isAdministrator,
+        param("userId").isInt({min: 1}),
+        async (req: Request, res: Response) => {
+            const errors = validationResult(req);
+            if (!errors.isEmpty() || !req.params) {
+                res.status(ParameterError.code).json(new ParameterError("There was an error with the parameters!"))
+                return
+            }
+
+            const userId = parseInt(req.params.userId);
+            await resetPassword(userId);
+
+            const updatedUser = await getUser(userId);
+            if (!updatedUser) {
+                res.status(UserNotFound.code).json(new UserNotFound());
+                return
+            }
+            res.status(200).json(updatedUser);
         }
     )
 }

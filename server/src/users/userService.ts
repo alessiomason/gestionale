@@ -309,3 +309,17 @@ export async function saveUserPassword(userId: number, hashedPassword: Buffer, s
             salt: salt
         });
 }
+
+export async function resetPassword(userId: number) {
+    const registrationToken = crypto.randomBytes(8).toString("hex");
+    const tokenExpiryDate = dayjs().add(tokenExpiresAfterDays, "days").format();
+
+    await knex("users")
+        .where({id: userId})
+        .update({
+            registrationToken: registrationToken,
+            tokenExpiryDate: tokenExpiryDate,
+            hashedPassword: null,
+            salt: null
+        });
+}
