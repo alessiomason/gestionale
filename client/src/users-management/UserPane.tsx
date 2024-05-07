@@ -1,10 +1,15 @@
+import {Role, Type, User} from "../models/user";
 import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
+import React, {useEffect, useState} from "react";
+import {checkValidEmail} from "../functions";
+import signUpApis from "../api/signUpApis";
 import {
     CarFront,
+    Check,
     CheckCircle,
-    Clock,
-    Coin,
+    Clock, Coin,
     EnvelopeAt,
+    Floppy,
     Person,
     PersonAdd,
     PersonBadge,
@@ -13,35 +18,66 @@ import {
     XCircle
 } from "react-bootstrap-icons";
 import SwitchToggle from "./SwitchToggle";
-import {Role, Type, User} from "../models/user";
-import React, {useState} from "react";
-import signUpApis from "../api/signUpApis";
 import GlossyButton from "../buttons/GlossyButton";
-import {checkValidEmail} from "../functions";
+import userApis from "../api/userApis";
+import {NoRegistrationSection, RegisteredSection} from "./UsersListSections";
 
-interface NewUserPaneProps {
-    readonly setDirty: React.Dispatch<React.SetStateAction<boolean>>
-    readonly selectUser: (user: User) => void
+interface UserPaneProps {
+    readonly user: User
+    readonly selectedUser: User | undefined
+    readonly setDirtyUser: React.Dispatch<React.SetStateAction<boolean>>
+    readonly afterSubmit: (user: User) => void
 }
 
-function NewUserPane(props: NewUserPaneProps) {
-    const [active, setActive] = useState(true);
-    const [managesTickets, setManagesTickets] = useState(false);
-    const [managesOrders, setManagesOrders] = useState(false);
-    const [name, setName] = useState("");
+function UserPane(props: UserPaneProps) {
+    const [active, setActive] = useState(props.selectedUser?.active ?? true);
+    const [managesTickets, setManagesTickets] = useState(props.selectedUser?.managesTickets ?? false);
+    const [managesOrders, setManagesOrders] = useState(props.selectedUser?.managesOrders ?? false);
+    const [name, setName] = useState(props.selectedUser?.name ?? "");
     const [invalidName, setInvalidName] = useState(false);
-    const [surname, setSurname] = useState("");
+    const [surname, setSurname] = useState(props.selectedUser?.surname ?? "");
     const [invalidSurname, setInvalidSurname] = useState(false);
-    const [username, setUsername] = useState("");
-    const [role, setRole] = useState<"user" | "admin" | "dev">("user");
-    const [type, setType] = useState<"office" | "workshop" | "machine">("office");
-    const [email, setEmail] = useState<string>("");
+    const [username, setUsername] = useState(props.selectedUser?.username ?? "");
+    const [role, setRole] = useState<"user" | "admin" | "dev">(props.selectedUser?.role ?? "user");
+    const [type, setType] = useState<"office" | "workshop" | "machine">(props.selectedUser?.type ?? "office");
+    const [email, setEmail] = useState<string>(props.selectedUser?.email ?? "");
     const [invalidEmail, setInvalidEmail] = useState(false);
-    const [phone, setPhone] = useState<string>("");
-    const [hoursPerDay, setHoursPerDay] = useState(0);
-    const [costPerHour, setCostPerHour] = useState(0);
-    const [car, setCar] = useState<string>("");
-    const [costPerKm, setCostPerKm] = useState(0);
+    const [phone, setPhone] = useState<string>(props.selectedUser?.phone ?? "");
+    const [hoursPerDay, setHoursPerDay] = useState(props.selectedUser?.hoursPerDay ?? 0);
+    const [costPerHour, setCostPerHour] = useState(props.selectedUser?.costPerHour ?? 0);
+    const [car, setCar] = useState<string>(props.selectedUser?.car ?? "");
+    const [costPerKm, setCostPerKm] = useState(props.selectedUser?.costPerKm ?? 0);
+
+    const [savedUser, setSavedUser] = useState(false);
+
+    let submitButtonTitle = "Crea utente";
+    let submitButtonIcon = PersonAdd;
+    if (props.selectedUser) {
+        if (savedUser) {
+            submitButtonTitle = "Salvato";
+            submitButtonIcon = Check;
+        } else {
+            submitButtonTitle = "Salva";
+            submitButtonIcon = Floppy;
+        }
+    }
+
+    useEffect(() => {
+        setActive(props.selectedUser?.active ?? true);
+        setManagesTickets(props.selectedUser?.managesTickets ?? false);
+        setManagesOrders(props.selectedUser?.managesOrders ?? false);
+        setName(props.selectedUser?.name ?? "");
+        setSurname(props.selectedUser?.surname ?? "");
+        setUsername(props.selectedUser?.username ?? "");
+        setRole(props.selectedUser?.role ?? "user");
+        setType(props.selectedUser?.type ?? "office");
+        setEmail(props.selectedUser?.email ?? "");
+        setPhone(props.selectedUser?.phone ?? "");
+        setHoursPerDay(props.selectedUser?.hoursPerDay ?? 0);
+        setCostPerHour(props.selectedUser?.costPerHour ?? 0);
+        setCar(props.selectedUser?.car ?? "");
+        setCostPerKm(props.selectedUser?.costPerKm ?? 0);
+    }, [props.selectedUser?.id]);
 
     function handleEmailCheck() {
         setInvalidEmail(false);
@@ -71,40 +107,67 @@ function NewUserPane(props: NewUserPaneProps) {
 
         if (!handleEmailCheck()) return;
 
-        const newUser = new User(
-            0,
+        const user = new User(
+            props.selectedUser?.id ?? 0,
             Role[role],
             Type[type],
             name,
             surname,
             username,
-            undefined,
-            undefined,
-            undefined,
+            props.selectedUser?.registrationToken,
+            props.selectedUser?.tokenExpiryDate,
+            props.selectedUser?.registrationDate,
             hoursPerDay,
             costPerHour,
             active,
             managesTickets,
             managesOrders,
-            email,
+            email === "" ? undefined : email,
             phone,
             car,
             costPerKm
         );
 
-        signUpApis.createUser(newUser)
+        if (props.selectedUser) {
+            userApis.updateUser(user)
+                .then(_ => {
+                    setSavedUser(true);
+                    props.afterSubmit(user);
+
+                    // if own user changed, refresh it
+                    if (user.id === props.user.id) {
+                        props.setDirtyUser(true);
+                    }
+                })
+                .catch(err => console.error(err));
+        } else {
+            signUpApis.createUser(user)
+                .then(user => props.afterSubmit(user))
+                .catch(err => console.error(err));
+        }
+    }
+
+    function resetPassword(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        event.preventDefault();
+
+        userApis.resetPassword(props.selectedUser!.id)
             .then(user => {
-                props.setDirty(true);
-                props.selectUser(user);
+                setSavedUser(true);
+                props.afterSubmit(user);
+
+                // if own user changed, refresh it
+                if (user.id === props.user.id) {
+                    props.setDirtyUser(true);
+                }
             })
-            .catch(err => console.error(err))
+            .catch(err => console.error(err));
     }
 
     return (
         <Form>
             <Row className="glossy-background">
                 <Row>
-                    <h3>Nuovo utente</h3>
+                    <h3>{props.selectedUser ? `${props.selectedUser.name} ${props.selectedUser.surname}` : "Nuovo utente"}</h3>
                 </Row>
 
                 <Row className="d-flex align-items-center">
@@ -149,7 +212,8 @@ function NewUserPane(props: NewUserPaneProps) {
                 </Row>
 
                 <Row>
-                    <InputGroup className="mt-2">
+                    {/* Cannot update a user's name or surname */}
+                    {!props.selectedUser && <InputGroup className="mt-2">
                         <InputGroup.Text><Person/></InputGroup.Text>
                         <FloatingLabel controlId="floatingInput" label="Nome">
                             <Form.Control type="text" placeholder="Nome" isInvalid={invalidName} value={name}
@@ -159,8 +223,8 @@ function NewUserPane(props: NewUserPaneProps) {
                                               setUsername(User.usernameFromName(newName, surname));
                                           }}/>
                         </FloatingLabel>
-                    </InputGroup>
-                    <InputGroup className="mt-2">
+                    </InputGroup>}
+                    {!props.selectedUser && <InputGroup className="mt-2">
                         <InputGroup.Text><Person/></InputGroup.Text>
                         <FloatingLabel controlId="floatingInput" label="Cognome">
                             <Form.Control type="text" placeholder="Cognome" isInvalid={invalidSurname} value={surname}
@@ -170,13 +234,14 @@ function NewUserPane(props: NewUserPaneProps) {
                                               setUsername(User.usernameFromName(name, newSurname));
                                           }}/>
                         </FloatingLabel>
-                    </InputGroup>
+                    </InputGroup>}
+
                     <InputGroup className="mt-2">
                         <InputGroup.Text><PersonBadge/></InputGroup.Text>
                         <FloatingLabel controlId="floatingInput" label="Accesso">
                             <Form.Select value={role}
                                          onChange={ev => setRole(ev.target.value as "user" | "admin")}>
-                                {User.allRoles.filter(role => role !== Role.dev).map(role => {
+                                {User.allRoles.filter(role => props.selectedUser?.role === Role.dev ? true : role !== Role.dev).map(role => {
                                     return (
                                         <option key={role.toString()}
                                                 disabled={role === Role.dev}
@@ -250,15 +315,20 @@ function NewUserPane(props: NewUserPaneProps) {
                         </FloatingLabel>
                     </InputGroup>
                 </Row>
-            </Row>
 
+                {props.selectedUser?.registrationDate &&
+                    <RegisteredSection user={props.selectedUser} resetPassword={resetPassword}/>}
+                {props.selectedUser && !props.selectedUser.registrationDate &&
+                    <NoRegistrationSection user={props.selectedUser}/>}
+
+            </Row>
             <Row className="d-flex justify-content-center my-4">
                 <Col sm={4} className="d-flex justify-content-center">
-                    <GlossyButton icon={PersonAdd} onClick={handleSubmit}>Crea utente</GlossyButton>
+                    <GlossyButton icon={submitButtonIcon} onClick={handleSubmit}>{submitButtonTitle}</GlossyButton>
                 </Col>
             </Row>
         </Form>
     );
 }
 
-export default NewUserPane;
+export default UserPane;

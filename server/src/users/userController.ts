@@ -11,7 +11,8 @@ import {
     saveUserPassword,
     getFullUser,
     getAllMachineUsers,
-    resetPassword
+    resetPassword,
+    getRegisteringUser
 } from "./userService";
 import {body, param, validationResult} from "express-validator";
 import {UserNotFound, UserWithSameUsernameError} from "./userErrors";
@@ -316,7 +317,7 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdminis
             const userId = parseInt(req.params.userId);
             await resetPassword(userId);
 
-            const updatedUser = await getUser(userId);
+            const updatedUser = await getRegisteringUser(userId);
             if (!updatedUser) {
                 res.status(UserNotFound.code).json(new UserNotFound());
                 return

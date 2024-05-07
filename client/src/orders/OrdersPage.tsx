@@ -79,7 +79,7 @@ function OrdersPage(props: OrdersPageProps) {
         setOrders(orders => {
             const index = orders.findIndex(o => o.id === oldOrderId && o.year === oldYear);
 
-            if (index === -1) {     // not found , won't happen
+            if (index === -1) {     // not found, won't happen
                 orders.push(updatedOrder);
             } else if (oldOrderId === updatedOrder.id && oldYear === updatedOrder.year) {   // did not update id nor year
                 orders[index] = updatedOrder;

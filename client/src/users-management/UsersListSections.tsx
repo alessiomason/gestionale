@@ -24,7 +24,7 @@ function RegisteredSection(props: RegisteredSectionProps) {
                     L'utente si è registrato {dayjs(props.user.registrationDate).format("dddd LL [alle] LT")}.
                 </Col>
             </Row>
-            <Row className="mt-3">
+            <Row className="mt-3 mb-2">
                 <Col/>
                 <Col sm={8} className="d-flex justify-content-center">
                     <GlossyButton icon={Key} onClick={props.resetPassword}>Reimposta password</GlossyButton>
@@ -50,7 +50,7 @@ function NoRegistrationSection(props: NoRegistrationSectionProps) {
 
     return (
         <>
-            <Row className="mt-4">
+            <Row className="mt-5">
                 <h3>Registrazione dell'utente</h3>
                 <p>Invia questo link all'utente per completare la procedura di registrazione.</p>
                 <p>Il link scade 2 giorni dopo la generazione:
@@ -58,7 +58,7 @@ function NoRegistrationSection(props: NoRegistrationSectionProps) {
             </Row>
 
             <Row>
-                <InputGroup className="mt-2">
+                <InputGroup className="my-2">
                     <InputGroup.Text><Link45deg/></InputGroup.Text>
                     <FloatingLabel controlId="floatingInput" label="Link di registrazione">
                         <Form.Control type="text"
