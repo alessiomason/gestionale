@@ -37,9 +37,43 @@ function RegisteredSection(props: RegisteredSectionProps) {
 
 interface NoRegistrationSectionProps {
     readonly user: User
+    readonly resetPassword: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
 }
 
 function NoRegistrationSection(props: NoRegistrationSectionProps) {
+    const expired = dayjs().isAfter(dayjs(props.user.tokenExpiryDate!));
+
+    return (
+        <>
+            {expired ? <ExpiredRegistrationTokenSection user={props.user} resetPassword={props.resetPassword}/> :
+                <OfferRegistrationSection user={props.user}/>}
+        </>
+    );
+}
+
+function ExpiredRegistrationTokenSection(props: NoRegistrationSectionProps) {
+    return (
+        <>
+            <Row className="mt-5">
+                <h3>Registrazione dell'utente</h3>
+                <p>Il token di registrazione per questo utente è scaduto. Rigeneralo e inviaglielo nuovamente.</p>
+            </Row>
+            <Row className="mt-3 mb-2">
+                <Col/>
+                <Col sm={8} className="d-flex justify-content-center">
+                    <GlossyButton icon={Key} onClick={props.resetPassword}>Rigenera token</GlossyButton>
+                </Col>
+                <Col/>
+            </Row>
+        </>
+    );
+}
+
+interface OfferRegistrationSectionProps {
+    readonly user: User
+}
+
+function OfferRegistrationSection(props: OfferRegistrationSectionProps) {
     const registrationLink = `${publicUrl}signup/${props.user.registrationToken}`;
     const [copied, setCopied] = useState(false);
 

@@ -319,7 +319,7 @@ function UserPane(props: UserPaneProps) {
                 {props.selectedUser?.registrationDate &&
                     <RegisteredSection user={props.selectedUser} resetPassword={resetPassword}/>}
                 {props.selectedUser && !props.selectedUser.registrationDate &&
-                    <NoRegistrationSection user={props.selectedUser}/>}
+                    <NoRegistrationSection user={props.selectedUser} resetPassword={resetPassword}/>}
 
             </Row>
             <Row className="d-flex justify-content-center my-4">
