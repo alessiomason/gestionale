@@ -6,6 +6,7 @@ import {
     Clipboard,
     ClipboardCheck,
     ClipboardX,
+    FileEarmark,
     JournalBookmarkFill,
     PencilSquare,
     Person,
@@ -16,6 +17,7 @@ import {formatDate} from "../functions";
 import EditOrderPane from "./EditOrderPane";
 import {User} from "../models/user";
 import orderApis from "../api/orderApis";
+import {useNavigate} from "react-router-dom";
 
 interface OrderPaneProps {
     readonly user: User
@@ -25,7 +27,9 @@ interface OrderPaneProps {
 }
 
 function OrderPane(props: OrderPaneProps) {
+    const attachmentOrderName = `${props.order.id}-${props.order.year.toString().substring(2)}`;
     const [modifying, setModifying] = useState(false);
+    const navigate = useNavigate();
 
     // exit editing mode when selecting another order
     useEffect(() => {
@@ -131,23 +135,20 @@ function OrderPane(props: OrderPaneProps) {
                     <Col>{formatDate(props.order.clearingDate)}</Col>
                 </Row>}
             </Row>
-
+            
             <Row className="mt-3 mb-4">
-                <Col/>
-                <Col sm={4} className="d-flex justify-content-center">
+                <Col className="d-flex justify-content-evenly">
                     <GlossyButton icon={PencilSquare} onClick={() => setModifying(true)}>
                         Modifica l'ordine
                     </GlossyButton>
+                    {!props.order.clearedBy && !props.order.clearingDate &&
+                        <GlossyButton icon={ClipboardCheck} onClick={clearOrder}>Evadi l'ordine</GlossyButton>}
+                    {props.order.clearedBy && props.order.clearingDate &&
+                        <GlossyButton icon={ClipboardX} onClick={unclearOrder}>Non evaso</GlossyButton>}
+                    <GlossyButton icon={FileEarmark} onClick={() => navigate(`/order/${attachmentOrderName}/pdf`)}>
+                        Visualizza allegato
+                    </GlossyButton>
                 </Col>
-                {!props.order.clearedBy && !props.order.clearingDate &&
-                    <Col sm={4} className="d-flex justify-content-center">
-                        <GlossyButton icon={ClipboardCheck} onClick={clearOrder}>Evadi l'ordine</GlossyButton>
-                    </Col>}
-                {props.order.clearedBy && props.order.clearingDate &&
-                    <Col sm={4} className="d-flex justify-content-center">
-                        <GlossyButton icon={ClipboardX} onClick={unclearOrder}>Marca l'ordine come non evaso</GlossyButton>
-                    </Col>}
-                <Col/>
             </Row>
 
         </div>
