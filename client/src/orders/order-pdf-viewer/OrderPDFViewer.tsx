@@ -4,7 +4,7 @@ import "./OrderPDFViewer.css";
 
 function OrderPDFViewer() {
     const {orderName} = useParams();
-    const attachmentLocation = `${process.env.ORDERS_PDF_FOLDER}/Ordine_${orderName}.pdf`;
+    const attachmentLocation = `${process.env.REACT_APP_ORDERS_PDF_FOLDER}/Ordine_${orderName}.pdf`;
 
     return (
         <object title={orderName} data={attachmentLocation} className="pdf-viewer">
