@@ -55,6 +55,7 @@ function EditOrderPane(props: EditOrderPaneProps) {
             supplier,
             description,
             props.order?.by ?? props.user,
+            props.order?.uploadedFile ?? false,
             scheduledDeliveryDate,
             props.order?.clearedBy,
             props.order?.clearingDate

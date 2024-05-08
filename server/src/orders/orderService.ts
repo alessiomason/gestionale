@@ -84,6 +84,7 @@ async function parseOrder(order: any) {
         order.supplier,
         order.description,
         by,
+        !!order.uploadedFile,
         order.scheduledDeliveryDate,
         clearedBy,
         order.clearingDate ? order.clearingDate : undefined     // if null, set undefined
@@ -165,6 +166,7 @@ export async function createOrder(newOrder: NewOrder) {
         newOrder.supplier,
         newOrder.description,
         byUser,
+        false,
         newOrder.scheduledDeliveryDate,
         clearedByUser,
         newOrder.clearingDate

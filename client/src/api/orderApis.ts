@@ -12,6 +12,7 @@ function rebuildOrder(order: Order) {
         order.supplier,
         order.description,
         order.by,
+        order.uploadedFile,
         order.scheduledDeliveryDate,
         order.clearedBy,
         order.clearingDate

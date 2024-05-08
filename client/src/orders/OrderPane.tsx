@@ -135,7 +135,7 @@ function OrderPane(props: OrderPaneProps) {
                     <Col>{formatDate(props.order.clearingDate)}</Col>
                 </Row>}
             </Row>
-            
+
             <Row className="mt-3 mb-4">
                 <Col className="d-flex justify-content-evenly">
                     <GlossyButton icon={PencilSquare} onClick={() => setModifying(true)}>
@@ -145,9 +145,10 @@ function OrderPane(props: OrderPaneProps) {
                         <GlossyButton icon={ClipboardCheck} onClick={clearOrder}>Evadi l'ordine</GlossyButton>}
                     {props.order.clearedBy && props.order.clearingDate &&
                         <GlossyButton icon={ClipboardX} onClick={unclearOrder}>Non evaso</GlossyButton>}
-                    <GlossyButton icon={FileEarmark} onClick={() => navigate(`/order/${attachmentOrderName}/pdf`)}>
-                        Visualizza allegato
-                    </GlossyButton>
+                    {props.order.uploadedFile &&
+                        <GlossyButton icon={FileEarmark} onClick={() => navigate(`/order/${attachmentOrderName}/pdf`)}>
+                            Visualizza allegato
+                        </GlossyButton>}
                 </Col>
             </Row>
 
