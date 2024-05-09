@@ -3,7 +3,7 @@
   "author": "Alessio Mason",
   "description": "A web application to manage jobs and register worked hours",
   "license": "MIT",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "private": true,
   "scripts": {
     "start": "cd server && npm start",

@@ -7,6 +7,10 @@
     animation: appear-animation .25s ease .125s 1 normal forwards;
 }
 
+th.comparable {
+    cursor: pointer;
+}
+
 .cleared > td {
     color: forestgreen;
 }

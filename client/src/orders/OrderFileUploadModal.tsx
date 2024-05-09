@@ -1,10 +1,9 @@
 import {Order} from "../models/order";
 import {Col, Form, Modal, Row} from "react-bootstrap";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import GlossyButton from "../buttons/GlossyButton";
 import {CloudUpload} from "react-bootstrap-icons";
 import "./OrderFileUploadModal.css";
-import {openAsBlob} from "node:fs";
 import orderApis from "../api/orderApis";
 
 interface OrderFileUploadModalProps {
