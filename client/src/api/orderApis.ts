@@ -74,7 +74,7 @@ async function createOrder(order: Order) {
     } else await handleApiError(response);
 }
 
-async function updateOrder(id:number, year: number, order: Order) {
+async function updateOrder(id: number, year: number, order: Order) {
     const updatedOrder = {
         id: order.id,
         year: order.year,
@@ -103,7 +103,7 @@ async function updateOrder(id:number, year: number, order: Order) {
 }
 
 async function clearOrder(order: Order) {
-    const response = await fetch(new URL(`orders/${order.year}/${order.id}`, apiUrl), {
+    const response = await fetch(new URL(`orders/${order.year}/${order.id}/clear`, apiUrl), {
         method: 'PATCH',
         credentials: 'include',
         headers: {
@@ -132,7 +132,21 @@ async function unclearOrder(order: Order) {
     } else await handleApiError(response);
 }
 
-async function deleteOrder(id:number, year: number) {
+async function uploadedOrderFile(order: Order) {
+    const response = await fetch(new URL(`orders/${order.year}/${order.id}/file`, apiUrl), {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+    });
+    if (response.ok) {
+        return true;
+    } else await handleApiError(response);
+}
+
+async function deleteOrder(id: number, year: number) {
     const response = await fetch(new URL(`orders/${year}/${id}`, apiUrl), {
         method: 'DELETE',
         credentials: 'include',
@@ -145,5 +159,14 @@ async function deleteOrder(id:number, year: number) {
     } else await handleApiError(response);
 }
 
-const orderApis = {getAllOrders, getOrder, createOrder, updateOrder, clearOrder, unclearOrder, deleteOrder};
+const orderApis = {
+    getAllOrders,
+    getOrder,
+    createOrder,
+    updateOrder,
+    clearOrder,
+    unclearOrder,
+    uploadedOrderFile,
+    deleteOrder
+};
 export default orderApis;

@@ -197,6 +197,12 @@ export async function unclearOrder(id: number, year: number) {
         .update({clearedById: null, clearingDate: null});
 }
 
+export async function uploadedOrderFile(id: number, year: number) {
+    await knex("orders")
+        .where({id, year})
+        .update({uploadedFile: true});
+}
+
 export async function deleteOrder(id: number, year: number) {
     await knex("orders")
         .where({id, year})
