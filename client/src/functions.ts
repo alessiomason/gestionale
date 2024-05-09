@@ -1,7 +1,6 @@
 import {Type, User} from "./models/user";
 import ExcelJS from "exceljs";
 import dayjs from "dayjs";
-import {Order} from "./models/order";
 
 // Round a number to the specified number of `fractionDigits`.
 export function humanize(x: number, fractionDigits: number) {
@@ -47,12 +46,6 @@ export function compareUsers(a: User, b: User) {
     // sort by surname and name
     const surnameComparison = a.surname.localeCompare(b.surname);
     return surnameComparison !== 0 ? surnameComparison : a.name.localeCompare(b.name);
-}
-
-// Compares orders, sorting by year and id in descending order.
-export function compareOrders(a: Order, b: Order) {
-    const yearComparison = b.year - a.year;
-    return yearComparison === 0 ? b.id - a.id : yearComparison;
 }
 
 // Exports an Excel file and downloads it.
