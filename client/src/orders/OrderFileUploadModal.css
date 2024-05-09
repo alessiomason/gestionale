@@ -1,0 +1,26 @@
+::file-selector-button {
+    padding: 10px 30px;
+    color: rgba(57, 58, 57, 0.8);
+    /* From https://css.glass */
+    background: rgba(165, 165, 165, 0.33);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 2px solid rgba(165, 165, 165, 0.6);
+    transition: all .15s ease-in-out;
+}
+
+::file-selector-button:hover,
+::file-selector-button:active,
+::file-selector-button:focus-visible {
+    color: #393a39 !important;
+    cursor: pointer;
+    /* From https://css.glass */
+    background: rgba(165, 165, 165, 0.33) !important;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 2px solid rgba(89, 89, 89, 0.6) !important;
+}
