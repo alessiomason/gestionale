@@ -54,7 +54,7 @@ The server requires several environment variables to operate. These are usually 
 	- `DB_NAME`: the name of the database;
 	- `SESSION_SECRET`: the secret string used to sign the session ID cookie;
 	- `DB_BACKUP_UPLOAD`
-  - `REACT_APP_ORDERS_PDF_FOLDER`
+    - `REACT_APP_ORDERS_PDF_FOLDER`
 
 - Optional
 	- `PORT`: the port on which the server has to be served; defaults to `3001` if absent.

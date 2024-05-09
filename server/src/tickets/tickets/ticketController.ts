@@ -120,6 +120,16 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler, canMana
                         // followed guide at https://medium.com/@nickroach_50526/sending-emails-with-node-js-using-smtp-gmail-and-oauth2-316fe9c790a1#
                         // additional step at https://github.com/nodemailer/nodemailer/issues/266#issuecomment-542791806
 
+                        const oauth2Client = new OAuth2Client(
+                            process.env.EMAIL_CLIENT_ID, // ClientID
+                            process.env.EMAIL_CLIENT_SECRET, // Client Secret
+                            "https://developers.google.com/oauthplayground" // Redirect URL
+                        );
+                        oauth2Client.setCredentials({
+                            refresh_token: process.env.EMAIL_REFRESH_TOKEN
+                        });
+                        const accessToken = (await oauth2Client.getAccessToken()).token;
+
                         const ticketDuration = dayjs.duration(dayjs(ticket.endTime).diff(dayjs(ticket.startTime)));
                         const ticketCompany = await ticket.company.attachProgress();
                         let remainingHours = ticketCompany.orderedHours - ticketCompany.usedHours;
@@ -146,32 +156,38 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler, canMana
                             Inizio: ${dayjs(ticket.startTime).format("LL [alle] LT")}\n
                             Fine: ${dayjs(ticket.endTime).format("LL [alle] LT")}\n
                             Durata: ${ticketDuration.humanize()}\n
-                            Ore di assistenza ancora disponibili: ${humanize(remainingHours, 2)} ore\n\n
-                            TLF Technology s.r.l. a Socio Unico\n
-                            Viale Artigianato, n°4 - 12051 Alba (CN) Italia\n
-                            Tel. +39 0173 060521 /// Fax +39 0173 061055 /// www.tlftechnology.it`;
+                            Ore di assistenza ancora disponibili: ${humanize(remainingHours, 2)} ore`;
 
                         const smtpTransport = nodemailer.createTransport({
-                            service: "Outlook365",
+                            host: "smtp.gmail.com",
+                            port: 465,
+                            logger: true,
+                            debug: true,
                             secure: true,
                             auth: {
-                                user: process.env.EMAIL,
-                                pass: process.env.EMAIL_PASSWORD
+                                type: "OAuth2",
+                                user: "ennio.mason@technomake.it",
+                                clientId: process.env.EMAIL_CLIENT_ID,
+                                clientSecret: process.env.EMAIL_CLIENT_SECRET,
+                                refreshToken: process.env.EMAIL_REFRESH_TOKEN,
+                                accessToken: accessToken ?? undefined   // if null, set undefined
                             },
                             tls: {
-                                ciphers: "SSLv3"
+                                rejectUnauthorized: false
                             }
                         });
+                        console.log(smtpTransport)
 
                         const mailOptions: Mail.Options = {
-                            from: process.env.EMAIL,
+                            from: "ennio.mason@technomake.it",
                             to: ticket.company.email,
                             subject: "Report ticket di assistenza",
                             html: mailHTML,
                             text: mailText
                         };
 
-                        await smtpTransport.sendMail(mailOptions);
+                        const info = await smtpTransport.sendMail(mailOptions);
+                        console.log(info)
                     }
                 } else {
                     res.status(TicketAlreadyClosed.code).json(new TicketAlreadyClosed())
