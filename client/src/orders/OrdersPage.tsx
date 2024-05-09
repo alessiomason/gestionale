@@ -10,7 +10,7 @@ import {
     CaretRight,
     CaretUpFill,
     ClipboardPlus,
-    ClipboardX
+    ClipboardX, Funnel
 } from "react-bootstrap-icons";
 import Loading from "../Loading";
 import EditOrderPane from "./EditOrderPane";
@@ -19,6 +19,7 @@ import OrderPane from "./OrderPane";
 import "./OrdersPage.css";
 import {formatDate} from "../functions";
 import dayjs from "dayjs";
+import OrdersFiltersModal from "./OrdersFiltersModal";
 
 interface OrdersPageProps {
     readonly user: User
@@ -37,6 +38,11 @@ function OrdersPage(props: OrdersPageProps) {
     const [showingNewOrderPane, setShowingNewOrderPane] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState<Order>();
     const shrunkTable = showingNewOrderPane || selectedOrder !== undefined;
+
+    const [showFilterModal, setShowFilterModal] = useState(false);
+    const [filteringOrderName, setFilteringOrderName] = useState<string | undefined>(undefined);
+    const [filteringJobId, setFilteringJobId] = useState<string | undefined>(undefined);
+    const [filteringSupplier, setFilteringSupplier] = useState<string | undefined>(undefined);
 
     const [comparison, setComparison] = useState<PossibleSortingOptions>("name");
     const [comparisonOrder, setComparisonOrder] = useState<"asc" | "desc">("desc");
@@ -130,6 +136,12 @@ function OrdersPage(props: OrdersPageProps) {
         }
     }
 
+    function filterOrders(value: Order) {
+        return (filteringOrderName === undefined || value.name.startsWith(filteringOrderName)) &&
+            (filteringJobId === undefined || value.job.id.startsWith(filteringJobId)) &&
+            (filteringSupplier === undefined || value.supplier.toLowerCase().includes(filteringSupplier.toLowerCase()));
+    }
+
     function showCaret(header: PossibleSortingOptions) {
         if (comparison === header) {
             if (comparisonOrder === "asc") {
@@ -193,13 +205,29 @@ function OrdersPage(props: OrdersPageProps) {
                 <h1 className="page-title">Ordini</h1>
             </Row>
 
-            <Row>
-                <Col sm={shrunkTable ? 4 : 0}
-                     className={shrunkTable ? "orders-page-first-column" : "me-4 orders-page-first-column"}>
+            <Row className="me-2">
+                <Col sm={4}>
                     <GlossyButton icon={shrunkTable ? ClipboardX : ClipboardPlus}
                                   onClick={handleOpenCloseButton} className="new-user-button">
                         {shrunkTable ? "Chiudi" : "Nuovo ordine"}
                     </GlossyButton>
+                </Col>
+                {!shrunkTable && <Col/>}
+                {!shrunkTable && <Col sm={4}>
+                    <GlossyButton icon={Funnel} onClick={() => setShowFilterModal(true)} className="new-user-button">
+                        Filtri
+                    </GlossyButton>
+                </Col>}
+                <OrdersFiltersModal show={showFilterModal} setShow={setShowFilterModal}
+                                    filteringOrderName={filteringOrderName}
+                                    setFilteringOrderName={setFilteringOrderName} filteringJobId={filteringJobId}
+                                    setFilteringJobId={setFilteringJobId} filteringSupplier={filteringSupplier}
+                                    setFilteringSupplier={setFilteringSupplier}/>
+            </Row>
+
+            <Row>
+                <Col sm={shrunkTable ? 4 : 0}
+                     className={shrunkTable ? "orders-page-first-column" : "me-4 orders-page-first-column"}>
 
                     {loading ?
                         <Loading/> :
@@ -240,7 +268,9 @@ function OrdersPage(props: OrdersPageProps) {
                                 </thead>
 
                                 <tbody>
-                                {orders.sort(compareOrders)
+                                {orders
+                                    .filter(filterOrders)
+                                    .sort(compareOrders)
                                     .slice(pageNumber * 100, (pageNumber + 1) * 100)
                                     .map(order => {
                                         let className = "";
