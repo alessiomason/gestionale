@@ -168,18 +168,22 @@ function OrdersPage(props: OrdersPageProps) {
 
     function compareOrders(a: Order, b: Order) {
         switch (comparison) {
-            case "name":
+            case "name": {
                 const nameComparison = compareOrdersByName(a, b);
                 return comparisonOrder === "asc" ? nameComparison : -1 * nameComparison;
-            case "job":
+            }
+            case "job": {
                 const jobComparison = a.job.id.localeCompare(b.job.id);
                 return comparisonOrder === "asc" ? jobComparison : -1 * jobComparison;
-            case "supplier":
+            }
+            case "supplier": {
                 const supplierComparison = a.supplier.localeCompare(b.supplier);
                 return comparisonOrder === "asc" ? supplierComparison : -1 * supplierComparison;
-            case "deliveryDate":
+            }
+            case "deliveryDate": {
                 const deliveryDateComparison = compareOrdersByDeliveryDate(a, b);
                 return comparisonOrder === "asc" ? deliveryDateComparison : -1 * deliveryDateComparison;
+            }
         }
     }
 
