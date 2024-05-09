@@ -2,7 +2,7 @@
 // This file is not part of the React client, but is meant to be uploaded on an Apache server where the uploaded order
 // files are stored.
 
-header("Access-Control-Allow-Origin: http://localhost:3000");
+header("Access-Control-Allow-Origin: https://gestionale.tlftechnology.it");
 
 if (!isset($_FILES["orderFile"])) {
     http_response_code(422);
