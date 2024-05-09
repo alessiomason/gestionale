@@ -3,18 +3,28 @@ import {Order} from "../models/order";
 import orderApis from "../api/orderApis";
 import {Col, Row, Table} from "react-bootstrap";
 import GlossyButton from "../buttons/GlossyButton";
-import {ArrowLeftSquare, ArrowRightSquare, ClipboardPlus, ClipboardX} from "react-bootstrap-icons";
+import {
+    ArrowLeftSquare,
+    ArrowRightSquare,
+    CaretDownFill,
+    CaretRight,
+    CaretUpFill,
+    ClipboardPlus,
+    ClipboardX
+} from "react-bootstrap-icons";
 import Loading from "../Loading";
 import EditOrderPane from "./EditOrderPane";
 import {User} from "../models/user";
 import OrderPane from "./OrderPane";
 import "./OrdersPage.css";
-import {compareOrders, formatDate} from "../functions";
+import {formatDate} from "../functions";
 import dayjs from "dayjs";
 
 interface OrdersPageProps {
     readonly user: User
 }
+
+type PossibleSortingOptions = "name" | "job" | "supplier" | "deliveryDate";
 
 function OrdersPage(props: OrdersPageProps) {
     const [orders, setOrders] = useState<Order[]>([]);
@@ -27,6 +37,9 @@ function OrdersPage(props: OrdersPageProps) {
     const [showingNewOrderPane, setShowingNewOrderPane] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState<Order>();
     const shrunkTable = showingNewOrderPane || selectedOrder !== undefined;
+
+    const [comparison, setComparison] = useState<PossibleSortingOptions>("name");
+    const [comparisonOrder, setComparisonOrder] = useState<"asc" | "desc">("desc");
 
     useEffect(() => {
         if (dirty) {
@@ -117,6 +130,63 @@ function OrdersPage(props: OrdersPageProps) {
         }
     }
 
+    function showCaret(header: PossibleSortingOptions) {
+        if (comparison === header) {
+            if (comparisonOrder === "asc") {
+                return <CaretUpFill/>;
+            }
+            return <CaretDownFill/>;
+        }
+        return <CaretRight/>;
+    }
+
+    function selectComparison(choice: PossibleSortingOptions) {
+        if (comparison === choice) {
+            setComparisonOrder(prevOrder => prevOrder === "asc" ? "desc" : "asc");
+        } else {
+            setComparison(choice);
+            setComparisonOrder(choice === "supplier" ? "asc" : "desc");
+        }
+    }
+
+    function compareOrdersByName(a: Order, b: Order) {
+        const yearComparison = a.year - b.year;
+        return yearComparison === 0 ? a.id - b.id : yearComparison;
+    }
+
+    function compareOrdersByDeliveryDate(a: Order, b: Order) {
+        if (a.scheduledDeliveryDate && b.scheduledDeliveryDate) {
+            return a.scheduledDeliveryDate.localeCompare(b.scheduledDeliveryDate);
+        } else if (a.scheduledDeliveryDate) {
+            return -1;
+        } else if (b.scheduledDeliveryDate) {
+            return 1;
+        }
+
+        return 0;
+    }
+
+    function compareOrders(a: Order, b: Order) {
+        switch (comparison) {
+            case "name": {
+                const nameComparison = compareOrdersByName(a, b);
+                return comparisonOrder === "asc" ? nameComparison : -1 * nameComparison;
+            }
+            case "job": {
+                const jobComparison = a.job.id.localeCompare(b.job.id);
+                return comparisonOrder === "asc" ? jobComparison : -1 * jobComparison;
+            }
+            case "supplier": {
+                const supplierComparison = a.supplier.localeCompare(b.supplier);
+                return comparisonOrder === "asc" ? supplierComparison : -1 * supplierComparison;
+            }
+            case "deliveryDate": {
+                const deliveryDateComparison = compareOrdersByDeliveryDate(a, b);
+                return comparisonOrder === "asc" ? deliveryDateComparison : -1 * deliveryDateComparison;
+            }
+        }
+    }
+
     return (
         <>
             <Row>
@@ -136,27 +206,33 @@ function OrdersPage(props: OrdersPageProps) {
                         <Row className="glossy-background w-100">
                             <Row className="mb-2">
                                 <Col className="d-flex justify-content-between">
-                                    <ArrowLeftSquare className={decreasablePageNumber ? "clickable-arrow" : "unclickable-arrow"}
-                                                     onClick={decreasePageNumber}/>
+                                    <ArrowLeftSquare
+                                        className={decreasablePageNumber ? "clickable-arrow" : "unclickable-arrow"}
+                                        onClick={decreasePageNumber}/>
                                     <p className="text-center">
                                         Pagina {pageNumber + 1} di {Math.ceil(orders.length / 100)}
                                     </p>
-                                    <ArrowRightSquare className={increasablePageNumber ? "clickable-arrow" : "unclickable-arrow"}
-                                                      onClick={increasePageNumber}/>
+                                    <ArrowRightSquare
+                                        className={increasablePageNumber ? "clickable-arrow" : "unclickable-arrow"}
+                                        onClick={increasePageNumber}/>
                                 </Col>
                             </Row>
 
                             <Table hover responsive>
                                 <thead>
                                 <tr>
-                                    <th>Ordine</th>
-                                    <th>Commessa</th>
+                                    <th className="comparable"
+                                        onClick={() => selectComparison("name")}>Ordine {showCaret("name")}</th>
+                                    <th className="comparable"
+                                        onClick={() => selectComparison("job")}>Commessa {showCaret("job")}</th>
                                     {!shrunkTable && <th>Data</th>}
-                                    <th>Fornitore</th>
+                                    <th className="comparable"
+                                        onClick={() => selectComparison("supplier")}>Fornitore {showCaret("supplier")}</th>
                                     {!shrunkTable && <>
                                         <th>Descrizione</th>
                                         <th>Presa in carico da</th>
-                                        <th>Consegna</th>
+                                        <th className="comparable"
+                                            onClick={() => selectComparison("deliveryDate")}>Consegna {showCaret("deliveryDate")}</th>
                                         <th>Evasa da</th>
                                         <th>Evasa il</th>
                                     </>}
