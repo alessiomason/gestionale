@@ -33,8 +33,8 @@ export async function getAllUsers() {
             user.phone,
             user.car,
             parseFloat(user.costPerKm)
-        )
-    })
+        );
+    });
 }
 
 export async function getAllMachineUsers() {
@@ -67,8 +67,8 @@ export async function getAllMachineUsers() {
             user.phone,
             user.car,
             parseFloat(user.costPerKm)
-        )
-    })
+        );
+    });
 }
 
 export async function getUser(id: number) {
@@ -101,7 +101,38 @@ export async function getUser(id: number) {
         user.phone,
         user.car,
         parseFloat(user.costPerKm)
-    )
+    );
+}
+
+export async function getRegisteringUser(id: number) {
+    const user = await knex("users")
+        .where({id})
+        .first();
+
+    if (!user) return
+
+    return new User(
+        user.id,
+        user.role,
+        user.type,
+        user.name,
+        user.surname,
+        user.username,
+        undefined,
+        undefined,
+        user.registrationToken,
+        user.tokenExpiryDate,
+        undefined,
+        parseFloat(user.hoursPerDay),
+        parseFloat(user.costPerHour),
+        !!user.active,
+        !!user.managesTickets,
+        !!user.managesOrders,
+        user.email,
+        user.phone,
+        user.car,
+        parseFloat(user.costPerKm)
+    );
 }
 
 export async function getFullUser(id: number) {
@@ -134,7 +165,7 @@ export async function getFullUser(id: number) {
         user.phone,
         user.car,
         user.costPerKm
-    )
+    );
 }
 
 export async function getUserFromUsername(username: string) {
@@ -167,7 +198,7 @@ export async function getUserFromUsername(username: string) {
         user.phone,
         user.car,
         user.costPerKm
-    )
+    );
 }
 
 export async function getUserFromRegistrationToken(registrationToken: string) {

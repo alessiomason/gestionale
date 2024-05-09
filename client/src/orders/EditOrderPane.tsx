@@ -1,13 +1,23 @@
 import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import {Order} from "../models/order";
 import React, {useState} from "react";
-import {Buildings, Calendar, Clipboard, Floppy, JournalBookmarkFill, Sticky, Trash} from "react-bootstrap-icons";
+import {
+    Buildings,
+    Calendar,
+    Clipboard,
+    CloudUpload,
+    Floppy,
+    JournalBookmarkFill,
+    Sticky,
+    Trash
+} from "react-bootstrap-icons";
 import WorkedHoursNewJobModal from "../workedHours/WorkedHoursNewJobModal";
 import {Job} from "../models/job";
 import GlossyButton from "../buttons/GlossyButton";
 import orderApis from "../api/orderApis";
 import {User} from "../models/user";
 import dayjs from "dayjs";
+import OrderFileUploadModal from "./OrderFileUploadModal";
 
 interface EditOrderPaneProps {
     readonly user: User
@@ -22,6 +32,7 @@ function EditOrderPane(props: EditOrderPaneProps) {
     const [year, setYear] = useState(props.order?.year ?? parseInt(dayjs().format("YYYY")));
     const [orderDate, setOrderDate] = useState(props.order?.date ?? "");
     const [showNewJobModal, setShowNewJobModal] = useState(false);
+    const [showFileUploadModal, setShowFileUploadModal] = useState(false);
     const [job, setJob] = useState<Job | undefined>(props.order?.job);
     const [supplier, setSupplier] = useState(props.order?.supplier ?? "");
     const [description, setDescription] = useState(props.order?.description ?? "");
@@ -29,9 +40,14 @@ function EditOrderPane(props: EditOrderPaneProps) {
 
     const [errorMessage, setErrorMessage] = useState("");
 
-    function openModal(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    function openJobsModal(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
         setShowNewJobModal(true);
+    }
+
+    function openFileUploadModal(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        event.preventDefault();
+        setShowFileUploadModal(true);
     }
 
     function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
@@ -55,6 +71,7 @@ function EditOrderPane(props: EditOrderPaneProps) {
             supplier,
             description,
             props.order?.by ?? props.user,
+            props.order?.uploadedFile ?? false,
             scheduledDeliveryDate,
             props.order?.clearedBy,
             props.order?.clearingDate
@@ -131,7 +148,7 @@ function EditOrderPane(props: EditOrderPaneProps) {
 
                 <Row className="mt-3">
                     <Col sm={4}>
-                        <GlossyButton icon={JournalBookmarkFill} onClick={openModal}>Seleziona
+                        <GlossyButton icon={JournalBookmarkFill} onClick={openJobsModal}>Seleziona
                             commessa</GlossyButton>
                         <WorkedHoursNewJobModal show={showNewJobModal} setShow={setShowNewJobModal}
                                                 selectJob={job => setJob(job)}/>
@@ -172,14 +189,17 @@ function EditOrderPane(props: EditOrderPaneProps) {
                 </Row>
             </Row>
 
+            {props.order &&
+                <OrderFileUploadModal order={props.order} show={showFileUploadModal} setShow={setShowFileUploadModal}
+                                      afterSubmit={props.afterSubmit}/>}
             <Row className="d-flex justify-content-center my-4">
-                <Col sm={4} className="d-flex justify-content-center">
+                <Col className="d-flex justify-content-evenly">
+                    {props.order &&
+                        <GlossyButton icon={CloudUpload} onClick={openFileUploadModal}>Carica allegato</GlossyButton>}
                     <GlossyButton type="submit" icon={Floppy}
                                   onClick={handleSubmit}>{props.order ? "Salva modifiche" : "Salva"}</GlossyButton>
+                    {props.order && <GlossyButton icon={Trash} onClick={handleDelete}>Elimina ordine</GlossyButton>}
                 </Col>
-                {props.order && <Col sm={4} className="d-flex justify-content-center">
-                    <GlossyButton icon={Trash} onClick={handleDelete}>Elimina ordine</GlossyButton>
-                </Col>}
             </Row>
         </Form>
     );

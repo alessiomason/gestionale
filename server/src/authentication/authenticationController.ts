@@ -134,7 +134,7 @@ export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.Sess
                 undefined,
                 undefined,
                 undefined,
-                user.registrationDate ? undefined : newRegistrationDate,       // if not present       2024-04-15T06:59:03+00:00
+                user.registrationDate ? undefined : newRegistrationDate,       // if not present
                 undefined,
                 undefined,
                 email,

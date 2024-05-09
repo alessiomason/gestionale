@@ -10,6 +10,7 @@ export class Order {
     supplier: string
     description: string
     by: User
+    uploadedFile: boolean
     scheduledDeliveryDate: string | undefined
     clearedBy: User | undefined
     clearingDate: string | undefined
@@ -22,6 +23,7 @@ export class Order {
         supplier: string,
         description: string,
         by: User,
+        uploadedFile: boolean,
         scheduledDeliveryDate: string | undefined = undefined,
         clearedBy: User | undefined = undefined,
         clearingDate: string | undefined = undefined
@@ -34,6 +36,7 @@ export class Order {
         this.supplier = supplier;
         this.description = description;
         this.by = by;
+        this.uploadedFile = uploadedFile;
         this.scheduledDeliveryDate = scheduledDeliveryDate;
         this.clearedBy = clearedBy;
         this.clearingDate = clearingDate;

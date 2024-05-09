@@ -30,6 +30,7 @@ import WorkedHoursEditMobile from "./workedHours/workedHoursMobile/WorkedHoursEd
 import MonthlyWorkedHoursPage from "./workedHours/monthlyWorkedHours/MonthlyWorkedHoursPage";
 import CompanyWorkedHoursPage from "./workedHours/companyWorkedHours/CompanyWorkedHoursPage";
 import OrdersPage from "./orders/OrdersPage";
+import OrderPDFViewer from "./orders/order-pdf-viewer/OrderPDFViewer";
 
 // set up dayjs with localization, durations and business days plugins
 dayjs.extend(dayjsBusinessDays, dayjsBusinessDaysOptions);
@@ -125,6 +126,7 @@ function App2() {
                 <LoginPage loggedIn={loggedIn} doLogin={doLogin} user={user} message={message}/>}/>
             <Route path="/signup/:registrationToken" element={loggedIn ? <Navigate to="/"/> : <SignUpPage/>}/>
             <Route path="/successful-signup" element={loggedIn ? <Navigate to="/"/> : <SuccessfulSignUpPage/>}/>
+            <Route path="/order/:orderName/pdf" element={loggedIn ? <OrderPDFViewer/> : <Navigate to="/login"/>}/>
             <Route path="/" element={loggedIn ? <PageLayout user={user!}/> : <Navigate to="/login"/>}>
                 <Route index element={<Navigate to="/workedHours" replace={true}/>}/>
                 <Route path="profile" element={<ProfilePage user={user!} doLogout={doLogout}/>}/>
