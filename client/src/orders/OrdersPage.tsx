@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
-import {Order} from "../models/order";
-import orderApis from "../api/orderApis";
 import {Col, Row, Table} from "react-bootstrap";
+import {useNavigate} from "react-router-dom";
 import GlossyButton from "../buttons/GlossyButton";
+import TextButton from "../buttons/TextButton";
 import {
     ArrowLeftSquare,
     ArrowRightSquare,
@@ -10,16 +10,20 @@ import {
     CaretRight,
     CaretUpFill,
     ClipboardPlus,
-    ClipboardX, Funnel
+    ClipboardX,
+    FileEarmark,
+    Funnel
 } from "react-bootstrap-icons";
 import Loading from "../Loading";
-import EditOrderPane from "./EditOrderPane";
-import {User} from "../models/user";
 import OrderPane from "./OrderPane";
-import "./OrdersPage.css";
+import EditOrderPane from "./EditOrderPane";
+import OrdersFiltersModal from "./OrdersFiltersModal";
+import {Order} from "../models/order";
+import orderApis from "../api/orderApis";
+import {User} from "../models/user";
 import {formatDate} from "../functions";
 import dayjs from "dayjs";
-import OrdersFiltersModal from "./OrdersFiltersModal";
+import "./OrdersPage.css";
 
 interface OrdersPageProps {
     readonly user: User
@@ -46,6 +50,8 @@ function OrdersPage(props: OrdersPageProps) {
 
     const [comparison, setComparison] = useState<PossibleSortingOptions>("name");
     const [comparisonOrder, setComparisonOrder] = useState<"asc" | "desc">("desc");
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (dirty) {
@@ -246,7 +252,7 @@ function OrdersPage(props: OrdersPageProps) {
                                 </Col>
                             </Row>
 
-                            <Table hover responsive>
+                            <Table hover responsive className="orders-table">
                                 <thead>
                                 <tr>
                                     <th className="comparable"
@@ -263,6 +269,7 @@ function OrdersPage(props: OrdersPageProps) {
                                             onClick={() => selectComparison("deliveryDate")}>Consegna {showCaret("deliveryDate")}</th>
                                         <th>Evasa da</th>
                                         <th>Evasa il</th>
+                                        <th>Allegato</th>
                                     </>}
                                 </tr>
                                 </thead>
@@ -294,6 +301,12 @@ function OrdersPage(props: OrdersPageProps) {
                                                     <td>{formatDate(order.scheduledDeliveryDate)}</td>
                                                     <td>{order.clearedBy?.surname} {order.clearedBy?.name}</td>
                                                     <td>{formatDate(order.clearingDate)}</td>
+                                                    {order.uploadedFile ? <td>
+                                                        <TextButton icon={FileEarmark} onClick={() => {
+                                                            const attachmentOrderName = `${order.id}-${order.year.toString().substring(2)}`;
+                                                            navigate(`/order/${attachmentOrderName}/pdf`);
+                                                        }}>Apri</TextButton>
+                                                    </td> : <td/>}
                                                 </>}
                                             </tr>
                                         );
