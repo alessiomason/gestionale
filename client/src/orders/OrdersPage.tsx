@@ -66,14 +66,14 @@ function OrdersPage(props: OrdersPageProps) {
         }
     }, [dirty]);
 
-    function handleOpenCloseButton() {
-        setShowingNewOrderPane(previouslyShowingNewOrderPane => {
-            if (previouslyShowingNewOrderPane || selectedOrder) {
-                setSelectedOrder(undefined);
-                return false;
-            }
-            return true;
-        })
+    function handleNewOrderButton() {
+        setShowingNewOrderPane(true);
+        setSelectedOrder(undefined);
+    }
+
+    function handleCloseButton() {
+        setShowingNewOrderPane(false);
+        setSelectedOrder(undefined);
     }
 
     function selectOrder(order: Order) {
@@ -213,17 +213,18 @@ function OrdersPage(props: OrdersPageProps) {
 
             <Row className="me-2">
                 <Col sm={4}>
-                    <GlossyButton icon={shrunkTable ? ClipboardX : ClipboardPlus}
-                                  onClick={handleOpenCloseButton} className="new-user-button">
-                        {shrunkTable ? "Chiudi" : "Nuovo ordine"}
-                    </GlossyButton>
+                    <GlossyButton icon={ClipboardPlus} onClick={handleNewOrderButton} className="new-user-button">
+                        Nuovo ordine</GlossyButton>
                 </Col>
-                {!shrunkTable && <Col/>}
-                {!shrunkTable && <Col sm={4}>
-                    <GlossyButton icon={Funnel} onClick={() => setShowFilterModal(true)} className="new-user-button">
-                        Filtri
-                    </GlossyButton>
-                </Col>}
+                <Col/>
+                <Col sm={4}>
+                    {shrunkTable ?
+                        <GlossyButton icon={ClipboardX} onClick={handleCloseButton} className="new-user-button">
+                            Chiudi</GlossyButton> :
+                        <GlossyButton icon={Funnel} onClick={() => setShowFilterModal(true)}
+                                   className="new-user-button">
+                        Filtri</GlossyButton>}
+                </Col>
                 <OrdersFiltersModal show={showFilterModal} setShow={setShowFilterModal}
                                     filteringOrderName={filteringOrderName}
                                     setFilteringOrderName={setFilteringOrderName} filteringJobId={filteringJobId}
