@@ -70,7 +70,7 @@ function OrderPane(props: OrderPaneProps) {
                 </Row>
 
                 <Row className="d-flex align-items-center">
-                    <Col sm={3}
+                    <Col xs={6} sm={3}
                          className="glossy-background smaller d-flex justify-content-center align-items-center">
                         <Clipboard className="me-1"/> Data dell'ordine
                     </Col>
@@ -78,7 +78,7 @@ function OrderPane(props: OrderPaneProps) {
                 </Row>
 
                 <Row className="d-flex align-items-center">
-                    <Col sm={3}
+                    <Col xs={6} sm={3}
                          className="glossy-background smaller d-flex justify-content-center align-items-center">
                         <JournalBookmarkFill className="me-1"/> Commessa
                     </Col>
@@ -86,7 +86,7 @@ function OrderPane(props: OrderPaneProps) {
                 </Row>
 
                 <Row className="d-flex align-items-center">
-                    <Col sm={3}
+                    <Col xs={6} sm={3}
                          className="glossy-background smaller d-flex justify-content-center align-items-center">
                         <Buildings className="me-1"/> Fornitore
                     </Col>
@@ -94,7 +94,7 @@ function OrderPane(props: OrderPaneProps) {
                 </Row>
 
                 <Row className="d-flex align-items-center">
-                    <Col sm={3}
+                    <Col xs={6} sm={3}
                          className="glossy-background smaller d-flex justify-content-center align-items-center">
                         <Sticky className="me-1"/> Descrizione
                     </Col>
@@ -102,7 +102,7 @@ function OrderPane(props: OrderPaneProps) {
                 </Row>
 
                 <Row className="d-flex align-items-center">
-                    <Col sm={3}
+                    <Col xs={6} sm={3}
                          className="glossy-background smaller d-flex justify-content-center align-items-center">
                         <Person className="me-1"/> Presa in carico da
                     </Col>
@@ -110,7 +110,7 @@ function OrderPane(props: OrderPaneProps) {
                 </Row>
 
                 <Row className="d-flex align-items-center">
-                    <Col sm={3}
+                    <Col xs={6} sm={3}
                          className="glossy-background smaller d-flex justify-content-center align-items-center">
                         <CalendarEvent className="me-1"/> Consegna prevista
                     </Col>
@@ -122,7 +122,7 @@ function OrderPane(props: OrderPaneProps) {
                 </Row>
 
                 {props.order.clearedBy && <Row className="d-flex align-items-center">
-                    <Col sm={3}
+                    <Col xs={6} sm={3}
                          className="glossy-background smaller d-flex justify-content-center align-items-center">
                         <Person className="me-1"/> Evaso da
                     </Col>
@@ -130,7 +130,7 @@ function OrderPane(props: OrderPaneProps) {
                 </Row>}
 
                 {props.order.clearingDate && <Row className="d-flex align-items-center">
-                    <Col sm={3}
+                    <Col xs={6} sm={3}
                          className="glossy-background smaller d-flex justify-content-center align-items-center">
                         <CalendarCheck className="me-1"/> Data di evasione
                     </Col>

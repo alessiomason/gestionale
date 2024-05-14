@@ -118,7 +118,7 @@ function OrdersTable(props: OrdersTableProps) {
     }
 
     return (
-        <Row className="glossy-background w-100">
+        <Row className="glossy-background w-100 m-0">
             <Row className="mb-2">
                 <Col className="d-flex justify-content-between">
                     <ArrowLeftSquare
