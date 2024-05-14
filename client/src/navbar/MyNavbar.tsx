@@ -1,5 +1,5 @@
-import {useNavigate} from 'react-router-dom';
-import {Col, Navbar, Row} from 'react-bootstrap';
+import {Link, useNavigate} from 'react-router-dom';
+import {Col, Navbar, Offcanvas, Row} from 'react-bootstrap';
 import {useMediaQuery} from "react-responsive";
 import './MyNavbar.css';
 import horizontalWhiteLogo from '../images/logos/horizontal_white_logo.png';
@@ -15,6 +15,8 @@ import {
     PersonVcard,
     TicketPerforated
 } from "react-bootstrap-icons";
+import Hamburger from "../components/Hamburger";
+import {useState} from "react";
 
 interface NavbarProps {
     readonly user: User
@@ -27,14 +29,43 @@ function MyNavbar(props: NavbarProps) {
     const canManageTickets = props.user.managesTickets;
     const canManageOrders = props.user.managesOrders;
 
+    const [showOffcanvas, setShowOffcanvas] = useState(false);
+
     return (
         <Navbar className="navbar fixed-top navbar-padding">
             <Row className="navbar-row">
-                <Col className={isMobile ? "d-flex justify-content-center" : undefined}>
+                <Col className="d-flex align-items-center">
                     <Navbar.Brand className='text' onClick={() => navigate("/")}>
                         <img src={horizontalWhiteLogo} className="brand-image" alt="Logo di Technomake"/>
                     </Navbar.Brand>
                 </Col>
+
+                {isMobile &&
+                    <Col className="d-flex justify-content-end">
+                        <Hamburger type="hamburger--minus" isActive={showOffcanvas}
+                                   onClick={() => setShowOffcanvas(true)}/>
+                    </Col>}
+                {isMobile && <Offcanvas placement="end" show={showOffcanvas} onHide={() => setShowOffcanvas(false)}>
+                    <Offcanvas.Header closeButton>
+                        <Offcanvas.Title>
+                            <h3 className="m-0">Gestionale TLF</h3>
+                        </Offcanvas.Title>
+                    </Offcanvas.Header>
+                    <Offcanvas.Body>
+                        <Row>
+                            <Col className="my-2 d-flex align-items-center">
+                                <CalendarEvent/>
+                                <Link to="/workedHours" onClick={() => setShowOffcanvas(false)}>Ore</Link>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col className="my-2 d-flex align-items-center">
+                                <Clipboard/>
+                                <Link to="/orders" onClick={() => setShowOffcanvas(false)}>Ordini</Link>
+                            </Col>
+                        </Row>
+                    </Offcanvas.Body>
+                </Offcanvas>}
 
                 {!isMobile && <Col className="d-flex justify-content-end align-items-center">
                     {canManageTickets && <LightGlossyButton singleLine icon={TicketPerforated} className="me-3"
@@ -42,25 +73,28 @@ function MyNavbar(props: NavbarProps) {
                         Assistenza
                     </LightGlossyButton>}
                     {canManageOrders && <LightGlossyButton singleLine icon={Clipboard} className="me-3"
-                                        onClick={() => navigate("/orders")}>
+                                                           onClick={() => navigate("/orders")}>
                         Ordini
                     </LightGlossyButton>}
-                    <LightGlossyButton singleLine icon={JournalBookmarkFill} className="me-3" onClick={() => navigate("/jobs")}>
+                    <LightGlossyButton singleLine icon={JournalBookmarkFill} className="me-3"
+                                       onClick={() => navigate("/jobs")}>
                         Commesse
                     </LightGlossyButton>
                     {isAdministrator && <LightGlossyButton singleLine icon={CalendarRange} className="me-3"
-                                        onClick={() => navigate("/monthlyWorkedHours")}>
+                                                           onClick={() => navigate("/monthlyWorkedHours")}>
                         Ore mensili
                     </LightGlossyButton>}
                     {isAdministrator && <LightGlossyButton singleLine icon={CalendarWeek} className="me-3"
-                                        onClick={() => navigate("/companyWorkedHours")}>
+                                                           onClick={() => navigate("/companyWorkedHours")}>
                         Ore azienda
                     </LightGlossyButton>}
-                    <LightGlossyButton singleLine icon={CalendarEvent} className="me-3" onClick={() => navigate("/workedHours")}>
+                    <LightGlossyButton singleLine icon={CalendarEvent} className="me-3"
+                                       onClick={() => navigate("/workedHours")}>
                         Ore
                     </LightGlossyButton>
                     {isAdministrator &&
-                        <LightGlossyButton singleLine icon={PersonVcard} className="me-3" onClick={() => navigate("/users")}>
+                        <LightGlossyButton singleLine icon={PersonVcard} className="me-3"
+                                           onClick={() => navigate("/users")}>
                             Gestione utenti
                         </LightGlossyButton>}
                     <LightGlossyButton singleLine icon={PersonBadge} onClick={() => navigate("/profile")}>
