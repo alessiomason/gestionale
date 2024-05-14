@@ -3,6 +3,8 @@ import {Col, Row} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
 import {
     Buildings,
+    CalendarCheck,
+    CalendarEvent,
     Clipboard,
     ClipboardCheck,
     ClipboardX,
@@ -110,7 +112,7 @@ function OrderPane(props: OrderPaneProps) {
                 <Row className="d-flex align-items-center">
                     <Col sm={3}
                          className="glossy-background smaller d-flex justify-content-center align-items-center">
-                        <Person className="me-1"/> Consegna prevista
+                        <CalendarEvent className="me-1"/> Consegna prevista
                     </Col>
                     <Col>
                         {props.order.scheduledDeliveryDate ?
@@ -130,7 +132,7 @@ function OrderPane(props: OrderPaneProps) {
                 {props.order.clearingDate && <Row className="d-flex align-items-center">
                     <Col sm={3}
                          className="glossy-background smaller d-flex justify-content-center align-items-center">
-                        <Person className="me-1"/> Data di evasione
+                        <CalendarCheck className="me-1"/> Data di evasione
                     </Col>
                     <Col>{formatDate(props.order.clearingDate)}</Col>
                 </Row>}
