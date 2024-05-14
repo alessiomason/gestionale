@@ -50,7 +50,7 @@ function App() {
 function App2() {
     // user is initially read from local storage to maintain login state between page refreshes,
     // but is then always checked by the checkAuth() function (that checks with the server)
-    const initialUserJson = window.localStorage.getItem("user");
+    const initialUserJson = localStorage.getItem("user");
     const initialUser = initialUserJson ? JSON.parse(initialUserJson) as User : undefined;
     const [user, setUser] = useState(initialUser);
     const [dirtyUser, setDirtyUser] = useState(false);
@@ -65,7 +65,7 @@ function App2() {
 
     useEffect(() => {
         if (loggedIn && dirtyUser) {
-            userApis.getUser(user!.id)
+            userApis.getUser(user.id)
                 .then(user => {
                     setUser(user);
                     setDirtyUser(false);
@@ -76,16 +76,16 @@ function App2() {
 
     useEffect(() => {
         if (user) {
-            window.localStorage.setItem("user", JSON.stringify(user));
+            localStorage.setItem("user", JSON.stringify(user));
         } else {
-            window.localStorage.removeItem("user");
+            localStorage.removeItem("user");
         }
     }, [user]);
 
     // run once, at app load
     useEffect(() => {
         // check if already logged in
-        checkAuth();
+        void checkAuth();
     }, []);
 
     async function checkAuth() {
@@ -127,7 +127,7 @@ function App2() {
             <Route path="/signup/:registrationToken" element={loggedIn ? <Navigate to="/"/> : <SignUpPage/>}/>
             <Route path="/successful-signup" element={loggedIn ? <Navigate to="/"/> : <SuccessfulSignUpPage/>}/>
             <Route path="/order/:orderName/pdf" element={loggedIn ? <OrderPDFViewer/> : <Navigate to="/login"/>}/>
-            <Route path="/" element={loggedIn ? <PageLayout user={user!}/> : <Navigate to="/login"/>}>
+            <Route path="/" element={loggedIn ? <PageLayout user={user}/> : <Navigate to="/login"/>}>
                 <Route index element={<Navigate to="/workedHours" replace={true}/>}/>
                 <Route path="profile" element={<ProfilePage user={user!} doLogout={doLogout}/>}/>
                 <Route path="profile/edit" element={<EditProfilePage user={user!} setDirtyUser={setDirtyUser}/>}/>

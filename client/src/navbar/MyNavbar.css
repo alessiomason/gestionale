@@ -23,9 +23,23 @@
 }
 
 .brand-image {
+    max-width: 200px;
     max-height: 60px;
 }
 
 .brand-image:hover {
     cursor: pointer;
+}
+
+.offcanvas a {
+    color: #393a39;
+    font-size: x-large;
+    text-decoration: none;
+}
+
+/* This selects the icons next to the links. */
+.offcanvas svg {
+    color: #393a39;
+    font-size: xx-large;
+    margin-right: 16px;
 }
