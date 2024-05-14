@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Col, Row, Table} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 import {
@@ -29,11 +29,18 @@ interface OrdersTableProps {
 }
 
 function OrdersTable(props: OrdersTableProps) {
-    const [pageNumber, setPageNumber] = useState(0);
+    const [pageNumber, setPageNumber] = useState(() => {
+        const number = sessionStorage.getItem("ordersPageNumber");
+        return number ? parseInt(number) : 0;
+    });
     const increasablePageNumber = (pageNumber + 1) * 100 <= props.orders.length;
     const decreasablePageNumber = pageNumber > 0;
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        sessionStorage.setItem("ordersPageNumber", pageNumber.toString());
+    }, [pageNumber]);
 
     function increasePageNumber() {
         if (increasablePageNumber) {
