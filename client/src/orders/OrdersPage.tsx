@@ -40,18 +40,79 @@ function OrdersPage(props: OrdersPageProps) {
     const [dirty, setDirty] = useState(true);
     const [loading, setLoading] = useState(true);
     const [showingNewOrderPane, setShowingNewOrderPane] = useState(false);
-    const [selectedOrder, setSelectedOrder] = useState<Order>();
+    const [selectedOrder, setSelectedOrder] = useState<Order | undefined>(() => {
+        const orderId = sessionStorage.getItem("selectedOrderId");
+        return orderId ? orders.find(o => o.id === parseInt(orderId)) : undefined;
+    });
     const shrunkTable = showingNewOrderPane || selectedOrder !== undefined;
 
     const [showFilterModal, setShowFilterModal] = useState(false);
-    const [filteringOrderName, setFilteringOrderName] = useState<string | undefined>(undefined);
-    const [filteringJobId, setFilteringJobId] = useState<string | undefined>(undefined);
-    const [filteringSupplier, setFilteringSupplier] = useState<string | undefined>(undefined);
+    const [filteringOrderName, setFilteringOrderName] = useState<string | undefined>(() => {
+        const filter = sessionStorage.getItem("filteringOrderName");
+        return filter ?? undefined;
+    });
+    const [filteringJobId, setFilteringJobId] = useState<string | undefined>(() => {
+        const filter = sessionStorage.getItem("filteringJobId");
+        return filter ?? undefined;
+    });
+    const [filteringSupplier, setFilteringSupplier] = useState<string | undefined>(() => {
+        const filter = sessionStorage.getItem("filteringSupplier");
+        return filter ?? undefined;
+    });
 
-    const [comparison, setComparison] = useState<PossibleSortingOptions>("name");
-    const [comparisonOrder, setComparisonOrder] = useState<"asc" | "desc">("desc");
+    const [comparison, setComparison] = useState<PossibleSortingOptions>(() => {
+        const comp = sessionStorage.getItem("comparison");
+        return comp as PossibleSortingOptions | null ?? "name";
+    });
+    const [comparisonOrder, setComparisonOrder] = useState<"asc" | "desc">(() => {
+        const compOrder = sessionStorage.getItem("comparisonOrder");
+        return compOrder as "asc" | "desc" | null ?? "desc";
+    });
 
     const navigate = useNavigate();
+
+    // save all filters for the whole session
+    useEffect(() => {
+        if (!dirty) {
+            if (selectedOrder) {
+                sessionStorage.setItem("selectedOrderId", selectedOrder.id.toString());
+            } else {
+                sessionStorage.removeItem("selectedOrderId");
+            }
+        }
+    }, [selectedOrder?.id]);
+
+    useEffect(() => {
+        if (filteringOrderName) {
+            sessionStorage.setItem("filteringOrderName", filteringOrderName);
+        } else {
+            sessionStorage.removeItem("filteringOrderName");
+        }
+    }, [filteringOrderName]);
+
+    useEffect(() => {
+        if (filteringJobId) {
+            sessionStorage.setItem("filteringJobId", filteringJobId);
+        } else {
+            sessionStorage.removeItem("filteringJobId");
+        }
+    }, [filteringJobId]);
+
+    useEffect(() => {
+        if (filteringSupplier) {
+            sessionStorage.setItem("filteringSupplier", filteringSupplier);
+        } else {
+            sessionStorage.removeItem("filteringSupplier");
+        }
+    }, [filteringSupplier]);
+
+    useEffect(() => {
+        sessionStorage.setItem("comparison", comparison);
+    }, [comparison]);
+
+    useEffect(() => {
+        sessionStorage.setItem("comparisonOrder", comparisonOrder);
+    }, [comparisonOrder]);
 
     useEffect(() => {
         if (dirty) {
@@ -61,6 +122,9 @@ function OrdersPage(props: OrdersPageProps) {
                     setDirty(false);
                     setLoading(false);
                     updateNextOrderId(orders!);
+
+                    const orderId = sessionStorage.getItem("selectedOrderId");
+                    setSelectedOrder(orderId ? orders!.find(o => o.id === parseInt(orderId)) : undefined);
                 })
                 .catch(err => console.error(err))
         }
