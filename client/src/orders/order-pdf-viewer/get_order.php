@@ -19,9 +19,9 @@ $order_name = $_GET["orderName"];
 $filename = "orders/Ordine_$order_name.pdf";
 
 if (file_exists($filename)) {
-    header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-    header('Cache-Control: post-check=0, pre-check=0', false);
-    header('Pragma: no-cache');
+//     header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+//     header('Cache-Control: post-check=0, pre-check=0', false);
+//     header('Pragma: no-cache');
 
     header('Content-Type: application/pdf');
     header('Content-Length: ' . filesize($filename));
