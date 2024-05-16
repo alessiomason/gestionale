@@ -1,0 +1,2 @@
+# Apache server
+The content of this folder is not part of the Express server, but is meant to be stored on an Apache server where files can be stored. This is useful , for example, for storing backup files or orders attachments.
