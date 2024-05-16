@@ -1,4 +1,6 @@
 <?php
+namespace Functions;
+
 function checkOrigin() {
     $allowed_host = "https://gestionale.tlftechnology.it";
 
