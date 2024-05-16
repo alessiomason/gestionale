@@ -19,6 +19,10 @@ th.comparable {
     color: forestgreen;
 }
 
+.expired > td {
+    color: #d50000;
+}
+
 @keyframes appear-animation {
     0% {
         opacity: 0;

@@ -13,6 +13,7 @@ import {PossibleSortingOptions} from "./OrdersPage";
 import TextButton from "../buttons/TextButton";
 import {formatDate} from "../functions";
 import {Order} from "../models/order";
+import dayjs from "dayjs";
 
 interface OrdersTableProps {
     readonly orders: Order[]
@@ -167,6 +168,8 @@ function OrdersTable(props: OrdersTableProps) {
                         }
                         if (order.clearedBy && order.clearingDate) {
                             className += " cleared";
+                        } else if (order.scheduledDeliveryDate && dayjs(order.scheduledDeliveryDate).isBefore(dayjs())) {
+                            className += " expired";
                         }
 
                         return (
