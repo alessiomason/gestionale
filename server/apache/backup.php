@@ -1,6 +1,7 @@
 <?php
 // This file is not part of the Express server, but is meant to be uploaded on an Apache server where the backups are stored.
-require("./functions.php");
+
+use function Functions\checkOrigin;
 
 if (checkOrigin() !== 200) {
     return;

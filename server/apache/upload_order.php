@@ -1,7 +1,7 @@
 <?php
 // This file is not part of the React client, but is meant to be uploaded on an Apache server where the uploaded order
 // files are stored.
-require("./functions.php");
+use function Functions\checkOrigin;
 
 if (checkOrigin() !== 200) {
     return;
