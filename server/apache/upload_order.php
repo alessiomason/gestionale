@@ -2,7 +2,9 @@
 // This file is not part of the React client, but is meant to be uploaded on an Apache server where the uploaded order
 // files are stored.
 
-if (checkOrigin() !== 200) return;
+if (checkOrigin() !== 200) {
+    return;
+}
 
 if (!isset($_FILES["orderFile"])) {
     http_response_code(422);
