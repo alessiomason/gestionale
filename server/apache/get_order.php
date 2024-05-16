@@ -27,5 +27,9 @@ if (str_starts_with($file_path, "orders/") && file_exists($file_path)) {
     header("Content-Type: application/pdf");
     header("Content-Length: " . filesize($file_path));
     readfile($file_path);
+    http_response_code(200);
+    exit;
 }
+
+http_response_code(404);
 exit;
