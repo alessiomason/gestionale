@@ -24,9 +24,9 @@ export class Order {
         description: string,
         by: User,
         uploadedFile: boolean,
-        scheduledDeliveryDate: string | undefined = undefined,
-        clearedBy: User | undefined = undefined,
-        clearingDate: string | undefined = undefined
+        scheduledDeliveryDate?: string,
+        clearedBy?: User,
+        clearingDate?: string
     ) {
         this.id = id;
         this.year = year;

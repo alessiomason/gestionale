@@ -1,4 +1,5 @@
 <?php
+
 namespace Functions;
 
 function checkOrigin() {
@@ -6,7 +7,7 @@ function checkOrigin() {
 
     header("Access-Control-Allow-Origin: $allowed_host");
 
-    if (!isset($_SERVER["HTTP_REFERER"]) || parse_url($_SERVER["HTTP_REFERER"])["host"] !== parse_url($allowed_host)["host"]) {
+    if (!isset($_SERVER["HTTP_ORIGIN"]) || parse_url($_SERVER["HTTP_ORIGIN"])["host"] !== parse_url($allowed_host)["host"]) {
         http_response_code(401);
         return 401;
     }

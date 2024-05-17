@@ -6,7 +6,7 @@ export class Ticket {
     title: string
     description: string
     startTime: string
-    endTime: string | undefined
+    endTime?: string
 
     constructor(
         id: number,

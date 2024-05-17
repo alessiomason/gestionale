@@ -64,7 +64,7 @@ export function useTicketCompaniesAPIs(app: Express, isLoggedIn: RequestHandler,
         isLoggedIn,
         canManageTickets,
         body("name").isString(),
-        body("email").optional({values: "null"}).isEmail(),
+        body("email").optional({values: "null"}).isString(),
         body("contact").optional({values: "null"}).isString(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
@@ -97,7 +97,7 @@ export function useTicketCompaniesAPIs(app: Express, isLoggedIn: RequestHandler,
         canManageTickets,
         param("ticketCompanyId").isInt(),
         body("name").optional({values: "null"}).isString(),
-        body("email").optional({values: "null"}).isEmail(),
+        body("email").optional({values: "null"}).isString(),
         body("contact").optional({values: "null"}).isString(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);

@@ -1,10 +1,9 @@
-import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
-import {TicketCompany} from "../models/ticketCompany";
-import {Building, BuildingCheck, EnvelopeAt, PersonVcard} from "react-bootstrap-icons";
 import React, {useState} from "react";
+import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
+import {Building, BuildingCheck, EnvelopeAt, PersonVcard} from "react-bootstrap-icons";
 import GlossyButton from "../buttons/GlossyButton";
 import ticketCompanyApis from "../api/ticketCompanyApis";
-import {checkValidEmail} from "../functions";
+import {TicketCompany} from "../models/ticketCompany";
 
 interface EditTicketCompanyPaneProps {
     readonly ticketCompany?: TicketCompany
@@ -14,27 +13,12 @@ interface EditTicketCompanyPaneProps {
 function EditTicketCompanyPane(props: EditTicketCompanyPaneProps) {
     const [name, setName] = useState(props.ticketCompany?.name ?? "");
     const [email, setEmail] = useState(props.ticketCompany?.email ?? "");
-    const [invalidEmail, setInvalidEmail] = useState(false);
     const [contact, setContact] = useState(props.ticketCompany?.contact ?? "");
-
-    function handleEmailCheck() {
-        setInvalidEmail(false);
-
-        // empty email is allowed
-        if (email && !checkValidEmail(email)) {
-            setInvalidEmail(true);
-            return false;
-        }
-
-        return true;
-    }
 
     function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
 
         if (name.trim() === "") return
-
-        if (!handleEmailCheck()) return;
 
         if (props.ticketCompany) {
             const updatedTicketCompany = new TicketCompany(
@@ -73,10 +57,9 @@ function EditTicketCompanyPane(props: EditTicketCompanyPaneProps) {
                     </InputGroup>
                     <InputGroup className="mt-2">
                         <InputGroup.Text><EnvelopeAt/></InputGroup.Text>
-                        <FloatingLabel controlId="floatingInput" label="Email">
-                            <Form.Control type="email" placeholder="Email" value={email} isInvalid={invalidEmail}
-                                          onChange={ev => setEmail(ev.target.value)}
-                                          onBlur={handleEmailCheck}/>
+                        <FloatingLabel controlId="floatingInput" label="Email (separate da una virgola se più d'una)">
+                            <Form.Control type="email" placeholder="Email (separate da una virgola se più d'una)" value={email}
+                                          onChange={ev => setEmail(ev.target.value)}/>
                         </FloatingLabel>
                     </InputGroup>
                     <InputGroup className="mt-2">

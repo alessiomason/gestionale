@@ -1,12 +1,6 @@
 <?php
 // This file is not part of the Express server, but is meant to be uploaded on an Apache server where the backups are stored.
 
-use function Functions\checkOrigin;
-
-if (checkOrigin() !== 200) {
-    return;
-}
-
 if (!isset($_FILES["backupFile"])) {
     http_response_code(422);
     return;
