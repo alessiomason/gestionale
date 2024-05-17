@@ -1,18 +1,24 @@
 # Gestionale
 
-The repository contains the client and the server for a web application developed for a few companies for managing jobs and registering worked hours.  
+The repository contains the client and the server for a web application developed for a few companies for managing jobs, registering worked hours and, in general, to carry out the whole management of the company.  
 The software has been commissioned by said companies and replaces an old application, phased out due to its limitations in maintainability and security.
 
-## Features (to be implemented)
+## Features
 - Employee
 	- Register personal worked hours for every job the employee contributes to
 	- Register hours worked by machines (operated by the employee) on a specific job
+	- Register personal daily expenses, holiday, sick or travel hours
+	- Manage assistance tickets the company provides
+	- Manage incoming orders and track their progress 
 
 - Administrator
 	- Manage users: create new ones, enable and disable them
 	- Create jobs and insert specific details, e.g. cost per worked hour
-	- Register vacations, time taken off or sick leaves of employees
 	- Aggregate worked hours per job and visualize costs
+	- Aggregate worked hours per user per month
+
+- Horizontal features
+	- Daily backups of the database
 
 ## Technologies used
 - Server
@@ -24,7 +30,7 @@ The software has been commissioned by said companies and replaces an old applica
 	- The client is developed in TypeScript using the React library and the Bootstrap framework
 
 ## System architecture
-The server exposes a set of APIs to operate and serves as static files the client, which in turn uses the APIs exposed by the server.
+The server exposes a set of APIs to operate and serves the client as static files, which in turn uses the APIs exposed by the server.
 
 ## Running the software
 The software is usually deployed on a Heroku container, which runs the two scripts in the main `package.json`.  
@@ -53,17 +59,14 @@ The server requires several environment variables to operate. These are usually 
 	- `DB_PASSWORD`: the password for the database;
 	- `DB_NAME`: the name of the database;
 	- `SESSION_SECRET`: the secret string used to sign the session ID cookie;
-	- `DB_BACKUP_UPLOAD`
-  - `REACT_APP_ORDERS_PDF_FOLDER`
+	- `DB_BACKUP_UPLOAD`: the URL for the PHP file to upload the database backup;
+  - `REACT_APP_ORDERS_PDF_FOLDER`: the folder which contains the PHP file to upload the orders attachments;
 
 - Optional
-	- `PORT`: the port on which the server has to be served; defaults to `3001` if absent.
+	- `PORT`: the port on which the server has to be served; defaults to `3001` if absent;
+	- `PROJECT_PATH`: if the software is deployed on Heroku, this variable should be equal to `./server`, to define the folder which has to be deployed.
 
 #### Client environment variables
 The client too requires an environment variable, to specify the URL of the server.  
 If the client is run locally, the environment variable can be omitted (as the code defaults to consider the server located at `http://localhost:3000`).  
 Otherwise, the `REACT_APP_BASE_URL` environment variable is needed. If the client is served through the server, the environment variable has to be specified amongst the other variables for the server.
-
----
-
-This README is an initial description of what the software will eventually look like. Several features are yet to be developed or implemented.

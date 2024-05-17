@@ -134,10 +134,11 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler, isAdminist
     )
 
     // update job
-    app.put(`${baseURL}/:jobId`,
+    app.put(`${baseURL}/:oldJobId`,
         isLoggedIn,
         isAdministrator,
-        param("jobId").isString(),
+        param("oldJobId").isString(),
+        body("id").isString(),
         body("subject").isString(),
         body("client").isString(),
         body("finalClient").optional({values: "null"}).isString(),
@@ -159,7 +160,7 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler, isAdminist
             }
 
             const updatedJob = new Job(
-                req.params.jobId,
+                req.body.id,
                 req.body.subject,
                 req.body.client,
                 req.body.finalClient,
@@ -175,13 +176,13 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler, isAdminist
             );
 
             try {
-                const job = await getJob(req.params.jobId);
+                const job = await getJob(req.params.oldJobId);
 
                 if (job) {
-                    await updateJob(updatedJob)
-                    res.status(200).end()
+                    await updateJob(req.params.oldJobId, updatedJob);
+                    res.status(200).end();
                 } else {
-                    res.status(JobNotFound.code).json(new JobNotFound())
+                    res.status(JobNotFound.code).json(new JobNotFound());
                 }
             } catch (err: any) {
                 console.error("Error while retrieving jobs: ", err.message);

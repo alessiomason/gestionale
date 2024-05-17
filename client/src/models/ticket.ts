@@ -13,8 +13,8 @@ export class Ticket {
         company: TicketCompany,
         title: string,
         description: string,
-        startTime: string | undefined,
-        endTime: string | undefined
+        startTime?: string,
+        endTime?: string
     ) {
         this.id = id;
         this.company = company;

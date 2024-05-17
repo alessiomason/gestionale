@@ -43,6 +43,19 @@ function JobPane(props: JobPaneProps) {
     function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
 
+        if (id === "") {
+            setErrorMessage("Inserisci un identificativo per la commessa!");
+            return;
+        }
+        if (subject === "") {
+            setErrorMessage("Inserisci un oggetto per la commessa!");
+            return;
+        }
+        if (client === "") {
+            setErrorMessage("Inserisci un cliente per la commessa!");
+            return;
+        }
+
         const job = new Job(
             id,
             subject,
@@ -80,7 +93,7 @@ function JobPane(props: JobPaneProps) {
             );
 
             setErrorMessage("");
-            jobApis.updateJob(job)
+            jobApis.updateJob(props.job.id, job)
                 .then(_ => {
                     props.setJob!(detailedJob);
                     setUpdated(true);

@@ -1,6 +1,8 @@
-import {Row, Table} from "react-bootstrap";
-import {Job} from "../models/job";
+import React, {useEffect, useState} from "react";
+import {Col, Row, Table} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
+import {ArrowLeftSquare, ArrowRightSquare} from "react-bootstrap-icons";
+import {Job} from "../models/job";
 import {humanize} from "../functions";
 import "./JobsTable.css";
 
@@ -10,7 +12,30 @@ interface JobsTableProps {
 }
 
 function JobsTable(props: JobsTableProps) {
+    const [pageNumber, setPageNumber] = useState(() => {
+        const number = sessionStorage.getItem("jobsPageNumber");
+        return number ? parseInt(number) : 0;
+    });
+    const increasablePageNumber = (pageNumber + 1) * 100 <= props.jobs.length;
+    const decreasablePageNumber = pageNumber > 0;
+
     const navigate = useNavigate();
+
+    useEffect(() => {
+        sessionStorage.setItem("jobsPageNumber", pageNumber.toString());
+    }, [pageNumber]);
+
+    function increasePageNumber() {
+        if (increasablePageNumber) {
+            setPageNumber(prevPageNumber => prevPageNumber + 1);
+        }
+    }
+
+    function decreasePageNumber() {
+        if (decreasablePageNumber) {
+            setPageNumber(prevPageNumber => prevPageNumber - 1);
+        }
+    }
 
     function handleClick(job: Job) {
         if (props.isAdministrator) {    // only administrators can access the job details page
@@ -20,6 +45,20 @@ function JobsTable(props: JobsTableProps) {
 
     return (
         <Row className="glossy-background">
+            <Row className="mb-2">
+                <Col className="d-flex justify-content-between">
+                    <ArrowLeftSquare
+                        className={decreasablePageNumber ? "clickable-arrow" : "unclickable-arrow"}
+                        onClick={decreasePageNumber}/>
+                    <p className="text-center">
+                        Pagina {pageNumber + 1} di {Math.ceil(props.jobs.length / 100)}
+                    </p>
+                    <ArrowRightSquare
+                        className={increasablePageNumber ? "clickable-arrow" : "unclickable-arrow"}
+                        onClick={increasePageNumber}/>
+                </Col>
+            </Row>
+
             <Table hover={props.isAdministrator} responsive>
                 <thead>
                 <tr>
@@ -35,7 +74,7 @@ function JobsTable(props: JobsTableProps) {
                 <tbody>
                 {props.jobs
                     .sort((a, b) => -1 * a.id.localeCompare(b.id))
-                    .slice(0, 100)
+                    .slice(pageNumber * 100, (pageNumber + 1) * 100)
                     .map(job => {
                         return (
                             <tr className={props.isAdministrator ? undefined : "unhoverable"} key={job.id}
@@ -52,9 +91,6 @@ function JobsTable(props: JobsTableProps) {
                 }
                 </tbody>
             </Table>
-
-            {props.jobs.length > 100 &&
-                <p className="table-footer mt-2 mb-0">Usa la ricerca per mostrare più commesse...</p>}
         </Row>
     );
 }
