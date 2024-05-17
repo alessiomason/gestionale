@@ -10,9 +10,9 @@ export class Order {
     description: string
     by: User
     uploadedFile: boolean
-    scheduledDeliveryDate: string | undefined
-    clearedBy: User | undefined
-    clearingDate: string | undefined
+    scheduledDeliveryDate?: string
+    clearedBy?: User
+    clearingDate?: string
 
     constructor(
         id: number,
@@ -23,9 +23,9 @@ export class Order {
         description: string,
         by: User,
         uploadedFile: boolean,
-        scheduledDeliveryDate: string | undefined = undefined,
-        clearedBy: User | undefined = undefined,
-        clearingDate: string | undefined = undefined
+        scheduledDeliveryDate?: string,
+        clearedBy?: User,
+        clearingDate?: string
     ) {
         this.id = id;
         this.year = year;
@@ -49,9 +49,9 @@ export class NewOrder {
     supplier: string
     description: string
     byId: number
-    scheduledDeliveryDate: string | undefined
-    clearedById: number | undefined
-    clearingDate: string | undefined
+    scheduledDeliveryDate?: string
+    clearedById?: number
+    clearingDate?: string
 
     constructor(
         id: number,
@@ -61,9 +61,9 @@ export class NewOrder {
         supplier: string,
         description: string,
         byId: number,
-        scheduledDeliveryDate: string | undefined = undefined,
-        clearedById: number | undefined = undefined,
-        clearingDate: string | undefined = undefined
+        scheduledDeliveryDate?: string,
+        clearedById?: number,
+        clearingDate?: string
     ) {
         this.id = id;
         this.year = year;
