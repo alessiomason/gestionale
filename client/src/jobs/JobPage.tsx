@@ -18,7 +18,10 @@ function JobPage() {
                     setJob(job);
                     setLoading(false);
                 })
-                .catch(err => console.error(err))
+                .catch(err => {
+                    console.error(err);
+                    setLoading(false);
+                })
         }
     }, []);
 
