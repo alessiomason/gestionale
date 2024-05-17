@@ -93,7 +93,7 @@ function JobPane(props: JobPaneProps) {
             );
 
             setErrorMessage("");
-            jobApis.updateJob(job)
+            jobApis.updateJob(props.job.id, job)
                 .then(_ => {
                     props.setJob!(detailedJob);
                     setUpdated(true);

@@ -79,10 +79,10 @@ async function createJob(job: Job) {
     } else await handleApiError(response);
 }
 
-async function updateJob(job: Job) {
+async function updateJob(oldJobId: string, job: Job) {
     const updatedJob = prepareJobForServer(job);
 
-    const response = await fetch(new URL(`jobs/${job.id}`, apiUrl), {
+    const response = await fetch(new URL(`jobs/${oldJobId}`, apiUrl), {
         method: 'PUT',
         credentials: 'include',
         headers: {
