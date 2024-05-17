@@ -2,7 +2,7 @@
 // This file is not part of the React client, but is meant to be uploaded on an Apache server where the uploaded order
 // files are stored.
 
-require_once("./functions.php");
+require_once "./functions.php";
 
 use function Functions\checkOrigin;
 
