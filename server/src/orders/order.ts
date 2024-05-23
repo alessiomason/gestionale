@@ -11,6 +11,8 @@ export class Order {
     by: User
     uploadedFile: boolean
     scheduledDeliveryDate?: string
+    partiallyClearedBy?: User
+    partialClearingDate?: string
     clearedBy?: User
     clearingDate?: string
 
@@ -24,6 +26,8 @@ export class Order {
         by: User,
         uploadedFile: boolean,
         scheduledDeliveryDate?: string,
+        partiallyClearedBy?: User,
+        partialClearingDate?: string,
         clearedBy?: User,
         clearingDate?: string
     ) {
@@ -36,6 +40,8 @@ export class Order {
         this.by = by;
         this.uploadedFile = uploadedFile;
         this.scheduledDeliveryDate = scheduledDeliveryDate;
+        this.partiallyClearedBy = partiallyClearedBy;
+        this.partialClearingDate = partialClearingDate;
         this.clearedBy = clearedBy;
         this.clearingDate = clearingDate;
     }
@@ -50,6 +56,8 @@ export class NewOrder {
     description: string
     byId: number
     scheduledDeliveryDate?: string
+    partiallyClearedById?: number
+    partialClearingDate?: string
     clearedById?: number
     clearingDate?: string
 
@@ -62,6 +70,8 @@ export class NewOrder {
         description: string,
         byId: number,
         scheduledDeliveryDate?: string,
+        partiallyClearedById?: number,
+        partialClearingDate?: string,
         clearedById?: number,
         clearingDate?: string
     ) {
@@ -73,6 +83,8 @@ export class NewOrder {
         this.description = description;
         this.byId = byId;
         this.scheduledDeliveryDate = scheduledDeliveryDate;
+        this.partiallyClearedById = partiallyClearedById;
+        this.partialClearingDate = partialClearingDate;
         this.clearedById = clearedById;
         this.clearingDate = clearingDate;
     }

@@ -19,6 +19,10 @@ th.comparable {
     color: forestgreen;
 }
 
+.partially-cleared > td {
+    color: goldenrod;
+}
+
 .expired > td {
     color: #d50000;
 }
