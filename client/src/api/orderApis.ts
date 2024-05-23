@@ -14,6 +14,8 @@ function rebuildOrder(order: Order) {
         order.by,
         order.uploadedFile,
         order.scheduledDeliveryDate,
+        order.partiallyClearedBy,
+        order.partialClearingDate,
         order.clearedBy,
         order.clearingDate
     );

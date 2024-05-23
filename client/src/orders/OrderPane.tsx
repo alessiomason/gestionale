@@ -121,6 +121,23 @@ function OrderPane(props: OrderPaneProps) {
                     </Col>
                 </Row>
 
+                {props.order.partiallyClearedBy && !props.order.clearedBy && <Row className="d-flex align-items-center">
+                    <Col xs={6} sm={3}
+                         className="glossy-background smaller d-flex justify-content-center align-items-center">
+                        <Person className="me-1"/> Evaso parzialmente da
+                    </Col>
+                    <Col>{props.order.partiallyClearedBy.surname} {props.order.partiallyClearedBy.name}</Col>
+                </Row>}
+
+                {props.order.partialClearingDate && !props.order.clearingDate &&
+                    <Row className="d-flex align-items-center">
+                        <Col xs={6} sm={3}
+                             className="glossy-background smaller d-flex justify-content-center align-items-center">
+                            <CalendarCheck className="me-1"/> Data di evasione parziale
+                        </Col>
+                        <Col>{formatDate(props.order.partialClearingDate)}</Col>
+                    </Row>}
+
                 {props.order.clearedBy && <Row className="d-flex align-items-center">
                     <Col xs={6} sm={3}
                          className="glossy-background smaller d-flex justify-content-center align-items-center">

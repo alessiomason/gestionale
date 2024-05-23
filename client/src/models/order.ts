@@ -12,6 +12,8 @@ export class Order {
     by: User
     uploadedFile: boolean
     scheduledDeliveryDate: string | undefined
+    partiallyClearedBy: User | undefined
+    partialClearingDate: string | undefined
     clearedBy: User | undefined
     clearingDate: string | undefined
 
@@ -25,6 +27,8 @@ export class Order {
         by: User,
         uploadedFile: boolean,
         scheduledDeliveryDate?: string,
+        partiallyClearedBy?: User,
+        partialClearingDate?: string,
         clearedBy?: User,
         clearingDate?: string
     ) {
@@ -38,6 +42,8 @@ export class Order {
         this.by = by;
         this.uploadedFile = uploadedFile;
         this.scheduledDeliveryDate = scheduledDeliveryDate;
+        this.partiallyClearedBy = partiallyClearedBy;
+        this.partialClearingDate = partialClearingDate;
         this.clearedBy = clearedBy;
         this.clearingDate = clearingDate;
     }
