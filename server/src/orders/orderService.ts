@@ -50,9 +50,9 @@ async function parseOrder(order: any) {
         parseFloat(order.costPerKm)
     );
 
-    let clearedBy: User | undefined = undefined;
-    if (order.clearedById) {
-        clearedBy = new User(
+    let partiallyClearedBy: User | undefined = undefined;
+    if (order.partiallyClearedById) {
+        partiallyClearedBy = new User(
             order.userId2,
             order.role2,
             order.type2,
@@ -76,6 +76,32 @@ async function parseOrder(order: any) {
         );
     }
 
+    let clearedBy: User | undefined = undefined;
+    if (order.clearedById) {
+        clearedBy = new User(
+            order.userId3,
+            order.role3,
+            order.type3,
+            order.name3,
+            order.surname3,
+            order.username3,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            parseFloat(order.hoursPerDay3),
+            parseFloat(order.costPerHour3),
+            order.active3 === 1,
+            order.managesTickets3 === 1,
+            order.managesOrders3 === 1,
+            order.email3,
+            order.phone3,
+            order.car3,
+            parseFloat(order.costPerKm3)
+        );
+    }
+
     return new Order(
         order.id,
         parseInt(order.year),
@@ -86,28 +112,41 @@ async function parseOrder(order: any) {
         by,
         !!order.uploadedFile,
         order.scheduledDeliveryDate,
+        partiallyClearedBy,
+        order.partialClearingDate ? order.partialClearingDate : undefined,    // if null, set undefined
         clearedBy,
-        order.clearingDate ? order.clearingDate : undefined     // if null, set undefined
+        order.clearingDate ? order.clearingDate : undefined                        // if null, set undefined
     );
 }
+
+const getOrderQueryFields = [
+    "orders.*", "jobs.subject", "jobs.client", "jobs.finalClient",
+    "jobs.orderName", "jobs.orderAmount", "jobs.startDate", "jobs.deliveryDate",
+    "jobs.notes", "jobs.active", "jobs.lost", "jobs.design", "jobs.construction",
+    "u1.role", "u1.type", "u1.name", "u1.surname", "u1.username",
+    "u1.hoursPerDay", "u1.costPerHour", "u1.active", "u1.managesTickets",
+    "u1.managesOrders", "u1.email", "u1.phone", "u1.car", "u1.costPerKm",
+    "u2.role AS role2", "u2.type AS type2", "u2.name AS name2",
+    "u2.surname AS surname2", "u2.username AS username2", "u2.hoursPerDay AS hoursPerDay2",
+    "u2.costPerHour AS costPerHour2", "u2.active AS active2",
+    "u2.managesTickets AS managesTickets2", "u2.managesOrders AS managesOrders2",
+    "u2.email AS email2", "u2.phone AS phone2", "u2.car AS car2",
+    "u2.costPerKm AS costPerKm2",
+    "u3.role AS role3", "u3.type AS type3", "u3.name AS name3",
+    "u3.surname AS surname3", "u3.username AS username3", "u3.hoursPerDay AS hoursPerDay3",
+    "u3.costPerHour AS costPerHour3", "u3.active AS active3",
+    "u3.managesTickets AS managesTickets3", "u3.managesOrders AS managesOrders3",
+    "u3.email AS email3", "u3.phone AS phone3", "u3.car AS car3",
+    "u3.costPerKm AS costPerKm3"
+];
 
 export async function getAllOrders() {
     const orders = await knex("orders")
         .join("jobs", "jobs.id", "orders.jobId")
         .join("users AS u1", "u1.id", "orders.byId")
-        .leftJoin("users AS u2", "u2.id", "orders.clearedById")
-        .select("orders.*", "jobs.subject", "jobs.client", "jobs.finalClient",
-            "jobs.orderName", "jobs.orderAmount", "jobs.startDate", "jobs.deliveryDate",
-            "jobs.notes", "jobs.active", "jobs.lost", "jobs.design", "jobs.construction",
-            "u1.role", "u1.type", "u1.name", "u1.surname", "u1.username",
-            "u1.hoursPerDay", "u1.costPerHour", "u1.active", "u1.managesTickets",
-            "u1.managesOrders", "u1.email", "u1.phone", "u1.car", "u1.costPerKm",
-            "u2.role AS role2", "u2.type AS type2", "u2.name AS name2",
-            "u2.surname AS surname2", "u2.username AS username2", "u2.hoursPerDay AS hoursPerDay2",
-            "u2.costPerHour AS costPerHour2", "u2.active AS active2",
-            "u2.managesTickets AS managesTickets2", "u2.managesOrders AS managesOrders2",
-            "u2.email AS email2", "u2.phone AS phone2", "u2.car AS car2",
-            "u2.costPerKm AS costPerKm2");
+        .leftJoin("users AS u2", "u2.id", "orders.partiallyClearedById")
+        .leftJoin("users AS u3", "u3.id", "orders.clearedById")
+        .select(...getOrderQueryFields);
 
     return await Promise.all(orders.map(async order => await parseOrder(order)));
 }
@@ -116,20 +155,10 @@ export async function getOrder(id: number, year: number) {
     const order = await knex("orders")
         .join("jobs", "jobs.id", "orders.jobId")
         .join("users AS u1", "u1.id", "orders.byId")
-        .leftJoin("users AS u2", "u2.id", "orders.clearedById")
+        .leftJoin("users AS u2", "u2.id", "orders.partiallyClearedById")
+        .leftJoin("users AS u3", "u3.id", "orders.clearedById")
         .whereRaw("orders.id = ? AND year = ?", [id, year])
-        .first("orders.*", "jobs.subject", "jobs.client", "jobs.finalClient",
-            "jobs.orderName", "jobs.orderAmount", "jobs.startDate", "jobs.deliveryDate",
-            "jobs.notes", "jobs.active", "jobs.lost", "jobs.design", "jobs.construction",
-            "u1.role", "u1.type", "u1.name", "u1.surname", "u1.username",
-            "u1.hoursPerDay", "u1.costPerHour", "u1.active", "u1.managesTickets",
-            "u1.managesOrders", "u1.email", "u1.phone", "u1.car", "u1.costPerKm",
-            "u2.role AS role2", "u2.type AS type2", "u2.name AS name2",
-            "u2.surname AS surname2", "u2.username AS username2", "u2.hoursPerDay AS hoursPerDay2",
-            "u2.costPerHour AS costPerHour2", "u2.active AS active2",
-            "u2.managesTickets AS managesTickets2", "u2.managesOrders AS managesOrders2",
-            "u2.email AS email2", "u2.phone AS phone2", "u2.car AS car2",
-            "u2.costPerKm AS costPerKm2");
+        .first(...getOrderQueryFields);
 
     if (!order) throw new OrderNotFound();
 
@@ -154,6 +183,7 @@ export async function createOrder(newOrder: NewOrder) {
     if (!job) throw new JobNotFound();
     const byUser = await getUser(newOrder.byId);
     if (!byUser) throw new UserNotFound();
+    const partiallyClearedByUser = newOrder.partiallyClearedById ? await getUser(newOrder.partiallyClearedById) : undefined;
     const clearedByUser = newOrder.clearedById ? await getUser(newOrder.clearedById) : undefined;
 
     await knex("orders").insert(newOrder);
@@ -168,6 +198,8 @@ export async function createOrder(newOrder: NewOrder) {
         byUser,
         false,
         newOrder.scheduledDeliveryDate,
+        partiallyClearedByUser,
+        newOrder.partialClearingDate,
         clearedByUser,
         newOrder.clearingDate
     );
@@ -184,17 +216,25 @@ export async function updateOrder(id: number, year: number, updatedOrder: NewOrd
         .update(updatingOrder);
 }
 
-export async function clearOrder(id: number, year: number, clearedById: number) {
+export async function clearOrder(id: number, year: number, clearedById: number, partially: boolean = false) {
     const clearingDate = dayjs().format("YYYY-MM-DD");
+    const partialUpdate = {
+        partiallyClearedById: clearedById,
+        partialClearingDate: clearingDate
+    }
+
     await knex("orders")
         .where({id, year})
-        .update({clearedById, clearingDate});
+        .update(partially ? partialUpdate : {clearedById, clearingDate});
 }
 
-export async function unclearOrder(id: number, year: number) {
+export async function unclearOrder(id: number, year: number, partially: boolean = false) {
     await knex("orders")
         .where({id, year})
-        .update({clearedById: null, clearingDate: null});
+        .update(partially ? {partiallyClearedById: null, partialClearingDate: null} : {
+            clearedById: null,
+            clearingDate: null
+        });
 }
 
 export async function uploadedOrderFile(id: number, year: number) {
