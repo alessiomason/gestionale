@@ -1,5 +1,5 @@
 import {Order} from "../models/order";
-import {Col, Row} from "react-bootstrap";
+import {Col, Modal, Row} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
 import {
     Buildings,
@@ -31,6 +31,7 @@ interface OrderPaneProps {
 function OrderPane(props: OrderPaneProps) {
     const attachmentOrderName = `${props.order.id}-${props.order.year.toString().substring(2)}`;
     const [modifying, setModifying] = useState(false);
+    const [showClearingModal, setShowClearingModal] = useState(false);
     const navigate = useNavigate();
 
     // exit editing mode when selecting another order
@@ -43,15 +44,21 @@ function OrderPane(props: OrderPaneProps) {
         setModifying(false);
     }
 
-    function clearOrder() {
-        orderApis.clearOrder(props.order)
-            .then(order => props.afterSubmitEdit(order!.id, order!.year, order!))
+    function clearOrder(partially: boolean = false) {
+        orderApis.clearOrder(props.order, partially)
+            .then(order => {
+                props.afterSubmitEdit(order!.id, order!.year, order!);
+                setShowClearingModal(false);
+            })
             .catch(err => console.error(err));
     }
 
-    function unclearOrder() {
-        orderApis.unclearOrder(props.order)
-            .then(order => props.afterSubmitEdit(order!.id, order!.year, order!))
+    function unclearOrder(partially: boolean) {
+        orderApis.unclearOrder(props.order, partially)
+            .then(order => {
+                props.afterSubmitEdit(order!.id, order!.year, order!);
+                setShowClearingModal(false);
+            })
             .catch(err => console.error(err));
     }
 
@@ -160,10 +167,8 @@ function OrderPane(props: OrderPaneProps) {
                     <GlossyButton icon={PencilSquare} onClick={() => setModifying(true)}>
                         Modifica l'ordine
                     </GlossyButton>
-                    {!props.order.clearedBy && !props.order.clearingDate &&
-                        <GlossyButton icon={ClipboardCheck} onClick={clearOrder}>Evadi l'ordine</GlossyButton>}
-                    {props.order.clearedBy && props.order.clearingDate &&
-                        <GlossyButton icon={ClipboardX} onClick={unclearOrder}>Non evaso</GlossyButton>}
+                    <GlossyButton icon={ClipboardCheck} onClick={() => setShowClearingModal(true)}>
+                        Modifica evasione dell'ordine</GlossyButton>
                     {props.order.uploadedFile &&
                         <GlossyButton icon={FileEarmark} onClick={() => navigate(`/order/${attachmentOrderName}/pdf`)}>
                             Visualizza allegato
@@ -171,6 +176,33 @@ function OrderPane(props: OrderPaneProps) {
                 </Col>
             </Row>
 
+            <Modal show={showClearingModal} onHide={() => setShowClearingModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Modifica evasione dell'ordine</Modal.Title>
+                </Modal.Header>
+
+                <Modal.Body>
+                    <Row>
+                        <Col className="d-flex flex-column justify-content-center">
+                            {!props.order.clearedBy && !props.order.clearingDate &&
+                                <GlossyButton icon={ClipboardCheck} onClick={() => clearOrder(false)} className="mb-2">
+                                    Evadi l'ordine</GlossyButton>}
+                            {props.order.clearedBy && props.order.clearingDate &&
+                                <GlossyButton icon={ClipboardX} onClick={() => unclearOrder(false)} className="mb-2">
+                                    Non evaso</GlossyButton>}
+
+                            {!props.order.clearedBy && !props.order.clearingDate &&
+                                !props.order.partiallyClearedBy && !props.order.partialClearingDate &&
+                                <GlossyButton icon={ClipboardCheck} onClick={() => clearOrder(true)} className="my-2">
+                                    Evadi parzialmente l'ordine</GlossyButton>}
+                            {!props.order.clearedBy && !props.order.clearingDate &&
+                                props.order.partiallyClearedBy && props.order.partialClearingDate &&
+                                <GlossyButton icon={ClipboardX} onClick={() => unclearOrder(true)} className="my-2">
+                                    Annulla evasione parziale</GlossyButton>}
+                        </Col>
+                    </Row>
+                </Modal.Body>
+            </Modal>
         </div>
     );
 }

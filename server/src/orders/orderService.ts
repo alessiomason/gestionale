@@ -216,17 +216,25 @@ export async function updateOrder(id: number, year: number, updatedOrder: NewOrd
         .update(updatingOrder);
 }
 
-export async function clearOrder(id: number, year: number, clearedById: number) {
+export async function clearOrder(id: number, year: number, clearedById: number, partially: boolean = false) {
     const clearingDate = dayjs().format("YYYY-MM-DD");
+    const partialUpdate = {
+        partiallyClearedById: clearedById,
+        partialClearingDate: clearingDate
+    }
+
     await knex("orders")
         .where({id, year})
-        .update({clearedById, clearingDate});
+        .update(partially ? partialUpdate : {clearedById, clearingDate});
 }
 
-export async function unclearOrder(id: number, year: number) {
+export async function unclearOrder(id: number, year: number, partially: boolean = false) {
     await knex("orders")
         .where({id, year})
-        .update({clearedById: null, clearingDate: null});
+        .update(partially ? {partiallyClearedById: null, partialClearingDate: null} : {
+            clearedById: null,
+            clearingDate: null
+        });
 }
 
 export async function uploadedOrderFile(id: number, year: number) {

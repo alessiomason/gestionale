@@ -104,14 +104,15 @@ async function updateOrder(id: number, year: number, order: Order) {
     } else await handleApiError(response);
 }
 
-async function clearOrder(order: Order) {
+async function clearOrder(order: Order, partially: boolean = false) {
     const response = await fetch(new URL(`orders/${order.year}/${order.id}/clear`, apiUrl), {
         method: 'PATCH',
         credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
-        }
+        },
+        body: JSON.stringify({partially})
     });
     if (response.ok) {
         const order = await response.json() as Order;
@@ -119,14 +120,15 @@ async function clearOrder(order: Order) {
     } else await handleApiError(response);
 }
 
-async function unclearOrder(order: Order) {
+async function unclearOrder(order: Order, partially: boolean = false) {
     const response = await fetch(new URL(`orders/${order.year}/${order.id}/unclear`, apiUrl), {
         method: 'PATCH',
         credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
-        }
+        },
+        body: JSON.stringify({partially})
     });
     if (response.ok) {
         const order = await response.json() as Order;

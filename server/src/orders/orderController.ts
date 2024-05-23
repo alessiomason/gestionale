@@ -160,6 +160,7 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManag
         canManageOrders,
         param("year").isInt(),
         param("id").isInt(),
+        body("partially").optional({values: "null"}).isBoolean(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -173,7 +174,7 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManag
             const user = req.user as User;
 
             try {
-                await clearOrder(orderId, year, user.id);
+                await clearOrder(orderId, year, user.id, req.body.partially);
                 const order = await getOrder(orderId, year);
                 res.status(200).json(order);
             } catch (err: any) {
@@ -204,7 +205,7 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManag
             const year = parseInt(req.params.year);
 
             try {
-                await unclearOrder(orderId, year);
+                await unclearOrder(orderId, year, req.body.partially);
                 const order = await getOrder(orderId, year);
                 res.status(200).json(order);
             } catch (err: any) {
@@ -217,7 +218,7 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManag
         }
     )
 
-    // mark order ith uploaded file flag
+    // mark order with uploaded file flag
     app.patch(`${baseURL}/:year/:id/file`,
         isLoggedIn,
         canManageOrders,
