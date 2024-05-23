@@ -21,6 +21,11 @@ function JobsTable(props: JobsTableProps) {
 
     const navigate = useNavigate();
 
+    // length changes at every filter change
+    useEffect(() => {
+        setPageNumber(0);
+    }, [props.jobs.length]);
+
     useEffect(() => {
         sessionStorage.setItem("jobsPageNumber", pageNumber.toString());
     }, [pageNumber]);

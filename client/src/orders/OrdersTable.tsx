@@ -30,14 +30,20 @@ interface OrdersTableProps {
 }
 
 function OrdersTable(props: OrdersTableProps) {
+    const filteredOrders = props.orders.filter(filterOrders);
+
     const [pageNumber, setPageNumber] = useState(() => {
         const number = sessionStorage.getItem("ordersPageNumber");
         return number ? parseInt(number) : 0;
     });
-    const increasablePageNumber = (pageNumber + 1) * 100 <= props.orders.length;
+    const increasablePageNumber = (pageNumber + 1) * 100 <= filteredOrders.length;
     const decreasablePageNumber = pageNumber > 0;
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        setPageNumber(0);
+    }, [props.filteringOrderName, props.filteringJobId, props.filteringSupplier]);
 
     useEffect(() => {
         sessionStorage.setItem("ordersPageNumber", pageNumber.toString());
@@ -55,10 +61,10 @@ function OrdersTable(props: OrdersTableProps) {
         }
     }
 
-    function filterOrders(value: Order) {
-        return (props.filteringOrderName === undefined || value.name.startsWith(props.filteringOrderName)) &&
-            (props.filteringJobId === undefined || value.job.id.startsWith(props.filteringJobId)) &&
-            (props.filteringSupplier === undefined || value.supplier.toLowerCase().includes(props.filteringSupplier.toLowerCase()));
+    function filterOrders(order: Order) {
+        return (props.filteringOrderName === undefined || order.name.startsWith(props.filteringOrderName)) &&
+            (props.filteringJobId === undefined || order.job.id.startsWith(props.filteringJobId)) &&
+            (props.filteringSupplier === undefined || order.supplier.toLowerCase().includes(props.filteringSupplier.toLowerCase()));
     }
 
     function showCaret(header: PossibleSortingOptions) {
@@ -126,7 +132,7 @@ function OrdersTable(props: OrdersTableProps) {
                         className={decreasablePageNumber ? "clickable-arrow" : "unclickable-arrow"}
                         onClick={decreasePageNumber}/>
                     <p className="text-center">
-                        Pagina {pageNumber + 1} di {Math.ceil(props.orders.length / 100)}
+                        Pagina {pageNumber + 1} di {Math.ceil(filteredOrders.length / 100)}
                     </p>
                     <ArrowRightSquare
                         className={increasablePageNumber ? "clickable-arrow" : "unclickable-arrow"}
@@ -157,8 +163,7 @@ function OrdersTable(props: OrdersTableProps) {
                 </thead>
 
                 <tbody>
-                {props.orders
-                    .filter(filterOrders)
+                {filteredOrders
                     .sort(compareOrders)
                     .slice(pageNumber * 100, (pageNumber + 1) * 100)
                     .map(order => {
