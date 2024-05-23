@@ -73,7 +73,11 @@ function OrderPane(props: OrderPaneProps) {
         <div className="order-pane">
             <Row className="glossy-background">
                 <Row>
-                    <h3>Ordine {props.order.name}{props.order.clearingDate && " (evaso)"}</h3>
+                    <h3>
+                        Ordine {props.order.name}
+                        {props.order.partialClearingDate && " (evaso parzialmente)"}
+                        {props.order.clearingDate && " (evaso)"}
+                    </h3>
                 </Row>
 
                 <Row className="d-flex align-items-center">
