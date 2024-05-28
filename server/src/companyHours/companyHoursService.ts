@@ -61,7 +61,7 @@ export async function getCompanyHours(month: string) {
 
     const companyDailyExpenses = await getAllDailyExpenses(formattedMonth);
 
-    for (let companyDailyExpense of companyDailyExpenses) {
+    for (const companyDailyExpense of companyDailyExpenses) {
         const companyHoursItem = companyHours.find(companyWorkedHoursItem => {
             return companyWorkedHoursItem.user.id === companyDailyExpense.userId &&
                 dayjs(companyWorkedHoursItem.date).isSame(dayjs(companyDailyExpense.date), "day");

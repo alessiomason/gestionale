@@ -41,7 +41,7 @@ function WorkedHoursSelectUser(props: WorkedHoursSelectUserProps) {
 
     function setSearchUser(userId: number) {
         let newSearchParams: any = {};
-        for (let [key, value] of searchParams.entries()) {
+        for (const [key, value] of searchParams.entries()) {
             newSearchParams[key] = value;
         }
 

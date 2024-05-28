@@ -120,7 +120,7 @@ export async function updateTripCosts() {
     const users = await getAllUsers();
     const dailyExpenses = await knex("dailyExpenses").select();
 
-    for (let dailyExpense of dailyExpenses) {
+    for (const dailyExpense of dailyExpenses) {
         // only update if cost is zero: only happens with imported data
         if (parseFloat(dailyExpense.tripCost) === 0) {
             const user = users.find(user => dailyExpense.userId === user.id);
