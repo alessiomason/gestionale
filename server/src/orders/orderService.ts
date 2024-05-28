@@ -200,12 +200,14 @@ export async function checkExpiredOrders() {
 async function checkValidId(id: number, year: number) {
     try {
         await getOrder(id, year);     // if new id, throws OrderNotFound
-        throw new DuplicateOrder();
     } catch (err: any) {
-        if (!(err instanceof OrderNotFound)) {
-            throw err;
+        if (err instanceof OrderNotFound) {
+            return;
         }
+        throw err;
     }
+    
+    throw new DuplicateOrder();
 }
 
 export async function createOrder(newOrder: NewOrder) {
