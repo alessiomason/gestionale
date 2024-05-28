@@ -6,10 +6,8 @@ import {closeTicket, createTicket, deleteTicket, getTicket, getTickets} from "./
 import {TicketAlreadyClosed, TicketCompanyNotFound, TicketNotFound} from "../ticketErrors";
 import {getTicketCompany} from "../ticketCompanies/ticketCompanyService";
 import {humanize} from "../../functions";
-import nodemailer from "nodemailer";
-import Mail from "nodemailer/lib/mailer";
-import {OAuth2Client} from "google-auth-library";
 import dayjs from "dayjs";
+import {sendEmail} from "../../email/emailService";
 
 export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler, canManageTickets: RequestHandler) {
     const baseURL = "/api/tickets";
@@ -116,10 +114,6 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler, canMana
 
                     // send report
                     if (ticket.company.email) {
-                        // Nodemailer guide at https://nodemailer.com/smtp/oauth2/
-                        // followed guide at https://medium.com/@nickroach_50526/sending-emails-with-node-js-using-smtp-gmail-and-oauth2-316fe9c790a1#
-                        // additional step at https://github.com/nodemailer/nodemailer/issues/266#issuecomment-542791806
-
                         const ticketDuration = dayjs.duration(dayjs(ticket.endTime).diff(dayjs(ticket.startTime)));
                         const ticketCompany = await ticket.company.attachProgress();
                         let remainingHours = ticketCompany.orderedHours - ticketCompany.usedHours;
@@ -138,7 +132,8 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler, canMana
                             <img src="${imageURL}" style="max-width: 70px; max-height: 70px;" alt="Il logo di TLF Technology">
                             <p><strong>TLF Technology s.r.l. a Socio Unico</strong></p>
                             <p>Viale Artigianato, n°4 - 12051 Alba (CN) Italia</p>
-                            <p>Tel. +39 0173 060521 /// Fax +39 0173 061055 /// www.tlftechnology.it</p>`;
+                            <p>Tel. +39 0173 060521 /// Fax +39 0173 061055 /// www.tlftechnology.it</p>
+                            <p>Questa email è stata generata automaticamente.</p>`;
                         const mailText = `
                             Inviamo resoconto del ticket di assistenza.\n\n
                             Ticket: ${ticket.title}\n
@@ -151,27 +146,7 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler, canMana
                             Viale Artigianato, n°4 - 12051 Alba (CN) Italia\n
                             Tel. +39 0173 060521 /// Fax +39 0173 061055 /// www.tlftechnology.it`;
 
-                        const smtpTransport = nodemailer.createTransport({
-                            service: "Outlook365",
-                            secure: true,
-                            auth: {
-                                user: process.env.EMAIL,
-                                pass: process.env.EMAIL_PASSWORD
-                            },
-                            tls: {
-                                ciphers: "SSLv3"
-                            }
-                        });
-
-                        const mailOptions: Mail.Options = {
-                            from: process.env.EMAIL,
-                            to: ticket.company.email,
-                            subject: "Report ticket di assistenza",
-                            html: mailHTML,
-                            text: mailText
-                        };
-
-                        await smtpTransport.sendMail(mailOptions);
+                        await sendEmail(ticket.company.email, "Report ticket di assistenza", mailHTML, mailText);
                     }
                 } else {
                     res.status(TicketAlreadyClosed.code).json(new TicketAlreadyClosed())

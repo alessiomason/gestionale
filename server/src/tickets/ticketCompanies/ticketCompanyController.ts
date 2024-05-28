@@ -21,7 +21,7 @@ export function useTicketCompaniesAPIs(app: Express, isLoggedIn: RequestHandler,
             const ticketCompanies = await getAllTicketCompanies()
             const ticketCompaniesWithProgress: TicketCompanyWithProgress[] = [];
 
-            for (let ticketCompany of ticketCompanies) {
+            for (const ticketCompany of ticketCompanies) {
                 ticketCompaniesWithProgress.push(await ticketCompany.attachProgress())
             }
 

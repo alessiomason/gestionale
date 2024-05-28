@@ -9,7 +9,7 @@ function setSearchMonth(month: number, searchParams: URLSearchParams, setSearchP
     const currentMonth = parseInt(dayjs().format("M"));
 
     let newSearchParams: any = {};
-    for (let [key, value] of searchParams.entries()) {
+    for (const [key, value] of searchParams.entries()) {
         newSearchParams[key] = value;
     }
 
@@ -26,7 +26,7 @@ function setSearchYear(year: number, searchParams: URLSearchParams, setSearchPar
     const currentYear = parseInt(dayjs().format("YYYY"));
 
     let newSearchParams: any = {};
-    for (let [key, value] of searchParams.entries()) {
+    for (const [key, value] of searchParams.entries()) {
         newSearchParams[key] = value;
     }
 
@@ -44,7 +44,7 @@ function setSearchMonthYear(month: number, year: number, searchParams: URLSearch
     const currentYear = parseInt(dayjs().format("YYYY"));
 
     let newSearchParams: any = {};
-    for (let [key, value] of searchParams.entries()) {
+    for (const [key, value] of searchParams.entries()) {
         newSearchParams[key] = value;
     }
 

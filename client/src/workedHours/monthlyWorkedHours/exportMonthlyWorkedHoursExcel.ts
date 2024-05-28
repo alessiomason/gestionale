@@ -35,7 +35,7 @@ export async function exportMonthlyWorkedHoursExcel(
     worksheet.addRow(null);
 
     // one section per user
-    for (let user of users) {
+    for (const user of users) {
         const userFirstRow = worksheet.addRow([
             null,
             "Commessa",
@@ -48,7 +48,7 @@ export async function exportMonthlyWorkedHoursExcel(
             monthWorkItem.user.id === user.id);
         let userRows: ExcelJS.Row[] = [];
 
-        for (let userMonthWorkItem of userMonthWorkItems) {
+        for (const userMonthWorkItem of userMonthWorkItems) {
             userRows.push(worksheet.addRow([
                 userRows.length === 0 ? `${user.surname} ${user.name}` : null,
                 userMonthWorkItem.job.id,

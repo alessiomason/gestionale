@@ -8,6 +8,7 @@ import {getUser} from "../users/userService";
 import {UserNotFound} from "../users/userErrors";
 import {User} from "../users/user";
 import dayjs from "dayjs";
+import {sendEmail} from "../email/emailService";
 
 async function parseOrder(order: any) {
     const job = new Job(
@@ -111,6 +112,7 @@ async function parseOrder(order: any) {
         order.description,
         by,
         !!order.uploadedFile,
+        !!order.notifiedExpiry,
         order.scheduledDeliveryDate,
         partiallyClearedBy,
         order.partialClearingDate ? order.partialClearingDate : undefined,    // if null, set undefined
@@ -165,15 +167,47 @@ export async function getOrder(id: number, year: number) {
     return await parseOrder(order);
 }
 
+export async function checkExpiredOrders() {
+    const orders = await getAllOrders();
+    const notifyingOrders = orders.filter(order =>      // expired uncleared orders
+        !order.notifiedExpiry && !order.clearedBy && !order.clearingDate &&
+        order.scheduledDeliveryDate && dayjs(order.scheduledDeliveryDate).isBefore(dayjs()));
+
+    const ordersLink = `${process.env.APP_URL}/orders`;
+    const mailHTML = `
+        <h3>Sono presenti dei nuovi ordini inevasi scaduti.</h3>
+        <p>Ecco l'elenco degli ordini:</p>
+        <ul>
+            ${notifyingOrders.map(order => `<li>${order.name}</li>`)}
+        </ul>
+        <p><a href=${ordersLink}>Clicca qui</a> per accedere alla pagina degli ordini.</p>
+        <p>Questa email è stata generata automaticamente.</p>`;
+
+    const mailText = `
+        Sono presenti dei nuovi ordini inevasi scaduti.\n
+        Ecco l'elenco degli ordini:\n
+        ${notifyingOrders.map(order => `${order.name}\n`)}
+        Questa email è stata generata automaticamente.`;
+
+    await sendEmail(process.env.ORDERS_NOTIFICATION_EMAIL as string, "Nuovi ordini inevasi scaduti", mailHTML, mailText);
+
+    // mark all notified orders as such
+    await knex("orders")
+        .whereIn(["id", "year"], notifyingOrders.map(o => [o.id, o.year]))
+        .update({notifiedExpiry: true});
+}
+
 async function checkValidId(id: number, year: number) {
     try {
         await getOrder(id, year);     // if new id, throws OrderNotFound
-        throw new DuplicateOrder();
     } catch (err: any) {
-        if (!(err instanceof OrderNotFound)) {
-            throw err;
+        if (err instanceof OrderNotFound) {
+            return;
         }
+        throw err;
     }
+    
+    throw new DuplicateOrder();
 }
 
 export async function createOrder(newOrder: NewOrder) {
@@ -196,6 +230,7 @@ export async function createOrder(newOrder: NewOrder) {
         newOrder.supplier,
         newOrder.description,
         byUser,
+        false,
         false,
         newOrder.scheduledDeliveryDate,
         partiallyClearedByUser,
