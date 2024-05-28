@@ -46,7 +46,7 @@ export async function exportCompanyWorkedHoursExcel(
     worksheet.getRow(1).font = {bold: true};
 
     // one section per user
-    for (let user of users) {
+    for (const user of users) {
         const workedHours = workdays.map(workday => {
             const companyHoursItem = companyHours.find(companyHoursItem =>
                 companyHoursItem.user.id === user.id && dayjs(companyHoursItem.date).isSame(workday, "day"));
@@ -125,7 +125,7 @@ export async function exportCompanyWorkedHoursExcel(
         userRows.push(worksheet.addRow([null, "Spese documentate", ...expenses]));
 
         worksheet.mergeCells(`${userRows[0].getCell(1).address}:${userRows[userRows.length - 1].getCell(1).address}`);
-        for (let row of userRows) {
+        for (const row of userRows) {
             addTotalToRow(row, firstDayIndex, lastDayIndex);
         }
 

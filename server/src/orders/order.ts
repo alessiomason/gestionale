@@ -4,12 +4,14 @@ import {User} from "../users/user";
 export class Order {
     id: number
     year: number
+    name: string
     date: string
     job: Job
     supplier: string
     description: string
     by: User
     uploadedFile: boolean
+    notifiedExpiry: boolean     // if expired, an email has been sent to notify of the expiry
     scheduledDeliveryDate?: string
     partiallyClearedBy?: User
     partialClearingDate?: string
@@ -25,6 +27,7 @@ export class Order {
         description: string,
         by: User,
         uploadedFile: boolean,
+        notifiedExpiry: boolean = false,
         scheduledDeliveryDate?: string,
         partiallyClearedBy?: User,
         partialClearingDate?: string,
@@ -33,12 +36,14 @@ export class Order {
     ) {
         this.id = id;
         this.year = year;
+        this.name = `${id}/${year.toString().substring(2)}`;
         this.date = date;
         this.job = job;
         this.supplier = supplier;
         this.description = description;
         this.by = by;
         this.uploadedFile = uploadedFile;
+        this.notifiedExpiry = notifiedExpiry;
         this.scheduledDeliveryDate = scheduledDeliveryDate;
         this.partiallyClearedBy = partiallyClearedBy;
         this.partialClearingDate = partialClearingDate;

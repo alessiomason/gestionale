@@ -163,7 +163,7 @@ export async function updateWorkItemsCosts() {
     const users = await getAllUsers();
     const workItems = await knex("workItems").select();
 
-    for (let workItem of workItems) {
+    for (const workItem of workItems) {
         // only update if cost is zero: only happens with imported data
         if (parseFloat(workItem.cost) === 0) {
             const user = users.find(user => user.id === workItem.userId);

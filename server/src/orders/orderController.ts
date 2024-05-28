@@ -2,6 +2,7 @@ import {Express, Request, Response} from "express";
 import {RequestHandler} from "express-serve-static-core";
 import {BaseError, InternalServerError, ParameterError} from "../errors";
 import {
+    checkExpiredOrders,
     clearOrder,
     createOrder,
     deleteOrder,
@@ -15,6 +16,7 @@ import {body, param, validationResult} from "express-validator";
 import {NewOrder} from "./order";
 import dayjs from "dayjs";
 import {User} from "../users/user";
+import cron from "node-cron";
 
 export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManageOrders: RequestHandler) {
     const baseURL = "/api/orders";
@@ -23,7 +25,7 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManag
     app.get(baseURL, isLoggedIn, canManageOrders, async (_: Request, res: Response) => {
         try {
             const orders = await getAllOrders();
-            res.status(200).json(orders)
+            res.status(200).json(orders);
         } catch (err: any) {
             if (err instanceof BaseError) {
                 res.status(err.statusCode).json(err);
@@ -58,6 +60,23 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManag
             }
         }
     )
+
+    // check expired orders
+    app.post(`${baseURL}/expired`, isLoggedIn, canManageOrders, async (_: Request, res: Response) => {
+        try {
+            await checkExpiredOrders();
+            res.status(200).end();
+        } catch (err: any) {
+            if (err instanceof BaseError) {
+                res.status(err.statusCode).json(err);
+            } else {
+                res.status(InternalServerError.code).json(new InternalServerError("Error while retrieving orders"));
+            }
+        }
+    })
+
+    // run check at 06:15 every day
+    cron.schedule("15 6 * * *", checkExpiredOrders, {timezone: "Europe/Rome"});
 
     // create an order
     app.post(baseURL,
