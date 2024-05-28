@@ -178,16 +178,16 @@ export async function checkExpiredOrders() {
         <h3>Sono presenti dei nuovi ordini inevasi scaduti.</h3>
         <p>Ecco l'elenco degli ordini:</p>
         <ul>
-            ${notifyingOrders.map(order => `<li>${order.name}</li>`)}
+            ${notifyingOrders.map(order => `<li>${order.name}</li>\n`).join("")}
         </ul>
         <p><a href=${ordersLink}>Clicca qui</a> per accedere alla pagina degli ordini.</p>
         <p>Questa email è stata generata automaticamente.</p>`;
 
     const mailText = `
-        Sono presenti dei nuovi ordini inevasi scaduti.\n
-        Ecco l'elenco degli ordini:\n
-        ${notifyingOrders.map(order => `${order.name}\n`)}
-        Questa email è stata generata automaticamente.`;
+Sono presenti dei nuovi ordini inevasi scaduti.\n
+Ecco l'elenco degli ordini:\n
+${notifyingOrders.map(order => `- ${order.name}\n`).join("")}
+Questa email è stata generata automaticamente.`;
 
     await sendEmail(process.env.ORDERS_NOTIFICATION_EMAIL as string, "Nuovi ordini inevasi scaduti", mailHTML, mailText);
 
@@ -206,7 +206,7 @@ async function checkValidId(id: number, year: number) {
         }
         throw err;
     }
-    
+
     throw new DuplicateOrder();
 }
 
