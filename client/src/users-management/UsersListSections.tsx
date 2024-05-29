@@ -1,6 +1,6 @@
 import React, {useState} from "react";
-import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
-import {Check2, Copy, Key, Link45deg} from "react-bootstrap-icons";
+import {Col, FloatingLabel, Form, InputGroup, Modal, Row} from "react-bootstrap";
+import {Check2, Copy, Key, Link45deg, XOctagon} from "react-bootstrap-icons";
 import {User} from "../models/user";
 import GlossyButton from "../buttons/GlossyButton";
 import LightGlossyButton from "../buttons/LightGlossyButton";
@@ -14,6 +14,13 @@ interface RegisteredSectionProps {
 }
 
 function RegisteredSection(props: RegisteredSectionProps) {
+    const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
+
+    function showModal(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        event.preventDefault();
+        setShowResetPasswordModal(true);
+    }
+
     return (
         <>
             <Row className="mt-5">
@@ -28,10 +35,27 @@ function RegisteredSection(props: RegisteredSectionProps) {
             {props.selectedUser.id !== props.user.id && <Row className="mt-3 mb-2">
                 <Col/>
                 <Col sm={8} className="d-flex justify-content-center">
-                    <GlossyButton icon={Key} onClick={props.resetPassword}>Reimposta password</GlossyButton>
+                    <GlossyButton icon={Key} onClick={showModal}>Reimposta password</GlossyButton>
                 </Col>
                 <Col/>
             </Row>}
+
+            <Modal show={showResetPasswordModal} onHide={() => setShowResetPasswordModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Confermi di voler reimpostare la password
+                        di {props.selectedUser.name} {props.selectedUser.surname}?</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Row>
+                        <Col className="d-flex flex-column justify-content-center">
+                            <GlossyButton icon={Key} className="mb-2"
+                                          onClick={props.resetPassword}>Reimposta password</GlossyButton>
+                            <GlossyButton icon={XOctagon} className="mt-2"
+                                          onClick={() => setShowResetPasswordModal(false)}>Annulla</GlossyButton>
+                        </Col>
+                    </Row>
+                </Modal.Body>
+            </Modal>
         </>
     );
 }
@@ -46,7 +70,8 @@ function NoRegistrationSection(props: NoRegistrationSectionProps) {
 
     return (
         <>
-            {expired ? <ExpiredRegistrationTokenSection selectedUser={props.selectedUser} resetPassword={props.resetPassword}/> :
+            {expired ? <ExpiredRegistrationTokenSection selectedUser={props.selectedUser}
+                                                        resetPassword={props.resetPassword}/> :
                 <OfferRegistrationSection selectedUser={props.selectedUser}/>}
         </>
     );
