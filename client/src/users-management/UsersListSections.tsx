@@ -2,13 +2,14 @@ import React, {useState} from "react";
 import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import {Check2, Copy, Key, Link45deg} from "react-bootstrap-icons";
 import {User} from "../models/user";
-import dayjs from "dayjs";
 import GlossyButton from "../buttons/GlossyButton";
 import LightGlossyButton from "../buttons/LightGlossyButton";
 import {publicUrl} from "../api/apisValues";
+import dayjs from "dayjs";
 
 interface RegisteredSectionProps {
     readonly user: User
+    readonly selectedUser: User
     readonly resetPassword: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
 }
 
@@ -21,32 +22,32 @@ function RegisteredSection(props: RegisteredSectionProps) {
 
             <Row>
                 <Col>
-                    L'utente si è registrato {dayjs(props.user.registrationDate).format("dddd LL [alle] LT")}.
+                    L'utente si è registrato {dayjs(props.selectedUser.registrationDate).format("dddd LL [alle] LT")}.
                 </Col>
             </Row>
-            <Row className="mt-3 mb-2">
+            {props.selectedUser.id !== props.user.id && <Row className="mt-3 mb-2">
                 <Col/>
                 <Col sm={8} className="d-flex justify-content-center">
                     <GlossyButton icon={Key} onClick={props.resetPassword}>Reimposta password</GlossyButton>
                 </Col>
                 <Col/>
-            </Row>
+            </Row>}
         </>
     );
 }
 
 interface NoRegistrationSectionProps {
-    readonly user: User
+    readonly selectedUser: User
     readonly resetPassword: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
 }
 
 function NoRegistrationSection(props: NoRegistrationSectionProps) {
-    const expired = dayjs().isAfter(dayjs(props.user.tokenExpiryDate!));
+    const expired = dayjs().isAfter(dayjs(props.selectedUser.tokenExpiryDate));
 
     return (
         <>
-            {expired ? <ExpiredRegistrationTokenSection user={props.user} resetPassword={props.resetPassword}/> :
-                <OfferRegistrationSection user={props.user}/>}
+            {expired ? <ExpiredRegistrationTokenSection selectedUser={props.selectedUser} resetPassword={props.resetPassword}/> :
+                <OfferRegistrationSection selectedUser={props.selectedUser}/>}
         </>
     );
 }
@@ -70,11 +71,11 @@ function ExpiredRegistrationTokenSection(props: NoRegistrationSectionProps) {
 }
 
 interface OfferRegistrationSectionProps {
-    readonly user: User
+    readonly selectedUser: User
 }
 
 function OfferRegistrationSection(props: OfferRegistrationSectionProps) {
-    const registrationLink = `${publicUrl}signup/${props.user.registrationToken}`;
+    const registrationLink = `${publicUrl}signup/${props.selectedUser.registrationToken}`;
     const [copied, setCopied] = useState(false);
 
     async function handleCopy() {
@@ -88,7 +89,7 @@ function OfferRegistrationSection(props: OfferRegistrationSectionProps) {
                 <h3>Registrazione dell'utente</h3>
                 <p>Invia questo link all'utente per completare la procedura di registrazione.</p>
                 <p>Il link scade 2 giorni dopo la generazione:
-                    questo link scadrà {dayjs(props.user.tokenExpiryDate).format("dddd LL [alle] LT")}.</p>
+                    questo link scadrà {dayjs(props.selectedUser.tokenExpiryDate).format("dddd LL [alle] LT")}.</p>
             </Row>
 
             <Row>

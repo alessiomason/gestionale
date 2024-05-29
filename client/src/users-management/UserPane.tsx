@@ -1,8 +1,5 @@
-import {Role, Type, User} from "../models/user";
-import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
-import {checkValidEmail} from "../functions";
-import signUpApis from "../api/signUpApis";
+import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import {
     CarFront,
     Check,
@@ -17,10 +14,13 @@ import {
     Telephone,
     XCircle
 } from "react-bootstrap-icons";
+import {NoRegistrationSection, RegisteredSection} from "./UsersListSections";
 import SwitchToggle from "./SwitchToggle";
 import GlossyButton from "../buttons/GlossyButton";
+import {checkValidEmail} from "../functions";
+import {Role, Type, User} from "../models/user";
+import signUpApis from "../api/signUpApis";
 import userApis from "../api/userApis";
-import {NoRegistrationSection, RegisteredSection} from "./UsersListSections";
 
 interface UserPaneProps {
     readonly user: User
@@ -317,9 +317,9 @@ function UserPane(props: UserPaneProps) {
                 </Row>
 
                 {props.selectedUser?.registrationDate &&
-                    <RegisteredSection user={props.selectedUser} resetPassword={resetPassword}/>}
+                    <RegisteredSection user={props.user} selectedUser={props.selectedUser} resetPassword={resetPassword}/>}
                 {props.selectedUser && !props.selectedUser.registrationDate &&
-                    <NoRegistrationSection user={props.selectedUser} resetPassword={resetPassword}/>}
+                    <NoRegistrationSection selectedUser={props.selectedUser} resetPassword={resetPassword}/>}
 
             </Row>
             <Row className="d-flex justify-content-center my-4">
