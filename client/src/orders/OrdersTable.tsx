@@ -9,8 +9,8 @@ import {
     CaretUpFill,
     FileEarmark
 } from "react-bootstrap-icons";
-import {PossibleSortingOptions} from "./OrdersPage";
 import TextButton from "../buttons/TextButton";
+import {PossibleSortingOptions} from "./OrdersPage";
 import {formatDate} from "../functions";
 import {Order} from "../models/order";
 import dayjs from "dayjs";
@@ -125,7 +125,7 @@ function OrdersTable(props: OrdersTableProps) {
     }
 
     return (
-        <Row className="glossy-background w-100 m-0">
+        <Row className="glossy-background w-100 m-0 mb-3">
             <Row className="mb-2">
                 <Col className="d-flex justify-content-between">
                     <ArrowLeftSquare
