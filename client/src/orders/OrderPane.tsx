@@ -1,6 +1,5 @@
-import {Order} from "../models/order";
-import {Col, Modal, Row} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
+import {Col, Modal, Row} from "react-bootstrap";
 import {
     Buildings,
     CalendarCheck,
@@ -14,12 +13,14 @@ import {
     Person,
     Sticky
 } from "react-bootstrap-icons";
+import {useNavigate} from "react-router-dom";
+import {useMediaQuery} from "react-responsive";
 import GlossyButton from "../buttons/GlossyButton";
-import {formatDate} from "../functions";
 import EditOrderPane from "./EditOrderPane";
+import {formatDate} from "../functions";
+import {Order} from "../models/order";
 import {User} from "../models/user";
 import orderApis from "../api/orderApis";
-import {useNavigate} from "react-router-dom";
 
 interface OrderPaneProps {
     readonly user: User
@@ -33,6 +34,7 @@ function OrderPane(props: OrderPaneProps) {
     const [modifying, setModifying] = useState(false);
     const [showClearingModal, setShowClearingModal] = useState(false);
     const navigate = useNavigate();
+    const isMobile = useMediaQuery({maxWidth: 767});
 
     // exit editing mode when selecting another order
     useEffect(() => {
@@ -167,14 +169,17 @@ function OrderPane(props: OrderPaneProps) {
             </Row>
 
             <Row className="mt-3 mb-4">
-                <Col className="d-flex justify-content-evenly">
-                    <GlossyButton icon={PencilSquare} onClick={() => setModifying(true)}>
+                <Col className={`d-flex justify-content-evenly ${isMobile ? "flex-column mb-4" : undefined}`}>
+                    <GlossyButton icon={PencilSquare} className={isMobile ? "my-1" : undefined}
+                                  onClick={() => setModifying(true)}>
                         Modifica l'ordine
                     </GlossyButton>
-                    <GlossyButton icon={ClipboardCheck} onClick={() => setShowClearingModal(true)}>
+                    <GlossyButton icon={ClipboardCheck} className={isMobile ? "my-1" : undefined}
+                                  onClick={() => setShowClearingModal(true)}>
                         Modifica evasione dell'ordine</GlossyButton>
                     {props.order.uploadedFile &&
-                        <GlossyButton icon={FileEarmark} onClick={() => navigate(`/order/${attachmentOrderName}/pdf`)}>
+                        <GlossyButton icon={FileEarmark} className={isMobile ? "my-1" : undefined}
+                                      onClick={() => navigate(`/order/${attachmentOrderName}/pdf`)}>
                             Visualizza allegato
                         </GlossyButton>}
                 </Col>

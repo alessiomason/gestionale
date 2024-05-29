@@ -1,6 +1,5 @@
-import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
-import {Order} from "../models/order";
 import React, {useState} from "react";
+import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import {
     Buildings,
     Calendar,
@@ -11,13 +10,15 @@ import {
     Sticky,
     Trash
 } from "react-bootstrap-icons";
+import {useMediaQuery} from "react-responsive";
 import WorkedHoursNewJobModal from "../workedHours/WorkedHoursNewJobModal";
-import {Job} from "../models/job";
 import GlossyButton from "../buttons/GlossyButton";
-import orderApis from "../api/orderApis";
-import {User} from "../models/user";
-import dayjs from "dayjs";
 import OrderFileUploadModal from "./OrderFileUploadModal";
+import {Order} from "../models/order";
+import {Job} from "../models/job";
+import {User} from "../models/user";
+import orderApis from "../api/orderApis";
+import dayjs from "dayjs";
 
 interface EditOrderPaneProps {
     readonly user: User
@@ -39,6 +40,8 @@ function EditOrderPane(props: EditOrderPaneProps) {
     const [scheduledDeliveryDate, setScheduledDeliveryDate] = useState(props.order?.scheduledDeliveryDate ?? "");
 
     const [errorMessage, setErrorMessage] = useState("");
+
+    const isMobile = useMediaQuery({maxWidth: 767});
 
     function openJobsModal(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
@@ -193,12 +196,14 @@ function EditOrderPane(props: EditOrderPaneProps) {
                 <OrderFileUploadModal order={props.order} show={showFileUploadModal} setShow={setShowFileUploadModal}
                                       afterSubmit={props.afterSubmit}/>}
             <Row className="d-flex justify-content-center my-4">
-                <Col className="d-flex justify-content-evenly">
+                <Col className={`d-flex justify-content-evenly ${isMobile ? "flex-column mb-4" : undefined}`}>
                     {props.order &&
-                        <GlossyButton icon={CloudUpload} onClick={openFileUploadModal}>Carica allegato</GlossyButton>}
-                    <GlossyButton type="submit" icon={Floppy}
+                        <GlossyButton icon={CloudUpload} className={isMobile ? "my-1" : undefined}
+                                      onClick={openFileUploadModal}>Carica allegato</GlossyButton>}
+                    <GlossyButton type="submit" icon={Floppy} className={isMobile ? "my-1" : undefined}
                                   onClick={handleSubmit}>{props.order ? "Salva modifiche" : "Salva"}</GlossyButton>
-                    {props.order && <GlossyButton icon={Trash} onClick={handleDelete}>Elimina ordine</GlossyButton>}
+                    {props.order && <GlossyButton icon={Trash} className={isMobile ? "my-1" : undefined}
+                                                  onClick={handleDelete}>Elimina ordine</GlossyButton>}
                 </Col>
             </Row>
         </Form>
