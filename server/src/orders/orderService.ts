@@ -173,6 +173,10 @@ export async function checkExpiredOrders() {
         !order.notifiedExpiry && !order.clearedBy && !order.clearingDate &&
         order.scheduledDeliveryDate && dayjs(order.scheduledDeliveryDate).isBefore(dayjs()));
 
+    if (notifyingOrders.length === 0) {
+        return;
+    }
+
     const ordersLink = `${process.env.APP_URL}/orders`;
     const mailHTML = `
         <h3>Sono presenti dei nuovi ordini inevasi scaduti.</h3>
