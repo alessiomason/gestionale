@@ -7,14 +7,26 @@ export enum Role {
 export enum Type {
     office = "office",
     workshop = "workshop",
-    machine = "machine"
+    machine = "machine",
+    accounting = "accounting",
+    mechanic = "mechanic",
+    electrician = "electrician",
+    software = "software"
 }
 
 export class User {
     static readonly Role = Role;
     static readonly allRoles = [Role.user, Role.admin, Role.dev];
     static readonly Type = Type;
-    static readonly allTypes = [Type.office, Type.workshop, Type.machine];
+    static readonly allTypes = [
+        Type.office,
+        Type.workshop,
+        Type.machine,
+        Type.accounting,
+        Type.mechanic,
+        Type.electrician,
+        Type.software
+    ];
 
     id: number
     role: Role
@@ -94,6 +106,14 @@ export class User {
                 return "Officina";
             case Type.machine:
                 return "Macchina";
+            case Type.accounting:
+                return "Contabilità";
+            case Type.mechanic:
+                return "Meccanico";
+            case Type.electrician:
+                return "Elettricista";
+            case Type.software:
+                return "Softwarista";
         }
     }
 
