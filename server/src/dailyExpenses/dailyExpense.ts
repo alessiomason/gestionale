@@ -7,6 +7,7 @@ export class DailyExpense {
     tripCost?: number       // cost of trip = kms * cost of user per km, undefined if cost of user undefined
     travelHours: number     // hours of paid travel hours
     holidayHours: number    // hours of holiday or paid leave
+    holidayApproved: boolean | null    // holiday approved or rejected by the administrator or pending
     sickHours: number       // hours of sick leave
     donationHours: number   // hours of leave for blood donation
     furloughHours: number   // hours of furlough
@@ -20,6 +21,7 @@ export class DailyExpense {
         tripCost: number | undefined,
         travelHours: number,
         holidayHours: number,
+        holidayApproved: boolean | null,
         sickHours: number,
         donationHours: number,
         furloughHours: number
@@ -32,6 +34,7 @@ export class DailyExpense {
         this.tripCost = tripCost;
         this.travelHours = travelHours;
         this.holidayHours = holidayHours;
+        this.holidayApproved = holidayApproved;
         this.sickHours = sickHours;
         this.donationHours = donationHours;
         this.furloughHours = furloughHours;

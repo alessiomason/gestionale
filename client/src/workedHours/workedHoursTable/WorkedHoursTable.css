@@ -44,6 +44,18 @@
     background-color: rgba(213, 0, 0, 0.15);
 }
 
+.worked-hours-table > tbody > tr > td.holiday-hours-approved {
+    background-color: limegreen;
+}
+
+.worked-hours-table > tbody > tr > td.holiday-hours-pending {
+    background-color: gold;
+}
+
+.worked-hours-table > tbody > tr > td.holiday-hours-rejected {
+    background-color: #d50000;
+}
+
 .gray-background > td {
     background-color: rgba(204, 204, 204, 0.6);
 }

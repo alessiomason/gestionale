@@ -60,6 +60,7 @@ export function useDailyExpensesAPIs(app: Express, isLoggedIn: RequestHandler, i
         body("kms").isNumeric(),
         body("travelHours").isNumeric(),
         body("holidayHours").isNumeric(),
+        body("holidayApproved").optional({values: "null"}).isBoolean(),
         body("sickHours").isNumeric(),
         body("donationHours").isNumeric(),
         body("furloughHours").isNumeric(),
@@ -93,6 +94,7 @@ export function useDailyExpensesAPIs(app: Express, isLoggedIn: RequestHandler, i
                 undefined,
                 req.body.travelHours,
                 req.body.holidayHours,
+                req.body.holidayApproved,
                 req.body.sickHours,
                 req.body.donationHours,
                 req.body.furloughHours

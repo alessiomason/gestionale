@@ -21,6 +21,7 @@ async function getDailyExpenses(month: string, userId: number) {
             dailyExpense.tripCost,
             dailyExpense.travelHours,
             dailyExpense.holidayHours,
+            dailyExpense.holidayApproved,
             dailyExpense.sickHours,
             dailyExpense.donationHours,
             dailyExpense.furloughHours

@@ -237,12 +237,24 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
                     );
                     monthHolidayHours += dailyExpense?.holidayHours ?? 0;
 
+                    let className = "";
+                    if (dailyExpense && dailyExpense.holidayHours !== 0) {
+                        if (dailyExpense.holidayApproved === null) {
+                            className = "holiday-hours-pending";
+                        } else if (dailyExpense.holidayApproved) {
+                            className = "holiday-hours-approved";
+                        } else {
+                            className = "holiday-hours-rejected";
+                        }
+                    }
+
                     return (
                         <WorkedHoursDailyTableCell key={`cell-holidayHours-${workday.format("YYYY-MM-DD")}`}
                                                    workday={workday} dailyExpense={dailyExpense} field={"holidayHours"}
                                                    selectedUser={props.selectedUser}
                                                    setSavingStatus={props.setSavingStatus}
-                                                   createOrUpdateLocalDailyExpense={createOrUpdateLocalDailyExpense}/>
+                                                   createOrUpdateLocalDailyExpense={createOrUpdateLocalDailyExpense}
+                                                   className={className}/>
                     );
                 })}
                 <td className="unhoverable">{monthHolidayHours}</td>

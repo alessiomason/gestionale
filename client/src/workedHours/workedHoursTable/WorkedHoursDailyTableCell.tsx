@@ -14,6 +14,7 @@ interface WorkedHoursDailyTableCellProps {
     readonly selectedUser: User
     readonly setSavingStatus: React.Dispatch<React.SetStateAction<"" | "saving" | "saved">>
     readonly createOrUpdateLocalDailyExpense: (newDailyExpense: DailyExpense) => void
+    readonly className?: string
 }
 
 function WorkedHoursDailyTableCell(props: WorkedHoursDailyTableCellProps) {
@@ -69,6 +70,7 @@ function WorkedHoursDailyTableCell(props: WorkedHoursDailyTableCellProps) {
                     undefined,
                     0,
                     0,
+                    null,
                     0,
                     0,
                     0
@@ -99,7 +101,7 @@ function WorkedHoursDailyTableCell(props: WorkedHoursDailyTableCellProps) {
 
     if (editing) {
         return (
-            <td key={`td-${props.field}-${date}`} onBlur={editDailyExpense} className="work-item-input-td">
+            <td key={`td-${props.field}-${date}`} onBlur={editDailyExpense} className={`work-item-input-td ${props.className}`}>
                 <Form.Control size="sm" type="text" maxLength={4} plaintext autoFocus
                               value={cellContent} onChange={handleInputChange} onKeyDown={handleKeyPress}
                               className="work-item-input-control text-center"/>
@@ -107,7 +109,7 @@ function WorkedHoursDailyTableCell(props: WorkedHoursDailyTableCellProps) {
         );
     } else {
         return (
-            <td key={`td-${props.field}-${date}`} className={workdayClassName(props.workday, true)}
+            <td key={`td-${props.field}-${date}`} className={`${workdayClassName(props.workday, true)} ${props.className}`}
                 onClick={startEditing}>
                 {cellContent}
             </td>
