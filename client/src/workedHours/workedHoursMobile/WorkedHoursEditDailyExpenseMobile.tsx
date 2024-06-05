@@ -68,6 +68,7 @@ function WorkedHoursEditDailyExpenseMobile(props: WorkedHoursEditDailyExpenseMob
             undefined,
             travelHours,
             holidayHours,
+            null,
             sickHours,
             donationHours,
             furloughHours

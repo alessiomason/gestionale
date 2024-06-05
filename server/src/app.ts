@@ -157,7 +157,7 @@ useTicketCompaniesAPIs(app, isLoggedIn, canManageTickets);
 useTicketOrdersAPIs(app, isLoggedIn, canManageTickets);
 useTicketsAPIs(app, isLoggedIn, canManageTickets);
 useWorkItemsAPIs(app, isLoggedIn, isAdministrator, isDeveloper);
-useDailyExpensesAPIs(app, isLoggedIn, isDeveloper);
+useDailyExpensesAPIs(app, isLoggedIn, isAdministrator, isDeveloper);
 useCompanyHoursAPIs(app, isLoggedIn, isAdministrator);
 useOrdersAPIs(app, isLoggedIn, canManageOrders);
 

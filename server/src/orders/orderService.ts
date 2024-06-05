@@ -10,7 +10,7 @@ import {User} from "../users/user";
 import dayjs from "dayjs";
 import {sendEmail} from "../email/emailService";
 
-async function parseOrder(order: any) {
+function parseOrder(order: any) {
     const job = new Job(
         order.jobId,
         order.subject,
@@ -150,7 +150,7 @@ export async function getAllOrders() {
         .leftJoin("users AS u3", "u3.id", "orders.clearedById")
         .select(...getOrderQueryFields);
 
-    return await Promise.all(orders.map(async order => await parseOrder(order)));
+    return await Promise.all(orders.map(async order => parseOrder(order)));
 }
 
 export async function getOrder(id: number, year: number) {
@@ -164,7 +164,7 @@ export async function getOrder(id: number, year: number) {
 
     if (!order) throw new OrderNotFound();
 
-    return await parseOrder(order);
+    return parseOrder(order);
 }
 
 export async function checkExpiredOrders() {

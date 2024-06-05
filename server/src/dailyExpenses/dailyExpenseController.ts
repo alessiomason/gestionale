@@ -6,11 +6,45 @@ import {getUser} from "../users/userService";
 import {Role, User} from "../users/user";
 import {UserNotFound} from "../users/userErrors";
 import {UserCannotReadOtherWorkedHours} from "../workItems/workItemErrors";
-import {createOrUpdateDailyExpense, getDailyExpenses, updateTripCosts} from "./dailyExpenseService";
+import {
+    createOrUpdateDailyExpense,
+    getAllDailyExpenses,
+    getDailyExpenses,
+    updateTripCosts
+} from "./dailyExpenseService";
 import {DailyExpense} from "./dailyExpense";
 
-export function useDailyExpensesAPIs(app: Express, isLoggedIn: RequestHandler, isDeveloper: RequestHandler) {
+export function useDailyExpensesAPIs(
+    app: Express,
+    isLoggedIn: RequestHandler,
+    isAdministrator: RequestHandler,
+    isDeveloper: RequestHandler
+) {
     const baseURL = "/api/dailyExpenses";
+
+    // get all daily expenses by month
+    app.get(`${baseURL}/:month`,
+        isLoggedIn,
+        isAdministrator,
+        param("month").isString(),
+        async (req: Request, res: Response) => {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                res.status(ParameterError.code).json(new ParameterError("There was an error with the parameters!"))
+                return
+            }
+
+            try {
+                const dailyExpenses = await getAllDailyExpenses(req.params.month);
+                res.status(200).json(dailyExpenses);
+            } catch (err) {
+                if (err instanceof BaseError) {
+                    res.status(err.statusCode).json(err);
+                } else {
+                    res.status(InternalServerError.code).json(new InternalServerError("Error while retrieving daily expenses"));
+                }
+            }
+        })
 
     // get users' daily expenses by user and month
     app.get(`${baseURL}/:month/:userId`,
@@ -60,6 +94,7 @@ export function useDailyExpensesAPIs(app: Express, isLoggedIn: RequestHandler, i
         body("kms").isNumeric(),
         body("travelHours").isNumeric(),
         body("holidayHours").isNumeric(),
+        body("holidayApproved").optional({values: "null"}).isBoolean(),
         body("sickHours").isNumeric(),
         body("donationHours").isNumeric(),
         body("furloughHours").isNumeric(),
@@ -93,6 +128,7 @@ export function useDailyExpensesAPIs(app: Express, isLoggedIn: RequestHandler, i
                 undefined,
                 req.body.travelHours,
                 req.body.holidayHours,
+                req.body.holidayApproved,
                 req.body.sickHours,
                 req.body.donationHours,
                 req.body.furloughHours
