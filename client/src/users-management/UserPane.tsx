@@ -4,7 +4,8 @@ import {
     CarFront,
     Check,
     CheckCircle,
-    Clock, Coin,
+    Clock,
+    Coin,
     EnvelopeAt,
     Floppy,
     Person,
@@ -38,8 +39,10 @@ function UserPane(props: UserPaneProps) {
     const [surname, setSurname] = useState(props.selectedUser?.surname ?? "");
     const [invalidSurname, setInvalidSurname] = useState(false);
     const [username, setUsername] = useState(props.selectedUser?.username ?? "");
-    const [role, setRole] = useState<"user" | "admin" | "dev">(props.selectedUser?.role ?? "user");
-    const [type, setType] = useState<"office" | "workshop" | "machine">(props.selectedUser?.type ?? "office");
+    type RoleOptions = "user" | "admin" | "dev";
+    const [role, setRole] = useState<RoleOptions>(props.selectedUser?.role ?? "user");
+    type TypeOptions = "office" | "workshop" | "machine" | "accounting" | "mechanic" | "electrician" | "software";
+    const [type, setType] = useState<TypeOptions>(props.selectedUser?.type ?? "office");
     const [email, setEmail] = useState<string>(props.selectedUser?.email ?? "");
     const [invalidEmail, setInvalidEmail] = useState(false);
     const [phone, setPhone] = useState<string>(props.selectedUser?.phone ?? "");
@@ -317,7 +320,8 @@ function UserPane(props: UserPaneProps) {
                 </Row>
 
                 {props.selectedUser?.registrationDate &&
-                    <RegisteredSection user={props.user} selectedUser={props.selectedUser} resetPassword={resetPassword}/>}
+                    <RegisteredSection user={props.user} selectedUser={props.selectedUser}
+                                       resetPassword={resetPassword}/>}
                 {props.selectedUser && !props.selectedUser.registrationDate &&
                     <NoRegistrationSection selectedUser={props.selectedUser} resetPassword={resetPassword}/>}
 

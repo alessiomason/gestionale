@@ -7,7 +7,11 @@ export enum Role {
 export enum Type {
     office = "office",
     workshop = "workshop",
-    machine = "machine"
+    machine = "machine",
+    accounting = "accounting",
+    mechanic = "mechanic",
+    electrician = "electrician",
+    software = "software"
 }
 
 export class NewUser {

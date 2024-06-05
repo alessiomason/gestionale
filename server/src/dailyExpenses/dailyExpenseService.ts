@@ -4,14 +4,8 @@ import {knex} from "../database/db";
 import {DailyExpense} from "./dailyExpense";
 import {checkValidDate, checkValidMonth} from "../functions";
 
-export async function getAllDailyExpenses(month: string) {
-    const formattedMonth = checkValidMonth(month);
-
-    const dailyExpenses = await knex("dailyExpenses")
-        .whereRaw("date LIKE ?", formattedMonth + "-%")
-        .select();
-
-    return dailyExpenses.map(dailyExpense => new DailyExpense(
+function parseDailyExpense(dailyExpense: any) {
+    return new DailyExpense(
         dailyExpense.userId,
         dailyExpense.date,
         parseFloat(dailyExpense.expenses),
@@ -20,10 +14,22 @@ export async function getAllDailyExpenses(month: string) {
         parseFloat(dailyExpense.tripCost),
         parseFloat(dailyExpense.travelHours),
         parseFloat(dailyExpense.holidayHours),
+        (dailyExpense.holidayApproved === undefined || dailyExpense.holidayApproved === null) ?
+            null : !!dailyExpense.holidayApproved,
         parseFloat(dailyExpense.sickHours),
         parseFloat(dailyExpense.donationHours),
         parseFloat(dailyExpense.furloughHours)
-    ));
+    );
+}
+
+export async function getAllDailyExpenses(month: string) {
+    const formattedMonth = checkValidMonth(month);
+
+    const dailyExpenses = await knex("dailyExpenses")
+        .whereRaw("date LIKE ?", formattedMonth + "-%")
+        .select();
+
+    return dailyExpenses.map(dailyExpense => parseDailyExpense(dailyExpense));
 }
 
 export async function getDailyExpenses(userId: number, month: string) {
@@ -38,19 +44,7 @@ export async function getDailyExpenses(userId: number, month: string) {
         .andWhereRaw("date LIKE ?", formattedMonth + "-%")
         .select();
 
-    return dailyExpenses.map(dailyExpense => new DailyExpense(
-        dailyExpense.userId,
-        dailyExpense.date,
-        parseFloat(dailyExpense.expenses),
-        dailyExpense.destination,
-        parseFloat(dailyExpense.kms),
-        parseFloat(dailyExpense.tripCost),
-        parseFloat(dailyExpense.travelHours),
-        parseFloat(dailyExpense.holidayHours),
-        parseFloat(dailyExpense.sickHours),
-        parseFloat(dailyExpense.donationHours),
-        parseFloat(dailyExpense.furloughHours)
-    ));
+    return dailyExpenses.map(dailyExpense => parseDailyExpense(dailyExpense));
 }
 
 export async function getDailyExpense(userId: number, date: string) {
@@ -67,19 +61,7 @@ export async function getDailyExpense(userId: number, date: string) {
 
     if (!dailyExpense) return
 
-    return new DailyExpense(
-        dailyExpense.userId,
-        dailyExpense.date,
-        parseFloat(dailyExpense.expenses),
-        dailyExpense.destination,
-        parseFloat(dailyExpense.kms),
-        parseFloat(dailyExpense.tripCost),
-        parseFloat(dailyExpense.travelHours),
-        parseFloat(dailyExpense.holidayHours),
-        parseFloat(dailyExpense.sickHours),
-        parseFloat(dailyExpense.donationHours),
-        parseFloat(dailyExpense.furloughHours)
-    )
+    return parseDailyExpense(dailyExpense);
 }
 
 export async function createOrUpdateDailyExpense(newDailyExpense: DailyExpense) {
@@ -91,6 +73,10 @@ export async function createOrUpdateDailyExpense(newDailyExpense: DailyExpense) 
 
     newDailyExpense.userId = user.id;
     newDailyExpense.tripCost = user.costPerKm ? newDailyExpense.kms * user.costPerKm : undefined;
+
+    if (newDailyExpense.holidayHours === 0 || newDailyExpense.holidayHours !== existingDailyExpense?.holidayHours) {
+        newDailyExpense.holidayApproved = null;
+    }
 
     if (existingDailyExpense) {
         if (newDailyExpense.isEmpty()) {    // delete
