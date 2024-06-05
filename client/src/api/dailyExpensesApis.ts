@@ -2,6 +2,37 @@ import {apiUrl} from "./apisValues";
 import {handleApiError} from "./handleApiError";
 import {DailyExpense} from "../models/dailyExpense";
 
+function rebuildDailyExpense(dailyExpense: DailyExpense) {
+    return new DailyExpense(
+        dailyExpense.userId,
+        dailyExpense.date,
+        dailyExpense.expenses,
+        dailyExpense.destination,
+        dailyExpense.kms,
+        dailyExpense.tripCost,
+        dailyExpense.travelHours,
+        dailyExpense.holidayHours,
+        dailyExpense.holidayApproved,
+        dailyExpense.sickHours,
+        dailyExpense.donationHours,
+        dailyExpense.furloughHours
+    );
+}
+
+async function getAllDailyExpenses(month: string) {
+    const response = await fetch(new URL(`dailyExpenses/${month}`, apiUrl), {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json'
+        }
+    });
+    if (response.ok) {
+        const dailyExpenses = await response.json() as DailyExpense[];
+        return dailyExpenses.map(dailyExpense => rebuildDailyExpense(dailyExpense));
+    } else await handleApiError(response);
+}
+
 async function getDailyExpenses(month: string, userId: number) {
     const response = await fetch(new URL(`dailyExpenses/${month}/${userId}`, apiUrl), {
         method: 'GET',
@@ -12,20 +43,7 @@ async function getDailyExpenses(month: string, userId: number) {
     });
     if (response.ok) {
         const dailyExpenses = await response.json() as DailyExpense[];
-        return dailyExpenses.map(dailyExpense => new DailyExpense(
-            dailyExpense.userId,
-            dailyExpense.date,
-            dailyExpense.expenses,
-            dailyExpense.destination,
-            dailyExpense.kms,
-            dailyExpense.tripCost,
-            dailyExpense.travelHours,
-            dailyExpense.holidayHours,
-            dailyExpense.holidayApproved,
-            dailyExpense.sickHours,
-            dailyExpense.donationHours,
-            dailyExpense.furloughHours
-        ));
+        return dailyExpenses.map(dailyExpense => rebuildDailyExpense(dailyExpense));
     } else await handleApiError(response);
 }
 
@@ -44,5 +62,5 @@ async function createOrUpdateDailyExpense(newDailyExpense: DailyExpense) {
     } else await handleApiError(response);
 }
 
-const dailyExpenseApis = {getDailyExpenses, createOrUpdateDailyExpense};
+const dailyExpenseApis = {getAllDailyExpenses, getDailyExpenses, createOrUpdateDailyExpense};
 export default dailyExpenseApis;

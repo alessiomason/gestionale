@@ -1,23 +1,29 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import React, {useEffect, useState} from "react";
 import {BrowserRouter as Router, Navigate, Route, Routes, useNavigate} from "react-router-dom";
+import {useMediaQuery} from "react-responsive";
 import PageLayout from "./PageLayout";
 import LoginPage from "./login/LoginPage";
-import loginApis from "./api/loginApis";
-import "./App.css";
 import SignUpPage from "./signup/SignUpPage";
 import SuccessfulSignUpPage from "./signup/SuccessfulSignUpPage";
-import {Role, User} from "./models/user";
 import ProfilePage from "./profile/ProfilePage";
 import EditProfilePage from "./profile/EditProfilePage";
-import {Credentials} from "./models/credentials";
-import userApis from "./api/userApis";
 import EditPasswordPage from "./profile/EditPasswordPage";
 import UsersListPage from "./users-management/UsersListPage";
 import JobsPage from "./jobs/JobsPage";
 import TicketsPage from "./tickets/TicketsPage";
 import JobPage from "./jobs/JobPage";
 import WorkedHoursPage from "./workedHours/WorkedHoursPage";
+import WorkedHoursEditMobile from "./workedHours/workedHoursMobile/WorkedHoursEditMobile";
+import MonthlyWorkedHoursPage from "./workedHours/monthlyWorkedHours/MonthlyWorkedHoursPage";
+import CompanyWorkedHoursPage from "./workedHours/companyWorkedHours/CompanyWorkedHoursPage";
+import OrdersPage from "./orders/OrdersPage";
+import OrderPDFViewer from "./orders/order-pdf-viewer/OrderPDFViewer";
+import HolidaysPage from "./holidays/HolidaysPage";
+import {Role, User} from "./models/user";
+import {Credentials} from "./models/credentials";
+import loginApis from "./api/loginApis";
+import userApis from "./api/userApis";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -25,12 +31,7 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 import "dayjs/locale/it";
 import dayjsBusinessDays from 'dayjs-business-days2';
 import {dayjsBusinessDaysOptions} from "./dayjsBusinessDaysOptions";
-import {useMediaQuery} from "react-responsive";
-import WorkedHoursEditMobile from "./workedHours/workedHoursMobile/WorkedHoursEditMobile";
-import MonthlyWorkedHoursPage from "./workedHours/monthlyWorkedHours/MonthlyWorkedHoursPage";
-import CompanyWorkedHoursPage from "./workedHours/companyWorkedHours/CompanyWorkedHoursPage";
-import OrdersPage from "./orders/OrdersPage";
-import OrderPDFViewer from "./orders/order-pdf-viewer/OrderPDFViewer";
+import "./App.css";
 
 // set up dayjs with localization, durations and business days plugins
 dayjs.extend(dayjsBusinessDays, dayjsBusinessDaysOptions);
@@ -138,6 +139,7 @@ function App2() {
                 <Route path="jobs" element={<JobsPage isAdministrator={isAdministrator}/>}/>
                 <Route path="jobs/:jobId" element={isAdministrator ? <JobPage/> : <Navigate to="/"/>}/>
                 <Route path="tickets" element={canManageTickets ? <TicketsPage/> : <Navigate to="/"/>}/>
+                <Route path="holidayPlan" element={isAdministrator ? <HolidaysPage/> : <Navigate to="/"/>}/>
                 <Route path="workedHours" element={<WorkedHoursPage user={user!}/>}/>
                 <Route path="editWorkedHours"
                        element={isMobile ? <WorkedHoursEditMobile user={user!}/> : <Navigate to="/workedHours"/>}/>

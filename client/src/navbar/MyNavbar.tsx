@@ -13,6 +13,7 @@ import {
     JournalBookmarkFill,
     PersonBadge,
     PersonVcard,
+    Sun,
     TicketPerforated
 } from "react-bootstrap-icons";
 import Hamburger from "../components/Hamburger";
@@ -80,6 +81,10 @@ function MyNavbar(props: NavbarProps) {
                                        onClick={() => navigate("/jobs")}>
                         Commesse
                     </LightGlossyButton>
+                    {isAdministrator && <LightGlossyButton singleLine icon={Sun} className="me-3"
+                                                           onClick={() => navigate("/holidayPlan")}>
+                        Piano ferie
+                    </LightGlossyButton>}
                     {isAdministrator && <LightGlossyButton singleLine icon={CalendarRange} className="me-3"
                                                            onClick={() => navigate("/monthlyWorkedHours")}>
                         Ore mensili
