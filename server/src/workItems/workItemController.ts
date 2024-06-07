@@ -35,10 +35,10 @@ export function useWorkItemsAPIs(
                 return
             }
 
-            // this is only allowed if a normal user is a workshop user having requested their own work items
+            // this is only allowed if a normal user is a mechanic user having requested their own work items
             // or the work items of a machine, or if the requesting user is an administrator
             if (requestingUser.id !== requestedUser.id) {
-                if (requestingUser.role === Role.user && requestingUser.type !== Type.workshop && requestedUser.type !== Type.machine) {
+                if (requestingUser.role === Role.user && requestingUser.type !== Type.mechanic && requestedUser.type !== Type.machine) {
                     res.status(UserCannotReadOtherWorkedHours.code).json(new UserCannotReadOtherWorkedHours());
                     return
                 }
@@ -107,10 +107,10 @@ export function useWorkItemsAPIs(
                     return
                 }
 
-                // this operation is only allowed if a normal user is a workshop user editing the work items
+                // this operation is only allowed if a normal user is a mechanic user editing the work items
                 // of a machine or if the requesting user is an administrator
                 if (requestingUser.id !== requestedUser.id) {
-                    if (requestingUser.role === Role.user && requestingUser.type !== Type.workshop && requestedUser.type !== Type.machine) {
+                    if (requestingUser.role === Role.user && requestingUser.type !== Type.mechanic && requestedUser.type !== Type.machine) {
                         res.status(UserCannotReadOtherWorkedHours.code).json(new UserCannotReadOtherWorkedHours());
                         return
                     }
