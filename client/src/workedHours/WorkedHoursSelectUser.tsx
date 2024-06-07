@@ -21,7 +21,7 @@ function WorkedHoursSelectUser(props: WorkedHoursSelectUserProps) {
             userApis.getAllUsers()
                 .then(users => setUsers(users))
                 .catch(err => console.error(err))
-        } else if (props.user.type === Type.workshop) {
+        } else if (props.user.type === Type.mechanic) {
             userApis.getAllMachineUsers()
                 .then(machines => setUsers(machines))
                 .catch(err => console.error(err))
@@ -69,8 +69,8 @@ function WorkedHoursSelectUser(props: WorkedHoursSelectUserProps) {
         setSearchUser(id);
     }
 
-    // only administrators or workshop users can edit machines' hours
-    if (props.user.role !== Role.user || props.user.type === Type.workshop) {
+    // only administrators or mechanic users can edit machines' hours
+    if (props.user.role !== Role.user || props.user.type === Type.mechanic) {
         return (
             <InputGroup>
                 <InputGroup.Text><PersonFill/></InputGroup.Text>

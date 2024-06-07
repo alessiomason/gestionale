@@ -1,16 +1,8 @@
 import React, {createElement, useEffect, useState} from "react";
 import {Col, Modal, Row, Table} from "react-bootstrap";
-import {
-    CalendarEvent,
-    Check2Circle,
-    Clock,
-    HourglassSplit,
-    Person,
-    QuestionDiamond,
-    XCircle
-} from "react-bootstrap-icons";
+import {CalendarEvent, Check2Circle, Clock, Person, QuestionDiamond, XCircle} from "react-bootstrap-icons";
 import GlossyButton from "../buttons/GlossyButton";
-import {User} from "../models/user";
+import {Role, Type, User} from "../models/user";
 import {DailyExpense} from "../models/dailyExpense";
 import workdayClassName from "../workedHours/workedHoursFunctions";
 import dailyExpenseApis from "../api/dailyExpensesApis";
@@ -158,7 +150,9 @@ function HolidaysTable(props: HolidaysTableProps) {
                 </tr>
                 </thead>
                 <tbody>
-                {User.allTypes.map(type => {
+                {User.allTypes
+                    .filter(type => type !== Type.machine)
+                    .map(type => {
                     return (
                         <>
                             <tr key={type} className="unhoverable">
@@ -167,7 +161,7 @@ function HolidaysTable(props: HolidaysTableProps) {
                             </tr>
 
                             {users
-                                .filter(user => user.type === type && user.active)
+                                .filter(user => user.type === type && user.active && user.role !== Role.dev)
                                 .sort(compareUsers)
                                 .map(user => {
                                     return (
@@ -191,7 +185,8 @@ function HolidaysTable(props: HolidaysTableProps) {
                                                 return (
                                                     <td key={workday.format()} onClick={() => openModal(dailyExpense!)}
                                                         className={className}>
-                                                        {dailyExpense?.holidayHours ?? ""}
+                                                        {(!dailyExpense?.holidayHours || dailyExpense.holidayHours === 0) ?
+                                                            "" : dailyExpense.holidayHours}
                                                     </td>
                                                 );
                                             })}

@@ -41,7 +41,7 @@ function UserPane(props: UserPaneProps) {
     const [username, setUsername] = useState(props.selectedUser?.username ?? "");
     type RoleOptions = "user" | "admin" | "dev";
     const [role, setRole] = useState<RoleOptions>(props.selectedUser?.role ?? "user");
-    type TypeOptions = "office" | "workshop" | "machine" | "accounting" | "mechanic" | "electrician" | "software";
+    type TypeOptions = "office" | "accounting" | "mechanic" | "electrician" | "software" | "machine";
     const [type, setType] = useState<TypeOptions>(props.selectedUser?.type ?? "office");
     const [email, setEmail] = useState<string>(props.selectedUser?.email ?? "");
     const [invalidEmail, setInvalidEmail] = useState(false);
@@ -258,7 +258,7 @@ function UserPane(props: UserPaneProps) {
                         <InputGroup.Text><PersonVcard/></InputGroup.Text>
                         <FloatingLabel controlId="floatingInput" label="Mansione">
                             <Form.Select value={type}
-                                         onChange={ev => setType(ev.target.value as "office" | "workshop" | "machine")}>
+                                         onChange={ev => setType(ev.target.value as TypeOptions)}>
                                 {User.allTypes.map(type => {
                                     return (
                                         <option key={type.toString()}
