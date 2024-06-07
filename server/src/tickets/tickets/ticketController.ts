@@ -110,22 +110,23 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler, canMana
             if (ticket) {
                 if (!ticket.endTime) {
                     const updatedTicket = await closeTicket(ticket.id, req.body.endTime);
-                    res.status(200).json(updatedTicket)
+                    res.status(200).json(updatedTicket);
 
                     // send report
-                    if (ticket.company.email) {
-                        const ticketDuration = dayjs.duration(dayjs(ticket.endTime).diff(dayjs(ticket.startTime)));
-                        const ticketCompany = await ticket.company.attachProgress();
+                    if (updatedTicket?.company.email) {
+                        const ticketDuration = dayjs.duration(dayjs(updatedTicket.endTime).diff(dayjs(updatedTicket.startTime)));
+                        const ticketCompany = await updatedTicket.company.attachProgress();
                         let remainingHours = ticketCompany.orderedHours - ticketCompany.usedHours;
                         remainingHours = remainingHours < 0 ? 0 : remainingHours;
 
                         const imageURL = `${process.env.APP_URL}/api/system/logo`;
                         const mailHTML = `
                             <p>Inviamo resoconto del ticket di assistenza.</p>
-                            <h3>Ticket: ${ticket.title}</h3>
-                            <p>Descrizione: ${ticket.description}</p>
-                            <p>Inizio: ${dayjs(ticket.startTime).format("LL [alle] LT")}</p>
-                            <p>Fine: ${dayjs(ticket.endTime).format("LL [alle] LT")}</p>
+                            <h3>Ticket: ${updatedTicket.title}</h3>
+                            <p>Descrizione: ${updatedTicket.description}</p>
+                            <p>Azienda: ${updatedTicket.company.name}</p>
+                            <p>Inizio: ${dayjs(updatedTicket.startTime).format("LL [alle] LT")}</p>
+                            <p>Fine: ${dayjs(updatedTicket.endTime).format("LL [alle] LT")}</p>
                             <p>Durata: ${ticketDuration.humanize()}</p>
                             <p>Ore di assistenza ancora disponibili: ${humanize(remainingHours, 2)} ore</p>
                             <p>&nbsp;&nbsp;</p>
@@ -136,23 +137,24 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler, canMana
                             <p>Questa email è stata generata automaticamente.</p>`;
                         const mailText = `
                             Inviamo resoconto del ticket di assistenza.\n\n
-                            Ticket: ${ticket.title}\n
-                            Descrizione: ${ticket.description}\n
-                            Inizio: ${dayjs(ticket.startTime).format("LL [alle] LT")}\n
-                            Fine: ${dayjs(ticket.endTime).format("LL [alle] LT")}\n
+                            Ticket: ${updatedTicket.title}\n
+                            Descrizione: ${updatedTicket.description}\n
+                            Azienda: ${updatedTicket.company.name}\n
+                            Inizio: ${dayjs(updatedTicket.startTime).format("LL [alle] LT")}\n
+                            Fine: ${dayjs(updatedTicket.endTime).format("LL [alle] LT")}\n
                             Durata: ${ticketDuration.humanize()}\n
                             Ore di assistenza ancora disponibili: ${humanize(remainingHours, 2)} ore\n\n
                             TLF Technology s.r.l. a Socio Unico\n
                             Viale Artigianato, n°4 - 12051 Alba (CN) Italia\n
                             Tel. +39 0173 060521 /// Fax +39 0173 061055 /// www.tlftechnology.it`;
 
-                        await sendEmail(ticket.company.email, "Report ticket di assistenza", mailHTML, mailText);
+                        await sendEmail(updatedTicket.company.email, "Report ticket di assistenza", mailHTML, mailText);
                     }
                 } else {
-                    res.status(TicketAlreadyClosed.code).json(new TicketAlreadyClosed())
+                    res.status(TicketAlreadyClosed.code).json(new TicketAlreadyClosed());
                 }
             } else {
-                res.status(TicketNotFound.code).json(new TicketNotFound())
+                res.status(TicketNotFound.code).json(new TicketNotFound());
             }
         }
     )
