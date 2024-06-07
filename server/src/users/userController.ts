@@ -245,7 +245,7 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdminis
 
             const userId = parseInt(req.params.userId);
             const roleName = req.body.role as ("user" | "admin" | "dev" | undefined);
-            const typeName = req.body.type as ("office" | "workshop" | "machine" | undefined);
+            const typeName = req.body.type as ("office" | "accounting" | "mechanic" | "electrician" | "software" | "machine" | undefined);
 
             await updateUser(
                 userId,

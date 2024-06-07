@@ -118,19 +118,19 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler, canMana
                         const ticketCompany = await updatedTicket.company.attachProgress();
                         let remainingHours = ticketCompany.orderedHours - ticketCompany.usedHours;
                         remainingHours = remainingHours < 0 ? 0 : remainingHours;
+                        const ticketDescription = updatedTicket.description === "" ?
+                            "Nessuna descrizione fornita" : updatedTicket.description;
 
-                        const imageURL = `${process.env.APP_URL}/api/system/logo`;
                         const mailHTML = `
                             <p>Inviamo resoconto del ticket di assistenza.</p>
                             <h3>Ticket: ${updatedTicket.title}</h3>
-                            <p>Descrizione: ${updatedTicket.description}</p>
+                            <p>Descrizione: ${ticketDescription}</p>
                             <p>Azienda: ${updatedTicket.company.name}</p>
                             <p>Inizio: ${dayjs(updatedTicket.startTime).format("LL [alle] LT")}</p>
                             <p>Fine: ${dayjs(updatedTicket.endTime).format("LL [alle] LT")}</p>
                             <p>Durata: ${ticketDuration.humanize()}</p>
                             <p>Ore di assistenza ancora disponibili: ${humanize(remainingHours, 2)} ore</p>
                             <p>&nbsp;&nbsp;</p>
-                            <img src="${imageURL}" style="max-width: 70px; max-height: 70px;" alt="Il logo di TLF Technology">
                             <p><strong>TLF Technology s.r.l. a Socio Unico</strong></p>
                             <p>Viale Artigianato, n°4 - 12051 Alba (CN) Italia</p>
                             <p>Tel. +39 0173 060521 /// Fax +39 0173 061055 /// www.tlftechnology.it</p>
@@ -138,7 +138,7 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler, canMana
                         const mailText = `
                             Inviamo resoconto del ticket di assistenza.\n\n
                             Ticket: ${updatedTicket.title}\n
-                            Descrizione: ${updatedTicket.description}\n
+                            Descrizione: ${ticketDescription}\n
                             Azienda: ${updatedTicket.company.name}\n
                             Inizio: ${dayjs(updatedTicket.startTime).format("LL [alle] LT")}\n
                             Fine: ${dayjs(updatedTicket.endTime).format("LL [alle] LT")}\n

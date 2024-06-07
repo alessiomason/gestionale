@@ -6,12 +6,11 @@ export enum Role {
 
 export enum Type {
     office = "office",
-    workshop = "workshop",
-    machine = "machine",
     accounting = "accounting",
     mechanic = "mechanic",
     electrician = "electrician",
-    software = "software"
+    software = "software",
+    machine = "machine"
 }
 
 export class NewUser {
@@ -79,7 +78,14 @@ export class User extends NewUser {
     static readonly Role = Role;
     static readonly allRoles = [Role.user, Role.admin, Role.dev];
     static readonly Type = Type;
-    static readonly allTypes = [Type.office, Type.workshop, Type.machine];
+    static readonly allTypes = [
+        Type.office,
+        Type.accounting,
+        Type.mechanic,
+        Type.electrician,
+        Type.software,
+        Type.machine
+    ];
 
     id: number
     hashedPassword: Buffer | undefined
