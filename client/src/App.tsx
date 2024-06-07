@@ -19,7 +19,7 @@ import MonthlyWorkedHoursPage from "./workedHours/monthlyWorkedHours/MonthlyWork
 import CompanyWorkedHoursPage from "./workedHours/companyWorkedHours/CompanyWorkedHoursPage";
 import OrdersPage from "./orders/OrdersPage";
 import OrderPDFViewer from "./orders/order-pdf-viewer/OrderPDFViewer";
-import HolidaysPage from "./holidays/HolidaysPage";
+import HolidaysPage from "./holiday-plan/HolidaysPage";
 import {Role, User} from "./models/user";
 import {Credentials} from "./models/credentials";
 import loginApis from "./api/loginApis";
