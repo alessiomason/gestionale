@@ -4,7 +4,7 @@ import "./OrderPDFViewer.css";
 
 function OrderPDFViewer() {
     const {orderName} = useParams();
-    const attachmentLocation = `${process.env.REACT_APP_ORDERS_PDF_FOLDER}/get_order.php?orderName=${orderName}`;
+    const attachmentLocation = `${process.env.REACT_APP_ORDERS_PDF_FOLDER}/get_order.php?orderName=${orderName}#zoom=100`;
 
     return (
         <iframe title={orderName} src={attachmentLocation} className="pdf-viewer">
