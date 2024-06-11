@@ -31,6 +31,7 @@ interface OrderPaneProps {
 
 function OrderPane(props: OrderPaneProps) {
     const attachmentOrderName = `${props.order.id}-${props.order.year.toString().substring(2)}`;
+    const attachmentLink = `${process.env.REACT_APP_ORDERS_PDF_FOLDER}/orders/${attachmentOrderName}`;
     const [modifying, setModifying] = useState(false);
     const [showClearingModal, setShowClearingModal] = useState(false);
     const navigate = useNavigate();
@@ -179,7 +180,7 @@ function OrderPane(props: OrderPaneProps) {
                         Modifica evasione dell'ordine</GlossyButton>
                     {props.order.uploadedFile &&
                         <GlossyButton icon={FileEarmark} className={isMobile ? "my-1" : undefined}
-                                      onClick={() => navigate(`/order/${attachmentOrderName}/pdf`)}>
+                                      onClick={() => navigate(attachmentLink)}>
                             Visualizza allegato
                         </GlossyButton>}
                 </Col>
