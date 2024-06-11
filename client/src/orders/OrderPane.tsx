@@ -30,7 +30,7 @@ interface OrderPaneProps {
 
 function OrderPane(props: OrderPaneProps) {
     const attachmentOrderName = `${props.order.id}-${props.order.year.toString().substring(2)}`;
-    const attachmentLink = `${process.env.REACT_APP_ORDERS_PDF_FOLDER}/orders/${attachmentOrderName}`;
+    const attachmentLink = `${process.env.REACT_APP_ORDERS_PDF_FOLDER}/orders/Ordine_${attachmentOrderName}.pdf`;
     const [modifying, setModifying] = useState(false);
     const [showClearingModal, setShowClearingModal] = useState(false);
     const isMobile = useMediaQuery({maxWidth: 767});
