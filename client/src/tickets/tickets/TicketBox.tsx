@@ -2,12 +2,14 @@ import {Card, Col, Row} from "react-bootstrap";
 import "../ticket-companies/TicketCompanyPane.css";
 import dayjs from "dayjs";
 import GlossyButton from "../../buttons/GlossyButton";
-import {HourglassBottom, HourglassSplit} from "react-bootstrap-icons";
+import {HourglassBottom, HourglassSplit, PencilSquare} from "react-bootstrap-icons";
 import React from "react";
 import {Ticket} from "../../models/ticket";
+import IconButton from "../../buttons/IconButton";
 
 interface TicketBoxProps {
     readonly ticket: Ticket
+    readonly openTicketModal: (ticket: Ticket) => void
     readonly setTicketToBeEnded: React.Dispatch<React.SetStateAction<Ticket | undefined>>
 }
 
@@ -19,9 +21,10 @@ function TicketBox(props: TicketBoxProps) {
             <Card.Title>
                 <Row className="d-flex align-items-center">
                     <Col>{props.ticket.title}</Col>
-                    {!props.ticket.endTime && <Col className="d-flex justify-content-end">
-                        <HourglassSplit/>
-                    </Col>}
+                    <Col className="d-flex justify-content-end align-items-center">
+                        <IconButton icon={PencilSquare} onClick={() => props.openTicketModal(props.ticket)}/>
+                        {!props.ticket.endTime && <HourglassSplit/>}
+                    </Col>
                 </Row>
             </Card.Title>
             <Card.Subtitle>{props.ticket.description}</Card.Subtitle>

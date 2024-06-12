@@ -10,7 +10,7 @@ import TicketCompanyHoursProgress from "./TicketCompanyHoursProgress";
 import {TicketCompany} from "../../models/ticketCompany";
 import NewTicketOrderModal from "../ticket-orders/NewTicketOrderModal";
 import {TicketOrder} from "../../models/ticketOrder";
-import NewTicketModal from "../tickets/NewTicketModal";
+import TicketModal from "../tickets/TicketModal";
 import CloseTicketModal from "../tickets/CloseTicketModal";
 import {Ticket} from "../../models/ticket";
 import dayjs from "dayjs";
@@ -30,7 +30,8 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
     const [tickets, setTickets] = useState<Ticket[]>([]);
     const [dirtyTickets, setDirtyTickets] = useState(true);
     const [showNewOrderModal, setShowNewOrderModal] = useState(false);
-    const [showNewTicketModal, setShowNewTicketModal] = useState(false);
+    const [showTicketModal, setShowTicketModal] = useState(false);
+    const [editingTicket, setEditingTicket] = useState<Ticket | undefined>();
     const [ticketToBeClosed, setTicketToBeClosed] = useState<Ticket>();
 
     // empty arrays when selected ticket company changes
@@ -87,6 +88,16 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
         }
     }, [dirtyTicketCompanyProgress]);
 
+    function openTicketModal(ticket: Ticket) {
+        setEditingTicket(ticket);
+        setShowTicketModal(true);
+    }
+
+    function closeTicketModal() {
+        setShowTicketModal(false);
+        setEditingTicket(undefined);
+    }
+
     function deleteTicketCompany() {
         ticketCompanyApis.deleteTicketCompany(props.ticketCompany.id)
             .then(() => props.updateSelectedCompany(undefined))
@@ -99,9 +110,9 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
                 <NewTicketOrderModal show={showNewOrderModal} setShow={setShowNewOrderModal}
                                      ticketCompany={props.ticketCompany} setTicketOrders={setTicketOrders}
                                      updateSelectedCompany={props.updateSelectedCompany}/>
-                <NewTicketModal show={showNewTicketModal} setShow={setShowNewTicketModal}
-                                ticketCompany={props.ticketCompany} setTickets={setTickets}
-                                setDirtyTicketCompanyProgress={setDirtyTicketCompanyProgress}/>
+                <TicketModal show={showTicketModal} closeModal={closeTicketModal} ticket={editingTicket}
+                             ticketCompany={props.ticketCompany} setTickets={setTickets}
+                             setDirtyTicketCompanyProgress={setDirtyTicketCompanyProgress}/>
                 <CloseTicketModal ticketToBeClosed={ticketToBeClosed} setTicketToBeClosed={setTicketToBeClosed}
                                   setTickets={setTickets}
                                   setDirtyTicketCompanyProgress={setDirtyTicketCompanyProgress}/>
@@ -149,7 +160,7 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
                                 <h4>Ticket</h4>
                             </Col>
                             <Col className="d-flex justify-content-end">
-                                <LightGlossyButton icon={PlusCircle} onClick={() => setShowNewTicketModal(true)}>
+                                <LightGlossyButton icon={PlusCircle} onClick={() => setShowTicketModal(true)}>
                                     Nuovo ticket
                                 </LightGlossyButton>
                             </Col>
@@ -161,6 +172,7 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
                                 .map(ticket => {
                                     return (
                                         <TicketBox key={`ticket-order-${ticket.id}`} ticket={ticket}
+                                                   openTicketModal={openTicketModal}
                                                    setTicketToBeEnded={setTicketToBeClosed}/>
                                     );
                                 })}

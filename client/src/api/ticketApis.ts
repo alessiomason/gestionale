@@ -64,7 +64,7 @@ async function closeTicket(ticketId: number, endTime: string | undefined) {
 
 async function editTicket(ticket: Ticket) {
     const response = await fetch(new URL(`tickets/${ticket.id}`, apiUrl), {
-        method: 'POST',
+        method: 'PUT',
         credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
