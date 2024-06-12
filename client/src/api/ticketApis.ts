@@ -62,6 +62,21 @@ async function closeTicket(ticketId: number, endTime: string | undefined) {
     } else await handleApiError(response);
 }
 
+async function editTicket(ticket: Ticket) {
+    const response = await fetch(new URL(`tickets/${ticket.id}`, apiUrl), {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(ticket),
+    });
+    if (response.ok) {
+        return await response.json();
+    } else await handleApiError(response);
+}
+
 async function deleteTicket(ticketId: string) {
     const response = await fetch(new URL(`tickets/${ticketId}`, apiUrl), {
         method: 'DELETE',
@@ -75,5 +90,5 @@ async function deleteTicket(ticketId: string) {
     } else await handleApiError(response);
 }
 
-const ticketApis = {getTickets, getTicket, createTicket, closeTicket, deleteTicket};
+const ticketApis = {getTickets, getTicket, createTicket, closeTicket, editTicket, deleteTicket};
 export default ticketApis;

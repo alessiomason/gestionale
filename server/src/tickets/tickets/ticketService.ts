@@ -75,6 +75,24 @@ export async function closeTicket(ticketId: number, endTime: string | undefined)
     return getTicket(ticketId);
 }
 
+export async function editTicket(
+    ticketId: number,
+    title: string | undefined,
+    description: string | undefined,
+    startTime: string | undefined,
+    endTime: string | undefined
+) {
+    if (title || description || startTime || endTime) {
+        const ticket = {title, description, startTime, endTime};
+
+        await knex("tickets")
+            .where({id: ticketId})
+            .update(ticket);
+    }
+
+    return getTicket(ticketId);
+}
+
 export async function deleteTicket(id: number) {
     await knex("tickets")
         .where({id: id})
