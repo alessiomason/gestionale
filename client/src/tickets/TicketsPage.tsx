@@ -4,8 +4,8 @@ import {BuildingAdd} from "react-bootstrap-icons";
 import React, {useEffect, useState} from "react";
 import ticketCompanyApis from "../api/ticketCompanyApis";
 import {TicketCompany} from "../models/ticketCompany";
-import EditTicketCompanyPane from "./EditTicketCompanyPane";
-import TicketCompanyModifiablePane from "./TicketCompanyModifiablePane";
+import EditTicketCompanyPane from "./ticket-companies/EditTicketCompanyPane";
+import TicketCompanyModifiablePane from "./ticket-companies/TicketCompanyModifiablePane";
 import Loading from "../Loading";
 
 function TicketsPage() {
