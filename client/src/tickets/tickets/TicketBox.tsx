@@ -15,6 +15,10 @@ interface TicketBoxProps {
 
 function TicketBox(props: TicketBoxProps) {
     const ticketDuration = dayjs.duration(dayjs(props.ticket.endTime).diff(dayjs(props.ticket.startTime)));
+    let humanizedDuration = ticketDuration.humanize();
+    if (humanizedDuration === "un' ora") {  // fix Dayjs' misspell
+        humanizedDuration = "un'ora";
+    }
 
     return (
         <Card className="ticket-company-pane-card glossy-background mt-2 mb-2">
@@ -31,7 +35,7 @@ function TicketBox(props: TicketBoxProps) {
             <Card.Body>
                 <p>Inizio: {dayjs(props.ticket.startTime).format("LL [alle] LT")}</p>
                 {props.ticket.endTime && <p>Fine: {dayjs(props.ticket.endTime).format("LL [alle] LT")}</p>}
-                <p>Durata: {ticketDuration.humanize()}{!props.ticket.endTime && " (in corso)"}</p>
+                <p>Durata: {humanizedDuration}{!props.ticket.endTime && " (in corso)"}</p>
 
                 {!props.ticket.endTime && <Row className="mt-3">
                     <Col/>
