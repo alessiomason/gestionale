@@ -26,6 +26,7 @@ interface NavbarProps {
 function MyNavbar(props: NavbarProps) {
     const navigate = useNavigate();
     const isMobile = useMediaQuery({maxWidth: 767});
+    const isTablet = useMediaQuery({minWidth: 768, maxWidth: 1224});
     const isAdministrator = props.user.role !== Role.user;
     const canManageTickets = props.user.managesTickets;
     const canManageOrders = props.user.managesOrders;
@@ -41,34 +42,72 @@ function MyNavbar(props: NavbarProps) {
                     </Navbar.Brand>
                 </Col>
 
-                {isMobile &&
+                {(isMobile || isTablet) &&
                     <Col className="d-flex justify-content-end">
                         <Hamburger type="hamburger--minus" isActive={showOffcanvas}
                                    onClick={() => setShowOffcanvas(true)}/>
                     </Col>}
-                {isMobile && <Offcanvas placement="end" show={showOffcanvas} onHide={() => setShowOffcanvas(false)}>
-                    <Offcanvas.Header closeButton>
-                        <Offcanvas.Title>
-                            <h3 className="m-0">Gestionale TLF</h3>
-                        </Offcanvas.Title>
-                    </Offcanvas.Header>
-                    <Offcanvas.Body>
-                        <Row>
-                            <Col className="my-2 d-flex align-items-center">
-                                <CalendarEvent/>
-                                <Link to="/workedHours" onClick={() => setShowOffcanvas(false)}>Ore</Link>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col className="my-2 d-flex align-items-center">
-                                <Clipboard/>
-                                <Link to="/orders" onClick={() => setShowOffcanvas(false)}>Ordini</Link>
-                            </Col>
-                        </Row>
-                    </Offcanvas.Body>
-                </Offcanvas>}
+                {(isMobile || isTablet) &&
+                    <Offcanvas placement="end" show={showOffcanvas} onHide={() => setShowOffcanvas(false)}>
+                        <Offcanvas.Header closeButton>
+                            <Offcanvas.Title>
+                                <h3 className="m-0">Gestionale TLF</h3>
+                            </Offcanvas.Title>
+                        </Offcanvas.Header>
+                        <Offcanvas.Body>
+                            {canManageTickets && isTablet && <Row>
+                                <Col className="my-2 d-flex align-items-center">
+                                    <TicketPerforated/>
+                                    <Link to="/tickets" onClick={() => setShowOffcanvas(false)}>Assistenza</Link>
+                                </Col>
+                            </Row>}
+                            {canManageTickets && <Row>
+                                <Col className="my-2 d-flex align-items-center">
+                                    <Clipboard/>
+                                    <Link to="/orders" onClick={() => setShowOffcanvas(false)}>Ordini</Link>
+                                </Col>
+                            </Row>}
+                            {isTablet && <Row>
+                                <Col className="my-2 d-flex align-items-center">
+                                    <JournalBookmarkFill/>
+                                    <Link to="/jobs" onClick={() => setShowOffcanvas(false)}>Commesse</Link>
+                                </Col>
+                            </Row>}
+                            {isAdministrator && isTablet && <Row>
+                                <Col className="my-2 d-flex align-items-center">
+                                    <Sun/>
+                                    <Link to="/holidayPlan" onClick={() => setShowOffcanvas(false)}>Piano ferie</Link>
+                                </Col>
+                            </Row>}
+                            {isAdministrator && isTablet && <Row>
+                                <Col className="my-2 d-flex align-items-center">
+                                    <CalendarRange/>
+                                    <Link to="/monthlyWorkedHours" onClick={() => setShowOffcanvas(false)}>Ore mensili</Link>
+                                </Col>
+                            </Row>}
+                            {isAdministrator && isTablet && <Row>
+                                <Col className="my-2 d-flex align-items-center">
+                                    <CalendarWeek/>
+                                    <Link to="/companyWorkedHours" onClick={() => setShowOffcanvas(false)}>Ore azienda</Link>
+                                </Col>
+                            </Row>}
+                            <Row>
+                                <Col className="my-2 d-flex align-items-center">
+                                    <CalendarEvent/>
+                                    <Link to="/workedHours" onClick={() => setShowOffcanvas(false)}>Ore</Link>
+                                </Col>
+                            </Row>
+                            {isTablet && <Row>
+                                <Col className="my-2 d-flex align-items-center">
+                                    <PersonBadge/>
+                                    <Link to="/profile" onClick={() => setShowOffcanvas(false)}>
+                                        {props.user.name} {props.user.surname}</Link>
+                                </Col>
+                            </Row>}
+                        </Offcanvas.Body>
+                    </Offcanvas>}
 
-                {!isMobile && <Col className="d-flex justify-content-end align-items-center">
+                {!isMobile && !isTablet && <Col className="d-flex justify-content-end align-items-center">
                     {canManageTickets && <LightGlossyButton singleLine icon={TicketPerforated} className="me-3"
                                                             onClick={() => navigate("/tickets")}>
                         Assistenza
