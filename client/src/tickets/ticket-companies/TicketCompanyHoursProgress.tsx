@@ -1,5 +1,5 @@
 import {ProgressBar} from "react-bootstrap";
-import {TicketCompany} from "../models/ticketCompany";
+import {TicketCompany} from "../../models/ticketCompany";
 import "./TicketCompanyHoursProgress.css";
 
 interface TicketCompanyHoursProgressProps {

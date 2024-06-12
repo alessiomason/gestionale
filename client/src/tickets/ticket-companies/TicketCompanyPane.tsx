@@ -1,21 +1,21 @@
 import {Col, Row} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
-import ticketApis from "../api/ticketApis";
-import ticketOrderApis from "../api/ticketOrderApis";
-import LightGlossyButton from "../buttons/LightGlossyButton";
+import ticketApis from "../../api/ticketApis";
+import ticketOrderApis from "../../api/ticketOrderApis";
+import LightGlossyButton from "../../buttons/LightGlossyButton";
 import {PencilSquare, PlusCircle, Trash} from "react-bootstrap-icons";
-import TicketBox from "./TicketBox";
-import TicketOrderBox from "./TicketOrderBox";
+import TicketBox from "../tickets/TicketBox";
+import TicketOrderBox from "../ticket-orders/TicketOrderBox";
 import TicketCompanyHoursProgress from "./TicketCompanyHoursProgress";
-import {TicketCompany} from "../models/ticketCompany";
-import NewTicketOrderModal from "./NewTicketOrderModal";
-import {TicketOrder} from "../models/ticketOrder";
-import NewTicketModal from "./NewTicketModal";
-import CloseTicketModal from "./CloseTicketModal";
-import {Ticket} from "../models/ticket";
+import {TicketCompany} from "../../models/ticketCompany";
+import NewTicketOrderModal from "../ticket-orders/NewTicketOrderModal";
+import {TicketOrder} from "../../models/ticketOrder";
+import NewTicketModal from "../tickets/NewTicketModal";
+import CloseTicketModal from "../tickets/CloseTicketModal";
+import {Ticket} from "../../models/ticket";
 import dayjs from "dayjs";
-import GlossyButton from "../buttons/GlossyButton";
-import ticketCompanyApis from "../api/ticketCompanyApis";
+import GlossyButton from "../../buttons/GlossyButton";
+import ticketCompanyApis from "../../api/ticketCompanyApis";
 
 interface TicketCompanyPaneProps {
     readonly ticketCompany: TicketCompany

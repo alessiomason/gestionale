@@ -1,11 +1,11 @@
 import {Card, Col, Form, Modal, Row} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
 import {HourglassBottom} from "react-bootstrap-icons";
-import GlossyButton from "../buttons/GlossyButton";
+import GlossyButton from "../../buttons/GlossyButton";
 import dayjs from "dayjs";
 import "./NewTicketModal.css";
-import {Ticket} from "../models/ticket";
-import ticketApis from "../api/ticketApis";
+import {Ticket} from "../../models/ticket";
+import ticketApis from "../../api/ticketApis";
 
 interface CloseTicketModalProps {
     readonly ticketToBeClosed: Ticket | undefined

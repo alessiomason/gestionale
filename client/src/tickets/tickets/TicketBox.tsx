@@ -1,10 +1,10 @@
 import {Card, Col, Row} from "react-bootstrap";
-import "./TicketCompanyPane.css";
+import "../ticket-companies/TicketCompanyPane.css";
 import dayjs from "dayjs";
-import GlossyButton from "../buttons/GlossyButton";
+import GlossyButton from "../../buttons/GlossyButton";
 import {HourglassBottom, HourglassSplit} from "react-bootstrap-icons";
 import React from "react";
-import {Ticket} from "../models/ticket";
+import {Ticket} from "../../models/ticket";
 
 interface TicketBoxProps {
     readonly ticket: Ticket

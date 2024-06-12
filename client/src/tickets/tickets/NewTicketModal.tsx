@@ -1,12 +1,12 @@
 import {Card, Col, FloatingLabel, Form, InputGroup, Modal, Row} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
-import {TicketCompany} from "../models/ticketCompany";
+import {TicketCompany} from "../../models/ticketCompany";
 import {HourglassTop, Sticky, TicketPerforated} from "react-bootstrap-icons";
-import GlossyButton from "../buttons/GlossyButton";
+import GlossyButton from "../../buttons/GlossyButton";
 import dayjs from "dayjs";
 import "./NewTicketModal.css";
-import {Ticket} from "../models/ticket";
-import ticketApis from "../api/ticketApis";
+import {Ticket} from "../../models/ticket";
+import ticketApis from "../../api/ticketApis";
 
 interface NewTicketModalProps {
     readonly show: boolean

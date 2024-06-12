@@ -1,9 +1,9 @@
 import React, {useState} from "react";
 import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import {Building, BuildingCheck, EnvelopeAt, PersonVcard} from "react-bootstrap-icons";
-import GlossyButton from "../buttons/GlossyButton";
-import ticketCompanyApis from "../api/ticketCompanyApis";
-import {TicketCompany} from "../models/ticketCompany";
+import GlossyButton from "../../buttons/GlossyButton";
+import ticketCompanyApis from "../../api/ticketCompanyApis";
+import {TicketCompany} from "../../models/ticketCompany";
 
 interface EditTicketCompanyPaneProps {
     readonly ticketCompany?: TicketCompany
