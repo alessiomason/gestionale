@@ -180,7 +180,7 @@ function OrderPane(props: OrderPaneProps) {
                         Modifica evasione dell'ordine</GlossyButton>
                     {props.order.uploadedFile &&
                         <GlossyButton icon={FileEarmark} className={isMobile ? "my-1" : undefined}
-                                      onClick={() => navigate(attachmentLink)}>
+                                      onClick={() => window.location.href = attachmentLink}>
                             Visualizza allegato
                         </GlossyButton>}
                 </Col>
