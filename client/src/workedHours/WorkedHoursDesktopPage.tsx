@@ -1,18 +1,15 @@
-import React, {useEffect, useState} from "react";
-import {Col, Row} from "react-bootstrap";
-import dayjs from "dayjs";
-import {upperCaseFirst} from "../functions";
-import {
-    Check2Circle,
-    ExclamationCircle,
-    ThreeDots
-} from "react-bootstrap-icons";
-import WorkedHoursTable from "./workedHoursTable/WorkedHoursTable";
-import {Type} from "../models/user";
-import WorkedHoursSelectUser from "./WorkedHoursSelectUser";
-import {WorkedHoursPageProps} from "./WorkedHoursPage";
-import {MonthSelector, SelectMonthButtons} from "./MonthSelectingComponents";
+import React, {useState} from "react";
 import {useSearchParams} from "react-router-dom";
+import {Col, Row} from "react-bootstrap";
+import {ExclamationCircle} from "react-bootstrap-icons";
+import {WorkedHoursPageProps} from "./WorkedHoursPage";
+import WorkedHoursTable from "./workedHoursTable/WorkedHoursTable";
+import WorkedHoursSelectUser from "./WorkedHoursSelectUser";
+import {MonthSelector, SelectMonthButtons} from "./MonthSelectingComponents";
+import SavingStatusMessage, {SavingStatus} from "../components/SavingStatusMessage";
+import {Type} from "../models/user";
+import {upperCaseFirst} from "../functions";
+import dayjs from "dayjs";
 
 function WorkedHoursDesktopPage(props: WorkedHoursPageProps) {
     const [searchParams] = useSearchParams();
@@ -25,14 +22,7 @@ function WorkedHoursDesktopPage(props: WorkedHoursPageProps) {
     const [year, setYear] = useState(searchYear ? parseInt(searchYear) : currentYear);
     const [selectingMonth, setSelectingMonth] = useState(false);
     const [selectedUser, setSelectedUser] = useState(props.user);
-    const [savingStatus, setSavingStatus] = useState<"" | "saving" | "saved">("");
-
-    useEffect(() => {
-        // clear savingStatus after 3 seconds
-        if (savingStatus === "saved") {
-            setTimeout(() => setSavingStatus(""), 3000);
-        }
-    }, [savingStatus]);
+    const [savingStatus, setSavingStatus] = useState<SavingStatus>("");
 
     return (
         <>
@@ -69,14 +59,7 @@ function WorkedHoursDesktopPage(props: WorkedHoursPageProps) {
                     </Col>
 
                     <Col>
-                        {/* this forces the whole Row to always the same height, so that it does not change every time savingStatus is empty */}
-                        {savingStatus === "" && <p>&nbsp;</p>}
-
-                        {savingStatus !== "" && <p className="success d-flex justify-content-end align-items-center">
-                            {savingStatus === "saving" ?
-                                <><ThreeDots className="mx-1"/>Salvataggio in corso...</> :
-                                <><Check2Circle className="mx-1"/>Salvato</>}
-                        </p>}
+                        <SavingStatusMessage savingStatus={savingStatus} setSavingStatus={setSavingStatus}/>
                     </Col>
                 </Row>
 
