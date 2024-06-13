@@ -1,21 +1,21 @@
 import {Col, Row} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
-import ticketApis from "../api/ticketApis";
-import ticketOrderApis from "../api/ticketOrderApis";
-import LightGlossyButton from "../buttons/LightGlossyButton";
+import ticketApis from "../../api/ticketApis";
+import ticketOrderApis from "../../api/ticketOrderApis";
+import LightGlossyButton from "../../buttons/LightGlossyButton";
 import {PencilSquare, PlusCircle, Trash} from "react-bootstrap-icons";
-import TicketBox from "./TicketBox";
-import TicketOrderBox from "./TicketOrderBox";
+import TicketBox from "../tickets/TicketBox";
+import TicketOrderBox from "../ticket-orders/TicketOrderBox";
 import TicketCompanyHoursProgress from "./TicketCompanyHoursProgress";
-import {TicketCompany} from "../models/ticketCompany";
-import NewTicketOrderModal from "./NewTicketOrderModal";
-import {TicketOrder} from "../models/ticketOrder";
-import NewTicketModal from "./NewTicketModal";
-import CloseTicketModal from "./CloseTicketModal";
-import {Ticket} from "../models/ticket";
+import {TicketCompany} from "../../models/ticketCompany";
+import NewTicketOrderModal from "../ticket-orders/NewTicketOrderModal";
+import {TicketOrder} from "../../models/ticketOrder";
+import TicketModal from "../tickets/TicketModal";
+import CloseTicketModal from "../tickets/CloseTicketModal";
+import {Ticket} from "../../models/ticket";
 import dayjs from "dayjs";
-import GlossyButton from "../buttons/GlossyButton";
-import ticketCompanyApis from "../api/ticketCompanyApis";
+import GlossyButton from "../../buttons/GlossyButton";
+import ticketCompanyApis from "../../api/ticketCompanyApis";
 
 interface TicketCompanyPaneProps {
     readonly ticketCompany: TicketCompany
@@ -30,7 +30,8 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
     const [tickets, setTickets] = useState<Ticket[]>([]);
     const [dirtyTickets, setDirtyTickets] = useState(true);
     const [showNewOrderModal, setShowNewOrderModal] = useState(false);
-    const [showNewTicketModal, setShowNewTicketModal] = useState(false);
+    const [showTicketModal, setShowTicketModal] = useState(false);
+    const [editingTicket, setEditingTicket] = useState<Ticket | undefined>();
     const [ticketToBeClosed, setTicketToBeClosed] = useState<Ticket>();
 
     // empty arrays when selected ticket company changes
@@ -43,7 +44,7 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
         if (dirtyTickets) {
             ticketApis.getTickets(props.ticketCompany.id)
                 .then(tickets => {
-                    setTickets(tickets);
+                    setTickets(tickets!);
                     setDirtyTickets(false);
                 })
                 .catch(err => console.error(err))
@@ -69,9 +70,9 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
     useEffect(() => {
         if (dirtyTicketCompanyProgress) {
             const totalUsedHours = tickets
-                .map(ticket => dayjs.duration(dayjs(ticket.endTime).diff(dayjs(ticket.startTime))))
+                .map(ticket => ticket.duration)
                 .reduce(((sum, ticketDuration) => sum.add(ticketDuration)), dayjs.duration(0))
-                .asHours()
+                .asHours();
 
             const updatedSelectedCompany = new TicketCompany(
                 props.ticketCompany.id,
@@ -80,12 +81,22 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
                 props.ticketCompany.contact,
                 totalUsedHours,
                 props.ticketCompany.orderedHours
-            )
+            );
             props.updateSelectedCompany(updatedSelectedCompany);
 
             setDirtyTicketCompanyProgress(false);
         }
     }, [dirtyTicketCompanyProgress]);
+
+    function openTicketModal(ticket: Ticket) {
+        setEditingTicket(ticket);
+        setShowTicketModal(true);
+    }
+
+    function closeTicketModal() {
+        setShowTicketModal(false);
+        setEditingTicket(undefined);
+    }
 
     function deleteTicketCompany() {
         ticketCompanyApis.deleteTicketCompany(props.ticketCompany.id)
@@ -99,9 +110,9 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
                 <NewTicketOrderModal show={showNewOrderModal} setShow={setShowNewOrderModal}
                                      ticketCompany={props.ticketCompany} setTicketOrders={setTicketOrders}
                                      updateSelectedCompany={props.updateSelectedCompany}/>
-                <NewTicketModal show={showNewTicketModal} setShow={setShowNewTicketModal}
-                                ticketCompany={props.ticketCompany} setTickets={setTickets}
-                                setDirtyTicketCompanyProgress={setDirtyTicketCompanyProgress}/>
+                <TicketModal show={showTicketModal} closeModal={closeTicketModal} ticket={editingTicket}
+                             ticketCompany={props.ticketCompany} setTickets={setTickets}
+                             setDirtyTicketCompanyProgress={setDirtyTicketCompanyProgress}/>
                 <CloseTicketModal ticketToBeClosed={ticketToBeClosed} setTicketToBeClosed={setTicketToBeClosed}
                                   setTickets={setTickets}
                                   setDirtyTicketCompanyProgress={setDirtyTicketCompanyProgress}/>
@@ -149,7 +160,7 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
                                 <h4>Ticket</h4>
                             </Col>
                             <Col className="d-flex justify-content-end">
-                                <LightGlossyButton icon={PlusCircle} onClick={() => setShowNewTicketModal(true)}>
+                                <LightGlossyButton icon={PlusCircle} onClick={() => setShowTicketModal(true)}>
                                     Nuovo ticket
                                 </LightGlossyButton>
                             </Col>
@@ -161,7 +172,9 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
                                 .map(ticket => {
                                     return (
                                         <TicketBox key={`ticket-order-${ticket.id}`} ticket={ticket}
-                                                   setTicketToBeEnded={setTicketToBeClosed}/>
+                                                   openTicketModal={openTicketModal}
+                                                   setTicketToBeEnded={setTicketToBeClosed} setTickets={setTickets}
+                                                   setDirtyTicketCompanyProgress={setDirtyTicketCompanyProgress}/>
                                     );
                                 })}
                         </Row>

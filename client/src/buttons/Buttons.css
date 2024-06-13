@@ -47,7 +47,6 @@
 .text-button {
     color: #595959;
     max-height: min-content;
-    /* From https://css.glass */
     background: transparent;
     border: 0;
 }

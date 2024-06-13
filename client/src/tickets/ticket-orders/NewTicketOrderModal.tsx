@@ -1,11 +1,11 @@
 import {Col, FloatingLabel, Form, InputGroup, Modal, Row} from "react-bootstrap";
 import React, {useState} from "react";
-import {TicketCompany} from "../models/ticketCompany";
+import {TicketCompany} from "../../models/ticketCompany";
 import {Clock, Floppy} from "react-bootstrap-icons";
-import GlossyButton from "../buttons/GlossyButton";
-import ticketOrderApis from "../api/ticketOrderApis";
-import {NewTicketOrder, TicketOrder} from "../models/ticketOrder";
-import LightGlossyButton from "../buttons/LightGlossyButton";
+import GlossyButton from "../../buttons/GlossyButton";
+import ticketOrderApis from "../../api/ticketOrderApis";
+import {NewTicketOrder, TicketOrder} from "../../models/ticketOrder";
+import LightGlossyButton from "../../buttons/LightGlossyButton";
 
 interface NewTicketOrderModalProps {
     readonly show: boolean

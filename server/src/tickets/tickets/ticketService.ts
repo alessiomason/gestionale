@@ -8,7 +8,8 @@ export async function getTickets(companyId: number) {
         .join("ticketCompanies", "tickets.companyId", "=", "ticketCompanies.id")
         .whereRaw("tickets.company_id = ?", companyId)
         .select("tickets.id", "company_id", "name", "email", "contact", "title",
-            "description", "startTime", "endTime");
+            "description", "startTime", "paused", "resumeTime",
+            "durationBeforePause", "endTime");
 
     return tickets.map(t => {
         const ticketCompany = new TicketCompany(t.companyId, t.name, t.email, t.contact);
@@ -19,6 +20,9 @@ export async function getTickets(companyId: number) {
             t.title,
             t.description,
             t.startTime,
+            !!t.paused,
+            t.resumeTime ?? undefined,
+            t.durationBeforePause ?? undefined,
             t.endTime ?? undefined
         )
     })
@@ -28,7 +32,8 @@ export async function getTicket(id: number) {
     const ticket = await knex("tickets")
         .join("ticketCompanies", "tickets.companyId", "=", "ticketCompanies.id")
         .first("tickets.id", "company_id", "name", "email", "contact", "title",
-            "description", "startTime", "endTime")
+            "description", "startTime", "paused", "resumeTime",
+            "durationBeforePause", "endTime")
         .whereRaw("tickets.id = ?", id)
 
     if (!ticket) return
@@ -40,6 +45,9 @@ export async function getTicket(id: number) {
         ticket.title,
         ticket.description,
         ticket.startTime,
+        !!ticket.paused,
+        ticket.resumeTime ?? undefined,
+        ticket.durationBeforePause ?? undefined,
         ticket.endTime ?? undefined
     )
 }
@@ -73,6 +81,47 @@ export async function closeTicket(ticketId: number, endTime: string | undefined)
         .update({endTime: endTime ?? dayjs().format()})
 
     return getTicket(ticketId);
+}
+
+export async function editTicket(
+    ticketId: number,
+    title: string | undefined,
+    description: string | undefined,
+    startTime: string | undefined,
+    endTime: string | undefined
+) {
+    if (title || description || startTime || endTime) {
+        const ticket = {title, description, startTime, endTime};
+
+        await knex("tickets")
+            .where({id: ticketId})
+            .update(ticket);
+    }
+
+    return getTicket(ticketId);
+}
+
+export async function pauseResumeTicket(ticketId: number) {
+    let ticket = await getTicket(ticketId);
+    if (!ticket) return
+
+    if (ticket.paused) {    // resume ticket
+        ticket.paused = false;
+        ticket.resumeTime = dayjs().format();
+
+        await knex("tickets")
+            .where({id: ticketId})
+            .update({paused: false, resumeTime: ticket.resumeTime});
+    } else {        // pause ticket
+        ticket.paused = true;
+        ticket.durationBeforePause = (ticket.durationBeforePause ?? 0) + dayjs.duration(dayjs().diff(ticket.resumeTime ?? ticket.startTime)).asMilliseconds();
+
+        await knex("tickets")
+            .where({id: ticket.id})
+            .update({paused: true, durationBeforePause: ticket.durationBeforePause});
+    }
+
+    return ticket;
 }
 
 export async function deleteTicket(id: number) {

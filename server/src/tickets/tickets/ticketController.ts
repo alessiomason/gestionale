@@ -2,7 +2,15 @@ import {Express, Request, Response} from "express";
 import {RequestHandler} from "express-serve-static-core";
 import {body, param, validationResult} from 'express-validator';
 import {InternalServerError, ParameterError} from "../../errors";
-import {closeTicket, createTicket, deleteTicket, getTicket, getTickets} from "./ticketService";
+import {
+    closeTicket,
+    createTicket,
+    deleteTicket,
+    editTicket,
+    getTicket,
+    getTickets,
+    pauseResumeTicket
+} from "./ticketService";
 import {TicketAlreadyClosed, TicketCompanyNotFound, TicketNotFound} from "../ticketErrors";
 import {getTicketCompany} from "../ticketCompanies/ticketCompanyService";
 import {humanize} from "../../functions";
@@ -92,6 +100,27 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler, canMana
         }
     )
 
+    // pause a ticket
+    app.post(`${baseURL}/:ticketId/pause`,
+        isLoggedIn,
+        canManageTickets,
+        param("ticketId").isInt(),
+        async (req: Request, res: Response) => {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                res.status(ParameterError.code).json(new ParameterError("There was an error in the body values!"))
+                return
+            }
+
+            const ticket = await pauseResumeTicket(parseInt(req.params.ticketId));
+            if (ticket) {
+                res.status(200).json(ticket);
+            } else {
+                res.status(TicketNotFound.code).json(new TicketNotFound());
+            }
+        }
+    )
+
     // close a ticket
     app.post(`${baseURL}/:ticketId/close`,
         isLoggedIn,
@@ -150,6 +179,38 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler, canMana
                 } else {
                     res.status(TicketAlreadyClosed.code).json(new TicketAlreadyClosed());
                 }
+            } else {
+                res.status(TicketNotFound.code).json(new TicketNotFound());
+            }
+        }
+    )
+
+    // edit a ticket
+    app.put(`${baseURL}/:ticketId`,
+        isLoggedIn,
+        canManageTickets,
+        param("ticketId").isInt(),
+        body("title").optional({values: "null"}).isString(),
+        body("description").optional({values: "null"}).isString(),
+        body("startTime").optional({values: "null"}).isISO8601(),
+        body("endTime").optional({values: "null"}).isISO8601(),
+        async (req: Request, res: Response) => {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                res.status(ParameterError.code).json(new ParameterError("There was an error in the body values!"))
+                return
+            }
+
+            const ticket = await editTicket(
+                parseInt(req.params.ticketId),
+                req.body.title,
+                req.body.description,
+                req.body.startTime,
+                req.body.endTime
+            );
+
+            if (ticket) {
+                res.status(200).json(ticket);
             } else {
                 res.status(TicketNotFound.code).json(new TicketNotFound());
             }

@@ -4,15 +4,15 @@ import {BuildingAdd} from "react-bootstrap-icons";
 import React, {useEffect, useState} from "react";
 import ticketCompanyApis from "../api/ticketCompanyApis";
 import {TicketCompany} from "../models/ticketCompany";
-import EditTicketCompanyPane from "./EditTicketCompanyPane";
-import TicketCompanyModifiablePane from "./TicketCompanyModifiablePane";
+import EditTicketCompanyPane from "./ticket-companies/EditTicketCompanyPane";
+import TicketCompanyModifiablePane from "./ticket-companies/TicketCompanyModifiablePane";
 import Loading from "../Loading";
 
 function TicketsPage() {
     const [ticketCompanies, setTicketCompanies] = useState<TicketCompany[]>([]);
     const [dirty, setDirty] = useState(true);
     const [loading, setLoading] = useState(true);
-    const [showingNewTicketCompanyPane, setShowingNewTicketCompanyPane] = useState(false);
+    const [showNewTicketCompanyPane, setShowNewTicketCompanyPane] = useState(false);
     const [selectedTicketCompany, setSelectedTicketCompany] = useState<TicketCompany>();
 
     useEffect(() => {
@@ -34,12 +34,12 @@ function TicketsPage() {
     }, [dirty]);
 
     function selectTicketCompany(ticketCompany: TicketCompany) {
-        setShowingNewTicketCompanyPane(false);
+        setShowNewTicketCompanyPane(false);
         setSelectedTicketCompany(ticketCompany);
     }
 
     function updateSelectedCompany(updatedTicketCompany: TicketCompany | undefined) {
-        setShowingNewTicketCompanyPane(false);
+        setShowNewTicketCompanyPane(false);
         setSelectedTicketCompany(updatedTicketCompany);
 
         if (updatedTicketCompany) {
@@ -67,7 +67,7 @@ function TicketsPage() {
 
             <Row>
                 <Col md={4}>
-                    <GlossyButton icon={BuildingAdd} onClick={() => setShowingNewTicketCompanyPane(true)}
+                    <GlossyButton icon={BuildingAdd} onClick={() => setShowNewTicketCompanyPane(true)}
                                   className="new-user-button">
                         Nuova azienda
                     </GlossyButton>
@@ -91,7 +91,7 @@ function TicketsPage() {
                                         return (
                                             <tr key={ticketCompany.id}
                                                 onClick={() => selectTicketCompany(ticketCompany)}
-                                                className={(!showingNewTicketCompanyPane && ticketCompany === selectedTicketCompany) ?
+                                                className={(!showNewTicketCompanyPane && ticketCompany === selectedTicketCompany) ?
                                                     "table-selected-row" : ""}>
                                                 <td>{i + 1}</td>
                                                 <td>{ticketCompany.name}</td>
@@ -108,9 +108,9 @@ function TicketsPage() {
                 </Col>
 
                 <Col>
-                    {showingNewTicketCompanyPane &&
+                    {showNewTicketCompanyPane &&
                         <EditTicketCompanyPane updateSelectedCompany={updateSelectedCompany}/>}
-                    {!showingNewTicketCompanyPane && selectedTicketCompany !== undefined &&
+                    {!showNewTicketCompanyPane && selectedTicketCompany !== undefined &&
                         <TicketCompanyModifiablePane ticketCompany={selectedTicketCompany}
                                                      updateSelectedCompany={updateSelectedCompany}/>
                     }

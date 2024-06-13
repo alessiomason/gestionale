@@ -1,4 +1,4 @@
-import {TicketCompany} from "../models/ticketCompany";
+import {TicketCompany} from "../../models/ticketCompany";
 import React, {useEffect, useState} from "react";
 import TicketCompanyPane from "./TicketCompanyPane";
 import EditTicketCompanyPane from "./EditTicketCompanyPane";

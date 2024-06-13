@@ -32,6 +32,9 @@ describe("Test tickets APIs", () => {
         faker.word.sample(),
         faker.lorem.sentences(),
         faker.date.recent().toISOString(),
+        false,
+        undefined,
+        0,
         faker.date.soon().toISOString()
     )
     const startedTicket = new Ticket(
@@ -39,8 +42,7 @@ describe("Test tickets APIs", () => {
         ticketCompany,
         endedTicket.title,
         endedTicket.description,
-        endedTicket.startTime,
-        undefined
+        endedTicket.startTime
     )
     const responseEndedTicket = {
         id: endedTicket.id,
@@ -51,6 +53,9 @@ describe("Test tickets APIs", () => {
         title: endedTicket.title,
         description: endedTicket.description,
         startTime: endedTicket.startTime,
+        paused: false,
+        resumeTime: undefined,
+        durationBeforePause: 0,
         endTime: endedTicket.endTime
     }
     const responseStartedTicket = {
@@ -62,6 +67,9 @@ describe("Test tickets APIs", () => {
         title: startedTicket.title,
         description: startedTicket.description,
         startTime: startedTicket.startTime,
+        paused: false,
+        resumeTime: undefined,
+        durationBeforePause: 0,
         endTime: undefined
     }
 
