@@ -139,7 +139,7 @@ function App2() {
                 <Route path="jobs" element={<JobsPage isAdministrator={isAdministrator}/>}/>
                 <Route path="jobs/:jobId" element={isAdministrator ? <JobPage/> : <Navigate to="/"/>}/>
                 <Route path="tickets" element={canManageTickets ? <TicketsPage/> : <Navigate to="/"/>}/>
-                <Route path="holidayPlan" element={isAdministrator ? <HolidaysPage/> : <Navigate to="/"/>}/>
+                <Route path="holidayPlan" element={<HolidaysPage user={user!}/>}/>
                 <Route path="workedHours" element={<WorkedHoursPage user={user!}/>}/>
                 <Route path="editWorkedHours"
                        element={isMobile ? <WorkedHoursEditMobile user={user!}/> : <Navigate to="/workedHours"/>}/>

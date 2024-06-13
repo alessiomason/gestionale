@@ -1,6 +1,7 @@
 import React, {createElement, useEffect, useState} from "react";
 import {Col, Modal, Row, Table} from "react-bootstrap";
 import {CalendarEvent, Check2Circle, Clock, Person, QuestionDiamond, XCircle} from "react-bootstrap-icons";
+import WorkedHoursDailyTableCell from "../workedHours/workedHoursTable/WorkedHoursDailyTableCell";
 import GlossyButton from "../buttons/GlossyButton";
 import {Role, Type, User} from "../models/user";
 import {DailyExpense} from "../models/dailyExpense";
@@ -11,8 +12,10 @@ import {compareUsers} from "../functions";
 import dayjs from "dayjs";
 
 interface HolidaysTableProps {
+    readonly user: User
     readonly month: number
     readonly year: number
+    readonly setSavingStatus: React.Dispatch<React.SetStateAction<"" | "saving" | "saved">>
 }
 
 function HolidaysTable(props: HolidaysTableProps) {
@@ -77,6 +80,28 @@ function HolidaysTable(props: HolidaysTableProps) {
                 closeModal();
             })
             .catch(err => console.error(err));
+    }
+
+    function createOrUpdateLocalDailyExpense(newDailyExpense: DailyExpense) {
+        setDailyExpenses(dailyExpenses => {
+            const newDailyExpenses = dailyExpenses ? Array(...dailyExpenses) : [];
+
+            const existingDailyExpenseIndex = dailyExpenses?.findIndex(dailyExpense =>
+                dailyExpense.date === newDailyExpense.date
+            ) ?? -1;
+
+            if (existingDailyExpenseIndex !== -1) {
+                if (newDailyExpense.isEmpty()) {    // delete
+                    newDailyExpenses.splice(existingDailyExpenseIndex, 1);
+                } else {                            // update
+                    newDailyExpenses[existingDailyExpenseIndex] = newDailyExpense;
+                }
+            } else {                                // create
+                newDailyExpenses.push(newDailyExpense);
+            }
+
+            return newDailyExpenses;
+        })
     }
 
     return (
@@ -155,49 +180,65 @@ function HolidaysTable(props: HolidaysTableProps) {
                 {User.allTypes
                     .filter(type => type !== Type.machine)
                     .map(type => {
-                    return (
-                        <>
-                            <tr key={type} className="unhoverable">
-                                <td/>
-                                <td colSpan={daysInMonth}>{User.typeName(type)}</td>
-                            </tr>
+                        return (
+                            <>
+                                <tr key={type} className="unhoverable">
+                                    <td/>
+                                    <td colSpan={daysInMonth}>{User.typeName(type)}</td>
+                                </tr>
 
-                            {users
-                                .filter(user => user.type === type && user.active && user.role !== Role.dev)
-                                .sort(compareUsers)
-                                .map(user => {
-                                    return (
-                                        <tr key={user.id}>
-                                            <td className="unhoverable">{user.surname} {user.name}</td>
-                                            {workdays.map(workday => {
-                                                const dailyExpense = dailyExpenses.find(dailyExpense =>
-                                                    dailyExpense.userId === user.id && dailyExpense.date === workday.format("YYYY-MM-DD"));
+                                {users
+                                    .filter(user => user.type === type && user.active /*&& user.role !== Role.dev*/) ///////////////////////////
+                                    .sort(compareUsers)
+                                    .map(user => {
+                                        return (
+                                            <tr key={user.id}>
+                                                <td className="unhoverable">{user.surname} {user.name}</td>
+                                                {workdays.map(workday => {
+                                                    const dailyExpense = dailyExpenses.find(dailyExpense =>
+                                                        dailyExpense.userId === user.id && dailyExpense.date === workday.format("YYYY-MM-DD"));
 
-                                                let className = "unhoverable";
-                                                if (dailyExpense && dailyExpense.holidayHours !== 0) {
-                                                    if (dailyExpense.holidayApproved === null) {
-                                                        className = "holiday-hours-pending";
-                                                    } else if (dailyExpense.holidayApproved) {
-                                                        className = "holiday-hours-approved";
-                                                    } else {
-                                                        className = "holiday-hours-rejected";
+                                                    let className = workdayClassName(workday, true);
+                                                    if (dailyExpense && dailyExpense.holidayHours !== 0) {
+                                                        if (dailyExpense.holidayApproved === null) {
+                                                            className = "holiday-hours-pending";
+                                                        } else if (dailyExpense.holidayApproved) {
+                                                            className = "holiday-hours-approved";
+                                                        } else {
+                                                            className = "holiday-hours-rejected";
+                                                        }
+                                                    } else if ((!dailyExpense || dailyExpense?.holidayHours === 0 || props.user.role === Role.user)
+                                                        && user.id !== props.user.id) {
+                                                        className += " unhoverable";
                                                     }
-                                                }
 
-                                                return (
-                                                    <td key={workday.format()} onClick={() => openModal(dailyExpense)}
-                                                        className={className}>
-                                                        {(!dailyExpense?.holidayHours || dailyExpense.holidayHours === 0) ?
-                                                            "" : dailyExpense.holidayHours}
-                                                    </td>
-                                                );
-                                            })}
-                                        </tr>
-                                    );
-                                })}
-                        </>
-                    );
-                })}
+                                                    if (user.id === props.user.id) {
+                                                        return (
+                                                            <WorkedHoursDailyTableCell workday={workday}
+                                                                                       className={className}
+                                                                                       dailyExpense={dailyExpense}
+                                                                                       field="holidayHours"
+                                                                                       selectedUser={props.user}
+                                                                                       setSavingStatus={props.setSavingStatus}
+                                                                                       createOrUpdateLocalDailyExpense={createOrUpdateLocalDailyExpense}/>
+                                                        )
+                                                    }
+
+                                                    return (
+                                                        <td key={workday.format()}
+                                                            onClick={() => openModal(dailyExpense)}
+                                                            className={className}>
+                                                            {(!dailyExpense?.holidayHours || dailyExpense.holidayHours === 0) ?
+                                                                "" : dailyExpense.holidayHours}
+                                                        </td>
+                                                    );
+                                                })}
+                                            </tr>
+                                        );
+                                    })}
+                            </>
+                        );
+                    })}
                 </tbody>
             </Table>
         </Row>

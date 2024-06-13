@@ -1,12 +1,18 @@
-import React, {useState} from "react";
-import {Col, Row} from "react-bootstrap";
+import React, {useEffect, useState} from "react";
 import {useSearchParams} from "react-router-dom";
+import {Col, Row} from "react-bootstrap";
+import {Check2Circle, ThreeDots} from "react-bootstrap-icons";
 import HolidaysTable from "./HolidaysTable";
 import {MonthSelector, SelectMonthButtons} from "../workedHours/MonthSelectingComponents";
+import {User} from "../models/user";
 import {upperCaseFirst} from "../functions";
 import dayjs from "dayjs";
 
-function HolidaysPage() {
+interface HolidaysPageProps {
+    readonly user: User
+}
+
+function HolidaysPage(props: HolidaysPageProps) {
     const [searchParams] = useSearchParams();
     const searchMonth = searchParams.get("m");
     const searchYear = searchParams.get("y");
@@ -15,6 +21,14 @@ function HolidaysPage() {
     const [month, setMonth] = useState(searchMonth ? parseInt(searchMonth) : currentMonth);
     const [year, setYear] = useState(searchYear ? parseInt(searchYear) : currentYear);
     const [selectingMonth, setSelectingMonth] = useState(false);
+    const [savingStatus, setSavingStatus] = useState<"" | "saving" | "saved">("saved");
+
+    useEffect(() => {
+        // clear savingStatus after 3 seconds
+        if (savingStatus === "saved") {
+            setTimeout(() => setSavingStatus(""), 3000);
+        }
+    }, [savingStatus]);
 
     return (
         <>
@@ -36,10 +50,23 @@ function HolidaysPage() {
                     <Col/>
                 </Row>
 
+                <Row>
+                    <Col>
+                        {/* this forces the whole Row to always the same height, so that it does not change every time savingStatus is empty */}
+                        {savingStatus === "" && <p>&nbsp;</p>}
+
+                        {savingStatus !== "" && <p className="success d-flex justify-content-end align-items-center">
+                            {savingStatus === "saving" ?
+                                <><ThreeDots className="mx-1"/>Salvataggio in corso...</> :
+                                <><Check2Circle className="mx-1"/>Salvato</>}
+                        </p>}
+                    </Col>
+                </Row>
+
                 <SelectMonthButtons selectingMonth={selectingMonth} setSelectingMonth={setSelectingMonth} month={month}
                                     setMonth={setMonth} setYear={setYear}/>
 
-                <HolidaysTable month={month} year={year}/>
+                <HolidaysTable month={month} year={year} user={props.user} setSavingStatus={setSavingStatus}/>
             </Row>
         </>
     );
