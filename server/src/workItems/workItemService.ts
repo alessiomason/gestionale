@@ -160,7 +160,7 @@ export async function createOrUpdateWorkItem(userId: number, jobId: string, date
 // Updates all work items that have a cost equal to 0 to the current cost for the specific user.
 // A service function destined to developers alone; useful after importing data.
 export async function updateWorkItemsCosts() {
-    const users = await getAllUsers();
+    const users = await getAllUsers(true);
     const workItems = await knex("workItems").select();
 
     for (const workItem of workItems) {

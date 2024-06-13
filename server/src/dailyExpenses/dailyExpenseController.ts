@@ -17,7 +17,6 @@ import {DailyExpense} from "./dailyExpense";
 export function useDailyExpensesAPIs(
     app: Express,
     isLoggedIn: RequestHandler,
-    isAdministrator: RequestHandler,
     isDeveloper: RequestHandler
 ) {
     const baseURL = "/api/dailyExpenses";
@@ -25,7 +24,6 @@ export function useDailyExpensesAPIs(
     // get all daily expenses by month
     app.get(`${baseURL}/:month`,
         isLoggedIn,
-        isAdministrator,
         param("month").isString(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);

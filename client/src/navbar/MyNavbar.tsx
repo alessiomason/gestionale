@@ -73,7 +73,7 @@ function MyNavbar(props: NavbarProps) {
                                     <Link to="/jobs" onClick={() => setShowOffcanvas(false)}>Commesse</Link>
                                 </Col>
                             </Row>}
-                            {isAdministrator && isTablet && <Row>
+                            {isTablet && <Row>
                                 <Col className="my-2 d-flex align-items-center">
                                     <Sun/>
                                     <Link to="/holidayPlan" onClick={() => setShowOffcanvas(false)}>Piano ferie</Link>
@@ -120,10 +120,10 @@ function MyNavbar(props: NavbarProps) {
                                        onClick={() => navigate("/jobs")}>
                         Commesse
                     </LightGlossyButton>
-                    {isAdministrator && <LightGlossyButton singleLine icon={Sun} className="me-3"
+                    <LightGlossyButton singleLine icon={Sun} className="me-3"
                                                            onClick={() => navigate("/holidayPlan")}>
                         Piano ferie
-                    </LightGlossyButton>}
+                    </LightGlossyButton>
                     {isAdministrator && <LightGlossyButton singleLine icon={CalendarRange} className="me-3"
                                                            onClick={() => navigate("/monthlyWorkedHours")}>
                         Ore mensili

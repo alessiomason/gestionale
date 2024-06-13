@@ -103,7 +103,7 @@ export async function createOrUpdateDailyExpense(newDailyExpense: DailyExpense) 
 // Updates all daily expenses that have a trip cost equal to 0 to the current trip cost for the specific user.
 // A service function destined to developers alone; useful after importing data.
 export async function updateTripCosts() {
-    const users = await getAllUsers();
+    const users = await getAllUsers(true);
     const dailyExpenses = await knex("dailyExpenses").select();
 
     for (const dailyExpense of dailyExpenses) {
