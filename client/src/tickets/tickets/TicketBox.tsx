@@ -2,22 +2,39 @@ import {Card, Col, Row} from "react-bootstrap";
 import "../ticket-companies/TicketCompanyPane.css";
 import dayjs from "dayjs";
 import GlossyButton from "../../buttons/GlossyButton";
-import {HourglassBottom, HourglassSplit, PencilSquare} from "react-bootstrap-icons";
+import {HourglassBottom, HourglassSplit, PauseFill, PencilSquare, PlayFill} from "react-bootstrap-icons";
 import React from "react";
 import {Ticket} from "../../models/ticket";
 import IconButton from "../../buttons/IconButton";
+import ticketApis from "../../api/ticketApis";
 
 interface TicketBoxProps {
     readonly ticket: Ticket
     readonly openTicketModal: (ticket: Ticket) => void
     readonly setTicketToBeEnded: React.Dispatch<React.SetStateAction<Ticket | undefined>>
+    readonly setTickets: React.Dispatch<React.SetStateAction<Ticket[]>>
+    readonly setDirtyTicketCompanyProgress: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 function TicketBox(props: TicketBoxProps) {
-    const ticketDuration = dayjs.duration(dayjs(props.ticket.endTime).diff(dayjs(props.ticket.startTime)));
-    let humanizedDuration = ticketDuration.humanize();
+    let humanizedDuration = dayjs.duration(props.ticket.duration).humanize();
     if (humanizedDuration === "un' ora") {  // fix Dayjs' misspell
         humanizedDuration = "un'ora";
+    }
+
+    function pauseResumeTicket() {
+        ticketApis.pauseResumeTicket(props.ticket.id)
+            .then(ticket => {
+                props.setTickets(tickets => {
+                    const newTickets = [...tickets];
+                    const index = newTickets.findIndex(t => t.id === ticket!.id);
+                    if (index > -1) {
+                        newTickets[index] = ticket!;
+                    }
+                    return newTickets;
+                })
+                props.setDirtyTicketCompanyProgress(true);
+            })
     }
 
     return (
@@ -27,7 +44,8 @@ function TicketBox(props: TicketBoxProps) {
                     <Col>{props.ticket.title}</Col>
                     <Col className="d-flex justify-content-end align-items-center">
                         <IconButton icon={PencilSquare} onClick={() => props.openTicketModal(props.ticket)}/>
-                        {!props.ticket.endTime && <HourglassSplit/>}
+                        {!props.ticket.endTime && props.ticket.paused && <PauseFill/>}
+                        {!props.ticket.endTime && !props.ticket.paused && <HourglassSplit/>}
                     </Col>
                 </Row>
             </Card.Title>
@@ -39,8 +57,18 @@ function TicketBox(props: TicketBoxProps) {
 
                 {!props.ticket.endTime && <Row className="mt-3">
                     <Col/>
-                    <Col sm={8} className="d-flex justify-content-center">
-                        <GlossyButton icon={HourglassBottom} onClick={() => props.setTicketToBeEnded(props.ticket)}>
+                    <Col sm={7} className="d-flex justify-content-center">
+                        <GlossyButton icon={props.ticket.paused ? PlayFill : PauseFill} className="w-100" onClick={pauseResumeTicket}>
+                            {props.ticket.paused ? "Riprendi ticket" : "Ticket in pausa"}
+                        </GlossyButton>
+                    </Col>
+                    <Col/>
+                </Row>}
+                {!props.ticket.endTime && <Row className="mt-3">
+                    <Col/>
+                    <Col sm={7} className="d-flex justify-content-center">
+                        <GlossyButton icon={HourglassBottom} className="w-100"
+                                      onClick={() => props.setTicketToBeEnded(props.ticket)}>
                             Termina ticket
                         </GlossyButton>
                     </Col>

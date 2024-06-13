@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import {HourglassBottom} from "react-bootstrap-icons";
 import GlossyButton from "../../buttons/GlossyButton";
 import dayjs from "dayjs";
-import "./NewTicketModal.css";
+import "./TicketModal.css";
 import {Ticket} from "../../models/ticket";
 import ticketApis from "../../api/ticketApis";
 

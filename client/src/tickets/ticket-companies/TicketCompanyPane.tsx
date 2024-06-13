@@ -44,7 +44,7 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
         if (dirtyTickets) {
             ticketApis.getTickets(props.ticketCompany.id)
                 .then(tickets => {
-                    setTickets(tickets);
+                    setTickets(tickets!);
                     setDirtyTickets(false);
                 })
                 .catch(err => console.error(err))
@@ -70,9 +70,9 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
     useEffect(() => {
         if (dirtyTicketCompanyProgress) {
             const totalUsedHours = tickets
-                .map(ticket => dayjs.duration(dayjs(ticket.endTime).diff(dayjs(ticket.startTime))))
+                .map(ticket => ticket.duration)
                 .reduce(((sum, ticketDuration) => sum.add(ticketDuration)), dayjs.duration(0))
-                .asHours()
+                .asHours();
 
             const updatedSelectedCompany = new TicketCompany(
                 props.ticketCompany.id,
@@ -81,7 +81,7 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
                 props.ticketCompany.contact,
                 totalUsedHours,
                 props.ticketCompany.orderedHours
-            )
+            );
             props.updateSelectedCompany(updatedSelectedCompany);
 
             setDirtyTicketCompanyProgress(false);
@@ -173,7 +173,8 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
                                     return (
                                         <TicketBox key={`ticket-order-${ticket.id}`} ticket={ticket}
                                                    openTicketModal={openTicketModal}
-                                                   setTicketToBeEnded={setTicketToBeClosed}/>
+                                                   setTicketToBeEnded={setTicketToBeClosed} setTickets={setTickets}
+                                                   setDirtyTicketCompanyProgress={setDirtyTicketCompanyProgress}/>
                                     );
                                 })}
                         </Row>

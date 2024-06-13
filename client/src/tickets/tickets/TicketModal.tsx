@@ -4,7 +4,7 @@ import {TicketCompany} from "../../models/ticketCompany";
 import {Floppy, HourglassTop, Sticky, TicketPerforated} from "react-bootstrap-icons";
 import GlossyButton from "../../buttons/GlossyButton";
 import dayjs from "dayjs";
-import "./NewTicketModal.css";
+import "./TicketModal.css";
 import {Ticket} from "../../models/ticket";
 import ticketApis from "../../api/ticketApis";
 
@@ -64,6 +64,9 @@ function TicketModal(props: TicketModalProps) {
             title,
             description,
             useCurrentTime ? undefined : adjustedStartDateTime.format(),
+            props.ticket?.paused ?? false,
+            props.ticket?.resumeTime,
+            props.ticket?.durationBeforePause,
             props.ticket?.endTime ? endDateTime.format() : undefined
         )
 
@@ -71,7 +74,7 @@ function TicketModal(props: TicketModalProps) {
             ticketApis.editTicket(ticket)
                 .then(ticket => {
                     props.setTickets(tickets => {
-                        tickets.push(ticket);
+                        tickets.push(ticket!);
                         return tickets;
                     });
                     props.setDirtyTicketCompanyProgress(true);
@@ -82,7 +85,7 @@ function TicketModal(props: TicketModalProps) {
             ticketApis.createTicket(ticket)
                 .then(ticket => {
                     props.setTickets(tickets => {
-                        tickets.push(ticket);
+                        tickets.push(ticket!);
                         return tickets;
                     });
                     props.setDirtyTicketCompanyProgress(true);
