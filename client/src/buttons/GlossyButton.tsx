@@ -13,10 +13,12 @@ interface GlossyButtonProps {
 
 function GlossyButton(props: GlossyButtonProps) {
     return (
-      <Button type={props.type} className={`glossy-button d-flex justify-content-center align-items-center ${props.className}`} onClick={props.onClick}>
-          {createElement(props.icon, {className: "me-1"})}
-          {props.children}
-      </Button>
+        <Button type={props.type}
+                className={`glossy-button d-flex justify-content-center align-items-center ${props.className}`}
+                onClick={props.onClick}>
+            {createElement(props.icon, {className: "me-1"})}
+            {props.children}
+        </Button>
     );
 }
 

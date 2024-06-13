@@ -6,6 +6,9 @@ export class Ticket {
     title: string
     description: string
     startTime: string
+    paused: boolean
+    resumeTime?: string
+    durationBeforePause: number
     endTime?: string
 
     constructor(
@@ -14,13 +17,19 @@ export class Ticket {
         title: string,
         description: string,
         startTime: string,
-        endTime: string | undefined
+        paused: boolean = false,
+        resumeTime?: string,
+        durationBeforePause: number = 0,
+        endTime?: string
     ) {
         this.id = id;
         this.company = company;
         this.title = title;
         this.description = description;
         this.startTime = startTime;
+        this.paused = paused;
+        this.resumeTime = resumeTime;
+        this.durationBeforePause = durationBeforePause;
         this.endTime = endTime;
     }
 }
