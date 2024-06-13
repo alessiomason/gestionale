@@ -9,7 +9,7 @@ export class Ticket {
     startTime?: string
     paused: boolean
     resumeTime?: string
-    durationBeforePause?: number
+    durationBeforePause: number
     endTime?: string
     duration: number
 
@@ -21,7 +21,7 @@ export class Ticket {
         startTime?: string,
         paused: boolean = false,
         resumeTime?: string,
-        durationBeforePause?: number,
+        durationBeforePause: number = 0,
         endTime?: string
     ) {
         this.id = id;
