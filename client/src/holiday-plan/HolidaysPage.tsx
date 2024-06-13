@@ -1,12 +1,18 @@
 import React, {useState} from "react";
-import {Col, Row} from "react-bootstrap";
 import {useSearchParams} from "react-router-dom";
+import {Col, Row} from "react-bootstrap";
 import HolidaysTable from "./HolidaysTable";
 import {MonthSelector, SelectMonthButtons} from "../workedHours/MonthSelectingComponents";
+import SavingStatusMessage, {SavingStatus} from "../components/SavingStatusMessage";
+import {User} from "../models/user";
 import {upperCaseFirst} from "../functions";
 import dayjs from "dayjs";
 
-function HolidaysPage() {
+interface HolidaysPageProps {
+    readonly user: User
+}
+
+function HolidaysPage(props: HolidaysPageProps) {
     const [searchParams] = useSearchParams();
     const searchMonth = searchParams.get("m");
     const searchYear = searchParams.get("y");
@@ -15,6 +21,7 @@ function HolidaysPage() {
     const [month, setMonth] = useState(searchMonth ? parseInt(searchMonth) : currentMonth);
     const [year, setYear] = useState(searchYear ? parseInt(searchYear) : currentYear);
     const [selectingMonth, setSelectingMonth] = useState(false);
+    const [savingStatus, setSavingStatus] = useState<SavingStatus>("");
 
     return (
         <>
@@ -36,10 +43,16 @@ function HolidaysPage() {
                     <Col/>
                 </Row>
 
+                <Row>
+                    <Col>
+                        <SavingStatusMessage savingStatus={savingStatus} setSavingStatus={setSavingStatus}/>
+                    </Col>
+                </Row>
+
                 <SelectMonthButtons selectingMonth={selectingMonth} setSelectingMonth={setSelectingMonth} month={month}
                                     setMonth={setMonth} setYear={setYear}/>
 
-                <HolidaysTable month={month} year={year}/>
+                <HolidaysTable month={month} year={year} user={props.user} setSavingStatus={setSavingStatus}/>
             </Row>
         </>
     );
