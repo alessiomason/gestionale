@@ -13,7 +13,6 @@ import {
     Person,
     Sticky
 } from "react-bootstrap-icons";
-import {useNavigate} from "react-router-dom";
 import {useMediaQuery} from "react-responsive";
 import GlossyButton from "../buttons/GlossyButton";
 import EditOrderPane from "./EditOrderPane";
@@ -34,7 +33,6 @@ function OrderPane(props: OrderPaneProps) {
     const attachmentLink = `${process.env.REACT_APP_ORDERS_PDF_FOLDER}/orders/Ordine_${attachmentOrderName}.pdf`;
     const [modifying, setModifying] = useState(false);
     const [showClearingModal, setShowClearingModal] = useState(false);
-    const navigate = useNavigate();
     const isMobile = useMediaQuery({maxWidth: 767});
 
     // exit editing mode when selecting another order
@@ -180,7 +178,7 @@ function OrderPane(props: OrderPaneProps) {
                         Modifica evasione dell'ordine</GlossyButton>
                     {props.order.uploadedFile &&
                         <GlossyButton icon={FileEarmark} className={isMobile ? "my-1" : undefined}
-                                      onClick={() => navigate(attachmentLink)}>
+                                      onClick={() => window.location.href = attachmentLink}>
                             Visualizza allegato
                         </GlossyButton>}
                 </Col>
