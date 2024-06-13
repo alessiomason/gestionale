@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 
 const tokenExpiresAfterDays = 2;
 
-export async function getAllUsers() {
+export async function getAllUsers(isAdministrator: boolean) {
     const users = await knex("users").select();
 
     return users.map(user => {
@@ -21,18 +21,18 @@ export async function getAllUsers() {
             user.username,
             undefined,
             undefined,
-            user.registrationToken,
-            user.tokenExpiryDate,
-            registeredUser ? user.registrationDate : undefined,   // set only for registered users
-            parseFloat(user.hoursPerDay),
-            parseFloat(user.costPerHour),
+            isAdministrator ? user.registrationToken : undefined,
+            isAdministrator ? user.tokenExpiryDate : undefined,
+            (registeredUser && isAdministrator) ? user.registrationDate : undefined,   // set only for registered users
+            isAdministrator ? parseFloat(user.hoursPerDay) : 0,
+            isAdministrator ? parseFloat(user.costPerHour) : 0,
             !!user.active,
             !!user.managesTickets,
             !!user.managesOrders,
-            user.email,
-            user.phone,
-            user.car,
-            parseFloat(user.costPerKm)
+            isAdministrator ? user.email : null,
+            isAdministrator ? user.phone : null,
+            isAdministrator ? user.car : null,
+            isAdministrator ? parseFloat(user.costPerKm) : null
         );
     });
 }

@@ -21,13 +21,15 @@ import crypto from "crypto";
 import dayjs from "dayjs";
 
 export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdministrator: RequestHandler) {
-    const baseURL = "/api/users"
+    const baseURL = "/api/users";
 
     // get all users
-    app.get(baseURL, isLoggedIn, isAdministrator, async (_: Request, res: Response) => {
+    app.get(baseURL, isLoggedIn, async (req: Request, res: Response) => {
+        const user = req.user ? (req.user as User) : undefined;
+
         try {
-            const users = await getAllUsers()
-            res.status(200).json(users)
+            const users = await getAllUsers(user ? user.role !== Role.user : false);
+            res.status(200).json(users);
         } catch (err: any) {
             console.error("Error while retrieving users", err.message);
             res.status(InternalServerError.code).json(new InternalServerError("Error while retrieving users"))
