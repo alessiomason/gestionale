@@ -188,7 +188,7 @@ function HolidaysTable(props: HolidaysTableProps) {
                                 </tr>
 
                                 {users
-                                    .filter(user => user.type === type && user.active /*&& user.role !== Role.dev*/) ///////////////////////////
+                                    .filter(user => user.type === type && user.active && user.role !== Role.dev)
                                     .sort(compareUsers)
                                     .map(user => {
                                         return (

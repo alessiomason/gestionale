@@ -1,6 +1,5 @@
-import {Col, Row} from "react-bootstrap";
-import {Check2Circle, ThreeDots} from "react-bootstrap-icons";
 import React, {useEffect} from "react";
+import {Check2Circle, ThreeDots} from "react-bootstrap-icons";
 
 export type SavingStatus = "" | "saving" | "saved";
 
