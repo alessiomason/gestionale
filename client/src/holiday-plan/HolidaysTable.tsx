@@ -53,9 +53,11 @@ function HolidaysTable(props: HolidaysTableProps) {
             .catch(err => console.error(err))
     }, [props.month, props.year]);
 
-    function openModal(dailyExpense: DailyExpense) {
-        setEditingDailyExpense(dailyExpense);
-        setShowModal(true);
+    function openModal(dailyExpense?: DailyExpense) {
+        if (dailyExpense && dailyExpense.holidayHours !== 0) {
+            setEditingDailyExpense(dailyExpense);
+            setShowModal(true);
+        }
     }
 
     function closeModal() {
@@ -183,7 +185,7 @@ function HolidaysTable(props: HolidaysTableProps) {
                                                 }
 
                                                 return (
-                                                    <td key={workday.format()} onClick={() => openModal(dailyExpense!)}
+                                                    <td key={workday.format()} onClick={() => openModal(dailyExpense)}
                                                         className={className}>
                                                         {(!dailyExpense?.holidayHours || dailyExpense.holidayHours === 0) ?
                                                             "" : dailyExpense.holidayHours}
