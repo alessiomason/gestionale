@@ -1,13 +1,13 @@
-import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
-import {Job} from "../models/job";
-import jobApis from "../api/jobApis";
-import {Building, JournalBookmark, JournalPlus, JournalText, JournalX} from "react-bootstrap-icons";
-import GlossyButton from "../buttons/GlossyButton";
+import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
+import {Building, JournalBookmark, JournalPlus, JournalText, JournalX, XOctagon} from "react-bootstrap-icons";
 import JobPane from "./JobPane";
 import JobsTable from "./JobsTable";
+import GlossyButton from "../buttons/GlossyButton";
 import SwitchToggle from "../users-management/SwitchToggle";
 import Loading from "../Loading";
+import {Job} from "../models/job";
+import jobApis from "../api/jobApis";
 
 interface JobsPageProps {
     readonly isAdministrator: boolean
@@ -73,6 +73,16 @@ function JobsPage(props: JobsPageProps) {
         }
     }, [dirty]);
 
+    function clearFilters(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        event.preventDefault();
+
+        setFilteringId("");
+        setFilteringSubject("");
+        setFilteringClient("");
+        setFilteringFinalClient("");
+        setFilteringOnlyActive(false);
+    }
+
     return (
         <>
             <Row>
@@ -122,12 +132,16 @@ function JobsPage(props: JobsPageProps) {
                                 </FloatingLabel>
                             </InputGroup>
 
-                            <Row className="mt-3">
+                            <Row className="my-3">
                                 <Col className="d-flex justify-content-center">
                                     <SwitchToggle id="active-toggle" isOn={filteringOnlyActive}
                                                   handleToggle={() => setFilteringOnlyActive(prevFilter => !prevFilter)}/>
                                     <label>Nascondi non attive</label>
                                 </Col>
+                            </Row>
+
+                            <Row>
+                                <GlossyButton icon={XOctagon} onClick={clearFilters}>Azzera i filtri</GlossyButton>
                             </Row>
                         </Form>
                     </Row>
