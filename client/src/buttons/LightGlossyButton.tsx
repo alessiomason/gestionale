@@ -4,7 +4,7 @@ import {Icon} from "react-bootstrap-icons";
 import "./Buttons.css";
 
 interface LightGlossyButtonProps {
-    readonly children: string
+    readonly children?: string
     readonly icon: Icon
     readonly singleLine?: boolean
     readonly className?: string
@@ -12,11 +12,13 @@ interface LightGlossyButtonProps {
 }
 
 function LightGlossyButton(props: LightGlossyButtonProps) {
+    const margin = props.children ? "me-1" : "";
+
     return (
         <Button
             className={`light-glossy-button d-flex justify-content-center align-items-center ${props.className} ${props.singleLine ? "single-line-button" : undefined}`}
             onClick={props.onClick}>
-            {createElement(props.icon, {className: "me-1"})}
+            {createElement(props.icon, {className: margin})}
             {props.children}
         </Button>
     );

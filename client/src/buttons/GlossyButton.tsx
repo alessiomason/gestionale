@@ -4,7 +4,7 @@ import {Icon} from "react-bootstrap-icons";
 import "./Buttons.css";
 
 interface GlossyButtonProps {
-    readonly children: string
+    readonly children?: string
     readonly type?: "submit" | "reset" | "button"
     readonly icon: Icon
     readonly className?: string
@@ -12,11 +12,13 @@ interface GlossyButtonProps {
 }
 
 function GlossyButton(props: GlossyButtonProps) {
+    const margin = props.children ? "me-1" : "";
+
     return (
         <Button type={props.type}
                 className={`glossy-button d-flex justify-content-center align-items-center ${props.className}`}
                 onClick={props.onClick}>
-            {createElement(props.icon, {className: "me-1"})}
+            {createElement(props.icon, {className: margin})}
             {props.children}
         </Button>
     );

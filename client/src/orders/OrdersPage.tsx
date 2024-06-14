@@ -1,22 +1,18 @@
 import React, {useEffect, useState} from "react";
 import {Col, Row} from "react-bootstrap";
+import {useMediaQuery} from "react-responsive";
+import {ClipboardPlus, ClipboardX} from "react-bootstrap-icons";
 import GlossyButton from "../buttons/GlossyButton";
-import {
-    ClipboardPlus,
-    ClipboardX,
-    Funnel
-} from "react-bootstrap-icons";
 import Loading from "../Loading";
 import OrderPane from "./OrderPane";
+import OrdersTable from "./OrdersTable";
 import EditOrderPane from "./EditOrderPane";
-import OrdersFiltersModal from "./OrdersFiltersModal";
+import OrdersFiltersSection from "./OrdersFiltersSection";
 import {Order} from "../models/order";
-import orderApis from "../api/orderApis";
 import {User} from "../models/user";
+import orderApis from "../api/orderApis";
 import dayjs from "dayjs";
 import "./OrdersPage.css";
-import {useMediaQuery} from "react-responsive";
-import OrdersTable from "./OrdersTable";
 
 export type PossibleSortingOptions = "name" | "job" | "supplier" | "deliveryDate";
 
@@ -39,18 +35,17 @@ function OrdersPage(props: OrdersPageProps) {
     });
     const shrunkTable = isMobile || showingNewOrderPane || selectedOrder !== undefined;
 
-    const [showFilterModal, setShowFilterModal] = useState(false);
-    const [filteringOrderName, setFilteringOrderName] = useState<string | undefined>(() => {
+    const [filteringOrderName, setFilteringOrderName] = useState(() => {
         const filter = sessionStorage.getItem("filteringOrderName");
-        return filter ?? undefined;
+        return filter ?? "";
     });
-    const [filteringJobId, setFilteringJobId] = useState<string | undefined>(() => {
+    const [filteringJobId, setFilteringJobId] = useState(() => {
         const filter = sessionStorage.getItem("filteringJobId");
-        return filter ?? undefined;
+        return filter ?? "";
     });
-    const [filteringSupplier, setFilteringSupplier] = useState<string | undefined>(() => {
+    const [filteringSupplier, setFilteringSupplier] = useState(() => {
         const filter = sessionStorage.getItem("filteringSupplier");
-        return filter ?? undefined;
+        return filter ?? "";
     });
 
     const [comparison, setComparison] = useState<PossibleSortingOptions>(() => {
@@ -191,25 +186,22 @@ function OrdersPage(props: OrdersPageProps) {
                 <h1 className="page-title">Ordini</h1>
             </Row>
 
-            <Row className="me-2">
-                <Col sm={4}>
+            <Row className="me-4 mb-4">
+                <Col sm={3}>
                     <GlossyButton icon={ClipboardPlus} onClick={handleNewOrderButton} className="new-user-button">
                         Nuovo ordine</GlossyButton>
                 </Col>
                 <Col/>
-                <Col sm={4}>
+                <Col sm={showingNewOrderPane || selectedOrder ? 3 : 8}>
                     {showingNewOrderPane || selectedOrder ?
                         <GlossyButton icon={ClipboardX} onClick={handleCloseButton} className="new-user-button">
                             Chiudi</GlossyButton> :
-                        <GlossyButton icon={Funnel} onClick={() => setShowFilterModal(true)}
-                                      className="new-user-button">
-                            Filtri</GlossyButton>}
+                        <OrdersFiltersSection filteringOrderName={filteringOrderName}
+                                              setFilteringOrderName={setFilteringOrderName}
+                                              filteringJobId={filteringJobId} setFilteringJobId={setFilteringJobId}
+                                              filteringSupplier={filteringSupplier}
+                                              setFilteringSupplier={setFilteringSupplier}/>}
                 </Col>
-                <OrdersFiltersModal show={showFilterModal} setShow={setShowFilterModal}
-                                    filteringOrderName={filteringOrderName}
-                                    setFilteringOrderName={setFilteringOrderName} filteringJobId={filteringJobId}
-                                    setFilteringJobId={setFilteringJobId} filteringSupplier={filteringSupplier}
-                                    setFilteringSupplier={setFilteringSupplier}/>
             </Row>
 
             <Row>

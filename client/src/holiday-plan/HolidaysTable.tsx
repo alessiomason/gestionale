@@ -10,6 +10,7 @@ import dailyExpenseApis from "../api/dailyExpensesApis";
 import userApis from "../api/userApis";
 import {compareUsers} from "../functions";
 import dayjs from "dayjs";
+import "./HolidayTable.css";
 
 interface HolidaysTableProps {
     readonly user: User
@@ -184,7 +185,7 @@ function HolidaysTable(props: HolidaysTableProps) {
                             <>
                                 <tr key={type} className="unhoverable">
                                     <td/>
-                                    <td colSpan={daysInMonth}>{User.typeName(type)}</td>
+                                    <td colSpan={daysInMonth} className={`${type}-user`}>{User.typeName(type)}</td>
                                 </tr>
 
                                 {users
@@ -193,7 +194,7 @@ function HolidaysTable(props: HolidaysTableProps) {
                                     .map(user => {
                                         return (
                                             <tr key={user.id}>
-                                                <td className="unhoverable">{user.surname} {user.name}</td>
+                                                <td className={`${type}-user unhoverable`}>{user.surname} {user.name}</td>
                                                 {workdays.map(workday => {
                                                     const dailyExpense = dailyExpenses.find(dailyExpense =>
                                                         dailyExpense.userId === user.id && dailyExpense.date === workday.format("YYYY-MM-DD"));
@@ -211,6 +212,7 @@ function HolidaysTable(props: HolidaysTableProps) {
                                                         && user.id !== props.user.id) {
                                                         className += " unhoverable";
                                                     }
+                                                    className += ` ${type}-user`;
 
                                                     if (user.id === props.user.id) {
                                                         return (
@@ -236,6 +238,10 @@ function HolidaysTable(props: HolidaysTableProps) {
                                             </tr>
                                         );
                                     })}
+
+                                <tr className="unhoverable">
+                                    <td colSpan={daysInMonth + 1}/>
+                                </tr>
                             </>
                         );
                     })}
