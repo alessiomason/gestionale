@@ -1,11 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Col, Row} from "react-bootstrap";
 import {useMediaQuery} from "react-responsive";
-import {
-    ClipboardPlus,
-    ClipboardX,
-    XOctagon
-} from "react-bootstrap-icons";
+import {ClipboardPlus, ClipboardX} from "react-bootstrap-icons";
 import GlossyButton from "../buttons/GlossyButton";
 import Loading from "../Loading";
 import OrderPane from "./OrderPane";
@@ -121,12 +117,6 @@ function OrdersPage(props: OrdersPageProps) {
         }
     }, [dirty]);
 
-    function clearFilters() {
-        setFilteringOrderName("");
-        setFilteringJobId("");
-        setFilteringSupplier("");
-    }
-
     function handleNewOrderButton() {
         setShowingNewOrderPane(true);
         setSelectedOrder(undefined);
@@ -197,26 +187,24 @@ function OrdersPage(props: OrdersPageProps) {
                 <h1 className="page-title">Ordini</h1>
             </Row>
 
-            <Row className="me-4">
-                <Col sm={4}>
+            <Row className="me-4 mb-4">
+                <Col sm={3}>
                     <GlossyButton icon={ClipboardPlus} onClick={handleNewOrderButton} className="new-user-button">
                         Nuovo ordine</GlossyButton>
                 </Col>
                 <Col/>
-                <Col sm={4}>
+                <Col sm={showingNewOrderPane || selectedOrder ? 3 : 8}>
                     {showingNewOrderPane || selectedOrder ?
                         <GlossyButton icon={ClipboardX} onClick={handleCloseButton} className="new-user-button">
                             Chiudi</GlossyButton> :
-                        <GlossyButton icon={XOctagon} onClick={clearFilters} className="new-user-button">
-                            Azzera i filtri</GlossyButton>}
+                        <OrdersFiltersSection show={showFilterModal} setShow={setShowFilterModal}
+                                              filteringOrderName={filteringOrderName}
+                                              setFilteringOrderName={setFilteringOrderName}
+                                              filteringJobId={filteringJobId} setFilteringJobId={setFilteringJobId}
+                                              filteringSupplier={filteringSupplier}
+                                              setFilteringSupplier={setFilteringSupplier}/>}
                 </Col>
             </Row>
-
-            <OrdersFiltersSection show={showFilterModal} setShow={setShowFilterModal}
-                                  filteringOrderName={filteringOrderName}
-                                  setFilteringOrderName={setFilteringOrderName} filteringJobId={filteringJobId}
-                                  setFilteringJobId={setFilteringJobId} filteringSupplier={filteringSupplier}
-                                  setFilteringSupplier={setFilteringSupplier}/>
 
             <Row>
                 <Col sm={shrunkTable ? 4 : 0}
