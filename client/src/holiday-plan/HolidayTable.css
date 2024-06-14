@@ -1,0 +1,23 @@
+.office-user {
+    color: mediumblue !important;
+}
+
+.accounting-user {
+    color: mediumvioletred !important;
+}
+
+.mechanic-user {
+    color: #336600 !important;
+}
+
+.electrician-user {
+    color: orangered !important;
+}
+
+.software-user {
+    color: rebeccapurple !important;
+}
+
+.machine-user {
+    color: darkred !important;
+}
