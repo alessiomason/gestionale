@@ -35,7 +35,6 @@ function OrdersPage(props: OrdersPageProps) {
     });
     const shrunkTable = isMobile || showingNewOrderPane || selectedOrder !== undefined;
 
-    const [showFilterModal, setShowFilterModal] = useState(false);
     const [filteringOrderName, setFilteringOrderName] = useState(() => {
         const filter = sessionStorage.getItem("filteringOrderName");
         return filter ?? "";
@@ -197,8 +196,7 @@ function OrdersPage(props: OrdersPageProps) {
                     {showingNewOrderPane || selectedOrder ?
                         <GlossyButton icon={ClipboardX} onClick={handleCloseButton} className="new-user-button">
                             Chiudi</GlossyButton> :
-                        <OrdersFiltersSection show={showFilterModal} setShow={setShowFilterModal}
-                                              filteringOrderName={filteringOrderName}
+                        <OrdersFiltersSection filteringOrderName={filteringOrderName}
                                               setFilteringOrderName={setFilteringOrderName}
                                               filteringJobId={filteringJobId} setFilteringJobId={setFilteringJobId}
                                               filteringSupplier={filteringSupplier}

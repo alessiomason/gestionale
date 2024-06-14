@@ -4,8 +4,6 @@ import {Buildings, Clipboard, JournalBookmarkFill, XOctagon} from "react-bootstr
 import GlossyButton from "../buttons/GlossyButton";
 
 interface OrdersFiltersSectionProps {
-    readonly show: boolean
-    readonly setShow: React.Dispatch<React.SetStateAction<boolean>>
     readonly filteringOrderName: string | undefined
     readonly setFilteringOrderName: React.Dispatch<React.SetStateAction<string>>
     readonly filteringJobId: string | undefined
