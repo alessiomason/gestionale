@@ -37,9 +37,11 @@ function MyNavbar(props: NavbarProps) {
     const [showOffcanvas, setShowOffcanvas] = useState(false);
 
     useEffect(() => {
-        dailyExpensesApis.getPendingHolidayHours()
-            .then(nPending => setHolidayNotifications(nPending))
-            .catch(err => console.error(err));
+        if (isAdministrator) {
+            dailyExpensesApis.getPendingHolidayHours()
+                .then(nPending => setHolidayNotifications(nPending))
+                .catch(err => console.error(err));
+        }
     }, []);
 
     return (
