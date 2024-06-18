@@ -1,0 +1,32 @@
+.shrunk-table-column table {
+    font-size: xx-small;
+}
+
+.shrunk-table-column td {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.shrunk-table-column td:first-child {
+    max-width: 100px;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.holidays-page-first-column {
+    transition: all .25s ease;
+}
+
+.holidays-page-second-column {
+    opacity: 0;
+    animation: appear-animation .25s ease .25s 1 normal forwards;
+}
+
+@keyframes appear-animation {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}

@@ -42,7 +42,7 @@ function TicketBox(props: TicketBoxProps) {
             <Card.Title>
                 <Row className="d-flex align-items-center">
                     <Col>{props.ticket.title}</Col>
-                    <Col className="d-flex justify-content-end align-items-center">
+                    <Col xs={3} className="d-flex justify-content-end align-items-center">
                         <IconButton icon={PencilSquare} onClick={() => props.openTicketModal(props.ticket)}/>
                         {!props.ticket.endTime && props.ticket.paused && <PauseFill/>}
                         {!props.ticket.endTime && !props.ticket.paused && <HourglassSplit/>}

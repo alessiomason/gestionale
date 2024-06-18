@@ -179,7 +179,7 @@ export function SelectMonthButtons(props: SelectMonthButtonsProps) {
     return (
         <Row>
             <Col className="d-flex justify-content-between align-items-center">
-                <ArrowLeftSquare className="hoverable"
+                <ArrowLeftSquare size={25} className="hoverable"
                                  onClick={() => decreaseMonth({...props, searchParams, setSearchParams})}/>
 
                 <div className="d-flex">
@@ -196,7 +196,7 @@ export function SelectMonthButtons(props: SelectMonthButtonsProps) {
                     </TextButton>
                 </div>
 
-                <ArrowRightSquare className="hoverable"
+                <ArrowRightSquare size={25} className="hoverable"
                                   onClick={() => increaseMonth({...props, searchParams, setSearchParams})}/>
             </Col>
         </Row>

@@ -100,6 +100,12 @@ export async function createOrUpdateDailyExpense(newDailyExpense: DailyExpense) 
     }
 }
 
+export async function getPendingHolidayHours() {
+    const nPending = await knex
+        .raw("SELECT COUNT(*) as n FROM daily_expenses WHERE holiday_hours != 0 AND holiday_approved IS NULL");
+    return parseInt(nPending[0][0].n);
+}
+
 // Updates all daily expenses that have a trip cost equal to 0 to the current trip cost for the specific user.
 // A service function destined to developers alone; useful after importing data.
 export async function updateTripCosts() {

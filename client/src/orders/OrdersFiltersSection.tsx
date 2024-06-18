@@ -27,8 +27,8 @@ function OrdersFiltersSection(props: OrdersFiltersSectionProps) {
                 <Col>
                     <InputGroup>
                         <InputGroup.Text><Clipboard/></InputGroup.Text>
-                        <FloatingLabel controlId="floatingInput" label="Filtra per n. ordine">
-                            <Form.Control type="text" placeholder="Filtra per n. ordine"
+                        <FloatingLabel controlId="floatingInput" label="Filtra per n° ordine">
+                            <Form.Control type="text" placeholder="Filtra per n° ordine"
                                           value={props.filteringOrderName}
                                           onChange={ev => props.setFilteringOrderName(ev.target.value)}/>
                         </FloatingLabel>
