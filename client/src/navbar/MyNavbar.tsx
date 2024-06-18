@@ -18,7 +18,7 @@ import Hamburger from "../components/Hamburger";
 import {Role, User} from "../models/user";
 import dailyExpensesApis from "../api/dailyExpensesApis";
 import {numberToIcon} from "../functions";
-import horizontalWhiteLogo from '../images/logos/horizontal_white_logo.png';
+import logo from '../images/logos/logo.png';
 import './MyNavbar.css';
 
 interface NavbarProps {
@@ -47,7 +47,7 @@ function MyNavbar(props: NavbarProps) {
             <Row className="navbar-row">
                 <Col className="d-flex align-items-center">
                     <Navbar.Brand className='text' onClick={() => navigate("/")}>
-                        <img src={horizontalWhiteLogo} className="brand-image" alt="Logo di Technomake"/>
+                        <img src={logo} className="brand-image" alt="Logo di Technomake"/>
                     </Navbar.Brand>
                 </Col>
 
