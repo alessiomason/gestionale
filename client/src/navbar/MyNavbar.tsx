@@ -1,10 +1,7 @@
-import {Link, useNavigate} from 'react-router-dom';
+import {useEffect, useState} from "react";
 import {Col, Navbar, Offcanvas, Row} from 'react-bootstrap';
+import {Link, useNavigate} from 'react-router-dom';
 import {useMediaQuery} from "react-responsive";
-import './MyNavbar.css';
-import horizontalWhiteLogo from '../images/logos/horizontal_white_logo.png';
-import {Role, User} from "../models/user";
-import LightGlossyButton from "../buttons/LightGlossyButton";
 import {
     CalendarEvent,
     CalendarRange,
@@ -16,8 +13,13 @@ import {
     Sun,
     TicketPerforated
 } from "react-bootstrap-icons";
+import LightGlossyButton from "../buttons/LightGlossyButton";
 import Hamburger from "../components/Hamburger";
-import {useState} from "react";
+import {Role, User} from "../models/user";
+import dailyExpensesApis from "../api/dailyExpensesApis";
+import {numberToIcon} from "../functions";
+import horizontalWhiteLogo from '../images/logos/horizontal_white_logo.png';
+import './MyNavbar.css';
 
 interface NavbarProps {
     readonly user: User
@@ -31,7 +33,14 @@ function MyNavbar(props: NavbarProps) {
     const canManageTickets = props.user.managesTickets;
     const canManageOrders = props.user.managesOrders;
 
+    const [holidayNotifications, setHolidayNotifications] = useState(0);
     const [showOffcanvas, setShowOffcanvas] = useState(false);
+
+    useEffect(() => {
+        dailyExpensesApis.getPendingHolidayHours()
+            .then(nPending => setHolidayNotifications(nPending))
+            .catch(err => console.error(err));
+    }, []);
 
     return (
         <Navbar className="navbar fixed-top navbar-padding">
@@ -82,13 +91,15 @@ function MyNavbar(props: NavbarProps) {
                             {isAdministrator && isTablet && <Row>
                                 <Col className="my-2 d-flex align-items-center">
                                     <CalendarRange/>
-                                    <Link to="/monthlyWorkedHours" onClick={() => setShowOffcanvas(false)}>Ore mensili</Link>
+                                    <Link to="/monthlyWorkedHours" onClick={() => setShowOffcanvas(false)}>Ore
+                                        mensili</Link>
                                 </Col>
                             </Row>}
                             {isAdministrator && isTablet && <Row>
                                 <Col className="my-2 d-flex align-items-center">
                                     <CalendarWeek/>
-                                    <Link to="/companyWorkedHours" onClick={() => setShowOffcanvas(false)}>Ore azienda</Link>
+                                    <Link to="/companyWorkedHours" onClick={() => setShowOffcanvas(false)}>Ore
+                                        azienda</Link>
                                 </Col>
                             </Row>}
                             <Row>
@@ -120,8 +131,9 @@ function MyNavbar(props: NavbarProps) {
                                        onClick={() => navigate("/jobs")}>
                         Commesse
                     </LightGlossyButton>
-                    <LightGlossyButton singleLine icon={Sun} className="me-3"
-                                                           onClick={() => navigate("/holidayPlan")}>
+                    <LightGlossyButton singleLine icon={Sun}
+                                       secondaryIcon={holidayNotifications === 0 ? undefined : numberToIcon(holidayNotifications)}
+                                       className="me-3" onClick={() => navigate("/holidayPlan")}>
                         Piano ferie
                     </LightGlossyButton>
                     {isAdministrator && <LightGlossyButton singleLine icon={CalendarRange} className="me-3"

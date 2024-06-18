@@ -62,5 +62,19 @@ async function createOrUpdateDailyExpense(newDailyExpense: DailyExpense) {
     } else await handleApiError(response);
 }
 
-const dailyExpenseApis = {getAllDailyExpenses, getDailyExpenses, createOrUpdateDailyExpense};
+async function getPendingHolidayHours() {
+    const response = await fetch(new URL("dailyExpenses/pending", apiUrl), {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+    });
+    if (response.ok) {
+        return await response.json();
+    } else await handleApiError(response);
+}
+
+const dailyExpenseApis = {getAllDailyExpenses, getDailyExpenses, createOrUpdateDailyExpense, getPendingHolidayHours};
 export default dailyExpenseApis;

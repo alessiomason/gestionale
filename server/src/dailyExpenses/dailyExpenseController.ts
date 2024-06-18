@@ -10,6 +10,7 @@ import {
     createOrUpdateDailyExpense,
     getAllDailyExpenses,
     getDailyExpenses,
+    getPendingHolidayHours,
     updateTripCosts
 } from "./dailyExpenseService";
 import {DailyExpense} from "./dailyExpense";
@@ -17,9 +18,33 @@ import {DailyExpense} from "./dailyExpense";
 export function useDailyExpensesAPIs(
     app: Express,
     isLoggedIn: RequestHandler,
+    isAdministrator: RequestHandler,
     isDeveloper: RequestHandler
 ) {
     const baseURL = "/api/dailyExpenses";
+
+    //get number of pending holiday hours (yet to be approved or rejected)
+    app.get(`${baseURL}/pending`,
+        isLoggedIn,
+        isAdministrator,
+        async (req: Request, res: Response) => {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                res.status(ParameterError.code).json(new ParameterError("There was an error with the parameters!"))
+                return
+            }
+
+            try {
+                const nPending = await getPendingHolidayHours();
+                res.status(200).json(nPending);
+            } catch (err) {
+                if (err instanceof BaseError) {
+                    res.status(err.statusCode).json(err);
+                } else {
+                    res.status(InternalServerError.code).json(new InternalServerError("Error while retrieving daily expenses"));
+                }
+            }
+        })
 
     // get all daily expenses by month
     app.get(`${baseURL}/:month`,
