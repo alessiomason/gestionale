@@ -61,7 +61,8 @@ The server requires several environment variables to operate. These are usually 
 	- `SESSION_SECRET`: the secret string used to sign the session ID cookie;
 	- `DB_BACKUP_UPLOAD`: the URL for the PHP file to upload the database backup;
     - `REACT_APP_ORDERS_PDF_FOLDER`: the folder which contains the PHP file to upload the orders attachments;
-    - `ORDERS_NOTIFICATION_EMAIL`: the recipient email for notifying the uncleared expired orders;
+    - `ORDERS_NOTIFICATION_EMAIL`: the recipient email for notifying the presence of newly uncleared expired orders;
+    - `HOLIDAY_PLAN_NOTIFICATION_EMAIL`: the recipient email for notifying the presence of pending holiday requests;
 
 - Optional
 	- `PORT`: the port on which the server has to be served; defaults to `3001` if absent;

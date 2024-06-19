@@ -2,6 +2,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import React, {useEffect, useState} from "react";
 import {BrowserRouter as Router, Navigate, Route, Routes, useNavigate} from "react-router-dom";
 import {useMediaQuery} from "react-responsive";
+import {Container} from "react-bootstrap";
+import Loading from "./Loading";
 import PageLayout from "./PageLayout";
 import LoginPage from "./login/LoginPage";
 import SignUpPage from "./signup/SignUpPage";
@@ -55,6 +57,7 @@ function App2() {
     const initialUser = initialUserJson ? JSON.parse(initialUserJson) as User : undefined;
     const [user, setUser] = useState(initialUser);
     const [dirtyUser, setDirtyUser] = useState(false);
+    const [checkingAuth, setCheckingAuth] = useState(true);
     const loggedIn = user !== undefined;
     const isAdministrator = user ? (user.role !== Role.user) : false;
     const canManageTickets = user ? user.managesTickets : false;
@@ -90,12 +93,16 @@ function App2() {
     }, []);
 
     async function checkAuth() {
+        setCheckingAuth(true);
+
         try {
             const user = await loginApis.getUserInfo();
             setUser(user);
         } catch (_err) {
             // do not log it, otherwise error logged before every login
         }
+
+        setCheckingAuth(false);
     }
 
     function doLogin(credentials: Credentials) {
@@ -119,6 +126,14 @@ function App2() {
                 navigate("/login");
             })
             .catch(err => console.error(err))
+    }
+
+    if (checkingAuth) {
+        return (
+            <Container className="d-flex justify-content-center align-items-center vh-100">
+                <Loading/>
+            </Container>
+        );
     }
 
     return (
