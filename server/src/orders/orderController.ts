@@ -2,7 +2,7 @@ import {Express, Request, Response} from "express";
 import {RequestHandler} from "express-serve-static-core";
 import {BaseError, InternalServerError, ParameterError} from "../errors";
 import {
-    checkExpiredOrders,
+    notifyExpiredOrders,
     clearOrder,
     createOrder,
     deleteOrder,
@@ -64,7 +64,7 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManag
     // check expired orders
     app.post(`${baseURL}/expired`, isLoggedIn, canManageOrders, async (_: Request, res: Response) => {
         try {
-            await checkExpiredOrders();
+            await notifyExpiredOrders();
             res.status(200).end();
         } catch (err: any) {
             if (err instanceof BaseError) {
@@ -76,7 +76,7 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManag
     })
 
     // run check at 06:15 every day
-    cron.schedule("15 6 * * *", checkExpiredOrders, {timezone: "Europe/Rome"});
+    cron.schedule("15 6 * * *", notifyExpiredOrders, {timezone: "Europe/Rome"});
 
     // create an order
     app.post(baseURL,

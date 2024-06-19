@@ -3,6 +3,7 @@ import {UserNotFound} from "../users/userErrors";
 import {knex} from "../database/db";
 import {DailyExpense} from "./dailyExpense";
 import {checkValidDate, checkValidMonth} from "../functions";
+import {sendEmail} from "../email/emailService";
 
 function parseDailyExpense(dailyExpense: any) {
     return new DailyExpense(
@@ -104,6 +105,25 @@ export async function getPendingHolidayHours() {
     const nPending = await knex
         .raw("SELECT COUNT(*) as n FROM daily_expenses WHERE holiday_hours != 0 AND holiday_approved IS NULL");
     return parseInt(nPending[0][0].n);
+}
+
+export async function notifyPendingHolidayHours() {
+    const nPending = await getPendingHolidayHours();
+
+    if (nPending === 0) return;
+
+    const holidayPlanLink = `${process.env.APP_URL}/holidayPlan`;
+    const mailHTML = `
+        <h3>Sono presenti ${nPending} richieste di ore ferie/permesso da approvare o rifiutare.</h3>
+        <p><a href=${holidayPlanLink}>Clicca qui</a> per accedere alla pagina del piano ferie.</p>
+        <p>Questa email è stata generata automaticamente.</p>`;
+
+    const mailText = `
+Sono presenti ${nPending} richieste di ore ferie/permesso da approvare o rifiutare.\n
+Questa email è stata generata automaticamente.`;
+
+    await sendEmail(process.env.HOLIDAY_PLAN_NOTIFICATION_EMAIL as string,
+        "Nuove ore ferie/permesso da approvare", mailHTML, mailText);
 }
 
 // Updates all daily expenses that have a trip cost equal to 0 to the current trip cost for the specific user.

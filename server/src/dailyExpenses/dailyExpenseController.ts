@@ -11,9 +11,11 @@ import {
     getAllDailyExpenses,
     getDailyExpenses,
     getPendingHolidayHours,
+    notifyPendingHolidayHours,
     updateTripCosts
 } from "./dailyExpenseService";
 import {DailyExpense} from "./dailyExpense";
+import cron from "node-cron";
 
 export function useDailyExpensesAPIs(
     app: Express,
@@ -168,6 +170,23 @@ export function useDailyExpensesAPIs(
                 }
             }
         })
+
+    // notify pending holiday hours
+    app.post(`${baseURL}/pending`, isLoggedIn, isDeveloper, async (_: Request, res: Response) => {
+        try {
+            await notifyPendingHolidayHours();
+            res.status(200).end();
+        } catch (err: any) {
+            if (err instanceof BaseError) {
+                res.status(err.statusCode).json(err);
+            } else {
+                res.status(InternalServerError.code).json(new InternalServerError("Error while retrieving daily expenses"));
+            }
+        }
+    })
+
+    // run check at 06:15 every day
+    cron.schedule("15 6 * * *", notifyPendingHolidayHours, {timezone: "Europe/Rome"});
 
     // Updates all daily expenses that have a trip cost equal to 0 to the current trip cost for the specific user.
     // A service endpoint destined to developers alone; useful after importing data.
