@@ -167,7 +167,7 @@ export async function getOrder(id: number, year: number) {
     return parseOrder(order);
 }
 
-export async function checkExpiredOrders() {
+export async function notifyExpiredOrders() {
     const orders = await getAllOrders();
     const notifyingOrders = orders.filter(order =>      // expired uncleared orders
         !order.notifiedExpiry && !order.clearedBy && !order.clearingDate &&
