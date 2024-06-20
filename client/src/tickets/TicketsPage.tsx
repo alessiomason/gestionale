@@ -81,6 +81,7 @@ function TicketsPage() {
                                     <th>#</th>
                                     <th>Nome</th>
                                     <th>Ore rimanenti</th>
+                                    <th>N° ticket</th>
                                 </tr>
                                 </thead>
 
@@ -99,6 +100,7 @@ function TicketsPage() {
                                                     {Math.round(ticketCompany.remainingHoursPercentage)}%
                                                     ({Math.round(ticketCompany.remainingHours)} di {Math.round(ticketCompany.orderedHours)})
                                                 </td>
+                                                <td>{ticketCompany.nTickets}</td>
                                             </tr>
                                         );
                                     })}

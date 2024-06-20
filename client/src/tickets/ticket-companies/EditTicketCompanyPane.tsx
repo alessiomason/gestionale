@@ -27,7 +27,8 @@ function EditTicketCompanyPane(props: EditTicketCompanyPaneProps) {
                 email === "" ? undefined : email,
                 contact === "" ? undefined : contact,
                 props.ticketCompany.usedHours,
-                props.ticketCompany.orderedHours
+                props.ticketCompany.orderedHours,
+                props.ticketCompany.nTickets
             )
 
             ticketCompanyApis.updateTicketCompany(updatedTicketCompany)

@@ -38,7 +38,8 @@ function NewTicketOrderModal(props: NewTicketOrderModalProps) {
                     props.ticketCompany.email,
                     props.ticketCompany.contact,
                     props.ticketCompany.usedHours,
-                    props.ticketCompany.orderedHours + hours
+                    props.ticketCompany.orderedHours + hours,
+                    props.ticketCompany.nTickets
                 )
                 props.updateSelectedCompany(updatedTicketCompany);
                 hide();

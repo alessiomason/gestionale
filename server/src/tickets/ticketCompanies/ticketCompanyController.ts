@@ -85,6 +85,7 @@ export function useTicketCompaniesAPIs(app: Express, isLoggedIn: RequestHandler,
                 ticketCompany.email,
                 ticketCompany.contact,
                 0,
+                0,
                 0
             );
             res.status(200).json(ticketCompanyWithProgress);
