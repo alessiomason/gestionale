@@ -1,4 +1,5 @@
 import {TicketCompany} from "../ticketCompanies/ticketCompany";
+import dayjs from "dayjs";
 
 export class Ticket {
     id: number
@@ -10,6 +11,7 @@ export class Ticket {
     resumeTime?: string
     durationBeforePause: number
     endTime?: string
+    duration: number
 
     constructor(
         id: number,
@@ -31,5 +33,10 @@ export class Ticket {
         this.resumeTime = resumeTime;
         this.durationBeforePause = durationBeforePause;
         this.endTime = endTime;
+        if (paused) {
+            this.duration = durationBeforePause ?? 0;
+        } else {
+            this.duration = (durationBeforePause ?? 0) + dayjs.duration(dayjs(endTime).diff(dayjs(resumeTime ?? startTime))).asMilliseconds();
+        }
     }
 }

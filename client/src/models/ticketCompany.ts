@@ -7,6 +7,7 @@ export class TicketCompany {
     remainingHours: number
     remainingHoursPercentage: number
     orderedHours: number
+    nTickets: number
 
     constructor(
         id: number,
@@ -14,7 +15,8 @@ export class TicketCompany {
         email: string | undefined,
         contact: string | undefined,
         usedHours: number,
-        orderedHours: number
+        orderedHours: number,
+        nTickets: number
     ) {
         this.id = id;
         this.name = name;
@@ -24,6 +26,7 @@ export class TicketCompany {
         const remainingHours = orderedHours - usedHours;
         this.remainingHours = remainingHours < 0 ? 0 : remainingHours;
         this.orderedHours = orderedHours;
+        this.nTickets = nTickets;
 
         if (orderedHours !== 0) {
             this.remainingHoursPercentage = this.remainingHours / orderedHours * 100;

@@ -80,7 +80,8 @@ function TicketCompanyPane(props: TicketCompanyPaneProps) {
                 props.ticketCompany.email,
                 props.ticketCompany.contact,
                 totalUsedHours,
-                props.ticketCompany.orderedHours
+                props.ticketCompany.orderedHours,
+                props.ticketCompany.nTickets
             );
             props.updateSelectedCompany(updatedSelectedCompany);
 

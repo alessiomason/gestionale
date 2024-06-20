@@ -163,7 +163,7 @@ function HolidaysTable(props: HolidaysTableProps) {
                 </Modal.Body>
             </Modal>
 
-            <Table responsive className="worked-hours-table company-worked-hours-table">
+            <Table responsive className="worked-hours-table company-worked-hours-table holiday-table">
                 <thead>
                 <tr>
                     <th className="left-aligned">Dipendente</th>
@@ -216,7 +216,8 @@ function HolidaysTable(props: HolidaysTableProps) {
 
                                                     if (user.id === props.user.id) {
                                                         return (
-                                                            <WorkedHoursDailyTableCell workday={workday}
+                                                            <WorkedHoursDailyTableCell key={workday.format()}
+                                                                                       workday={workday}
                                                                                        className={className}
                                                                                        dailyExpense={dailyExpense}
                                                                                        field="holidayHours"

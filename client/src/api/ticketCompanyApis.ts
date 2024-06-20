@@ -19,7 +19,8 @@ async function getAllTicketCompanies() {
                 ticketCompany.email,
                 ticketCompany.contact,
                 ticketCompany.usedHours,
-                ticketCompany.orderedHours
+                ticketCompany.orderedHours,
+                ticketCompany.nTickets
             );
         })
     } else await handleApiError(response);
@@ -41,7 +42,8 @@ async function getTicketCompany(ticketCompanyId: string) {
             ticketCompany.email,
             ticketCompany.contact,
             ticketCompany.usedHours,
-            ticketCompany.orderedHours
+            ticketCompany.orderedHours,
+            ticketCompany.nTickets
         );
     } else await handleApiError(response);
 }
@@ -70,7 +72,8 @@ async function createTicketCompany(name: string, email: string | undefined, cont
             newTicketCompany.email,
             newTicketCompany.contact,
             newTicketCompany.usedHours,
-            newTicketCompany.orderedHours
+            newTicketCompany.orderedHours,
+            newTicketCompany.nTickets
         );
     } else await handleApiError(response);
 }
@@ -93,7 +96,8 @@ async function updateTicketCompany(ticketCompany: TicketCompany) {
             updatedTicketCompany.email,
             updatedTicketCompany.contact,
             updatedTicketCompany.usedHours,
-            updatedTicketCompany.orderedHours
+            updatedTicketCompany.orderedHours,
+            updatedTicketCompany.nTickets
         );
     } else await handleApiError(response);
 }

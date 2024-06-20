@@ -21,3 +21,7 @@
 .machine-user {
     color: darkred !important;
 }
+
+.holiday-table tbody > tr:last-child {
+    visibility: hidden;
+}
