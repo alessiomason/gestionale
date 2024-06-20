@@ -131,7 +131,10 @@ describe("Test tickets APIs", () => {
         tracker.on.select("tickets").response(responseStartedTicket);
 
         const res = await new Request(app).post(baseURL).send(startedTicket).set("Cookie", session);
-        expect(res.body).toEqual(startedTicket);
+        const expected = {...startedTicket};
+        expected.duration = res.body.duration;  // there would be a difference of some milliseconds, given that duration
+                                                // is computed when the object is initialized
+        expect(res.body).toEqual(expected);
     })
 
     test("Delete ticket", async () => {

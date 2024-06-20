@@ -31,6 +31,7 @@ describe("Test ticket companies APIs", () => {
         ticketCompany.email,
         ticketCompany.contact,
         0,
+        0,
         0
     );
 
