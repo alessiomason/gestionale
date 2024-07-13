@@ -170,8 +170,8 @@ export async function getOrder(id: number, year: number) {
 
 export async function notifyExpiredOrders() {
     const orders = await getAllOrders();
-    const notifyingOrders = orders.filter(order =>      // expired uncleared orders
-        !order.notifiedExpiry && !order.clearedBy && !order.clearingDate &&
+    const notifyingOrders = orders.filter(order =>      // expired uncleared non-cancelled orders
+        !order.notifiedExpiry && !order.cancelled && !order.clearedBy && !order.clearingDate &&
         order.scheduledDeliveryDate && dayjs(order.scheduledDeliveryDate).isBefore(dayjs()));
 
     if (notifyingOrders.length === 0) {
