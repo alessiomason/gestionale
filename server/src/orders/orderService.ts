@@ -110,6 +110,7 @@ function parseOrder(order: any) {
         job,
         order.supplier,
         order.description,
+        !!order.cancelled,
         by,
         !!order.uploadedFile,
         !!order.notifiedExpiry,
@@ -169,8 +170,8 @@ export async function getOrder(id: number, year: number) {
 
 export async function notifyExpiredOrders() {
     const orders = await getAllOrders();
-    const notifyingOrders = orders.filter(order =>      // expired uncleared orders
-        !order.notifiedExpiry && !order.clearedBy && !order.clearingDate &&
+    const notifyingOrders = orders.filter(order =>      // expired uncleared non-cancelled orders
+        !order.notifiedExpiry && !order.cancelled && !order.clearedBy && !order.clearingDate &&
         order.scheduledDeliveryDate && dayjs(order.scheduledDeliveryDate).isBefore(dayjs()));
 
     if (notifyingOrders.length === 0) {
@@ -233,6 +234,7 @@ export async function createOrder(newOrder: NewOrder) {
         job,
         newOrder.supplier,
         newOrder.description,
+        false,
         byUser,
         false,
         false,
@@ -253,6 +255,12 @@ export async function updateOrder(id: number, year: number, updatedOrder: NewOrd
     await knex("orders")
         .where({id, year})
         .update(updatingOrder);
+}
+
+export async function updateOrderCancelStatus(id: number, year: number, cancelled: boolean) {
+    await knex("orders")
+        .where({id, year})
+        .update({cancelled});
 }
 
 export async function clearOrder(id: number, year: number, clearedById: number, partially: boolean = false) {

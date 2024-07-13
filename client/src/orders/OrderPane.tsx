@@ -11,7 +11,8 @@ import {
     JournalBookmarkFill,
     PencilSquare,
     Person,
-    Sticky
+    Sticky,
+    XOctagon
 } from "react-bootstrap-icons";
 import {useMediaQuery} from "react-responsive";
 import GlossyButton from "../buttons/GlossyButton";
@@ -43,6 +44,15 @@ function OrderPane(props: OrderPaneProps) {
     function afterEdit(updatedOrder: Order) {
         props.afterSubmitEdit(props.order.id, props.order.year, updatedOrder);
         setModifying(false);
+    }
+
+    function cancelOrder(cancelled: boolean) {
+        orderApis.cancelOrder(props.order, cancelled)
+            .then(order => {
+                props.afterSubmitEdit(order!.id, order!.year, order!);
+                setShowClearingModal(false);
+            })
+            .catch(err => console.error(err));
     }
 
     function clearOrder(partially: boolean = false) {
@@ -78,6 +88,7 @@ function OrderPane(props: OrderPaneProps) {
                         Ordine {props.order.name}
                         {props.order.partialClearingDate && " (evaso parzialmente)"}
                         {props.order.clearingDate && " (evaso)"}
+                        {props.order.cancelled && " (annullato)"}
                     </h3>
                 </Row>
 
@@ -207,6 +218,12 @@ function OrderPane(props: OrderPaneProps) {
                                 props.order.partiallyClearedBy && props.order.partialClearingDate &&
                                 <GlossyButton icon={ClipboardX} onClick={() => unclearOrder(true)} className="my-2">
                                     Annulla evasione parziale</GlossyButton>}
+                            {!props.order.clearedBy && !props.order.clearingDate && !props.order.cancelled &&
+                                <GlossyButton icon={XOctagon} onClick={() => cancelOrder(true)} className="my-2">
+                                    Annulla ordine</GlossyButton>}
+                            {!props.order.clearedBy && !props.order.clearingDate && props.order.cancelled &&
+                                <GlossyButton icon={Clipboard} onClick={() => cancelOrder(false)} className="my-2">
+                                    Non marcare l'ordine come annullato</GlossyButton>}
                         </Col>
                     </Row>
                 </Modal.Body>

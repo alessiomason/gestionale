@@ -10,7 +10,8 @@ import {
     getOrder,
     unclearOrder,
     updateOrder,
-    uploadedOrderFile
+    uploadedOrderFile,
+    updateOrderCancelStatus
 } from "./orderService";
 import {body, param, validationResult} from "express-validator";
 import {NewOrder} from "./order";
@@ -163,6 +164,38 @@ export function useOrdersAPIs(app: Express, isLoggedIn: RequestHandler, canManag
                 );
                 await updateOrder(oldOrderId, oldYear, updatedOrder);
                 res.status(200).end();
+            } catch (err: any) {
+                if (err instanceof BaseError) {
+                    res.status(err.statusCode).json(err);
+                } else {
+                    res.status(InternalServerError.code).json(new InternalServerError("Error while updating the order"));
+                }
+            }
+        }
+    )
+
+    // cancel or uncancel order
+    app.patch(`${baseURL}/:year/:id/cancel`,
+        isLoggedIn,
+        canManageOrders,
+        param("year").isInt(),
+        param("id").isInt(),
+        body("cancelled").isBoolean(),
+        async (req: Request, res: Response) => {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                console.log(errors)
+                res.status(ParameterError.code).json(new ParameterError("There was an error with the parameters!"))
+                return
+            }
+
+            const orderId = parseInt(req.params.id);
+            const year = parseInt(req.params.year);
+
+            try {
+                await updateOrderCancelStatus(orderId, year, req.body.cancelled)
+                const order = await getOrder(orderId, year);
+                res.status(200).json(order);
             } catch (err: any) {
                 if (err instanceof BaseError) {
                     res.status(err.statusCode).json(err);

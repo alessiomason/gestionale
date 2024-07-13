@@ -173,6 +173,8 @@ function OrdersTable(props: OrdersTableProps) {
                         }
                         if (order.clearedBy && order.clearingDate) {
                             className += " cleared";
+                        } else if (order.cancelled) {
+                            className += " cancelled";
                         } else if (order.partiallyClearedBy && order.partialClearingDate) {
                             className += " partially-cleared";
                         } else if (order.scheduledDeliveryDate && dayjs(order.scheduledDeliveryDate).isBefore(dayjs())) {

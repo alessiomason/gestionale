@@ -11,6 +11,7 @@ function rebuildOrder(order: Order) {
         order.job,
         order.supplier,
         order.description,
+        order.cancelled,
         order.by,
         order.uploadedFile,
         order.scheduledDeliveryDate,
@@ -104,6 +105,22 @@ async function updateOrder(id: number, year: number, order: Order) {
     } else await handleApiError(response);
 }
 
+async function cancelOrder(order: Order, cancelled: boolean) {
+    const response = await fetch(new URL(`orders/${order.year}/${order.id}/cancel`, apiUrl), {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({cancelled})
+    });
+    if (response.ok) {
+        const order = await response.json() as Order;
+        return rebuildOrder(order);
+    } else await handleApiError(response);
+}
+
 async function clearOrder(order: Order, partially: boolean = false) {
     const response = await fetch(new URL(`orders/${order.year}/${order.id}/clear`, apiUrl), {
         method: 'PATCH',
@@ -168,6 +185,7 @@ const orderApis = {
     getOrder,
     createOrder,
     updateOrder,
+    cancelOrder,
     clearOrder,
     unclearOrder,
     uploadedOrderFile,
