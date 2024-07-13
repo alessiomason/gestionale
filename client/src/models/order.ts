@@ -9,6 +9,7 @@ export class Order {
     job: Job
     supplier: string
     description: string
+    cancelled: boolean
     by: User
     uploadedFile: boolean
     scheduledDeliveryDate: string | undefined
@@ -24,6 +25,7 @@ export class Order {
         job: Job,
         supplier: string,
         description: string,
+        cancelled: boolean = false,
         by: User,
         uploadedFile: boolean,
         scheduledDeliveryDate?: string,
@@ -39,6 +41,7 @@ export class Order {
         this.job = job;
         this.supplier = supplier;
         this.description = description;
+        this.cancelled = cancelled;
         this.by = by;
         this.uploadedFile = uploadedFile;
         this.scheduledDeliveryDate = scheduledDeliveryDate;

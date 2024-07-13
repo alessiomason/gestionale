@@ -73,6 +73,7 @@ function EditOrderPane(props: EditOrderPaneProps) {
             job,
             supplier,
             description,
+            props.order?.cancelled ?? false,
             props.order?.by ?? props.user,
             props.order?.uploadedFile ?? false,
             scheduledDeliveryDate,

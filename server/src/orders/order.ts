@@ -9,6 +9,7 @@ export class Order {
     job: Job
     supplier: string
     description: string
+    cancelled: boolean
     by: User
     uploadedFile: boolean
     notifiedExpiry: boolean     // if expired, an email has been sent to notify of the expiry
@@ -25,6 +26,7 @@ export class Order {
         job: Job,
         supplier: string,
         description: string,
+        cancelled: boolean,
         by: User,
         uploadedFile: boolean,
         notifiedExpiry: boolean = false,
@@ -41,6 +43,7 @@ export class Order {
         this.job = job;
         this.supplier = supplier;
         this.description = description;
+        this.cancelled = cancelled;
         this.by = by;
         this.uploadedFile = uploadedFile;
         this.notifiedExpiry = notifiedExpiry;
