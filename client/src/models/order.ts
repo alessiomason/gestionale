@@ -25,7 +25,7 @@ export class Order {
         job: Job,
         supplier: string,
         description: string,
-        cancelled: boolean = false,
+        cancelled: boolean,
         by: User,
         uploadedFile: boolean,
         scheduledDeliveryDate?: string,
