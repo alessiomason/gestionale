@@ -2,20 +2,22 @@ import React, {useState} from "react";
 import {useSearchParams} from "react-router-dom";
 import {Col, Row} from "react-bootstrap";
 import {CalendarMinus, CalendarPlus} from "react-bootstrap-icons";
-import HolidaysTable from "./HolidaysTable";
+import HolidaysTable from "../holiday-plan/HolidaysTable";
 import {MonthSelector, SelectMonthButtons} from "../workedHours/MonthSelectingComponents";
-import SavingStatusMessage, {SavingStatus} from "../components/SavingStatusMessage";
+import SavingStatusMessage, {SavingStatus} from "./SavingStatusMessage";
 import GlossyButton from "../buttons/GlossyButton";
 import {User} from "../models/user";
 import {upperCaseFirst} from "../functions";
 import dayjs from "dayjs";
-import "./HolidaysPage.css";
+import "./DoubleMonthViewPage.css";
+import PlanningTable from "../planning/PlanningTable";
 
-interface HolidaysPageProps {
+interface DoubleMonthViewPageProps {
     readonly user: User
+    readonly page: "planning" | "holidayPlan"
 }
 
-function HolidaysPage(props: HolidaysPageProps) {
+function DoubleMonthViewPage(props: DoubleMonthViewPageProps) {
     const [searchParams] = useSearchParams();
     const searchMonth = searchParams.get("m");
     const searchYear = searchParams.get("y");
@@ -44,7 +46,7 @@ function HolidaysPage(props: HolidaysPageProps) {
         <>
             <Row>
                 <Col>
-                    <h1 className="page-title">Piano ferie</h1>
+                    <h1 className="page-title">{props.page === "planning" ? "Pianificazione" : "Piano ferie"}</h1>
                 </Col>
                 <Col className="d-flex justify-content-end me-3">
                     <GlossyButton icon={showTwoMonths ? CalendarMinus : CalendarPlus}
@@ -77,12 +79,18 @@ function HolidaysPage(props: HolidaysPageProps) {
                 <Row>
                     <Col sm={showTwoMonths ? 6 : 12}
                          className={`holidays-page-first-column ${showTwoMonths ? "shrunk-table-column" : ""}`}>
-                        <HolidaysTable month={month} year={year} user={props.user} setSavingStatus={setSavingStatus}/>
+                        {props.page === "planning" ? <PlanningTable month={month} year={year} user={props.user}
+                                                                    setSavingStatus={setSavingStatus}/> :
+                            <HolidaysTable month={month} year={year} user={props.user}
+                                           setSavingStatus={setSavingStatus}/>}
                     </Col>
                     {showTwoMonths && <Col sm={showTwoMonths ? 6 : 0}
-                          className={`shrunk-table-column ${showTwoMonths ? "holidays-page-second-column" : ""}`}>
-                        <HolidaysTable month={followingMonth} year={yearOfFollowingMonth} user={props.user}
-                                       setSavingStatus={setSavingStatus}/>
+                                           className={`shrunk-table-column ${showTwoMonths ? "holidays-page-second-column" : ""}`}>
+                        {props.page === "planning" ?
+                            <PlanningTable month={followingMonth} year={yearOfFollowingMonth} user={props.user}
+                                           setSavingStatus={setSavingStatus}/> :
+                            <HolidaysTable month={followingMonth} year={yearOfFollowingMonth} user={props.user}
+                                           setSavingStatus={setSavingStatus}/>}
                     </Col>}
                 </Row>
             </Row>
@@ -90,4 +98,4 @@ function HolidaysPage(props: HolidaysPageProps) {
     );
 }
 
-export default HolidaysPage;
+export default DoubleMonthViewPage;

@@ -3,6 +3,7 @@ import {Col, Navbar, Offcanvas, Row} from 'react-bootstrap';
 import {Link, useNavigate} from 'react-router-dom';
 import {useMediaQuery} from "react-responsive";
 import {
+    BarChartSteps,
     CalendarEvent,
     CalendarRange,
     CalendarWeek,
@@ -86,6 +87,12 @@ function MyNavbar(props: NavbarProps) {
                             </Row>}
                             {isTablet && <Row>
                                 <Col className="my-2 d-flex align-items-center">
+                                    <BarChartSteps/>
+                                    <Link to="/planning" onClick={() => setShowOffcanvas(false)}>Pianificazione</Link>
+                                </Col>
+                            </Row>}
+                            {isTablet && <Row>
+                                <Col className="my-2 d-flex align-items-center">
                                     <Sun/>
                                     <Link to="/holidayPlan" onClick={() => setShowOffcanvas(false)}>Piano ferie</Link>
                                 </Col>
@@ -132,6 +139,10 @@ function MyNavbar(props: NavbarProps) {
                     <LightGlossyButton singleLine icon={JournalBookmarkFill} className="me-3"
                                        onClick={() => navigate("/jobs")}>
                         Commesse
+                    </LightGlossyButton>
+                    <LightGlossyButton singleLine icon={BarChartSteps} className="me-3"
+                                       onClick={() => navigate("/planning")}>
+                        Pianificazione
                     </LightGlossyButton>
                     <LightGlossyButton singleLine icon={Sun}
                                        secondaryIcon={holidayNotifications === 0 ? undefined : numberToIcon(holidayNotifications)}
