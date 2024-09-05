@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Col, Modal, Row, Table} from "react-bootstrap";
-import {CalendarEvent, Floppy, JournalBookmarkFill, Person} from "react-bootstrap-icons";
+import {CalendarEvent, Floppy, JournalBookmarkFill, Person, Trash} from "react-bootstrap-icons";
 import GlossyButton from "../buttons/GlossyButton";
 import WorkedHoursNewJobModal from "../workedHours/WorkedHoursNewJobModal";
 import {Role, Type, User} from "../models/user";
@@ -96,6 +96,34 @@ function PlanningTable(props: PlanningTableProps) {
             });
     }
 
+    function handleModalDelete() {
+        if (!modalUser || !modalWorkday || !modalJob) {
+            closePlannedDayModal();
+            return
+        }
+
+        props.setSavingStatus("saved");
+        const deletingPlannedDay = new PlannedDay(modalUser, modalWorkday.format("YYYY-MM-DD"), modalJob);
+
+        plannedDayApis.deletePlannedDay(deletingPlannedDay)
+            .then(_ => {
+                setPlannedDays(plannedDays => {
+                    const deletingPlannedDayIndex = plannedDays.findIndex(plannedDay =>
+                        plannedDay.user.id === deletingPlannedDay.user.id && plannedDay.date === deletingPlannedDay.date);
+
+                    plannedDays.splice(deletingPlannedDayIndex, 1);
+                    return plannedDays;
+                })
+
+                props.setSavingStatus("saved");
+                closePlannedDayModal();
+            })
+            .catch(err => {
+                props.setSavingStatus("");
+                console.error(err);
+            });
+    }
+
     return (
         <Row className="mt-2">
             <Modal size="lg" show={showPlannedDayModal} onHide={closePlannedDayModal}>
@@ -134,7 +162,10 @@ function PlanningTable(props: PlanningTableProps) {
 
                     <Row>
                         <Col className="d-flex justify-content-center mt-4">
-                            <GlossyButton icon={Floppy} onClick={handleModalSubmit}>Conferma</GlossyButton>
+                            <GlossyButton icon={Trash} className="me-4"
+                                          onClick={handleModalDelete}>Elimina</GlossyButton>
+                            <GlossyButton icon={Floppy} className="ms-4"
+                                          onClick={handleModalSubmit}>Conferma</GlossyButton>
                         </Col>
                     </Row>
                 </Modal.Body>

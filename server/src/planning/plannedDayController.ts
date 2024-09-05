@@ -61,8 +61,8 @@ export function usePlannedDaysAPIs(app: Express, isLoggedIn: RequestHandler) {
     // delete a planned day
     app.delete(`${baseURL}/:userId/:date`,
         isLoggedIn,
-        body("userId").isInt(),
-        body("date").isDate(),
+        param("userId").isInt(),
+        param("date").isDate(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
