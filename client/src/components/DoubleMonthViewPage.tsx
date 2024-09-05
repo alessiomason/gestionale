@@ -49,7 +49,7 @@ function DoubleMonthViewPage(props: DoubleMonthViewPageProps) {
                     <h1 className="page-title">{props.page === "planning" ? "Pianificazione" : "Piano ferie"}</h1>
                 </Col>
                 <Col className="d-flex justify-content-end me-3">
-                    <GlossyButton icon={showTwoMonths ? CalendarMinus : CalendarPlus}
+                    <GlossyButton icon={showTwoMonths ? CalendarPlus : CalendarMinus}
                                   onClick={() => setShowTwoMonths(prevState => !prevState)}>
                         {showTwoMonths ? "Visualizzazione mensile" : "Visualizzazione bimestrale"}</GlossyButton>
                 </Col>
