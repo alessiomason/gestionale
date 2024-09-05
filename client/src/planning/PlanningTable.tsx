@@ -1,10 +1,16 @@
 import React, {useEffect, useState} from "react";
-import {Modal, Row, Table} from "react-bootstrap";
+import {Col, Modal, Row, Table} from "react-bootstrap";
+import {CalendarEvent, Floppy, JournalBookmarkFill, Person} from "react-bootstrap-icons";
+import GlossyButton from "../buttons/GlossyButton";
+import WorkedHoursNewJobModal from "../workedHours/WorkedHoursNewJobModal";
 import {Role, Type, User} from "../models/user";
-import workdayClassName from "../workedHours/workedHoursFunctions";
+import {Job} from "../models/job";
+import {PlannedDay} from "../models/plannedDay";
 import userApis from "../api/userApis";
+import plannedDayApis from "../api/plannedDayApis";
+import workdayClassName from "../workedHours/workedHoursFunctions";
 import {compareUsers} from "../functions";
-import dayjs from "dayjs";
+import dayjs, {Dayjs} from "dayjs";
 import "../components/DoubleMonthViewTable.css";
 
 interface PlanningTableProps {
@@ -22,7 +28,12 @@ function PlanningTable(props: PlanningTableProps) {
     }
 
     const [users, setUsers] = useState<User[]>([]);
-    const [showModal, setShowModal] = useState(false);
+    const [plannedDays, setPlannedDays] = useState<PlannedDay[]>([]);
+    const [showPlannedDayModal, setShowPlannedDayModal] = useState(false);
+    const [showNewJobModal, setShowNewJobModal] = useState(false);
+    const [modalUser, setModalUser] = useState<User | undefined>(undefined);
+    const [modalWorkday, setModalWorkday] = useState<Dayjs | undefined>(undefined);
+    const [modalJob, setModalJob] = useState<Job | undefined>(undefined);
 
     useEffect(() => {
         userApis.getAllUsers()
@@ -30,18 +41,102 @@ function PlanningTable(props: PlanningTableProps) {
             .catch(err => console.error(err));
     }, []);
 
-    function closeModal() {
+    useEffect(() => {
+        plannedDayApis.getAllPlannedDays(`${props.year}-${props.month}`)
+            .then(plannedDays => setPlannedDays(plannedDays!))
+            .catch(err => console.error(err));
+    }, [props.month, props.year]);
 
+    function handleDayClick(user: User, workday: Dayjs, job: Job | undefined) {
+        if (user.id === props.user.id || props.user.role !== Role.user) {
+            setModalUser(user);
+            setModalWorkday(workday);
+            setModalJob(job);
+            setShowPlannedDayModal(true);
+        }
+    }
+
+    function closePlannedDayModal() {
+        setShowPlannedDayModal(false);
+        setModalUser(undefined);
+        setModalWorkday(undefined);
+        setModalJob(undefined);
+    }
+
+    function handleModalSubmit() {
+        if (!modalUser || !modalWorkday || !modalJob) {
+            closePlannedDayModal();
+            return
+        }
+
+        props.setSavingStatus("saving");
+        const newPlannedDay = new PlannedDay(modalUser, modalWorkday?.format("YYYY-MM-DD"), modalJob);
+
+        plannedDayApis.createOrUpdatePlannedDay(newPlannedDay)
+            .then(_ => {
+                setPlannedDays(plannedDays => {
+                    const oldPlannedDayIndex = plannedDays.findIndex(plannedDay =>
+                        plannedDay.user.id === newPlannedDay.user.id && plannedDay.date === newPlannedDay.date);
+
+                    if (oldPlannedDayIndex === -1) {
+                        plannedDays.push(newPlannedDay);
+                    } else {    // update
+                        plannedDays[oldPlannedDayIndex] = newPlannedDay;
+                    }
+
+                    return plannedDays;
+                })
+
+                props.setSavingStatus("saved");
+                closePlannedDayModal();
+            })
+            .catch(err => {
+                props.setSavingStatus("");
+                console.error(err);
+            });
     }
 
     return (
         <Row className="mt-2">
-            <Modal show={showModal} onHide={closeModal}>
+            <Modal size="lg" show={showPlannedDayModal} onHide={closePlannedDayModal}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Approva ore ferie</Modal.Title>
+                    <Modal.Title>Pianifica giornata lavorativa</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                    <Row className="d-flex align-items-center">
+                        <Col sm={4}
+                             className="glossy-background smaller d-flex justify-content-center align-items-center">
+                            <Person className="me-1"/> Dipendente
+                        </Col>
+                        <Col>{modalUser?.name} {modalUser?.surname}</Col>
+                    </Row>
+                    <Row className="d-flex align-items-center">
+                        <Col sm={4}
+                             className="glossy-background smaller d-flex justify-content-center align-items-center">
+                            <CalendarEvent className="me-2"/> Giorno
+                        </Col>
+                        <Col>{modalWorkday?.format("DD/MM/YYYY")}</Col>
+                    </Row>
 
+                    <Row className="mt-3">
+                        <Col sm={4}>
+                            <GlossyButton icon={JournalBookmarkFill} onClick={() => setShowNewJobModal(true)}>
+                                Seleziona commessa</GlossyButton>
+                            <WorkedHoursNewJobModal show={showNewJobModal} setShow={setShowNewJobModal}
+                                                    selectJob={job => setModalJob(job)}/>
+                        </Col>
+                        <Col className="d-flex align-items-center">
+                            {modalJob ? <p className="m-0"><strong>Commessa selezionata: </strong>
+                                    <i>{modalJob.client}</i> - {modalJob.subject}</p> :
+                                <p className="m-0">Nessuna commessa selezionata</p>}
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col className="d-flex justify-content-center mt-4">
+                            <GlossyButton icon={Floppy} onClick={handleModalSubmit}>Conferma</GlossyButton>
+                        </Col>
+                    </Row>
                 </Modal.Body>
             </Modal>
 
@@ -78,10 +173,14 @@ function PlanningTable(props: PlanningTableProps) {
                                             <tr key={user.id}>
                                                 <td className={`${type}-user unhoverable`}>{user.surname} {user.name}</td>
                                                 {workdays.map(workday => {
-                                                    //if (user.id === props.user.id) { }
+                                                    const plannedDay = plannedDays.find(plannedDay =>
+                                                        plannedDay.user.id === user.id && plannedDay.date === workday.format("YYYY-MM-DD"));
 
                                                     return (
-                                                        <td key={workday.format()}>
+                                                        <td key={`${user.id}-${workday.format()}`}
+                                                            className={workdayClassName(workday, true)}
+                                                            onClick={() => handleDayClick(user, workday, plannedDay?.job)}>
+                                                            {plannedDay?.job.id ?? ""}
                                                         </td>
                                                     );
                                                 })}
