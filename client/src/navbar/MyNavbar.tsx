@@ -97,8 +97,8 @@ function MyNavbar(props: NavbarProps) {
                             </LightGlossyButton>}
                     </>}
 
-                    <Hamburger type="hamburger--minus" isActive={showOffcanvas}
-                               onClick={() => setShowOffcanvas(true)}/>
+                    {isAdministrator && <Hamburger type="hamburger--minus" isActive={showOffcanvas}
+                                onClick={() => setShowOffcanvas(true)}/>}
                 </Col>
 
                 <Offcanvas placement="end" show={showOffcanvas} onHide={() => setShowOffcanvas(false)}>
@@ -158,7 +158,7 @@ function MyNavbar(props: NavbarProps) {
                                 <Link to="/workedHours" onClick={() => setShowOffcanvas(false)}>Ore</Link>
                             </Col>
                         </Row>}
-                        {isDesktop && <Row>
+                        {isDesktop && isAdministrator && <Row>
                             <Col className="my-2 d-flex align-items-center">
                                 <PersonVcard/>
                                 <Link to="/users" onClick={() => setShowOffcanvas(false)}>
