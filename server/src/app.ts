@@ -28,6 +28,7 @@ import {Role, User} from "./users/user";
 import {useCompanyHoursAPIs} from "./companyHours/companyHoursController";
 import {useDatabaseAPIs} from "./database/databaseController";
 import {useOrdersAPIs} from "./orders/orderController";
+import {usePlannedDaysAPIs} from "./planning/plannedDayController";
 
 
 // setup passport
@@ -160,6 +161,7 @@ useWorkItemsAPIs(app, isLoggedIn, isAdministrator, isDeveloper);
 useDailyExpensesAPIs(app, isLoggedIn, isAdministrator, isDeveloper);
 useCompanyHoursAPIs(app, isLoggedIn, isAdministrator);
 useOrdersAPIs(app, isLoggedIn, canManageOrders);
+usePlannedDaysAPIs(app, isLoggedIn);
 
 if (process.env.NODE_ENV === "production") {
     const path = require("path");

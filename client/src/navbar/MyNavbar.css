@@ -31,7 +31,7 @@
     cursor: pointer;
 }
 
-.offcanvas a {
+.offcanvas a:not(.offcanvas-footer a) {
     color: #393a39;
     font-size: x-large;
     text-decoration: none;
@@ -42,4 +42,21 @@
     color: #393a39;
     font-size: xx-large;
     margin-right: 16px;
+}
+
+.offcanvas-footer {
+    position: absolute;
+    left: 0;
+    bottom: 10px;
+}
+
+.offcanvas-footer p,
+.offcanvas-footer a {
+    color: #808080;
+    font-size: small;
+    text-decoration: none;
+}
+
+.offcanvas-footer:hover {
+    color: #393a39;
 }

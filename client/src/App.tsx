@@ -21,7 +21,7 @@ import MonthlyWorkedHoursPage from "./workedHours/monthlyWorkedHours/MonthlyWork
 import CompanyWorkedHoursPage from "./workedHours/companyWorkedHours/CompanyWorkedHoursPage";
 import OrdersPage from "./orders/OrdersPage";
 import OrderPDFViewer from "./orders/order-pdf-viewer/OrderPDFViewer";
-import HolidaysPage from "./holiday-plan/HolidaysPage";
+import DoubleMonthViewPage from "./components/DoubleMonthViewPage";
 import {Role, User} from "./models/user";
 import {Credentials} from "./models/credentials";
 import loginApis from "./api/loginApis";
@@ -154,7 +154,8 @@ function App2() {
                 <Route path="jobs" element={<JobsPage isAdministrator={isAdministrator}/>}/>
                 <Route path="jobs/:jobId" element={isAdministrator ? <JobPage/> : <Navigate to="/"/>}/>
                 <Route path="tickets" element={canManageTickets ? <TicketsPage/> : <Navigate to="/"/>}/>
-                <Route path="holidayPlan" element={<HolidaysPage user={user!}/>}/>
+                <Route path="planning" element={<DoubleMonthViewPage page="planning" user={user!}/>}/>
+                <Route path="holidayPlan" element={<DoubleMonthViewPage page="holidayPlan" user={user!}/>}/>
                 <Route path="workedHours" element={<WorkedHoursPage user={user!}/>}/>
                 <Route path="editWorkedHours"
                        element={isMobile ? <WorkedHoursEditMobile user={user!}/> : <Navigate to="/workedHours"/>}/>
