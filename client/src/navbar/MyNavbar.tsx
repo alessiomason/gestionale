@@ -23,6 +23,8 @@ import dayjs from "dayjs";
 import logo from '../images/logos/logo.png';
 import './MyNavbar.css';
 
+const appVersion = require("../../package.json").version;
+
 interface NavbarProps {
     readonly user: User
 }
@@ -98,7 +100,7 @@ function MyNavbar(props: NavbarProps) {
                     </>}
 
                     {isAdministrator && <Hamburger type="hamburger--minus" isActive={showOffcanvas}
-                                onClick={() => setShowOffcanvas(true)}/>}
+                                                   onClick={() => setShowOffcanvas(true)}/>}
                 </Col>
 
                 <Offcanvas placement="end" show={showOffcanvas} onHide={() => setShowOffcanvas(false)}>
@@ -174,7 +176,7 @@ function MyNavbar(props: NavbarProps) {
                         </Row>
 
                         <div className="offcanvas-footer w-100 text-center">
-                            <p>Gestionale TLF ({process.env.REACT_APP_VERSION})</p>
+                            <p>Gestionale TLF ({appVersion})</p>
                             <p><a href="https://www.alessiomason.it">© {dayjs().format("YYYY")} Alessio Mason</a></p>
                         </div>
                     </Offcanvas.Body>
