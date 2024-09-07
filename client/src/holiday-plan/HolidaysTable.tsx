@@ -10,7 +10,7 @@ import dailyExpenseApis from "../api/dailyExpensesApis";
 import userApis from "../api/userApis";
 import {compareUsers} from "../functions";
 import dayjs from "dayjs";
-import "./HolidayTable.css";
+import "../components/DoubleMonthViewTable.css";
 
 interface HolidaysTableProps {
     readonly user: User
@@ -163,7 +163,7 @@ function HolidaysTable(props: HolidaysTableProps) {
                 </Modal.Body>
             </Modal>
 
-            <Table responsive className="worked-hours-table company-worked-hours-table holiday-table">
+            <Table responsive className="worked-hours-table company-worked-hours-table double-month-view-table">
                 <thead>
                 <tr>
                     <th className="left-aligned">Dipendente</th>
