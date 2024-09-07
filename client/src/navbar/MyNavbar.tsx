@@ -99,8 +99,9 @@ function MyNavbar(props: NavbarProps) {
                             </LightGlossyButton>}
                     </>}
 
-                    {isAdministrator && <Hamburger type="hamburger--minus" isActive={showOffcanvas}
-                                                   onClick={() => setShowOffcanvas(true)}/>}
+                    {(isMobile || isTablet || isAdministrator) &&
+                        <Hamburger type="hamburger--minus" isActive={showOffcanvas}
+                                   onClick={() => setShowOffcanvas(true)}/>}
                 </Col>
 
                 <Offcanvas placement="end" show={showOffcanvas} onHide={() => setShowOffcanvas(false)}>
