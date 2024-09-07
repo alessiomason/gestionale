@@ -70,6 +70,7 @@ function HolidaysTable(props: HolidaysTableProps) {
     }
 
     function setDailyExpenseStatus(newHolidayApproved: boolean | null) {
+        props.setSavingStatus("saving");
         editingDailyExpense!.holidayApproved = newHolidayApproved;
         dailyExpenseApis.createOrUpdateDailyExpense(editingDailyExpense!)
             .then(() => {
@@ -78,9 +79,13 @@ function HolidaysTable(props: HolidaysTableProps) {
                 const newDailyExpenses = [...dailyExpenses];
                 newDailyExpenses[index] = editingDailyExpense!;
                 setDailyExpenses(newDailyExpenses);
+                props.setSavingStatus("saved");
                 closeModal();
             })
-            .catch(err => console.error(err));
+            .catch(err => {
+                props.setSavingStatus("");
+                console.error(err);
+            });
     }
 
     function createOrUpdateLocalDailyExpense(newDailyExpense: DailyExpense) {
@@ -209,8 +214,8 @@ function HolidaysTable(props: HolidaysTableProps) {
                                                             className = "holiday-hours-rejected";
                                                         }
                                                     }
-                                                    if (!dailyExpense || dailyExpense.holidayHours === 0 ||
-                                                        props.user.role === Role.user && user.id !== props.user.id) {
+                                                    if (user.id !== props.user.id &&
+                                                        (!dailyExpense || dailyExpense.holidayHours === 0 || props.user.role === Role.user)) {
                                                         className += " unhoverable";
                                                     }
                                                     className += ` ${type}-user`;
