@@ -19,6 +19,7 @@ import Hamburger from "../components/Hamburger";
 import {Role, User} from "../models/user";
 import dailyExpensesApis from "../api/dailyExpensesApis";
 import {numberToIcon} from "../functions";
+import dayjs from "dayjs";
 import logo from '../images/logos/logo.png';
 import './MyNavbar.css';
 
@@ -171,6 +172,11 @@ function MyNavbar(props: NavbarProps) {
                                     {props.user.name} {props.user.surname}</Link>
                             </Col>
                         </Row>
+
+                        <div className="offcanvas-footer w-100 text-center">
+                            <p>Gestionale TLF ({process.env.REACT_APP_VERSION})</p>
+                            <p><a href="https://www.alessiomason.it">© {dayjs().format("YYYY")} Alessio Mason</a></p>
+                        </div>
                     </Offcanvas.Body>
                 </Offcanvas>
             </Row>
