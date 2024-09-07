@@ -58,7 +58,7 @@ function HolidaysTable(props: HolidaysTableProps) {
     }, [props.month, props.year]);
 
     function openModal(dailyExpense?: DailyExpense) {
-        if (dailyExpense && dailyExpense.holidayHours !== 0) {
+        if (dailyExpense && dailyExpense.holidayHours !== 0 && props.user.role !== Role.user) {
             setEditingDailyExpense(dailyExpense);
             setShowModal(true);
         }
@@ -208,8 +208,9 @@ function HolidaysTable(props: HolidaysTableProps) {
                                                         } else {
                                                             className = "holiday-hours-rejected";
                                                         }
-                                                    } else if ((!dailyExpense || dailyExpense?.holidayHours === 0 || props.user.role === Role.user)
-                                                        && user.id !== props.user.id) {
+                                                    }
+                                                    if (!dailyExpense || dailyExpense.holidayHours === 0 ||
+                                                        props.user.role === Role.user && user.id !== props.user.id) {
                                                         className += " unhoverable";
                                                     }
                                                     className += ` ${type}-user`;
