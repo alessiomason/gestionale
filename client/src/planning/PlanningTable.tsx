@@ -217,7 +217,7 @@ function PlanningTable(props: PlanningTableProps) {
 
                                                     return (
                                                         <td key={`${user.id}-${workday.format()}`}
-                                                            className={workdayClassName(workday, true)}
+                                                            className={`${workdayClassName(workday, true)} ${type}-user`}
                                                             onClick={() => handleDayClick(user, workday, plannedDay?.job)}>
                                                             {plannedDay?.job.client.substring(0, 2).toUpperCase() ?? ""}
                                                         </td>
