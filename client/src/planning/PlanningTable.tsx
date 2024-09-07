@@ -132,30 +132,38 @@ function PlanningTable(props: PlanningTableProps) {
                 </Modal.Header>
                 <Modal.Body>
                     <Row className="d-flex align-items-center">
-                        <Col sm={4}
-                             className="glossy-background smaller d-flex justify-content-center align-items-center">
-                            <Person className="me-1"/> Dipendente
+                        <Col sm={4}>
+                            <div
+                                className="glossy-background smaller d-flex justify-content-center align-items-center mx-0">
+                                <Person className="me-1"/> Dipendente
+                            </div>
                         </Col>
                         <Col>{modalUser?.name} {modalUser?.surname}</Col>
                     </Row>
                     <Row className="d-flex align-items-center">
-                        <Col sm={4}
-                             className="glossy-background smaller d-flex justify-content-center align-items-center">
-                            <CalendarEvent className="me-2"/> Giorno
+                        <Col sm={4}>
+                            <div
+                                className="glossy-background smaller d-flex justify-content-center align-items-center mx-0">
+                                <CalendarEvent className="me-2"/> Giorno
+                            </div>
                         </Col>
                         <Col>{modalWorkday?.format("DD/MM/YYYY")}</Col>
                     </Row>
 
                     <Row className="mt-3">
-                        <Col sm={4}>
+                        <Col sm={4} className="d-flex align-items-center">
                             <GlossyButton icon={JournalBookmarkFill} onClick={() => setShowNewJobModal(true)}>
                                 Seleziona commessa</GlossyButton>
                             <WorkedHoursNewJobModal show={showNewJobModal} setShow={setShowNewJobModal}
                                                     selectJob={job => setModalJob(job)}/>
                         </Col>
-                        <Col className="d-flex align-items-center">
-                            {modalJob ? <p className="m-0"><strong>Commessa selezionata: </strong>
-                                    <i>{modalJob.client}</i> - {modalJob.subject}</p> :
+                        <Col className={modalJob ? "" : "d-flex align-items-center"}>
+                            {modalJob ? <>
+                                    <p className="m-0"><strong>{modalJob.id}</strong></p>
+                                    <p className="m-0"><i>{modalJob.client}</i></p>
+                                    {modalJob.finalClient && <p className="m-0"><i>{modalJob.finalClient}</i></p>}
+                                    <p className="m-0">{modalJob.subject}</p>
+                                </> :
                                 <p className="m-0">Nessuna commessa selezionata</p>}
                         </Col>
                     </Row>
@@ -211,7 +219,7 @@ function PlanningTable(props: PlanningTableProps) {
                                                         <td key={`${user.id}-${workday.format()}`}
                                                             className={workdayClassName(workday, true)}
                                                             onClick={() => handleDayClick(user, workday, plannedDay?.job)}>
-                                                            {plannedDay?.job.id ?? ""}
+                                                            {plannedDay?.job.client.substring(0, 2).toUpperCase() ?? ""}
                                                         </td>
                                                     );
                                                 })}
