@@ -222,7 +222,8 @@ function HolidaysTable(props: HolidaysTableProps) {
 
                                                     if (user.id === props.user.id &&
                                                         (!dailyExpense || dailyExpense.holidayHours === 0) ||
-                                                        props.user.role === Role.user && dailyExpense && dailyExpense.holidayHours !== 0
+                                                        props.user.role === Role.user && user.id === props.user.id &&
+                                                        dailyExpense && dailyExpense.holidayHours !== 0
                                                     ) {
                                                         return (
                                                             <WorkedHoursDailyTableCell key={workday.format()}
