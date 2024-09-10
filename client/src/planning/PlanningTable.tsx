@@ -1,13 +1,15 @@
 import React, {useEffect, useState} from "react";
 import {Col, Modal, Row, Table} from "react-bootstrap";
-import {CalendarEvent, Floppy, JournalBookmarkFill, Person, Trash} from "react-bootstrap-icons";
+import {CalendarEvent, Floppy, JournalBookmarkFill, Person, Sun, Trash} from "react-bootstrap-icons";
 import GlossyButton from "../buttons/GlossyButton";
 import WorkedHoursNewJobModal from "../workedHours/WorkedHoursNewJobModal";
 import {Role, Type, User} from "../models/user";
 import {Job} from "../models/job";
 import {PlannedDay} from "../models/plannedDay";
+import {DailyExpense} from "../models/dailyExpense";
 import userApis from "../api/userApis";
 import plannedDayApis from "../api/plannedDayApis";
+import dailyExpenseApis from "../api/dailyExpensesApis";
 import workdayClassName from "../workedHours/workedHoursFunctions";
 import {compareUsers} from "../functions";
 import dayjs, {Dayjs} from "dayjs";
@@ -29,6 +31,7 @@ function PlanningTable(props: PlanningTableProps) {
 
     const [users, setUsers] = useState<User[]>([]);
     const [plannedDays, setPlannedDays] = useState<PlannedDay[]>([]);
+    const [dailyExpenses, setDailyExpenses] = useState<DailyExpense[]>([]);
     const [showPlannedDayModal, setShowPlannedDayModal] = useState(false);
     const [showNewJobModal, setShowNewJobModal] = useState(false);
     const [modalUser, setModalUser] = useState<User | undefined>(undefined);
@@ -44,6 +47,10 @@ function PlanningTable(props: PlanningTableProps) {
     useEffect(() => {
         plannedDayApis.getAllPlannedDays(`${props.year}-${props.month}`)
             .then(plannedDays => setPlannedDays(plannedDays!))
+            .catch(err => console.error(err));
+
+        dailyExpenseApis.getAllDailyExpenses(`${props.year}-${props.month}`)
+            .then(dailyExpenses => setDailyExpenses(dailyExpenses!))
             .catch(err => console.error(err));
     }, [props.month, props.year]);
 
@@ -214,9 +221,22 @@ function PlanningTable(props: PlanningTableProps) {
                                                 {workdays.map(workday => {
                                                     const plannedDay = plannedDays.find(plannedDay =>
                                                         plannedDay.user.id === user.id && plannedDay.date === workday.format("YYYY-MM-DD"));
+                                                    const dailyExpense = dailyExpenses.find(dailyExpense =>
+                                                        dailyExpense.userId === user.id && dailyExpense.date === workday.format("YYYY-MM-DD"));
+
+                                                    // cannot plan a job if holiday request approved or pending
+                                                    if (dailyExpense && dailyExpense.holidayHours !== 0 &&
+                                                        (dailyExpense.holidayApproved || dailyExpense?.holidayApproved === null)) {
+                                                        return (
+                                                            <td key={`${user.id}-${workday.format()}`}
+                                                                className={`${workdayClassName(workday, false)} ${type}-user`}>
+                                                                <Sun title="Ferie"/></td>
+                                                        );
+                                                    }
 
                                                     return (
                                                         <td key={`${user.id}-${workday.format()}`}
+                                                            title={plannedDay ? `${plannedDay.job.id}\n${plannedDay.job.client}\n${plannedDay.job.subject}` : ""}
                                                             className={`${workdayClassName(workday, props.user.role !== Role.user || props.user.id == user.id)} ${type}-user`}
                                                             onClick={() => handleDayClick(user, workday, plannedDay?.job)}>
                                                             {plannedDay?.job.client.substring(0, 2).toUpperCase() ?? ""}
