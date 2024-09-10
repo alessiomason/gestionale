@@ -38,7 +38,7 @@ export async function exportCompanyWorkedHoursExcel(
     const firstDayOfMonth = `${year}-${month}-01`;
     const hoursTitle = `Ore ${dayjs(firstDayOfMonth).format("MMMM YYYY")}`;
     worksheet.addRow([
-        "Dipendente",
+        "Collaboratore",
         hoursTitle,
         ...workdays.map(workday => workday.format("dd D")),
         "Totale"

@@ -44,7 +44,7 @@ function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
                 <Table responsive className="worked-hours-table company-worked-hours-table">
                     <thead>
                     <tr>
-                        <th className="left-aligned">Dipendente</th>
+                        <th className="left-aligned">Collaboratore</th>
                         {workdays.map(workday => {
                             return (
                                 <th key={workday.format()} className={workdayClassName(workday, false)}>

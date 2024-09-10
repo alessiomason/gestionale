@@ -142,7 +142,7 @@ function PlanningTable(props: PlanningTableProps) {
                         <Col sm={4}>
                             <div
                                 className="glossy-background smaller d-flex justify-content-center align-items-center mx-0">
-                                <Person className="me-1"/> Dipendente
+                                <Person className="me-1"/> Collaboratore
                             </div>
                         </Col>
                         <Col>{modalUser?.name} {modalUser?.surname}</Col>
@@ -189,7 +189,7 @@ function PlanningTable(props: PlanningTableProps) {
             <Table responsive className="worked-hours-table company-worked-hours-table double-month-view-table">
                 <thead>
                 <tr>
-                    <th className="left-aligned">Dipendente</th>
+                    <th className="left-aligned">Collaboratore</th>
                     {workdays.map(workday => {
                         return (
                             <th key={workday.format()} className={workdayClassName(workday, false)}>
