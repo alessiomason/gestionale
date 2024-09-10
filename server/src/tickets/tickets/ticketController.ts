@@ -172,7 +172,10 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler, canMana
                             Inizio: ${dayjs(updatedTicket.startTime).format("LL [alle] LT")}\n
                             Fine: ${dayjs(updatedTicket.endTime).format("LL [alle] LT")}\n
                             Durata: ${ticketDuration.humanize()}\n
-                            Ore di assistenza ancora disponibili: ${humanize(remainingHours, 2)} ore`;
+                            Ore di assistenza ancora disponibili: ${humanize(remainingHours, 2)} ore\n\n
+                            TLF Technology s.r.l. a Socio Unico\n
+                            Viale Artigianato, n°4 - 12051 Alba (CN) Italia\n
+                            Tel. +39 0173 060521 /// Fax +39 0173 061055 /// www.tlftechnology.it`;
 
                         await sendEmail(updatedTicket.company.email, "Report ticket di assistenza", mailHTML, mailText);
                     }
