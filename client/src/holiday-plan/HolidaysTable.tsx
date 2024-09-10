@@ -171,7 +171,7 @@ function HolidaysTable(props: HolidaysTableProps) {
             <Table responsive className="worked-hours-table company-worked-hours-table double-month-view-table">
                 <thead>
                 <tr>
-                    <th className="left-aligned">Dipendente</th>
+                    <th className="left-aligned">Collaboratore</th>
                     {workdays.map(workday => {
                         return (
                             <th key={workday.format()} className={workdayClassName(workday, false)}>
