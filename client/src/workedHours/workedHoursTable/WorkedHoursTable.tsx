@@ -32,7 +32,9 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
     const isMachine = props.selectedUser.type === Type.machine;
     const [workItems, setWorkItems] = useState<WorkItem[]>();
     const [dailyExpenses, setDailyExpenses] = useState<DailyExpense[]>([]);
-    const [dirty, setDirty] = useState(true);
+    const [dirtyWorkItems, setDirtyWorkItems] = useState(true);
+    const [dirtyDailyExpenses, setDirtyDailyExpenses] = useState(true);
+    const dirty = dirtyWorkItems || dirtyDailyExpenses;
     const [addedJobs, setAddedJobs] = useState<Job[]>([]);
 
     let monthExtraHours = 0;
@@ -53,27 +55,28 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
     }, [dirty]);
 
     useEffect(() => {
-        setDirty(true);
+        setDirtyWorkItems(true);
+        setDirtyDailyExpenses(true);
         setAddedJobs([]);
-    }, [props.month, props.year]);
-
-    useEffect(() => {
-        getData();
-        setAddedJobs([]);
-    }, [props.selectedUser.id]);
+    }, [props.month, props.year, props.selectedUser.id]);
 
     function getData() {
         workItemApis.getWorkItems(`${props.year}-${props.month}`, props.selectedUser.id)
             .then(workItems => {
                 setWorkItems(workItems);
-                setDirty(false);
+                setDirtyWorkItems(false);
             })
             .catch(err => console.error(err))
 
         if (!isMachine && (props.user.id === props.selectedUser.id || props.user.role !== Role.user)) {
             dailyExpenseApis.getDailyExpenses(`${props.year}-${props.month}`, props.selectedUser.id)
-                .then(dailyExpenses => setDailyExpenses(dailyExpenses!))
+                .then(dailyExpenses => {
+                    setDailyExpenses(dailyExpenses!);
+                    setDirtyDailyExpenses(false);
+                })
                 .catch(err => console.error(err))
+        } else {
+            setDirtyDailyExpenses(false);
         }
     }
 
@@ -150,7 +153,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
                         <tr key={job.id}>
                             <td className="left-aligned unhoverable">{job.id}</td>
                             <td className="left-aligned unhoverable"><i>{job.client}</i> - {job.subject}</td>
-                            {!dirty && workdays.map(workday => {
+                            {!dirtyWorkItems && workdays.map(workday => {
                                 const workItem = workItems?.find(workItem =>
                                     workItem.job.id === job.id && workItem.date === workday.format("YYYY-MM-DD")
                                 )
@@ -231,7 +234,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
             {!isMachine && <tr>
                 <td className="unhoverable vertical-center" rowSpan={5}>Ore personali</td>
                 <td className="left-aligned unhoverable">Ferie/permessi</td>
-                {!dirty && workdays.map(workday => {
+                {!dirtyDailyExpenses && workdays.map(workday => {
                     const dailyExpense = dailyExpenses.find(dailyExpense =>
                         dailyExpense.date === workday.format("YYYY-MM-DD")
                     );
@@ -262,7 +265,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
 
             {!isMachine && <tr>
                 <td className="left-aligned unhoverable">Malattia</td>
-                {!dirty && workdays.map(workday => {
+                {!dirtyDailyExpenses && workdays.map(workday => {
                     const dailyExpense = dailyExpenses.find(dailyExpense =>
                         dailyExpense.date === workday.format("YYYY-MM-DD")
                     );
@@ -281,7 +284,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
 
             {!isMachine && <tr>
                 <td className="left-aligned unhoverable">Donazione</td>
-                {!dirty && workdays.map(workday => {
+                {!dirtyDailyExpenses && workdays.map(workday => {
                     const dailyExpense = dailyExpenses.find(dailyExpense =>
                         dailyExpense.date === workday.format("YYYY-MM-DD")
                     );
@@ -300,7 +303,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
 
             {!isMachine && <tr>
                 <td className="left-aligned unhoverable">Cassa integrazione</td>
-                {!dirty && workdays.map(workday => {
+                {!dirtyDailyExpenses && workdays.map(workday => {
                     const dailyExpense = dailyExpenses.find(dailyExpense =>
                         dailyExpense.date === workday.format("YYYY-MM-DD")
                     );
@@ -319,7 +322,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
 
             {!isMachine && <tr>
                 <td className="left-aligned unhoverable">Viaggio</td>
-                {!dirty && workdays.map(workday => {
+                {!dirtyDailyExpenses && workdays.map(workday => {
                     const dailyExpense = dailyExpenses.find(dailyExpense =>
                         dailyExpense.date === workday.format("YYYY-MM-DD")
                     );
@@ -343,7 +346,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
             {!isMachine && <tr>
                 <td className="unhoverable vertical-center" rowSpan={5}>Viaggi</td>
                 <td className="left-aligned unhoverable">Spese documentate</td>
-                {!dirty && workdays.map(workday => {
+                {!dirtyDailyExpenses && workdays.map(workday => {
                     const dailyExpense = dailyExpenses.find(dailyExpense =>
                         dailyExpense.date === workday.format("YYYY-MM-DD")
                     );
@@ -362,7 +365,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
 
             {!isMachine && <tr>
                 <td className="left-aligned unhoverable">Chilometri</td>
-                {!dirty && workdays.map(workday => {
+                {!dirtyDailyExpenses && workdays.map(workday => {
                     const dailyExpense = dailyExpenses.find(dailyExpense =>
                         dailyExpense.date === workday.format("YYYY-MM-DD")
                     );
@@ -381,7 +384,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
 
             {!isMachine && <tr>
                 <td className="left-aligned unhoverable">Costo del viaggio</td>
-                {!dirty && workdays.map(workday => {
+                {!dirtyDailyExpenses && workdays.map(workday => {
                     const dailyTripCost = dailyExpenses.find(dailyExpense =>
                         dailyExpense.date === workday.format("YYYY-MM-DD")
                     )?.tripCost;
@@ -399,7 +402,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
 
             {!isMachine && <tr>
                 <td className="left-aligned unhoverable">Destinazione</td>
-                {!dirty && workdays.map(workday => {
+                {!dirtyDailyExpenses && workdays.map(workday => {
                     const dailyExpense = dailyExpenses.find(dailyExpense =>
                         dailyExpense.date === workday.format("YYYY-MM-DD")
                     );
