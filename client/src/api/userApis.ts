@@ -84,7 +84,7 @@ async function updatePassword(oldPassword: string, newPassword: string) {
     }
 
     const response = await fetch(new URL("users/password", apiUrl), {
-        method: 'PUT',
+        method: 'PATCH',
         credentials: 'include',
         headers: {
             'Content-Type': 'application/json',

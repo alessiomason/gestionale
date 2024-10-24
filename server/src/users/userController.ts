@@ -270,13 +270,13 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdminis
     )
 
     // update password
-    app.put(`${baseURL}/password`,
+    app.patch(`${baseURL}/password`,
         isLoggedIn,
         body("oldPassword").isString(),
         body("newPassword").isString(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
-            if (!errors.isEmpty() || !req.params) {
+            if (!errors.isEmpty()) {
                 res.status(ParameterError.code).json(new ParameterError("There was an error with the parameters!"))
                 return
             }
