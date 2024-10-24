@@ -16,11 +16,26 @@ interface TicketBoxProps {
     readonly setDirtyTicketCompanyProgress: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-function TicketBox(props: TicketBoxProps) {
-    let humanizedDuration = dayjs.duration(props.ticket.duration).humanize();
-    if (humanizedDuration === "un' ora") {  // fix Dayjs' misspell
-        humanizedDuration = "un'ora";
+// To be used instead of `duration.humanize()`, as it has a flaky behaviour
+function humanizeDuration(durationTime: number) {
+    const duration = dayjs.duration(durationTime);
+    let humanizedDuration = "";
+
+    if (duration.hours() > 0) {
+        humanizedDuration = duration.hours() === 1 ? "un'ora" : `${duration.hours()} ore`;
     }
+    if (duration.hours() > 0 && duration.minutes() > 0) {
+        humanizedDuration += " e ";
+    }
+    if (duration.minutes() > 0) {
+        humanizedDuration += duration.minutes() === 1 ? "un minuto" : `${duration.minutes()} minuti`;
+    }
+
+    return humanizedDuration;
+}
+
+function TicketBox(props: TicketBoxProps) {
+    const humanizedDuration = humanizeDuration(props.ticket.duration);
 
     function pauseResumeTicket() {
         ticketApis.pauseResumeTicket(props.ticket.id)
@@ -58,7 +73,8 @@ function TicketBox(props: TicketBoxProps) {
                 {!props.ticket.endTime && <Row className="mt-3">
                     <Col/>
                     <Col sm={7} className="d-flex justify-content-center">
-                        <GlossyButton icon={props.ticket.paused ? PlayFill : PauseFill} className="w-100" onClick={pauseResumeTicket}>
+                        <GlossyButton icon={props.ticket.paused ? PlayFill : PauseFill} className="w-100"
+                                      onClick={pauseResumeTicket}>
                             {props.ticket.paused ? "Riprendi ticket" : "Ticket in pausa"}
                         </GlossyButton>
                     </Col>
