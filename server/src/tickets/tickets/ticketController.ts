@@ -16,6 +16,24 @@ import {getTicketCompany} from "../ticketCompanies/ticketCompanyService";
 import {humanize} from "../../functions";
 import dayjs from "dayjs";
 import {sendEmail} from "../../email/emailService";
+import plugin from "dayjs/plugin/duration";
+
+// To be used instead of `duration.humanize()`, as it has a flaky behaviour
+function humanizeDuration(duration: plugin.Duration) {
+    let humanizedDuration = "";
+
+    if (duration.hours() > 0) {
+        humanizedDuration = duration.hours() === 1 ? "un'ora" : `${duration.hours()} ore`;
+    }
+    if (duration.hours() > 0 && duration.minutes() > 0) {
+        humanizedDuration += " e ";
+    }
+    if (duration.minutes() > 0) {
+        humanizedDuration += duration.minutes() === 1 ? "un minuto" : `${duration.minutes()} minuti`;
+    }
+
+    return humanizedDuration;
+}
 
 export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler, canManageTickets: RequestHandler) {
     const baseURL = "/api/tickets";
@@ -157,7 +175,7 @@ export function useTicketsAPIs(app: Express, isLoggedIn: RequestHandler, canMana
                             <p>Azienda: ${updatedTicket.company.name}</p>
                             <p>Inizio: ${dayjs(updatedTicket.startTime).format("LL [alle] LT")}</p>
                             <p>Fine: ${dayjs(updatedTicket.endTime).format("LL [alle] LT")}</p>
-                            <p>Durata: ${ticketDuration.humanize()}</p>
+                            <p>Durata: ${humanizeDuration(ticketDuration)}</p>
                             <p>Ore di assistenza ancora disponibili: ${humanize(remainingHours, 2)} ore</p>
                             <p>&nbsp;&nbsp;</p>
                             <p><strong>TLF Technology s.r.l. a Socio Unico</strong></p>
