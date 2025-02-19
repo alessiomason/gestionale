@@ -47,6 +47,10 @@ function OrdersPage(props: OrdersPageProps) {
         const filter = sessionStorage.getItem("filteringSupplier");
         return filter ?? "";
     });
+    const [filteringDescription, setFilteringDescription] = useState(() => {
+        const filter = sessionStorage.getItem("filteringDescription");
+        return filter ?? "";
+    });
 
     const [comparison, setComparison] = useState<PossibleSortingOptions>(() => {
         const comp = sessionStorage.getItem("comparison");
@@ -187,12 +191,12 @@ function OrdersPage(props: OrdersPageProps) {
             </Row>
 
             <Row className="me-4 mb-4">
-                <Col sm={3}>
+                <Col sm={2}>
                     <GlossyButton icon={ClipboardPlus} onClick={handleNewOrderButton} className="new-user-button">
                         Nuovo ordine</GlossyButton>
                 </Col>
                 <Col/>
-                <Col sm={showingNewOrderPane || selectedOrder ? 3 : 8}>
+                <Col sm={showingNewOrderPane || selectedOrder ? 3 : 9}>
                     {showingNewOrderPane || selectedOrder ?
                         <GlossyButton icon={ClipboardX} onClick={handleCloseButton} className="new-user-button">
                             Chiudi</GlossyButton> :
@@ -200,7 +204,9 @@ function OrdersPage(props: OrdersPageProps) {
                                               setFilteringOrderName={setFilteringOrderName}
                                               filteringJobId={filteringJobId} setFilteringJobId={setFilteringJobId}
                                               filteringSupplier={filteringSupplier}
-                                              setFilteringSupplier={setFilteringSupplier}/>}
+                                              setFilteringSupplier={setFilteringSupplier}
+                                              filteringDescription={filteringDescription}
+                                              setFilteringDescription={setFilteringDescription}/>}
                 </Col>
             </Row>
 
@@ -214,8 +220,9 @@ function OrdersPage(props: OrdersPageProps) {
                         <OrdersTable orders={orders} shrunkTable={shrunkTable} selectedOrder={selectedOrder}
                                      selectOrder={selectOrder} filteringOrderName={filteringOrderName}
                                      filteringJobId={filteringJobId} filteringSupplier={filteringSupplier}
-                                     comparison={comparison} setComparison={setComparison}
-                                     comparisonOrder={comparisonOrder} setComparisonOrder={setComparisonOrder}/>}
+                                     filteringDescription={filteringDescription} comparison={comparison}
+                                     setComparison={setComparison} comparisonOrder={comparisonOrder}
+                                     setComparisonOrder={setComparisonOrder}/>}
                 </Col>
 
                 {showingNewOrderPane &&

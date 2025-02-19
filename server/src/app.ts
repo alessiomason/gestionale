@@ -109,7 +109,7 @@ function isLoggedIn(req: Request, res: Response, next: NextFunction) {
     if (req.isAuthenticated())
         return next();
 
-    return res.status(401).json({error: "This API requires an authenticated request!"});
+    res.status(401).json({error: "This API requires an authenticated request!"});
 }
 
 function isAdministrator(req: Request, res: Response, next: NextFunction) {
@@ -118,7 +118,7 @@ function isAdministrator(req: Request, res: Response, next: NextFunction) {
         return next();
     }
 
-    return res.status(401).json({error: "This API requires administrator privileges!"});
+    res.status(401).json({error: "This API requires administrator privileges!"});
 }
 
 function isDeveloper(req: Request, res: Response, next: NextFunction) {
@@ -127,7 +127,7 @@ function isDeveloper(req: Request, res: Response, next: NextFunction) {
         return next();
     }
 
-    return res.status(401).json({error: "This API requires developer privileges!"});
+    res.status(401).json({error: "This API requires developer privileges!"});
 }
 
 function canManageTickets(req: Request, res: Response, next: NextFunction) {
@@ -136,7 +136,7 @@ function canManageTickets(req: Request, res: Response, next: NextFunction) {
         return next();
     }
 
-    return res.status(401).json({error: "You are not authorised to manage tickets!"});
+    res.status(401).json({error: "You are not authorised to manage tickets!"});
 }
 
 function canManageOrders(req: Request, res: Response, next: NextFunction) {
@@ -145,7 +145,7 @@ function canManageOrders(req: Request, res: Response, next: NextFunction) {
         return next();
     }
 
-    return res.status(401).json({error: "You are not authorised to manage orders!"});
+    res.status(401).json({error: "You are not authorised to manage orders!"});
 }
 
 // expose the APIs

@@ -23,6 +23,7 @@ interface OrdersTableProps {
     readonly filteringOrderName: string | undefined
     readonly filteringJobId: string | undefined
     readonly filteringSupplier: string | undefined
+    readonly filteringDescription: string | undefined
     readonly comparison: PossibleSortingOptions
     readonly setComparison: React.Dispatch<React.SetStateAction<PossibleSortingOptions>>
     readonly comparisonOrder: "asc" | "desc"
@@ -64,7 +65,8 @@ function OrdersTable(props: OrdersTableProps) {
     function filterOrders(order: Order) {
         return (props.filteringOrderName === undefined || order.name.startsWith(props.filteringOrderName)) &&
             (props.filteringJobId === undefined || order.job.id.startsWith(props.filteringJobId)) &&
-            (props.filteringSupplier === undefined || order.supplier.toLowerCase().includes(props.filteringSupplier.toLowerCase()));
+            (props.filteringSupplier === undefined || order.supplier.toLowerCase().includes(props.filteringSupplier.toLowerCase())) &&
+            (props.filteringDescription === undefined || order.description.toLowerCase().includes(props.filteringDescription.toLowerCase()));
     }
 
     function showCaret(header: PossibleSortingOptions) {

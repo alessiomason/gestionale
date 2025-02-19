@@ -9,13 +9,16 @@ The software has been commissioned by said companies and replaces an old applica
 	- Register hours worked by machines (operated by the employee) on a specific job
 	- Register personal daily expenses, holiday, sick or travel hours
 	- Manage assistance tickets the company provides
-	- Manage incoming orders and track their progress 
+	- Manage incoming orders and track their progress
+	- Request holidays
 
 - Administrator
 	- Manage users: create new ones, enable and disable them
-	- Create jobs and insert specific details, e.g. cost per worked hour
+	- Create jobs and add specific details, e.g. cost per worked hour
 	- Aggregate worked hours per job and visualize costs
 	- Aggregate worked hours per user per month
+	- Plan and schedule jobs
+	- Approve or reject holidays
 
 - Horizontal features
 	- Daily backups of the database

@@ -1,6 +1,6 @@
 import React from "react";
 import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
-import {Buildings, Clipboard, JournalBookmarkFill, XOctagon} from "react-bootstrap-icons";
+import {Buildings, Clipboard, JournalBookmarkFill, Sticky, XOctagon} from "react-bootstrap-icons";
 import GlossyButton from "../buttons/GlossyButton";
 
 interface OrdersFiltersSectionProps {
@@ -10,6 +10,8 @@ interface OrdersFiltersSectionProps {
     readonly setFilteringJobId: React.Dispatch<React.SetStateAction<string>>
     readonly filteringSupplier: string | undefined
     readonly setFilteringSupplier: React.Dispatch<React.SetStateAction<string>>
+    readonly filteringDescription: string | undefined
+    readonly setFilteringDescription: React.Dispatch<React.SetStateAction<string>>
 }
 
 function OrdersFiltersSection(props: OrdersFiltersSectionProps) {
@@ -19,6 +21,7 @@ function OrdersFiltersSection(props: OrdersFiltersSectionProps) {
         props.setFilteringOrderName("");
         props.setFilteringJobId("");
         props.setFilteringSupplier("");
+        props.setFilteringDescription("");
     }
 
     return (
@@ -49,6 +52,16 @@ function OrdersFiltersSection(props: OrdersFiltersSectionProps) {
                         <FloatingLabel controlId="floatingInput" label="Filtra per fornitore">
                             <Form.Control type="text" placeholder="Filtra per fornitore" value={props.filteringSupplier}
                                           onChange={ev => props.setFilteringSupplier(ev.target.value)}/>
+                        </FloatingLabel>
+                    </InputGroup>
+                </Col>
+                <Col>
+                    <InputGroup>
+                        <InputGroup.Text><Sticky/></InputGroup.Text>
+                        <FloatingLabel controlId="floatingInput" label="Filtra per descrizione">
+                            <Form.Control type="text" placeholder="Filtra per descrizione"
+                                          value={props.filteringDescription}
+                                          onChange={ev => props.setFilteringDescription(ev.target.value)}/>
                         </FloatingLabel>
                     </InputGroup>
                 </Col>
