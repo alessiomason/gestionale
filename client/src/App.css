@@ -61,6 +61,10 @@ table {
     background-color: #cccccc;
 }
 
+.form-floating {
+    overflow: hidden;
+}
+
 .form-floating>label {
     color: #595959;
 }
