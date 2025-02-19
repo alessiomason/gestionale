@@ -107,7 +107,7 @@ export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.Sess
             const user = await getUserFromRegistrationToken(req.params.registrationToken);
 
             if (!user) {
-                return new UserNotFound()
+                throw new UserNotFound()
             }
 
             // check password already existing
@@ -165,7 +165,7 @@ export function useAuthenticationAPIs(app: Express, store: WebAuthnStrategy.Sess
 
     app.post('/login/public-key',
         passport.authenticate('webauthn', {failureMessage: true, failWithError: true}),
-        function (req, res) {
+        function (req: Request, res: Response) {
             const prevSession = req.session;
             req.session.regenerate((_err) => {
                 Object.assign(req.session, prevSession);

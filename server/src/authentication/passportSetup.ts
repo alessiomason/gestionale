@@ -10,6 +10,7 @@ import {getUser, getUserFromUsername} from "../users/userService";
 export function setupPassport(store: WebAuthnStrategy.SessionChallengeStore) {
     // mock authentication strategy (for testing)
     if (process.env.NODE_ENV === 'test') {
+        // @ts-ignore
         passport.use(new MockStrategy());
         setupSerializeAndDeserialize(passport);
         return
