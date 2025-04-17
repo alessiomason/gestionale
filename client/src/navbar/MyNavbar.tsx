@@ -7,12 +7,10 @@ import {
     CalendarEvent,
     CalendarRange,
     CalendarWeek,
-    Clipboard,
     JournalBookmarkFill,
     PersonBadge,
     PersonVcard,
-    Sun,
-    TicketPerforated
+    Sun
 } from "react-bootstrap-icons";
 import LightGlossyButton from "../buttons/LightGlossyButton";
 import Hamburger from "../components/Hamburger";
@@ -35,8 +33,6 @@ function MyNavbar(props: NavbarProps) {
     const isTablet = useMediaQuery({minWidth: 768, maxWidth: 1224});
     const isDesktop = useMediaQuery({minWidth: 1225});
     const isAdministrator = props.user.role !== Role.user;
-    const canManageTickets = props.user.managesTickets;
-    const canManageOrders = props.user.managesOrders;
 
     const [holidayNotifications, setHolidayNotifications] = useState(0);
     const [showOffcanvas, setShowOffcanvas] = useState(false);
@@ -60,14 +56,6 @@ function MyNavbar(props: NavbarProps) {
 
                 <Col className="d-flex justify-content-end align-items-center">
                     {!isMobile && !isTablet && <>
-                        {canManageTickets && <LightGlossyButton singleLine icon={TicketPerforated} className="me-3"
-                                                                onClick={() => navigate("/tickets")}>
-                            Assistenza
-                        </LightGlossyButton>}
-                        {canManageOrders && <LightGlossyButton singleLine icon={Clipboard} className="me-3"
-                                                               onClick={() => navigate("/orders")}>
-                            Ordini
-                        </LightGlossyButton>}
                         <LightGlossyButton singleLine icon={JournalBookmarkFill} className="me-3"
                                            onClick={() => navigate("/jobs")}>
                             Commesse
@@ -111,18 +99,6 @@ function MyNavbar(props: NavbarProps) {
                         </Offcanvas.Title>
                     </Offcanvas.Header>
                     <Offcanvas.Body>
-                        {canManageTickets && isTablet && <Row>
-                            <Col className="my-2 d-flex align-items-center">
-                                <TicketPerforated/>
-                                <Link to="/tickets" onClick={() => setShowOffcanvas(false)}>Assistenza</Link>
-                            </Col>
-                        </Row>}
-                        {canManageTickets && !isDesktop && <Row>
-                            <Col className="my-2 d-flex align-items-center">
-                                <Clipboard/>
-                                <Link to="/orders" onClick={() => setShowOffcanvas(false)}>Ordini</Link>
-                            </Col>
-                        </Row>}
                         {isTablet && <Row>
                             <Col className="my-2 d-flex align-items-center">
                                 <JournalBookmarkFill/>
