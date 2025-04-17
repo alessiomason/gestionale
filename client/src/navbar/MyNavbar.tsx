@@ -107,7 +107,7 @@ function MyNavbar(props: NavbarProps) {
                 <Offcanvas placement="end" show={showOffcanvas} onHide={() => setShowOffcanvas(false)}>
                     <Offcanvas.Header closeButton>
                         <Offcanvas.Title>
-                            <h3 className="m-0">Gestionale TLF</h3>
+                            <h3 className="m-0">Gestionale Technomake</h3>
                         </Offcanvas.Title>
                     </Offcanvas.Header>
                     <Offcanvas.Body>
@@ -177,7 +177,7 @@ function MyNavbar(props: NavbarProps) {
                         </Row>
 
                         <div className="offcanvas-footer w-100 text-center">
-                            <p>Gestionale TLF ({appVersion})</p>
+                            <p>Gestionale Technomake ({appVersion})</p>
                             <p><a href="https://www.alessiomason.it">© {dayjs().format("YYYY")} Alessio Mason</a></p>
                         </div>
                     </Offcanvas.Body>

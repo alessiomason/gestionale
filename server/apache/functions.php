@@ -3,7 +3,7 @@
 namespace Functions;
 
 function checkOrigin() {
-    $allowed_host = "https://gestionale.tlftechnology.it";
+    $allowed_host = "https://gestionale.technomake.it";
 
     header("Access-Control-Allow-Origin: $allowed_host");
 
