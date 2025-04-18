@@ -15,17 +15,17 @@
   "dependencies": {
     "@forwardemail/passport-fido2-webauthn": "^0.1.0",
     "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.0",
+    "@types/express": "^5.0.1",
     "@types/express-session": "^1.18.1",
     "@types/morgan": "^1.9.9",
-    "@types/node": "^22.13.4",
+    "@types/node": "^22.14.1",
     "@types/node-cron": "^3.0.11",
     "@types/nodemailer": "^6.4.17",
     "@types/passport": "^1.0.17",
     "@types/passport-fido2-webauthn": "^0.1.3",
     "cors": "^2.8.5",
     "dayjs": "^1.11.13",
-    "dotenv": "^16.4.7",
+    "dotenv": "^16.5.0",
     "express": "~4.21.2",
     "express-mysql-session": "^3.0.3",
     "express-session": "^1.18.1",
@@ -33,27 +33,27 @@
     "google-auth-library": "^9.15.1",
     "knex": "^3.1.0",
     "morgan": "~1.10.0",
-    "mysql2": "^3.12.0",
+    "mysql2": "^3.14.0",
     "node-cron": "^3.0.3",
-    "nodemailer": "^6.10.0",
+    "nodemailer": "^6.10.1",
     "objection": "^3.1.5",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "passport-mock-strategy": "^2.0.0",
-    "typescript": "^5.7.3"
+    "typescript": "^5.8.3"
   },
   "devDependencies": {
-    "@faker-js/faker": "^9.5.0",
+    "@faker-js/faker": "^9.7.0",
     "@types/jest": "^29.5.14",
-    "@types/supertest": "^6.0.2",
+    "@types/supertest": "^6.0.3",
     "jest": "^29.7.0",
     "knex-mock-client": "^3.0.2",
     "nodemon": "^3.1.9",
-    "supertest": "^7.0.0",
-    "ts-jest": "^29.2.5",
+    "supertest": "^7.1.0",
+    "ts-jest": "^29.3.2",
     "ts-node": "^10.9.2"
   },
   "engines": {
-    "node": "21.x"
+    "node": "22.x"
   }
 }
