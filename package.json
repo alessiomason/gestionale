@@ -3,13 +3,13 @@
   "author": "Alessio Mason",
   "description": "A web application to manage jobs and register worked hours",
   "license": "MIT",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "private": true,
   "scripts": {
     "start": "cd server && npm start",
     "heroku-postbuild": "npm install --prefix client && npm run build --prefix client && cd server && npm install && npm run build"
   },
   "engines": {
-    "node": "21.x"
+    "node": "22.x"
   }
 }
