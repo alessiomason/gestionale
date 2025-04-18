@@ -23,7 +23,7 @@ function ProfilePage(props: ProfilePageProps) {
                 <Col md={8}>
                     <Row>
                         <Col className="d-flex justify-content-end me-3">
-                            <GlossyButton icon={BoxArrowLeft} onClick={props.doLogout}>Logout</GlossyButton>
+                            <GlossyButton icon={BoxArrowLeft} onClick={props.doLogout}>Esci</GlossyButton>
                         </Col>
                     </Row>
                     <Row className="glossy-background">
