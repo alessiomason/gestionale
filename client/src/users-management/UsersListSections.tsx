@@ -126,7 +126,7 @@ function OfferRegistrationSection(props: OfferRegistrationSectionProps) {
                                       value={registrationLink}
                                       disabled/>
                     </FloatingLabel>
-                    <LightGlossyButton icon={copied ? Check2 : (Copy)} className="input-group-button"
+                    <LightGlossyButton type="button" icon={copied ? Check2 : (Copy)} className="input-group-button"
                                        onClick={handleCopy}>
                         {copied ? "Link copiato" : "Copia link"}
                     </LightGlossyButton>
