@@ -112,67 +112,90 @@ function MyNavbar(props: NavbarProps) {
                     </Offcanvas.Header>
                     <Offcanvas.Body>
                         {canManageTickets && isTablet && <Row>
-                            <Col className="my-2 d-flex align-items-center">
-                                <TicketPerforated/>
-                                <Link to="/tickets" onClick={() => setShowOffcanvas(false)}>Assistenza</Link>
+                            <Col>
+                                <Link to="/tickets" onClick={() => setShowOffcanvas(false)}
+                                      className="my-2 d-flex align-items-center">
+                                    <TicketPerforated/>Assistenza
+                                </Link>
                             </Col>
                         </Row>}
                         {canManageTickets && !isDesktop && <Row>
-                            <Col className="my-2 d-flex align-items-center">
-                                <Clipboard/>
-                                <Link to="/orders" onClick={() => setShowOffcanvas(false)}>Ordini</Link>
+                            <Col>
+                                <Link to="/orders" onClick={() => setShowOffcanvas(false)}
+                                      className="my-2 d-flex align-items-center">
+                                    <Clipboard/>Ordini
+                                </Link>
                             </Col>
                         </Row>}
                         {isTablet && <Row>
-                            <Col className="my-2 d-flex align-items-center">
-                                <JournalBookmarkFill/>
-                                <Link to="/jobs" onClick={() => setShowOffcanvas(false)}>Commesse</Link>
+                            <Col>
+                                <Link to="/jobs" onClick={() => setShowOffcanvas(false)}
+                                      className="my-2 d-flex align-items-center">
+                                    <JournalBookmarkFill/>Commesse
+                                </Link>
                             </Col>
                         </Row>}
                         {isTablet && <Row>
-                            <Col className="my-2 d-flex align-items-center">
-                                <BarChartSteps/>
-                                <Link to="/planning" onClick={() => setShowOffcanvas(false)}>Pianificazione</Link>
+                            <Col>
+                                <Link to="/planning" onClick={() => setShowOffcanvas(false)}
+                                      className="my-2 d-flex align-items-center">
+                                    <BarChartSteps/>
+                                    Pianificazione
+                                </Link>
                             </Col>
                         </Row>}
                         {isTablet && <Row>
-                            <Col className="my-2 d-flex align-items-center">
-                                <Sun/>
-                                <Link to="/holidayPlan" onClick={() => setShowOffcanvas(false)}>Piano ferie</Link>
+                            <Col>
+                                <Link to="/holidayPlan" onClick={() => setShowOffcanvas(false)}
+                                      className="my-2 d-flex align-items-center">
+                                    <Sun/>
+                                    Piano ferie
+                                </Link>
                             </Col>
                         </Row>}
                         {isAdministrator && isTablet && <Row>
-                            <Col className="my-2 d-flex align-items-center">
-                                <CalendarRange/>
-                                <Link to="/monthlyWorkedHours" onClick={() => setShowOffcanvas(false)}>Ore
-                                    mensili</Link>
+                            <Col>
+                                <Link to="/monthlyWorkedHours" onClick={() => setShowOffcanvas(false)}
+                                      className="my-2 d-flex align-items-center">
+                                    <CalendarRange/>
+                                    Ore mensili
+                                </Link>
                             </Col>
                         </Row>}
                         {isAdministrator && isTablet && <Row>
-                            <Col className="my-2 d-flex align-items-center">
-                                <CalendarWeek/>
-                                <Link to="/companyWorkedHours" onClick={() => setShowOffcanvas(false)}>Ore
-                                    azienda</Link>
+                            <Col>
+                                <Link to="/companyWorkedHours" onClick={() => setShowOffcanvas(false)}
+                                      className="my-2 d-flex align-items-center">
+                                    <CalendarWeek/>
+                                    Ore azienda
+                                </Link>
                             </Col>
                         </Row>}
                         {!isDesktop && <Row>
-                            <Col className="my-2 d-flex align-items-center">
-                                <CalendarEvent/>
-                                <Link to="/workedHours" onClick={() => setShowOffcanvas(false)}>Ore</Link>
+                            <Col>
+                                <Link to="/workedHours" onClick={() => setShowOffcanvas(false)}
+                                      className="my-2 d-flex align-items-center">
+                                    <CalendarEvent/>
+                                    Ore
+                                </Link>
                             </Col>
                         </Row>}
                         {isDesktop && isAdministrator && <Row>
-                            <Col className="my-2 d-flex align-items-center">
-                                <PersonVcard/>
-                                <Link to="/users" onClick={() => setShowOffcanvas(false)}>
-                                    Gestione utenti</Link>
+                            <Col>
+                                <Link to="/users" onClick={() => setShowOffcanvas(false)}
+                                      className="my-2 d-flex align-items-center">
+                                    <PersonVcard/>
+                                    Gestione utenti
+                                </Link>
                             </Col>
                         </Row>}
                         <Row>
-                            <Col className="my-2 d-flex align-items-center">
-                                <PersonBadge/>
-                                <Link to="/profile" onClick={() => setShowOffcanvas(false)}>
-                                    {props.user.name} {props.user.surname}</Link>
+                            <Col>
+                                <Link to="/profile" onClick={() => setShowOffcanvas(false)}
+                                      className="my-2 d-flex align-items-center">
+                                    <PersonBadge/>
+                                    {props.user.name} {props.user.surname}
+                                </Link>
                             </Col>
                         </Row>
 
