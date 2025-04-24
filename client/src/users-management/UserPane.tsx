@@ -39,7 +39,7 @@ function UserPane(props: UserPaneProps) {
     const [username, setUsername] = useState(props.selectedUser?.username ?? "");
     type RoleOptions = "user" | "admin" | "dev";
     const [role, setRole] = useState<RoleOptions>(props.selectedUser?.role ?? "user");
-    type TypeOptions = "office" | "accounting" | "mechanic" | "electrician" | "software" | "machine";
+    type TypeOptions = "office" | "accounting" | "mechanic" | "machine";
     const [type, setType] = useState<TypeOptions>(props.selectedUser?.type ?? "office");
     const [email, setEmail] = useState<string>(props.selectedUser?.email ?? "");
     const [invalidEmail, setInvalidEmail] = useState(false);
