@@ -32,8 +32,6 @@ interface UserPaneProps {
 
 function UserPane(props: UserPaneProps) {
     const [active, setActive] = useState(props.selectedUser?.active ?? true);
-    const [managesTickets, setManagesTickets] = useState(props.selectedUser?.managesTickets ?? false);
-    const [managesOrders, setManagesOrders] = useState(props.selectedUser?.managesOrders ?? false);
     const [name, setName] = useState(props.selectedUser?.name ?? "");
     const [invalidName, setInvalidName] = useState(false);
     const [surname, setSurname] = useState(props.selectedUser?.surname ?? "");
@@ -41,7 +39,7 @@ function UserPane(props: UserPaneProps) {
     const [username, setUsername] = useState(props.selectedUser?.username ?? "");
     type RoleOptions = "user" | "admin" | "dev";
     const [role, setRole] = useState<RoleOptions>(props.selectedUser?.role ?? "user");
-    type TypeOptions = "office" | "accounting" | "mechanic" | "electrician" | "software" | "machine";
+    type TypeOptions = "office" | "accounting" | "mechanic" | "machine";
     const [type, setType] = useState<TypeOptions>(props.selectedUser?.type ?? "office");
     const [email, setEmail] = useState<string>(props.selectedUser?.email ?? "");
     const [invalidEmail, setInvalidEmail] = useState(false);
@@ -67,8 +65,6 @@ function UserPane(props: UserPaneProps) {
 
     useEffect(() => {
         setActive(props.selectedUser?.active ?? true);
-        setManagesTickets(props.selectedUser?.managesTickets ?? false);
-        setManagesOrders(props.selectedUser?.managesOrders ?? false);
         setName(props.selectedUser?.name ?? "");
         setSurname(props.selectedUser?.surname ?? "");
         setUsername(props.selectedUser?.username ?? "");
@@ -123,8 +119,8 @@ function UserPane(props: UserPaneProps) {
             hoursPerDay,
             costPerHour,
             active,
-            managesTickets,
-            managesOrders,
+            false,
+            false,
             email === "" ? undefined : email,
             phone,
             car,
@@ -189,28 +185,6 @@ function UserPane(props: UserPaneProps) {
                     <Col className="d-flex align-items-center">
                         <SwitchToggle id="active-toggle" isOn={active}
                                       handleToggle={() => setActive(prevActive => !prevActive)}/>
-                    </Col>
-                </Row>
-                <Row className="d-flex align-items-center">
-                    <Col sm={3}
-                         className="glossy-background smaller d-flex justify-content-center align-items-center">
-                        {managesTickets ? <CheckCircle className="me-2"/> :
-                            <XCircle className="me-2"/>} Accesso ai ticket
-                    </Col>
-                    <Col className="d-flex align-items-center">
-                        <SwitchToggle id="manages-tickets-toggle" isOn={managesTickets}
-                                      handleToggle={() => setManagesTickets(prevState => !prevState)}/>
-                    </Col>
-                </Row>
-                <Row className="d-flex align-items-center">
-                    <Col sm={3}
-                         className="glossy-background smaller d-flex justify-content-center align-items-center">
-                        {managesOrders ? <CheckCircle className="me-2"/> :
-                            <XCircle className="me-2"/>} Accesso agli ordini
-                    </Col>
-                    <Col className="d-flex align-items-center">
-                        <SwitchToggle id="manages-orders-toggle" isOn={managesOrders}
-                                      handleToggle={() => setManagesOrders(prevState => !prevState)}/>
                     </Col>
                 </Row>
 

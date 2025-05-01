@@ -8,8 +8,6 @@ export enum Type {
     office = "office",
     accounting = "accounting",
     mechanic = "mechanic",
-    electrician = "electrician",
-    software = "software",
     machine = "machine"
 }
 
@@ -82,8 +80,6 @@ export class User extends NewUser {
         Type.office,
         Type.accounting,
         Type.mechanic,
-        Type.electrician,
-        Type.software,
         Type.machine
     ];
 

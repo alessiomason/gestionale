@@ -7,7 +7,7 @@ const exec = util.promisify(require('node:child_process').exec);
 
 export async function backupDatabase() {
     console.log("Backing up the database.");
-    const fileName = `tlf_gestionale_backup_${dayjs().format()}.sql`;
+    const fileName = `tm_gestionale_backup_${dayjs().format()}.sql`;
     const {stderr} = await exec(`mysqldump -h ${dbOptions.host} -P ${dbOptions.port} -u ${dbOptions.user} -p${dbOptions.password} ${dbOptions.database} --column-statistics=0 --no-tablespaces --single-transaction --set-gtid-purged=OFF > ${fileName}`);
     console.error(stderr);
 

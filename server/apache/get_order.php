@@ -2,7 +2,7 @@
 // This file is not part of the Express server, but is meant to be uploaded on an Apache server where the uploaded order
 // files are stored.
 
-$allowed_host = "https://gestionale.tlftechnology.it";
+$allowed_host = "https://gestionale.technomake.it";
 
 header("Access-Control-Allow-Origin: $allowed_host");
 

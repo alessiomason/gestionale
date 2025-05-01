@@ -7,12 +7,10 @@ import {
     CalendarEvent,
     CalendarRange,
     CalendarWeek,
-    Clipboard,
     JournalBookmarkFill,
     PersonBadge,
     PersonVcard,
-    Sun,
-    TicketPerforated
+    Sun
 } from "react-bootstrap-icons";
 import LightGlossyButton from "../buttons/LightGlossyButton";
 import Hamburger from "../components/Hamburger";
@@ -35,8 +33,6 @@ function MyNavbar(props: NavbarProps) {
     const isTablet = useMediaQuery({minWidth: 768, maxWidth: 1224});
     const isDesktop = useMediaQuery({minWidth: 1225});
     const isAdministrator = props.user.role !== Role.user;
-    const canManageTickets = props.user.managesTickets;
-    const canManageOrders = props.user.managesOrders;
 
     const [holidayNotifications, setHolidayNotifications] = useState(0);
     const [showOffcanvas, setShowOffcanvas] = useState(false);
@@ -60,14 +56,6 @@ function MyNavbar(props: NavbarProps) {
 
                 <Col className="d-flex justify-content-end align-items-center">
                     {!isMobile && !isTablet && <>
-                        {canManageTickets && <LightGlossyButton singleLine icon={TicketPerforated} className="me-3"
-                                                                onClick={() => navigate("/tickets")}>
-                            Assistenza
-                        </LightGlossyButton>}
-                        {canManageOrders && <LightGlossyButton singleLine icon={Clipboard} className="me-3"
-                                                               onClick={() => navigate("/orders")}>
-                            Ordini
-                        </LightGlossyButton>}
                         <LightGlossyButton singleLine icon={JournalBookmarkFill} className="me-3"
                                            onClick={() => navigate("/jobs")}>
                             Commesse
@@ -107,26 +95,10 @@ function MyNavbar(props: NavbarProps) {
                 <Offcanvas placement="end" show={showOffcanvas} onHide={() => setShowOffcanvas(false)}>
                     <Offcanvas.Header closeButton>
                         <Offcanvas.Title>
-                            <h3 className="m-0">Gestionale TLF</h3>
+                            <h3 className="m-0">Gestionale Technomake</h3>
                         </Offcanvas.Title>
                     </Offcanvas.Header>
                     <Offcanvas.Body>
-                        {canManageTickets && isTablet && <Row>
-                            <Col>
-                                <Link to="/tickets" onClick={() => setShowOffcanvas(false)}
-                                      className="my-2 d-flex align-items-center">
-                                    <TicketPerforated/>Assistenza
-                                </Link>
-                            </Col>
-                        </Row>}
-                        {canManageTickets && !isDesktop && <Row>
-                            <Col>
-                                <Link to="/orders" onClick={() => setShowOffcanvas(false)}
-                                      className="my-2 d-flex align-items-center">
-                                    <Clipboard/>Ordini
-                                </Link>
-                            </Col>
-                        </Row>}
                         {isTablet && <Row>
                             <Col>
                                 <Link to="/jobs" onClick={() => setShowOffcanvas(false)}
@@ -200,7 +172,7 @@ function MyNavbar(props: NavbarProps) {
                         </Row>
 
                         <div className="offcanvas-footer w-100 text-center">
-                            <p>Gestionale TLF ({appVersion})</p>
+                            <p>Gestionale Technomake ({appVersion})</p>
                             <p><a href="https://www.alessiomason.it">© {dayjs().format("YYYY")} Alessio Mason</a></p>
                         </div>
                     </Offcanvas.Body>

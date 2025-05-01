@@ -60,8 +60,6 @@ function App2() {
     const [checkingAuth, setCheckingAuth] = useState(true);
     const loggedIn = user !== undefined;
     const isAdministrator = user ? (user.role !== Role.user) : false;
-    const canManageTickets = user ? user.managesTickets : false;
-    const canManageOrders = user ? user.managesOrders : false;
     const [message, setMessage] = useState("");
 
     const navigate = useNavigate();
@@ -153,7 +151,6 @@ function App2() {
                            <Navigate to="/"/>}/>
                 <Route path="jobs" element={<JobsPage isAdministrator={isAdministrator}/>}/>
                 <Route path="jobs/:jobId" element={isAdministrator ? <JobPage/> : <Navigate to="/"/>}/>
-                <Route path="tickets" element={canManageTickets ? <TicketsPage/> : <Navigate to="/"/>}/>
                 <Route path="planning" element={<DoubleMonthViewPage page="planning" user={user!}/>}/>
                 <Route path="holidayPlan" element={<DoubleMonthViewPage page="holidayPlan" user={user!}/>}/>
                 <Route path="workedHours" element={<WorkedHoursPage user={user!}/>}/>
@@ -161,7 +158,6 @@ function App2() {
                        element={isMobile ? <WorkedHoursEditMobile user={user!}/> : <Navigate to="/workedHours"/>}/>
                 <Route path="monthlyWorkedHours" element={<MonthlyWorkedHoursPage/>}/>
                 <Route path="companyWorkedHours" element={<CompanyWorkedHoursPage/>}/>
-                <Route path="orders" element={canManageOrders ? <OrdersPage user={user!}/> : <Navigate to="/"/>}/>
             </Route>
         </Routes>
     );

@@ -8,9 +8,7 @@ export enum Type {
     office = "office",
     accounting = "accounting",
     mechanic = "mechanic",
-    electrician = "electrician",
-    software = "software",
-    machine = "machine",
+    machine = "machine"
 }
 
 export class User {
@@ -21,9 +19,7 @@ export class User {
         Type.office,
         Type.accounting,
         Type.mechanic,
-        Type.electrician,
-        Type.software,
-        Type.machine,
+        Type.machine
     ];
 
     id: number
@@ -104,10 +100,6 @@ export class User {
                 return "Contabilità";
             case Type.mechanic:
                 return "Meccanico";
-            case Type.electrician:
-                return "Elettricista";
-            case Type.software:
-                return "Softwarista";
             case Type.machine:
                 return "Macchina";
         }
