@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Col, Row, Table} from "react-bootstrap";
+import {Badge, Col, Row, Table} from "react-bootstrap";
 import {CheckCircle, PersonAdd, XCircle} from "react-bootstrap-icons";
 import GlossyButton from "../buttons/GlossyButton";
 import userApis from "../api/userApis";
@@ -80,11 +80,10 @@ function UsersListPage(props: UsersListPageProps) {
                             <Table hover responsive>
                                 <thead>
                                 <tr>
+                                    <th/>
                                     <th>Cognome</th>
                                     <th>Nome</th>
-                                    <th>Tipo</th>
                                     <th>Mansione</th>
-                                    <th>Attivo</th>
                                 </tr>
                                 </thead>
 
@@ -93,11 +92,14 @@ function UsersListPage(props: UsersListPageProps) {
                                     return (
                                         <tr key={user.id} onClick={() => selectUser(user)}
                                             className={user === selectedUser ? "table-selected-row" : ""}>
-                                            <td>{user.surname}</td>
-                                            <td>{user.name}</td>
-                                            <td>{User.typeName(user.type)}</td>
-                                            <td>{User.roleName(user.role)}</td>
-                                            <td>{user.active ? <CheckCircle/> : <XCircle/>}</td>
+                                            <td>
+                                                <Badge bg="secondary" className={user.active ? "active-user-badge" : "inactive-user-badge"}>
+                                                    {User.roleName(user.role).substring(0, 1)}
+                                                </Badge>
+                                            </td>
+                                            <td className={user.active ? "active-user-text" : "inactive-user-text"}>{user.surname}</td>
+                                            <td className={user.active ? "active-user-text" : "inactive-user-text"}>{user.name}</td>
+                                            <td className={user.active ? "active-user-text" : "inactive-user-text"}>{User.typeName(user.type)}</td>
                                         </tr>
                                     );
                                 })}
@@ -109,7 +111,7 @@ function UsersListPage(props: UsersListPageProps) {
                 <Col>
                     {(showingNewUserPane || selectedUser) &&
                         <UserPane selectedUser={selectedUser} user={props.user} setDirtyUser={props.setDirtyUser}
-                        afterSubmit={showingNewUserPane ? selectNewlyCreatedUser : updateSelectedUser}/>}
+                                  afterSubmit={showingNewUserPane ? selectNewlyCreatedUser : updateSelectedUser}/>}
                 </Col>
             </Row>
         </>
