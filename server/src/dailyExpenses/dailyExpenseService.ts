@@ -138,8 +138,9 @@ export async function updateTripCosts() {
             const user = users.find(user => dailyExpense.userId === user.id);
             if (!user) throw new UserNotFound();
 
-            const newTripCost = user.costPerKm ? parseFloat(dailyExpense.kms) * user.costPerKm : undefined;
-            await knex("tripCosts")
+            const newTripCost = user.costPerKm ? parseFloat(dailyExpense.kms) * user.costPerKm : 0;
+
+            await knex("dailyExpenses")
                 .where({userId: dailyExpense.userId, date: dailyExpense.date})
                 .update({tripCost: newTripCost});
         }
