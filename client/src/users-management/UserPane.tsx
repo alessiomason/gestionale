@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import {
     CarFront,
-    Check,
+    Check2,
     CheckCircle,
     Clock,
     Coin,
@@ -58,7 +58,7 @@ function UserPane(props: UserPaneProps) {
     if (props.selectedUser) {
         if (savedUser) {
             submitButtonTitle = "Salvato";
-            submitButtonIcon = Check;
+            submitButtonIcon = Check2;
         } else {
             submitButtonTitle = "Salva";
             submitButtonIcon = Floppy;
@@ -80,6 +80,7 @@ function UserPane(props: UserPaneProps) {
         setCostPerHour(props.selectedUser?.costPerHour ?? 0);
         setCar(props.selectedUser?.car ?? "");
         setCostPerKm(props.selectedUser?.costPerKm ?? 0);
+        setSavedUser(false);
     }, [props.selectedUser?.id]);
 
     function handleEmailCheck() {
