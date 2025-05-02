@@ -1,3 +1,15 @@
 .closed-job {
     color: #d50000 !important;
 }
+
+.clickable-arrow {
+    color: black;
+}
+
+.clickable-arrow:hover {
+    cursor: pointer;
+}
+
+.unclickable-arrow {
+    color: lightgray;
+}
