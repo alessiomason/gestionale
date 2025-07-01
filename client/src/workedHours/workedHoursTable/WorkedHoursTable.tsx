@@ -194,7 +194,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
                     // day is holiday, Sunday or Saturday (Saturday is marked as a business day but all hours are extra hours)
                     if (workday.isHoliday() || !workday.isBusinessDay() || workday.format("d") === "6") {
                         extraHours = totalHours;
-                    } else if (totalHours > 8) {
+                    } else if (totalHours > props.selectedUser.hoursPerDay) {
                         extraHours = totalHours - props.selectedUser.hoursPerDay;
                     }
 
