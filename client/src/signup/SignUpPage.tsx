@@ -115,24 +115,24 @@ function SignUpPage() {
 }
 
 interface SignUpPaneProps {
-    registrationToken: string
-    setExpired: React.Dispatch<React.SetStateAction<boolean>>
-    email: string
-    setEmail: React.Dispatch<React.SetStateAction<string>>
-    invalidEmail: boolean
-    handleEmailCheck: () => void
-    phone: string
-    setPhone: React.Dispatch<React.SetStateAction<string>>
-    car: string
-    setCar: React.Dispatch<React.SetStateAction<string>>
-    password: string
-    setPassword: React.Dispatch<React.SetStateAction<string>>
-    confirmPassword: string
-    setConfirmPassword: React.Dispatch<React.SetStateAction<string>>
-    invalidPassword: boolean
-    showPasswordRequirements: boolean
-    handlePasswordCheck: () => void
-    errorMessage: string
+    readonly registrationToken: string
+    readonly setExpired: React.Dispatch<React.SetStateAction<boolean>>
+    readonly email: string
+    readonly setEmail: React.Dispatch<React.SetStateAction<string>>
+    readonly invalidEmail: boolean
+    readonly handleEmailCheck: () => void
+    readonly phone: string
+    readonly setPhone: React.Dispatch<React.SetStateAction<string>>
+    readonly car: string
+    readonly setCar: React.Dispatch<React.SetStateAction<string>>
+    readonly password: string
+    readonly setPassword: React.Dispatch<React.SetStateAction<string>>
+    readonly confirmPassword: string
+    readonly setConfirmPassword: React.Dispatch<React.SetStateAction<string>>
+    readonly invalidPassword: boolean
+    readonly showPasswordRequirements: boolean
+    readonly handlePasswordCheck: () => void
+    readonly errorMessage: string
 }
 
 function SignUpPane(props: SignUpPaneProps) {
