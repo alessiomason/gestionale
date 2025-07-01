@@ -96,7 +96,7 @@ function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
                                     // day is holiday, Sunday or Saturday (Saturday is marked as a business day but all hours are extra hours)
                                     if (workday.isHoliday() || !workday.isBusinessDay() || workday.format("d") === "6") {
                                         extraHours = companyHoursItem?.workedHours ?? 0;
-                                    } else if (companyHoursItem && companyHoursItem.workedHours > 8) {
+                                    } else if (companyHoursItem && companyHoursItem.workedHours > companyHoursItem.user.hoursPerDay) {
                                         extraHours = companyHoursItem.workedHours - companyHoursItem.user.hoursPerDay;
                                     }
 
