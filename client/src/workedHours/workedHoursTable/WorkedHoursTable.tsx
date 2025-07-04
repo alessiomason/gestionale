@@ -360,7 +360,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
                                                    createOrUpdateLocalDailyExpense={createOrUpdateLocalDailyExpense}/>
                     );
                 })}
-                <td className="unhoverable">{monthExpenses}</td>
+                <td className="unhoverable">€ {monthExpenses}</td>
             </tr>}
 
             {!isMachine && <tr>
@@ -379,7 +379,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
                                                    createOrUpdateLocalDailyExpense={createOrUpdateLocalDailyExpense}/>
                     );
                 })}
-                <td className="unhoverable">{monthKms}</td>
+                <td className="unhoverable">{monthKms} km</td>
             </tr>}
 
             {!isMachine && <tr>
@@ -393,11 +393,11 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
                     return (
                         <td key={`td-tripCost-${workday.format("YYYY-MM-DD")}`}
                             className={workdayClassName(workday, false)}>
-                            {(!dailyTripCost || dailyTripCost === 0) ? "" : ("€ " + dailyTripCost)}
+                            {(!dailyTripCost || dailyTripCost === 0) ? "" : `€ ${dailyTripCost}`}
                         </td>
                     );
                 })}
-                <td className="unhoverable">{"€ " + monthTripCost}</td>
+                <td className="unhoverable">€ {monthTripCost}</td>
             </tr>}
 
             {!isMachine && <tr>
