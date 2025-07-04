@@ -110,6 +110,13 @@ export async function exportCompanyWorkedHoursExcel(
                 return companyHoursItem.expenses;
             else return null;
         });
+        const kms = workdays.map(workday => {
+            const companyHoursItem = companyHours.find(companyHoursItem =>
+                companyHoursItem.user.id === user.id && dayjs(companyHoursItem.date).isSame(workday, "day"));
+            if (companyHoursItem && companyHoursItem.kms !== 0)
+                return companyHoursItem.kms;
+            else return null;
+        });
 
         const firstDayIndex = 3;
         const lastDayIndex = workdays.length + 2;
@@ -123,6 +130,7 @@ export async function exportCompanyWorkedHoursExcel(
         userRows.push(worksheet.addRow([null, "Ore cassa integrazione", ...furloughHours]));
         userRows.push(worksheet.addRow([null, "Ore viaggio", ...travelHours]));
         userRows.push(worksheet.addRow([null, "Spese documentate", ...expenses]));
+        userRows.push(worksheet.addRow([null, "Chilometri", ...kms]));
 
         worksheet.mergeCells(`${userRows[0].getCell(1).address}:${userRows[userRows.length - 1].getCell(1).address}`);
         for (const row of userRows) {

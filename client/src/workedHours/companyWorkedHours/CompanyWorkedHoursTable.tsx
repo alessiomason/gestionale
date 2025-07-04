@@ -66,6 +66,7 @@ function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
                         let totalFurloughHours = 0;
                         let totalTravelHours = 0;
                         let totalExpenses = 0;
+                        let totalKms = 0;
 
                         let userHoursLink = `/workedHours?u=${user.id}`;
                         if (props.month !== currentMonth) userHoursLink += `&m=${props.month}`;
@@ -86,6 +87,7 @@ function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
                                     <div className="text-end">Ore cassa integrazione</div>
                                     <div className="text-end">Ore viaggio</div>
                                     <div className="text-end">Spese documentate</div>
+                                    <div className="text-end">Chilometri</div>
                                 </td>
 
                                 {workdays.map(workday => {
@@ -108,6 +110,7 @@ function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
                                     totalFurloughHours += companyHoursItem?.furloughHours ?? 0;
                                     totalTravelHours += companyHoursItem?.travelHours ?? 0;
                                     totalExpenses += companyHoursItem?.expenses ?? 0;
+                                    totalKms += companyHoursItem?.kms ?? 0;
 
                                     return (
                                         <td key={`user-${user.id}-${workday.format()}`}
@@ -121,6 +124,10 @@ function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
                                             <div>{(companyHoursItem && companyHoursItem.furloughHours !== 0) ? companyHoursItem.furloughHours : <>&nbsp;</>}</div>
                                             <div>{(companyHoursItem && companyHoursItem.travelHours !== 0) ? companyHoursItem.travelHours : <>&nbsp;</>}</div>
                                             <div>{(companyHoursItem && companyHoursItem.expenses !== 0) ? `€ ${companyHoursItem.expenses}` : <>&nbsp;</>}</div>
+                                            <div
+                                                title={`${companyHoursItem ? companyHoursItem.destination : ""}${companyHoursItem?.destination !== "" && companyHoursItem?.tripCost ? "\n" : ""}${companyHoursItem?.tripCost ? `Costo del viaggio: € ${companyHoursItem.tripCost}` : ""}`}>
+                                                {(companyHoursItem && companyHoursItem.kms !== 0) ? `${companyHoursItem.kms} km` : <>&nbsp;</>}
+                                            </div>
                                         </td>
                                     );
                                 })}
@@ -135,6 +142,7 @@ function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
                                     <div>{totalFurloughHours === 0 ? <>&nbsp;</> : totalFurloughHours}</div>
                                     <div>{totalTravelHours === 0 ? <>&nbsp;</> : totalTravelHours}</div>
                                     <div>{totalExpenses === 0 ? <>&nbsp;</> : `€ ${totalExpenses}`}</div>
+                                    <div>{totalKms === 0 ? <>&nbsp;</> : `${totalKms} km`}</div>
                                 </td>
                             </tr>
                         );

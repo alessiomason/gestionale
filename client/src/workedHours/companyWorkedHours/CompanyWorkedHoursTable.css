@@ -33,6 +33,11 @@
     color: rebeccapurple;
 }
 
+/* Kilometres */
+.company-worked-hours-table > tbody > tr > td > div:nth-child(10) {
+    color: darkorange;
+}
+
 .clickable:hover {
     cursor: pointer;
     color: var(--accent-color);

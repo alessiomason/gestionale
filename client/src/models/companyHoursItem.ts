@@ -10,6 +10,9 @@ export class CompanyHoursItem {
     donationHours: number   // hours of leave for blood donation
     furloughHours: number   // hours of furlough
     expenses: number        // additional expenses for the day
+    kms: number             // kms travelled for work trip
+    destination: string     // destination of work trip
+    tripCost?: number       // cost of trip = kms * cost of user per km, undefined if cost of user undefined
 
     constructor(
         user: User,
@@ -20,7 +23,10 @@ export class CompanyHoursItem {
         sickHours: number,
         donationHours: number,
         furloughHours: number,
-        expenses: number
+        expenses: number,
+        kms: number,
+        destination: string,
+        tripCost?: number
     ) {
         this.user = user;
         this.date = date;
@@ -31,5 +37,8 @@ export class CompanyHoursItem {
         this.donationHours = donationHours;
         this.furloughHours = furloughHours;
         this.expenses = expenses;
+        this.kms = kms;
+        this.destination = destination;
+        this.tripCost = tripCost;
     }
 }

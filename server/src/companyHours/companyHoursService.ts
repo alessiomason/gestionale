@@ -55,7 +55,9 @@ export async function getCompanyHours(month: string) {
             0,
             0,
             0,
-            0
+            0,
+            0,
+            ""
         );
     })
 
@@ -75,6 +77,9 @@ export async function getCompanyHours(month: string) {
             companyHoursItem.donationHours = companyDailyExpense.donationHours;
             companyHoursItem.furloughHours = companyDailyExpense.furloughHours;
             companyHoursItem.expenses = companyDailyExpense.expenses;
+            companyHoursItem.kms = companyDailyExpense.kms;
+            companyHoursItem.destination = companyDailyExpense.destination;
+            companyHoursItem.tripCost = companyDailyExpense.tripCost;
         } else {
             const user = await getUser(companyDailyExpense.userId);
             if (!user) throw new UserNotFound();
@@ -88,7 +93,10 @@ export async function getCompanyHours(month: string) {
                 companyDailyExpense.sickHours,
                 companyDailyExpense.donationHours,
                 companyDailyExpense.furloughHours,
-                companyDailyExpense.expenses
+                companyDailyExpense.expenses,
+                companyDailyExpense.kms,
+                companyDailyExpense.destination,
+                companyDailyExpense.tripCost
             );
             companyHours.push(newCompanyHoursItem);
         }
