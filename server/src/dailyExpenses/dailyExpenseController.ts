@@ -123,6 +123,8 @@ export function useDailyExpensesAPIs(
         body("sickHours").isNumeric(),
         body("donationHours").isNumeric(),
         body("furloughHours").isNumeric(),
+        body("bereavementHours").isNumeric(),
+        body("paternityHours").isNumeric(),
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -156,7 +158,9 @@ export function useDailyExpensesAPIs(
                 req.body.holidayApproved,
                 req.body.sickHours,
                 req.body.donationHours,
-                req.body.furloughHours
+                req.body.furloughHours,
+                req.body.bereavementHours,
+                req.body.paternityHours
             );
 
             try {

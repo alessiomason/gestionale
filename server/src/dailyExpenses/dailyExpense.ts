@@ -11,6 +11,8 @@ export class DailyExpense {
     sickHours: number       // hours of sick leave
     donationHours: number   // hours of leave for blood donation
     furloughHours: number   // hours of furlough
+    bereavementHours: number
+    paternityHours: number  // hours of paternity leave
 
     constructor(
         userId: number,
@@ -24,7 +26,9 @@ export class DailyExpense {
         holidayApproved: boolean | null,
         sickHours: number,
         donationHours: number,
-        furloughHours: number
+        furloughHours: number,
+        bereavementHours: number,
+        paternityHours: number
     ) {
         this.userId = userId;
         this.date = date;
@@ -38,6 +42,8 @@ export class DailyExpense {
         this.sickHours = sickHours;
         this.donationHours = donationHours;
         this.furloughHours = furloughHours;
+        this.bereavementHours = bereavementHours;
+        this.paternityHours = paternityHours;
     }
 
     // The daily expense does not contain any valuable information, so it can be deleted.
@@ -50,6 +56,8 @@ export class DailyExpense {
             this.holidayHours === 0 &&
             this.sickHours === 0 &&
             this.donationHours === 0 &&
-            this.furloughHours === 0
+            this.furloughHours === 0 &&
+            this.bereavementHours === 0 &&
+            this.paternityHours === 0
     }
 }

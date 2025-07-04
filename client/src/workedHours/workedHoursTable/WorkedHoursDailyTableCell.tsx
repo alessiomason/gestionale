@@ -10,7 +10,8 @@ import workdayClassName from "../workedHoursFunctions";
 interface WorkedHoursDailyTableCellProps {
     readonly workday: dayjs.Dayjs
     readonly dailyExpense: DailyExpense | undefined
-    readonly field: "expenses" | "kms" | "travelHours" | "holidayHours" | "sickHours" | "donationHours" | "furloughHours"
+    readonly field: "expenses" | "kms" | "travelHours" | "holidayHours" |
+        "sickHours" | "donationHours" | "furloughHours" | "bereavementHours" | "paternityHours"
     readonly selectedUser: User
     readonly setSavingStatus: React.Dispatch<React.SetStateAction<"" | "saving" | "saved">>
     readonly createOrUpdateLocalDailyExpense: (newDailyExpense: DailyExpense) => void
@@ -71,6 +72,8 @@ function WorkedHoursDailyTableCell(props: WorkedHoursDailyTableCellProps) {
                     0,
                     0,
                     null,
+                    0,
+                    0,
                     0,
                     0,
                     0

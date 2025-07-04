@@ -23,6 +23,8 @@ function WorkedHoursEditDailyExpenseMobile(props: WorkedHoursEditDailyExpenseMob
     const [sickHours, setSickHours] = useState(0);
     const [donationHours, setDonationHours] = useState(0);
     const [furloughHours, setFurloughHours] = useState(0);
+    const [bereavementHours, setBereavementHours] = useState(0);
+    const [paternityHours, setPaternityHours] = useState(0);
     const [travelHours, setTravelHours] = useState(0);
     const [expenses, setExpenses] = useState(0);
     const [destination, setDestination] = useState("");
@@ -44,6 +46,8 @@ function WorkedHoursEditDailyExpenseMobile(props: WorkedHoursEditDailyExpenseMob
             setExpenses(existingDailyExpense.expenses);
             setDestination(existingDailyExpense.destination);
             setKms(existingDailyExpense.kms);
+            setBereavementHours(existingDailyExpense.bereavementHours);
+            setPaternityHours(existingDailyExpense.paternityHours);
         } else {
             setHolidayHours(0);
             setSickHours(0);
@@ -53,6 +57,8 @@ function WorkedHoursEditDailyExpenseMobile(props: WorkedHoursEditDailyExpenseMob
             setExpenses(0);
             setDestination("");
             setKms(0);
+            setBereavementHours(0);
+            setPaternityHours(0);
         }
     }, [date]);
 
@@ -71,7 +77,9 @@ function WorkedHoursEditDailyExpenseMobile(props: WorkedHoursEditDailyExpenseMob
             null,
             sickHours,
             donationHours,
-            furloughHours
+            furloughHours,
+            bereavementHours,
+            paternityHours
         );
 
         dailyExpensesApis.createOrUpdateDailyExpense(newDailyExpense)
@@ -126,6 +134,22 @@ function WorkedHoursEditDailyExpenseMobile(props: WorkedHoursEditDailyExpenseMob
                             <Form.Control type="number" min={0} step={0.5} placeholder="Ore cassa integrazione"
                                           value={furloughHours}
                                           onChange={ev => setFurloughHours(parseFloat(ev.target.value))}/>
+                        </FloatingLabel>
+                    </InputGroup>
+                    <InputGroup className="mt-2">
+                        <InputGroup.Text><Clock/></InputGroup.Text>
+                        <FloatingLabel controlId="floatingInput" label="Ore lutto">
+                            <Form.Control type="number" min={0} step={0.5} placeholder="Ore lutto"
+                                          value={bereavementHours}
+                                          onChange={ev => setBereavementHours(parseFloat(ev.target.value))}/>
+                        </FloatingLabel>
+                    </InputGroup>
+                    <InputGroup className="mt-2">
+                        <InputGroup.Text><Clock/></InputGroup.Text>
+                        <FloatingLabel controlId="floatingInput" label="Ore paternità/maternità">
+                            <Form.Control type="number" min={0} step={0.5} placeholder="Ore paternità/maternità"
+                                          value={paternityHours}
+                                          onChange={ev => setPaternityHours(parseFloat(ev.target.value))}/>
                         </FloatingLabel>
                     </InputGroup>
                     <InputGroup className="mt-2">

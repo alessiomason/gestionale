@@ -165,6 +165,14 @@ function WorkedHoursMobilePage(props: WorkedHoursPageProps) {
                                         <td>Cassa integrazione</td>
                                         <td className="second-column">{dailyExpense.furloughHours}</td>
                                     </tr>}
+                                    {dailyExpense.bereavementHours !== 0 && <tr>
+                                        <td>Lutto</td>
+                                        <td className="second-column">{dailyExpense.bereavementHours}</td>
+                                    </tr>}
+                                    {dailyExpense.paternityHours !== 0 && <tr>
+                                        <td>Paternità/maternità</td>
+                                        <td className="second-column">{dailyExpense.paternityHours}</td>
+                                    </tr>}
                                     {dailyExpense.travelHours !== 0 && <tr>
                                         <td>Viaggio</td>
                                         <td className="second-column">{dailyExpense.travelHours}</td>

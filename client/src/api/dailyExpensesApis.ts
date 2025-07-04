@@ -15,7 +15,9 @@ function rebuildDailyExpense(dailyExpense: DailyExpense) {
         dailyExpense.holidayApproved,
         dailyExpense.sickHours,
         dailyExpense.donationHours,
-        dailyExpense.furloughHours
+        dailyExpense.furloughHours,
+        dailyExpense.bereavementHours,
+        dailyExpense.paternityHours
     );
 }
 
