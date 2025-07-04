@@ -23,19 +23,29 @@
     color: #336600;
 }
 
-/* Travel hours */
+/* Bereavement hours */
 .company-worked-hours-table > tbody > tr > td > div:nth-child(8) {
-    color: steelblue;
+    color: #393a39;
+}
+
+/* Paternity leave hours */
+.company-worked-hours-table > tbody > tr > td > div:nth-child(9) {
+    color: royalblue;
+}
+
+/* Travel hours */
+.company-worked-hours-table > tbody > tr > td > div:nth-child(10) {
+    color: darkorange;
 }
 
 /* Expenses */
-.company-worked-hours-table > tbody > tr > td > div:nth-child(9) {
+.company-worked-hours-table > tbody > tr > td > div:nth-child(11) {
     color: rebeccapurple;
 }
 
 /* Kilometres */
-.company-worked-hours-table > tbody > tr > td > div:nth-child(10) {
-    color: darkorange;
+.company-worked-hours-table > tbody > tr > td > div:nth-child(12) {
+    color: cadetblue;
 }
 
 .clickable:hover {

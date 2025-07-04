@@ -19,7 +19,9 @@ function parseDailyExpense(dailyExpense: any) {
             null : !!dailyExpense.holidayApproved,
         parseFloat(dailyExpense.sickHours),
         parseFloat(dailyExpense.donationHours),
-        parseFloat(dailyExpense.furloughHours)
+        parseFloat(dailyExpense.furloughHours),
+        parseFloat(dailyExpense.bereavementHours),
+        parseFloat(dailyExpense.paternityHours)
     );
 }
 

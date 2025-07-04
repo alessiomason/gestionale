@@ -57,6 +57,8 @@ export async function getCompanyHours(month: string) {
             0,
             0,
             0,
+            0,
+            0,
             ""
         );
     })
@@ -76,6 +78,8 @@ export async function getCompanyHours(month: string) {
             companyHoursItem.sickHours = companyDailyExpense.sickHours;
             companyHoursItem.donationHours = companyDailyExpense.donationHours;
             companyHoursItem.furloughHours = companyDailyExpense.furloughHours;
+            companyHoursItem.bereavementHours = companyDailyExpense.bereavementHours;
+            companyHoursItem.paternityHours = companyDailyExpense.paternityHours;
             companyHoursItem.expenses = companyDailyExpense.expenses;
             companyHoursItem.kms = companyDailyExpense.kms;
             companyHoursItem.destination = companyDailyExpense.destination;
@@ -93,6 +97,8 @@ export async function getCompanyHours(month: string) {
                 companyDailyExpense.sickHours,
                 companyDailyExpense.donationHours,
                 companyDailyExpense.furloughHours,
+                companyDailyExpense.bereavementHours,
+                companyDailyExpense.paternityHours,
                 companyDailyExpense.expenses,
                 companyDailyExpense.kms,
                 companyDailyExpense.destination,

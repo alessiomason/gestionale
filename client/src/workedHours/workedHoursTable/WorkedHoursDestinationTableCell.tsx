@@ -37,6 +37,8 @@ function WorkedHoursDestinationTableCell(props: WorkedHoursDestinationTableCellP
                 null,
                 0,
                 0,
+                0,
+                0,
                 0
             );
             newDailyExpense.destination = destination;
