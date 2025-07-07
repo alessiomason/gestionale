@@ -3,6 +3,7 @@ import {Col, Modal, Row, Table} from "react-bootstrap";
 import {CalendarEvent, Floppy, JournalBookmarkFill, Person, Sun, Trash} from "react-bootstrap-icons";
 import GlossyButton from "../buttons/GlossyButton";
 import WorkedHoursNewJobModal from "../workedHours/WorkedHoursNewJobModal";
+import Loading from "../Loading";
 import {Role, Type, User} from "../models/user";
 import {Job} from "../models/job";
 import {PlannedDay} from "../models/plannedDay";
@@ -30,8 +31,12 @@ function PlanningTable(props: PlanningTableProps) {
     }
 
     const [users, setUsers] = useState<User[]>([]);
+    const [loadingUsers, setLoadingUsers] = useState(true);
     const [plannedDays, setPlannedDays] = useState<PlannedDay[]>([]);
+    const [loadingPlannedDays, setLoadingPlannedDays] = useState(true);
     const [dailyExpenses, setDailyExpenses] = useState<DailyExpense[]>([]);
+    const [loadingDailyExpenses, setLoadingDailyExpenses] = useState(true);
+    const loading = loadingUsers || loadingPlannedDays || loadingDailyExpenses;
     const [showPlannedDayModal, setShowPlannedDayModal] = useState(false);
     const [showNewJobModal, setShowNewJobModal] = useState(false);
     const [modalUser, setModalUser] = useState<User | undefined>(undefined);
@@ -40,17 +45,29 @@ function PlanningTable(props: PlanningTableProps) {
 
     useEffect(() => {
         userApis.getAllUsers()
-            .then(users => setUsers(users))
+            .then(users => {
+                setUsers(users);
+                setLoadingUsers(false);
+            })
             .catch(err => console.error(err));
     }, []);
 
     useEffect(() => {
+        setLoadingPlannedDays(true);
+        setLoadingDailyExpenses(true);
+
         plannedDayApis.getAllPlannedDays(`${props.year}-${props.month}`)
-            .then(plannedDays => setPlannedDays(plannedDays!))
+            .then(plannedDays => {
+                setPlannedDays(plannedDays!);
+                setLoadingPlannedDays(false);
+            })
             .catch(err => console.error(err));
 
         dailyExpenseApis.getAllDailyExpenses(`${props.year}-${props.month}`)
-            .then(dailyExpenses => setDailyExpenses(dailyExpenses!))
+            .then(dailyExpenses => {
+                setDailyExpenses(dailyExpenses!);
+                setLoadingDailyExpenses(false);
+            })
             .catch(err => console.error(err));
     }, [props.month, props.year]);
 
@@ -129,6 +146,10 @@ function PlanningTable(props: PlanningTableProps) {
                 props.setSavingStatus("");
                 console.error(err);
             });
+    }
+
+    if (loading) {
+        return <Loading />;
     }
 
     return (
