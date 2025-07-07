@@ -133,7 +133,7 @@ function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
                                             <div>{(companyHoursItem && companyHoursItem.travelHours !== 0) ? companyHoursItem.travelHours : <>&nbsp;</>}</div>
                                             <div>{(companyHoursItem && companyHoursItem.expenses !== 0) ? `€ ${companyHoursItem.expenses}` : <>&nbsp;</>}</div>
                                             <div
-                                                title={`${companyHoursItem ? companyHoursItem.destination : ""}${companyHoursItem?.destination !== "" && companyHoursItem?.tripCost ? "\n" : ""}${companyHoursItem?.tripCost ? `Costo del viaggio: € ${companyHoursItem.tripCost}` : ""}`}>
+                                                title={`${companyHoursItem ? `Destinazione: ${companyHoursItem.destination}` : ""}${companyHoursItem?.destination !== "" && companyHoursItem?.tripCost ? "\n" : ""}${companyHoursItem?.tripCost ? `Costo del viaggio: € ${companyHoursItem.tripCost}` : ""}`}>
                                                 {(companyHoursItem && companyHoursItem.kms !== 0) ? `${companyHoursItem.kms} km` : <>&nbsp;</>}
                                             </div>
                                         </td>
