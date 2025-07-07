@@ -237,12 +237,43 @@ function HolidaysTable(props: HolidaysTableProps) {
                                                         )
                                                     }
 
+                                                    // show other people's holiday hours to users (admins already covered
+                                                    // by previous return statement) or show other absence hours
+                                                    // to administrators
+                                                    let dataToShow = "";
+                                                    let titleToShow = "";
+                                                    if (dailyExpense) {
+                                                        if (dailyExpense.holidayHours > 0) {
+                                                            dataToShow = dailyExpense.holidayHours.toString();
+                                                            titleToShow = `${dailyExpense.holidayHours} ore di ferie`;
+                                                        } else if (props.user.role !== Role.user) {
+                                                            // only show absence hours to administrators
+                                                            // users can only see others' holiday hours
+                                                            if (dailyExpense.sickHours > 0) {
+                                                                dataToShow = dailyExpense.sickHours.toString();
+                                                                titleToShow = `${dailyExpense.sickHours} ore di malattia`;
+                                                            } else if (dailyExpense.donationHours > 0) {
+                                                                dataToShow = dailyExpense.donationHours.toString();
+                                                                titleToShow = `${dailyExpense.donationHours} ore di donazione`;
+                                                            } else if (dailyExpense.furloughHours > 0) {
+                                                                dataToShow = dailyExpense.furloughHours.toString();
+                                                                titleToShow = `${dailyExpense.furloughHours} ore di cassa integrazione`;
+                                                            } else if (dailyExpense.bereavementHours > 0) {
+                                                                dataToShow = dailyExpense.bereavementHours.toString();
+                                                                titleToShow = `${dailyExpense.bereavementHours} ore di lutto`;
+                                                            } else if (dailyExpense.paternityHours > 0) {
+                                                                dataToShow = dailyExpense.paternityHours.toString();
+                                                                titleToShow = `${dailyExpense.paternityHours} ore di paternità/maternità`;
+                                                            }
+                                                        }
+                                                    }
+
                                                     return (
                                                         <td key={workday.format()}
                                                             onClick={() => openModal(dailyExpense)}
+                                                            title={titleToShow}
                                                             className={className}>
-                                                            {(!dailyExpense?.holidayHours || dailyExpense.holidayHours === 0) ?
-                                                                "" : dailyExpense.holidayHours}
+                                                            {dataToShow}
                                                         </td>
                                                     );
                                                 })}
