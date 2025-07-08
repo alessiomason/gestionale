@@ -60,13 +60,13 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
         if (dirty) {
             getData();
         }
-    }, [dirty, searchParams]);
+    }, [dirty]);
 
     useEffect(() => {
         setDirtyWorkItems(true);
         setDirtyDailyExpenses(true);
         setAddedJobs([]);
-    }, [props.month, props.year, props.selectedUser.id]);
+    }, [props.month, props.year, props.selectedUser.id, searchParams]);
 
     function getData() {
         setLoadingWorkItems(true);
