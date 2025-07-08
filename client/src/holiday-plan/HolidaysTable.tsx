@@ -3,6 +3,7 @@ import {Col, Modal, Row, Table} from "react-bootstrap";
 import {CalendarEvent, Check2Circle, Clock, Person, QuestionDiamond, XCircle} from "react-bootstrap-icons";
 import WorkedHoursDailyTableCell from "../workedHours/workedHoursTable/WorkedHoursDailyTableCell";
 import GlossyButton from "../buttons/GlossyButton";
+import Loading from "../Loading";
 import {Role, Type, User} from "../models/user";
 import {DailyExpense} from "../models/dailyExpense";
 import workdayClassName from "../workedHours/workedHoursFunctions";
@@ -27,7 +28,10 @@ function HolidaysTable(props: HolidaysTableProps) {
     }
 
     const [users, setUsers] = useState<User[]>([]);
+    const [loadingUsers, setLoadingUsers] = useState(true);
     const [dailyExpenses, setDailyExpenses] = useState<DailyExpense[]>([]);
+    const [loadingDailyExpenses, setLoadingDailyExpenses] = useState(true);
+    const loading = loadingUsers || loadingDailyExpenses;
     const [showModal, setShowModal] = useState(false);
     const [editingDailyExpense, setEditingDailyExpense] = useState<DailyExpense>();
     const editingDailyExpenseUser = users.find(u => u.id === editingDailyExpense?.userId);
@@ -47,13 +51,21 @@ function HolidaysTable(props: HolidaysTableProps) {
 
     useEffect(() => {
         userApis.getAllUsers()
-            .then(users => setUsers(users))
+            .then(users => {
+                setUsers(users);
+                setLoadingUsers(false);
+            })
             .catch(err => console.error(err));
     }, []);
 
     useEffect(() => {
+        setLoadingDailyExpenses(true);
+
         dailyExpenseApis.getAllDailyExpenses(`${props.year}-${props.month}`)
-            .then(dailyExpenses => setDailyExpenses(dailyExpenses!))
+            .then(dailyExpenses => {
+                setDailyExpenses(dailyExpenses!);
+                setLoadingDailyExpenses(false);
+            })
             .catch(err => console.error(err))
     }, [props.month, props.year]);
 
@@ -108,6 +120,10 @@ function HolidaysTable(props: HolidaysTableProps) {
 
             return newDailyExpenses;
         })
+    }
+
+    if (loading) {
+        return <Loading />;
     }
 
     return (

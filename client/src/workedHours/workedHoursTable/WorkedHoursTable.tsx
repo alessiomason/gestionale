@@ -1,18 +1,20 @@
 import React, {useEffect, useState} from "react";
+import {useSearchParams} from "react-router-dom";
 import {Table} from "react-bootstrap";
-import dayjs from "dayjs";
-import "./WorkedHoursTable.css";
-import {WorkItem} from "../../models/workItem";
-import workItemApis from "../../api/workItemApis";
+import Loading from "../../Loading";
 import WorkedHoursWorkItemTableCell from "./WorkedHoursWorkItemTableCell";
-import {Role, Type, User} from "../../models/user";
-import {Job} from "../../models/job";
-import {DailyExpense} from "../../models/dailyExpense";
-import dailyExpenseApis from "../../api/dailyExpensesApis";
 import WorkedHoursDailyTableCell from "./WorkedHoursDailyTableCell";
 import WorkedHoursDestinationTableCell from "./WorkedHoursDestinationTableCell";
 import WorkedHoursTableNewJobRow from "./WorkedHoursTableNewJobRow";
+import {Role, Type, User} from "../../models/user";
+import {WorkItem} from "../../models/workItem";
+import {Job} from "../../models/job";
+import {DailyExpense} from "../../models/dailyExpense";
+import workItemApis from "../../api/workItemApis";
+import dailyExpenseApis from "../../api/dailyExpensesApis";
 import workdayClassName from "../workedHoursFunctions";
+import dayjs from "dayjs";
+import "./WorkedHoursTable.css";
 
 interface WorkedHoursTableProps {
     readonly user: User
@@ -29,11 +31,15 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
         workdays.push(dayjs(`${props.year}-${props.month}-${i}`));
     }
 
+    const [searchParams] = useSearchParams();
     const isMachine = props.selectedUser.type === Type.machine;
     const [workItems, setWorkItems] = useState<WorkItem[]>();
     const [dailyExpenses, setDailyExpenses] = useState<DailyExpense[]>([]);
     const [dirtyWorkItems, setDirtyWorkItems] = useState(true);
     const [dirtyDailyExpenses, setDirtyDailyExpenses] = useState(true);
+    const [loadingWorkItems, setLoadingWorkItems] = useState(true);
+    const [loadingDailyExpenses, setLoadingDailyExpenses] = useState(true);
+    const loading = loadingWorkItems || loadingDailyExpenses;
     const dirty = dirtyWorkItems || dirtyDailyExpenses;
     const [addedJobs, setAddedJobs] = useState<Job[]>([]);
 
@@ -54,7 +60,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
         if (dirty) {
             getData();
         }
-    }, [dirty]);
+    }, [dirty, searchParams]);
 
     useEffect(() => {
         setDirtyWorkItems(true);
@@ -63,18 +69,25 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
     }, [props.month, props.year, props.selectedUser.id]);
 
     function getData() {
-        workItemApis.getWorkItems(`${props.year}-${props.month}`, props.selectedUser.id)
+        setLoadingWorkItems(true);
+        setLoadingDailyExpenses(true);
+
+        const selectedUserId = parseInt(searchParams.get("u") ?? "1");
+
+        workItemApis.getWorkItems(`${props.year}-${props.month}`, selectedUserId)
             .then(workItems => {
                 setWorkItems(workItems);
                 setDirtyWorkItems(false);
+                setLoadingWorkItems(false);
             })
             .catch(err => console.error(err))
 
         if (!isMachine && (props.user.id === props.selectedUser.id || props.user.role !== Role.user)) {
-            dailyExpenseApis.getDailyExpenses(`${props.year}-${props.month}`, props.selectedUser.id)
+            dailyExpenseApis.getDailyExpenses(`${props.year}-${props.month}`, selectedUserId)
                 .then(dailyExpenses => {
                     setDailyExpenses(dailyExpenses!);
                     setDirtyDailyExpenses(false);
+                    setLoadingDailyExpenses(false);
                 })
                 .catch(err => console.error(err))
         } else {
@@ -125,6 +138,10 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
 
             return newDailyExpenses;
         })
+    }
+
+    if (loading) {
+        return <Loading />;
     }
 
     return (

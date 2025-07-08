@@ -82,6 +82,9 @@ function WorkedHoursDailyTableCell(props: WorkedHoursDailyTableCellProps) {
                 if (props.field === "kms") {
                     newDailyExpense.tripCost = props.selectedUser.costPerKm ? newDailyExpense.kms * props.selectedUser.costPerKm : undefined;
                 }
+                if (props.field === "holidayHours") {
+                    newDailyExpense.holidayApproved = null;
+                }
 
                 dailyExpensesApis.createOrUpdateDailyExpense(newDailyExpense)
                     .then(() => props.setSavingStatus("saved"))

@@ -1,15 +1,16 @@
-import {Col, Row, Table} from "react-bootstrap";
-import dayjs from "dayjs";
-import workdayClassName from "../workedHoursFunctions";
 import React, {useEffect, useState} from "react";
-import companyHoursApis from "../../api/companyHoursApis";
+import {useNavigate} from "react-router-dom";
+import {Col, Row, Table} from "react-bootstrap";
+import {FileEarmarkSpreadsheet} from "react-bootstrap-icons";
+import Loading from "../../Loading";
+import GlossyButton from "../../buttons/GlossyButton";
 import {CompanyHoursItem} from "../../models/companyHoursItem";
+import workdayClassName from "../workedHoursFunctions";
 import {exportCompanyWorkedHoursExcel} from "./exportCompanyWorkedHoursExcel";
 import {compareUsers} from "../../functions";
-import GlossyButton from "../../buttons/GlossyButton";
-import {FileEarmarkSpreadsheet} from "react-bootstrap-icons";
+import companyHoursApis from "../../api/companyHoursApis";
 import "./CompanyWorkedHoursTable.css";
-import {useNavigate} from "react-router-dom";
+import dayjs from "dayjs";
 
 interface CompanyWorkedHoursTableProps {
     readonly month: number
@@ -26,6 +27,7 @@ function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
         workdays.push(dayjs(`${props.year}-${props.month}-${i}`));
     }
 
+    const [loading, setLoading] = useState(true);
     const [companyHours, setCompanyHours] = useState<CompanyHoursItem[]>([]);
     const users = companyHours.map(companyHoursItem => companyHoursItem.user)
         .filter((user, index, users) =>
@@ -33,10 +35,19 @@ function CompanyWorkedHoursTable(props: CompanyWorkedHoursTableProps) {
         .sort(compareUsers);
 
     useEffect(() => {
+        setLoading(true);
+
         companyHoursApis.getCompanyHours(`${props.year}-${props.month}`)
-            .then(companyHours => setCompanyHours(companyHours))
+            .then(companyHours => {
+                setCompanyHours(companyHours);
+                setLoading(false);
+            })
             .catch(err => console.error(err))
     }, [props.month, props.year]);
+
+    if (loading) {
+        return <Loading />;
+    }
 
     return (
         <>

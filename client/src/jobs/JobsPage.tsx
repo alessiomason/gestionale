@@ -148,9 +148,9 @@ function JobsPage(props: JobsPageProps) {
                 </Col>
 
                 <Col>
-                    {loading && <Loading/>}
-                    {showingNewJobPane ?
-                        <JobPane job={undefined} setJobs={setJobs}/> :
+                    {!showingNewJobPane && loading && <Loading/>}
+                    {showingNewJobPane && <JobPane job={undefined} setJobs={setJobs}/>}
+                    {!showingNewJobPane && !loading &&
                         <JobsTable isAdministrator={props.isAdministrator} jobs={jobs.filter(job => {
                             let keep = true;
 
@@ -171,7 +171,8 @@ function JobsPage(props: JobsPageProps) {
                             }
 
                             return keep;
-                        })}/>}
+                        })}/>
+                    }
                 </Col>
             </Row>
         </>
