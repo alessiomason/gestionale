@@ -69,6 +69,9 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
     }, [props.month, props.year, props.selectedUser.id]);
 
     function getData() {
+        setLoadingWorkItems(true);
+        setLoadingDailyExpenses(true);
+
         const selectedUserId = parseInt(searchParams.get("u") ?? "1");
 
         workItemApis.getWorkItems(`${props.year}-${props.month}`, selectedUserId)
