@@ -72,16 +72,6 @@ if (process.env.NODE_ENV === "production") {
     app.use(forceSsl);
 }
 
-// serve the client
-if (process.env.NODE_ENV === "production") {
-    const path = require("path");
-    // ../../../ -> triple because the production build is served from server/dist/src/
-    app.use(express.static(path.resolve(__dirname, "../../../client", "build")));
-    app.get("*", (_req: Request, res: Response) => {
-        res.sendFile(path.resolve(__dirname, "../../../client", "build", "index.html"));
-    });
-}
-
 // set up the session
 const MySQLSessionStore = require("express-mysql-session")(session);
 const sessionStore = new MySQLSessionStore(dbOptions);
@@ -100,7 +90,7 @@ app.use(session({
     }
 }));
 
-// then, init passport
+// init passport
 app.use(passport.initialize());
 app.use(passport.authenticate("session"));
 app.use(function (req, res, next) {
@@ -170,5 +160,15 @@ useDailyExpensesAPIs(app, isLoggedIn, isAdministrator, isDeveloper);
 useCompanyHoursAPIs(app, isLoggedIn, isAdministrator);
 useOrdersAPIs(app, isLoggedIn, canManageOrders);
 usePlannedDaysAPIs(app, isLoggedIn);
+
+// serve the client
+if (process.env.NODE_ENV === "production") {
+    const path = require("path");
+    // ../../../ -> triple because the production build is served from server/dist/src/
+    app.use(express.static(path.resolve(__dirname, "../../../client", "build")));
+    app.all("/*splat", (_req: Request, res: Response) => {
+        res.sendFile(path.resolve(__dirname, "../../../client", "build", "index.html"));
+});
+}
 
 export default app;
