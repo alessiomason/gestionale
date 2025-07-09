@@ -3,7 +3,7 @@
   "author": "Alessio Mason",
   "description": "The server for a web application to manage jobs and register worked hours",
   "license": "MIT",
-  "version": "1.5.9",
+  "version": "1.5.10",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^6.6.3",
