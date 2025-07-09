@@ -101,7 +101,6 @@ export function setupPassport(store: WebAuthnStrategy.SessionChallengeStore) {
 
     // starting from the data in the session, we extract the current (logged-in) user
     passport.deserializeUser(async (id: number, done) => {
-        const user = await getUser(id);
         const users = await usersList.getAllCachedUsers(true);
         const user = users.find(u => u.id === id);
         done(null, user);
