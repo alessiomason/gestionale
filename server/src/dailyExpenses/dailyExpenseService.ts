@@ -37,13 +37,9 @@ export async function getAllDailyExpenses(month: string) {
 
 export async function getDailyExpenses(userId: number, month: string) {
     const formattedMonth = checkValidMonth(month);
-    const user = await getUser(userId);
-    if (!user) {
-        throw new UserNotFound();
-    }
 
     const dailyExpenses = await knex("dailyExpenses")
-        .whereRaw("user_id = ?", user.id)
+        .whereRaw("user_id = ?", userId)
         .andWhereRaw("date LIKE ?", formattedMonth + "-%")
         .select();
 
@@ -52,13 +48,9 @@ export async function getDailyExpenses(userId: number, month: string) {
 
 export async function getDailyExpense(userId: number, date: string) {
     const formattedDate = checkValidDate(date);
-    const user = await getUser(userId);
-    if (!user) {
-        throw new UserNotFound();
-    }
 
     const dailyExpense = await knex("dailyExpenses")
-        .whereRaw("user_id = ?", user.id)
+        .whereRaw("user_id = ?", userId)
         .andWhereRaw("date = ?", formattedDate)
         .first();
 

@@ -252,7 +252,7 @@ export async function createUser(newUser: NewUser) {
         .where({name: newUser.name, surname: newUser.surname})
 
     if (existingUser) {
-        return new UserWithSameUsernameError()
+        return new UserWithSameUsernameError();
     }
 
     const registrationToken = crypto.randomBytes(8).toString("hex");

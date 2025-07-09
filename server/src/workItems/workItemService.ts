@@ -10,14 +10,10 @@ import {checkValidDate, checkValidMonth} from "../functions";
 
 export async function getWorkItems(userId: number, month: string) {
     const formattedMonth = checkValidMonth(month);
-    const user = await getUser(userId);
-    if (!user) {
-        throw new UserNotFound();
-    }
 
     const workItems = await knex("workItems")
         .join("jobs", "workItems.jobId", "jobs.id")
-        .whereRaw("work_items.user_id = ?", user.id)
+        .whereRaw("work_items.user_id = ?", userId)
         .andWhereRaw("work_items.date LIKE ?", formattedMonth + "-%")
         .select("workItems.*", "jobs.subject", "jobs.client",
             "jobs.finalClient", "jobs.orderName", "jobs.orderAmount", "jobs.startDate",

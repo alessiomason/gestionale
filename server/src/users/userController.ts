@@ -59,13 +59,13 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdminis
             }
 
             try {
-                const userId = parseInt(req.params.userId)
-                const user = await getUser(userId)
+                const userId = parseInt(req.params.userId);
+                const user = await getUser(userId);
 
                 if (user) {
-                    res.status(200).json(user)
+                    res.status(200).json(user);
                 } else {
-                    res.status(UserNotFound.code).json(new UserNotFound())
+                    res.status(UserNotFound.code).json(new UserNotFound());
                 }
             } catch (err: any) {
                 console.error("Error while retrieving users: ", err.message);
@@ -85,7 +85,7 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdminis
             }
 
             try {
-                const user = await getUserFromRegistrationToken(req.params.registrationToken)
+                const user = await getUserFromRegistrationToken(req.params.registrationToken);
 
                 if (user) {
                     // user already registered or token expired
@@ -118,7 +118,7 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdminis
             }
 
             try {
-                const publicKeyId = await getPublicKeyIdFromUsername(req.params.username)
+                const publicKeyId = await getPublicKeyIdFromUsername(req.params.username);
 
                 if (publicKeyId) {
                     res.status(200).json(publicKeyId)

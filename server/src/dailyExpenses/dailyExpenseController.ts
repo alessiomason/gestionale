@@ -83,12 +83,8 @@ export function useDailyExpensesAPIs(
                 return
             }
 
-            const requestingUser = await getUser((req.user as User).id);
+            const requestingUser = req.user as User;
             const requestedUserId = parseInt(req.params.userId);
-            if (!requestingUser) {
-                res.status(UserNotFound.code).json(new UserNotFound());
-                return
-            }
 
             // this is only allowed if a normal user has requested their own daily expenses
             // or if the requesting user is an administrator
@@ -132,11 +128,7 @@ export function useDailyExpensesAPIs(
                 return
             }
 
-            const requestingUser = await getUser((req.user as User).id);
-            if (!requestingUser) {
-                res.status(UserNotFound.code).json(new UserNotFound());
-                return
-            }
+            const requestingUser = req.user as User;
             const requestedUserId = req.body.userId ? parseInt(req.body.userId) : requestingUser.id;
 
             // this is only allowed if a normal user has requested their own daily expenses
@@ -147,7 +139,7 @@ export function useDailyExpensesAPIs(
             }
 
             const newDailyExpense = new DailyExpense(
-                req.body.userId,
+                requestedUserId,
                 req.body.date,
                 req.body.expenses,
                 req.body.destination,
