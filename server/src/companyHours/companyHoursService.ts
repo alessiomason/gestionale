@@ -3,7 +3,7 @@ import {knex} from "../database/db";
 import {CompanyHoursItem} from "./companyHoursItem";
 import {User} from "../users/user";
 import {getAllDailyExpenses} from "../dailyExpenses/dailyExpenseService";
-import {getUser} from "../users/userService";
+import {usersList} from "../users/usersList";
 import {UserNotFound} from "../users/userErrors";
 import dayjs from "dayjs";
 
@@ -85,7 +85,7 @@ export async function getCompanyHours(month: string) {
             companyHoursItem.destination = companyDailyExpense.destination;
             companyHoursItem.tripCost = companyDailyExpense.tripCost;
         } else {
-            const user = await getUser(companyDailyExpense.userId);
+            const user = await usersList.getCachedUser(companyDailyExpense.userId);
             if (!user) throw new UserNotFound();
 
             const newCompanyHoursItem = new CompanyHoursItem(

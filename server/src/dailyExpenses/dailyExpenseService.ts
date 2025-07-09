@@ -1,4 +1,5 @@
-import {getAllUsers, getUser} from "../users/userService";
+import {getAllUsers} from "../users/userService";
+import {usersList} from "../users/usersList";
 import {UserNotFound} from "../users/userErrors";
 import {knex} from "../database/db";
 import {DailyExpense} from "./dailyExpense";
@@ -37,13 +38,9 @@ export async function getAllDailyExpenses(month: string) {
 
 export async function getDailyExpenses(userId: number, month: string) {
     const formattedMonth = checkValidMonth(month);
-    const user = await getUser(userId);
-    if (!user) {
-        throw new UserNotFound();
-    }
 
     const dailyExpenses = await knex("dailyExpenses")
-        .whereRaw("user_id = ?", user.id)
+        .whereRaw("user_id = ?", userId)
         .andWhereRaw("date LIKE ?", formattedMonth + "-%")
         .select();
 
@@ -52,13 +49,9 @@ export async function getDailyExpenses(userId: number, month: string) {
 
 export async function getDailyExpense(userId: number, date: string) {
     const formattedDate = checkValidDate(date);
-    const user = await getUser(userId);
-    if (!user) {
-        throw new UserNotFound();
-    }
 
     const dailyExpense = await knex("dailyExpenses")
-        .whereRaw("user_id = ?", user.id)
+        .whereRaw("user_id = ?", userId)
         .andWhereRaw("date = ?", formattedDate)
         .first();
 
@@ -68,7 +61,7 @@ export async function getDailyExpense(userId: number, date: string) {
 }
 
 export async function createOrUpdateDailyExpense(newDailyExpense: DailyExpense) {
-    const user = await getUser(newDailyExpense.userId);
+    const user = await usersList.getCachedUser(newDailyExpense.userId);
     if (!user) {
         throw new UserNotFound();
     }

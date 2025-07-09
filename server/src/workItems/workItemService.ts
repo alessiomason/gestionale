@@ -1,4 +1,5 @@
-import {getAllUsers, getUser} from "../users/userService";
+import {getAllUsers} from "../users/userService";
+import {usersList} from "../users/usersList";
 import {UserNotFound} from "../users/userErrors";
 import {knex} from "../database/db";
 import {Job} from "../jobs/job";
@@ -10,14 +11,10 @@ import {checkValidDate, checkValidMonth} from "../functions";
 
 export async function getWorkItems(userId: number, month: string) {
     const formattedMonth = checkValidMonth(month);
-    const user = await getUser(userId);
-    if (!user) {
-        throw new UserNotFound();
-    }
 
     const workItems = await knex("workItems")
         .join("jobs", "workItems.jobId", "jobs.id")
-        .whereRaw("work_items.user_id = ?", user.id)
+        .whereRaw("work_items.user_id = ?", userId)
         .andWhereRaw("work_items.date LIKE ?", formattedMonth + "-%")
         .select("workItems.*", "jobs.subject", "jobs.client",
             "jobs.finalClient", "jobs.orderName", "jobs.orderAmount", "jobs.startDate",
@@ -114,18 +111,13 @@ export async function getAllWorkItems(month: string) {
 
 export async function getWorkItem(userId: number, jobId: string, date: string) {
     const formattedDate = checkValidDate(date);
-    const user = await getUser(userId);
-    if (!user) {
-        throw new UserNotFound();
-    }
-
     const job = await getJob(jobId);
     if (!job) {
         throw new JobNotFound();
     }
 
     const workItem = await knex("workItems")
-        .whereRaw("work_items.user_id = ?", user.id)
+        .whereRaw("work_items.user_id = ?", userId)
         .andWhereRaw("work_items.job_id = ?", job.id)
         .andWhereRaw("work_items.date = ?", formattedDate)
         .first();
@@ -135,7 +127,7 @@ export async function getWorkItem(userId: number, jobId: string, date: string) {
 }
 
 export async function createOrUpdateWorkItem(userId: number, jobId: string, date: string, hours: number) {
-    const user = await getUser(userId);
+    const user = await usersList.getCachedUser(userId);
     if (!user) throw new UserNotFound();
 
     const cost = hours * user.costPerHour;

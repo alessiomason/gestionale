@@ -6,6 +6,7 @@ import {knex} from "../database/db";
 import {User} from "../users/user";
 import * as crypto from "crypto";
 import {getUser, getUserFromUsername} from "../users/userService";
+import {usersList} from "../users/usersList";
 
 export function setupPassport(store: WebAuthnStrategy.SessionChallengeStore) {
     // mock authentication strategy (for testing)
@@ -100,7 +101,8 @@ export function setupPassport(store: WebAuthnStrategy.SessionChallengeStore) {
 
     // starting from the data in the session, we extract the current (logged-in) user
     passport.deserializeUser(async (id: number, done) => {
-        const user = await getUser(id);
+        const users = await usersList.getAllCachedUsers(true);
+        const user = users.find(u => u.id === id);
         done(null, user);
     });
 }

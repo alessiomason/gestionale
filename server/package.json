@@ -3,7 +3,7 @@
   "author": "Alessio Mason",
   "description": "The server for a web application to manage jobs and register worked hours",
   "license": "MIT",
-  "version": "1.5.9",
+  "version": "1.5.10",
   "private": true,
   "scripts": {
     "build": "npx tsc",
@@ -15,8 +15,8 @@
   "dependencies": {
     "@forwardemail/passport-fido2-webauthn": "^0.1.0",
     "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.1",
-    "@types/express-session": "^1.18.1",
+    "@types/express": "^5.0.3",
+    "@types/express-session": "^1.18.2",
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.14.1",
     "@types/node-cron": "^3.0.11",
@@ -26,7 +26,7 @@
     "cors": "^2.8.5",
     "dayjs": "^1.11.13",
     "dotenv": "^16.5.0",
-    "express": "~4.21.2",
+    "express": "~5.1.0",
     "express-mysql-session": "^3.0.3",
     "express-session": "^1.18.1",
     "express-validator": "^7.2.1",

@@ -4,7 +4,7 @@ import {body, param, validationResult} from "express-validator";
 import {BaseError, InternalServerError, ParameterError} from "../errors";
 import {createOrUpdateWorkItem, getAllWorkItems, getWorkItems, updateWorkItemsCosts} from "./workItemService";
 import {Role, Type, User} from "../users/user";
-import {getUser} from "../users/userService";
+import {usersList} from "../users/usersList";
 import {UserNotFound} from "../users/userErrors";
 import {UserCannotReadOtherWorkedHours} from "./workItemErrors";
 
@@ -28,8 +28,10 @@ export function useWorkItemsAPIs(
                 return
             }
 
-            const requestingUser = await getUser((req.user as User).id);
-            const requestedUser = await getUser(parseInt(req.params.userId));
+            const requestingUser = req.user as User;
+            const requestedUserId = parseInt(req.params.userId);
+            const requestedUser = requestingUser?.id === requestedUserId ?
+                requestingUser : await usersList.getCachedUser(requestedUserId);
             if (!requestingUser || !requestedUser) {
                 res.status(UserNotFound.code).json(new UserNotFound());
                 return
@@ -94,14 +96,16 @@ export function useWorkItemsAPIs(
                 return
             }
 
-            const requestingUser = await getUser((req.user as User).id);
+            const requestingUser = req.user as User;
             if (!requestingUser) {
                 res.status(UserNotFound.code).json(new UserNotFound());
                 return
             }
             let requestedUser: User | undefined = undefined;
-            if (req.body.userId) {
-                requestedUser = await getUser(req.body.userId);
+            let requestedUserId = req.body.userId ? parseInt(req.body.userId) : undefined;
+            if (requestedUserId) {
+                requestedUser = requestedUserId === requestingUser.id ?
+                    requestingUser : await usersList.getCachedUser(req.body.userId);
                 if (!requestedUser) {
                     res.status(UserNotFound.code).json(new UserNotFound());
                     return

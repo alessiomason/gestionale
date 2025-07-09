@@ -30,7 +30,6 @@ import {useDatabaseAPIs} from "./database/databaseController";
 import {useOrdersAPIs} from "./orders/orderController";
 import {usePlannedDaysAPIs} from "./planning/plannedDayController";
 
-
 // setup passport
 const webAuthnStore = new SessionChallengeStore();
 setupPassport(webAuthnStore);
@@ -91,9 +90,8 @@ app.use(session({
     }
 }));
 
-// then, init passport
+// init passport
 app.use(passport.initialize());
-app.use(passport.session());
 app.use(passport.authenticate("session"));
 app.use(function (req, res, next) {
     // @ts-ignore
@@ -114,7 +112,7 @@ function isLoggedIn(req: Request, res: Response, next: NextFunction) {
 
 function isAdministrator(req: Request, res: Response, next: NextFunction) {
     const user = req.user ? (req.user as User) : undefined;
-    if (user?.role !== Role.user) {     // accept administrators and developers
+    if (user && user.role !== Role.user) {     // accept administrators and developers
         return next();
     }
 
@@ -163,13 +161,14 @@ useCompanyHoursAPIs(app, isLoggedIn, isAdministrator);
 useOrdersAPIs(app, isLoggedIn, canManageOrders);
 usePlannedDaysAPIs(app, isLoggedIn);
 
+// serve the client
 if (process.env.NODE_ENV === "production") {
     const path = require("path");
     // ../../../ -> triple because the production build is served from server/dist/src/
     app.use(express.static(path.resolve(__dirname, "../../../client", "build")));
-    app.get("*", (_req: Request, res: Response) => {
+    app.all("/*splat", (_req: Request, res: Response) => {
         res.sendFile(path.resolve(__dirname, "../../../client", "build", "index.html"));
-    });
+});
 }
 
 export default app;

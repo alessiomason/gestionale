@@ -3,8 +3,6 @@ import {RequestHandler} from "express-serve-static-core";
 import {BaseError, InternalServerError, ParameterError} from "../errors";
 import {
     createUser,
-    getAllUsers,
-    getUser,
     getPublicKeyIdFromUsername,
     getUserFromRegistrationToken,
     updateUser,
@@ -14,6 +12,7 @@ import {
     resetPassword,
     getRegisteringUser
 } from "./userService";
+import {usersList} from "./usersList";
 import {body, param, validationResult} from "express-validator";
 import {UserNotFound, UserWithSameUsernameError} from "./userErrors";
 import {NewUser, Role, Type, User} from "./user";
@@ -28,7 +27,7 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdminis
         const user = req.user ? (req.user as User) : undefined;
 
         try {
-            const users = await getAllUsers(user ? user.role !== Role.user : false);
+            const users = await usersList.getAllCachedUsers(user ? user.role !== Role.user : false);
             res.status(200).json(users);
         } catch (err: any) {
             console.error("Error while retrieving users", err.message);
@@ -39,7 +38,7 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdminis
     // get all machine users
     app.get(`${baseURL}/machines`, isLoggedIn, async (_: Request, res: Response) => {
         try {
-            const machineUsers = await getAllMachineUsers()
+            const machineUsers = await getAllMachineUsers();
             res.status(200).json(machineUsers)
         } catch (err: any) {
             console.error("Error while retrieving machine users", err.message);
@@ -59,13 +58,13 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdminis
             }
 
             try {
-                const userId = parseInt(req.params.userId)
-                const user = await getUser(userId)
+                const userId = parseInt(req.params.userId);
+                const user = await usersList.getCachedUser(userId);
 
                 if (user) {
-                    res.status(200).json(user)
+                    res.status(200).json(user);
                 } else {
-                    res.status(UserNotFound.code).json(new UserNotFound())
+                    res.status(UserNotFound.code).json(new UserNotFound());
                 }
             } catch (err: any) {
                 console.error("Error while retrieving users: ", err.message);
@@ -85,7 +84,7 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdminis
             }
 
             try {
-                const user = await getUserFromRegistrationToken(req.params.registrationToken)
+                const user = await getUserFromRegistrationToken(req.params.registrationToken);
 
                 if (user) {
                     // user already registered or token expired
@@ -118,7 +117,7 @@ export function useUsersAPIs(app: Express, isLoggedIn: RequestHandler, isAdminis
             }
 
             try {
-                const publicKeyId = await getPublicKeyIdFromUsername(req.params.username)
+                const publicKeyId = await getPublicKeyIdFromUsername(req.params.username);
 
                 if (publicKeyId) {
                     res.status(200).json(publicKeyId)
