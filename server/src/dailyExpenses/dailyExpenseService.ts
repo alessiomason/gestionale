@@ -1,4 +1,5 @@
-import {getAllUsers, getUser} from "../users/userService";
+import {getAllUsers} from "../users/userService";
+import {usersList} from "../users/usersList";
 import {UserNotFound} from "../users/userErrors";
 import {knex} from "../database/db";
 import {DailyExpense} from "./dailyExpense";
@@ -60,7 +61,7 @@ export async function getDailyExpense(userId: number, date: string) {
 }
 
 export async function createOrUpdateDailyExpense(newDailyExpense: DailyExpense) {
-    const user = await getUser(newDailyExpense.userId);
+    const user = await usersList.getCachedUser(newDailyExpense.userId);
     if (!user) {
         throw new UserNotFound();
     }

@@ -3,7 +3,7 @@ import {knex} from "../database/db";
 import {CompanyHoursItem} from "./companyHoursItem";
 import {User} from "../users/user";
 import {getAllDailyExpenses} from "../dailyExpenses/dailyExpenseService";
-import {getAllUsers, getUser} from "../users/userService";
+import {usersList} from "../users/usersList";
 import {UserNotFound} from "../users/userErrors";
 import dayjs from "dayjs";
 
@@ -64,7 +64,6 @@ export async function getCompanyHours(month: string) {
     })
 
     const companyDailyExpenses = await getAllDailyExpenses(formattedMonth);
-    let users: User[] = []; // fill only if needed
 
     for (const companyDailyExpense of companyDailyExpenses) {
         const companyHoursItem = companyHours.find(companyWorkedHoursItem => {
@@ -86,10 +85,7 @@ export async function getCompanyHours(month: string) {
             companyHoursItem.destination = companyDailyExpense.destination;
             companyHoursItem.tripCost = companyDailyExpense.tripCost;
         } else {
-            if (users.length === 0) {
-                users = await getAllUsers(true);
-            }
-            const user = users.find(u => u.id === companyDailyExpense.userId);
+            const user = await usersList.getCachedUser(companyDailyExpense.userId);
             if (!user) throw new UserNotFound();
 
             const newCompanyHoursItem = new CompanyHoursItem(

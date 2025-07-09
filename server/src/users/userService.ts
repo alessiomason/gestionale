@@ -1,5 +1,6 @@
 import {knex} from '../database/db';
 import {NewUser, Role, Type, User} from "./user";
+import {usersList} from "./usersList";
 import {UserNotFound, UserWithSameUsernameError} from "./userErrors";
 import * as crypto from "crypto";
 import dayjs from "dayjs";
@@ -268,6 +269,8 @@ export async function createUser(newUser: NewUser) {
         .returning("id")
         .insert(userToInsert);
 
+    usersList.invalidateCache();
+
     return new User(
         userIds[0],
         newUser.role,
@@ -329,6 +332,8 @@ export async function updateUser(
                 car: car,
                 costPerKm: costPerKm
             });
+
+        usersList.invalidateCache();
     }
 }
 
@@ -353,4 +358,6 @@ export async function resetPassword(userId: number) {
             hashedPassword: null,
             salt: null
         });
+
+    usersList.invalidateCache();
 }

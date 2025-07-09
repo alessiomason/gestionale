@@ -4,7 +4,7 @@ import {body, param, validationResult} from "express-validator";
 import {BaseError, InternalServerError, ParameterError} from "../errors";
 import {createOrUpdateWorkItem, getAllWorkItems, getWorkItems, updateWorkItemsCosts} from "./workItemService";
 import {Role, Type, User} from "../users/user";
-import {getUser} from "../users/userService";
+import {usersList} from "../users/usersList";
 import {UserNotFound} from "../users/userErrors";
 import {UserCannotReadOtherWorkedHours} from "./workItemErrors";
 
@@ -30,7 +30,8 @@ export function useWorkItemsAPIs(
 
             const requestingUser = req.user as User;
             const requestedUserId = parseInt(req.params.userId);
-            const requestedUser = requestingUser?.id === requestedUserId ? requestingUser : await getUser(requestedUserId);
+            const requestedUser = requestingUser?.id === requestedUserId ?
+                requestingUser : await usersList.getCachedUser(requestedUserId);
             if (!requestingUser || !requestedUser) {
                 res.status(UserNotFound.code).json(new UserNotFound());
                 return
@@ -103,7 +104,8 @@ export function useWorkItemsAPIs(
             let requestedUser: User | undefined = undefined;
             let requestedUserId = req.body.userId ? parseInt(req.body.userId) : undefined;
             if (requestedUserId) {
-                requestedUser = requestedUserId === requestingUser.id ? requestingUser : await getUser(req.body.userId);
+                requestedUser = requestedUserId === requestingUser.id ?
+                    requestingUser : await usersList.getCachedUser(req.body.userId);
                 if (!requestedUser) {
                     res.status(UserNotFound.code).json(new UserNotFound());
                     return

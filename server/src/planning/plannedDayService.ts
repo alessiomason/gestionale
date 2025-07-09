@@ -3,8 +3,6 @@ import {knex} from "../database/db";
 import {Job} from "../jobs/job";
 import {User} from "../users/user";
 import {PlannedDay, RawPlannedDay} from "./plannedDay";
-import {getUser} from "../users/userService";
-import {UserNotFound} from "../users/userErrors";
 import {PlannedDayNotFound} from "./plannedDayErrors";
 
 const getPlannedDayQueryFields = [
@@ -75,13 +73,9 @@ export async function getAllPlannedDays(month: string) {
 
 export async function getPlannedDay(userId: number, date: string) {
     const formattedDate = checkValidDate(date);
-    const user = await getUser(userId);
-    if (!user) {
-        throw new UserNotFound();
-    }
 
     const plannedDay = await knex("plannedDays")
-        .whereRaw("user_id = ?", user.id)
+        .whereRaw("user_id = ?", userId)
         .andWhereRaw("date = ?", formattedDate)
         .first();
 

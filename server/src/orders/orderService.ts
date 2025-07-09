@@ -4,9 +4,9 @@ import {Job} from "../jobs/job";
 import {DuplicateOrder, OrderNotFound} from "./orderErrors";
 import {getJob} from "../jobs/jobService";
 import {JobNotFound} from "../jobs/jobErrors";
-import {getUser} from "../users/userService";
-import {UserNotFound} from "../users/userErrors";
 import {User} from "../users/user";
+import {usersList} from "../users/usersList";
+import {UserNotFound} from "../users/userErrors";
 import dayjs from "dayjs";
 import {sendEmail} from "../email/emailService";
 
@@ -220,10 +220,11 @@ export async function createOrder(newOrder: NewOrder) {
 
     const job = await getJob(newOrder.jobId);
     if (!job) throw new JobNotFound();
-    const byUser = await getUser(newOrder.byId);
+    const byUser = await usersList.getCachedUser(newOrder.byId);
     if (!byUser) throw new UserNotFound();
-    const partiallyClearedByUser = newOrder.partiallyClearedById ? await getUser(newOrder.partiallyClearedById) : undefined;
-    const clearedByUser = newOrder.clearedById ? await getUser(newOrder.clearedById) : undefined;
+    const partiallyClearedByUser = newOrder.partiallyClearedById ?
+        await usersList.getCachedUser(newOrder.partiallyClearedById) : undefined;
+    const clearedByUser = newOrder.clearedById ? await usersList.getCachedUser(newOrder.clearedById) : undefined;
 
     await knex("orders").insert(newOrder);
 
