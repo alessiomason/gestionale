@@ -31,8 +31,8 @@ function WorkedHoursSelectUser(props: WorkedHoursSelectUserProps) {
     // after loading, select user from query parameters
     useEffect(() => {
         if (users.length) {
-            const selectedUserId = parseInt(searchParams.get("u") ?? "1");
-            const selectedUser = users.find((user: User) => user.id === selectedUserId);
+            const selectedUserId = parseInt(searchParams.get("u") ?? "-1");
+            const selectedUser = users.find(user => user.id === selectedUserId);
             if (selectedUser) {
                 props.setSelectedUser(selectedUser);
             }
