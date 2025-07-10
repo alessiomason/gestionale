@@ -40,7 +40,6 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
     const [loadingWorkItems, setLoadingWorkItems] = useState(true);
     const [loadingDailyExpenses, setLoadingDailyExpenses] = useState(true);
     const loading = loadingWorkItems || loadingDailyExpenses;
-    const dirty = dirtyWorkItems || dirtyDailyExpenses;
     const [addedJobs, setAddedJobs] = useState<Job[]>([]);
 
     let monthExtraHours = 0;
@@ -57,24 +56,18 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
     let monthTripCost = 0;
 
     useEffect(() => {
-        if (dirty) {
             getData();
-        }
-    }, [dirty]);
-
     useEffect(() => {
         setDirtyWorkItems(true);
         setDirtyDailyExpenses(true);
         setAddedJobs([]);
-    }, [props.month, props.year, props.selectedUser.id, searchParams]);
+        getData();
+    }, [props.month, props.year, props.selectedUser.id]);
 
     function getData() {
         setLoadingWorkItems(true);
-        setLoadingDailyExpenses(true);
 
-        const selectedUserId = parseInt(searchParams.get("u") ?? "1");
-
-        workItemApis.getWorkItems(`${props.year}-${props.month}`, selectedUserId)
+        workItemApis.getWorkItems(`${props.year}-${props.month}`, props.selectedUser.id)
             .then(workItems => {
                 setWorkItems(workItems);
                 setDirtyWorkItems(false);
@@ -83,7 +76,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
             .catch(err => console.error(err))
 
         if (!isMachine && (props.user.id === props.selectedUser.id || props.user.role !== Role.user)) {
-            dailyExpenseApis.getDailyExpenses(`${props.year}-${props.month}`, selectedUserId)
+            dailyExpenseApis.getDailyExpenses(`${props.year}-${props.month}`, props.selectedUser.id)
                 .then(dailyExpenses => {
                     setDailyExpenses(dailyExpenses!);
                     setDirtyDailyExpenses(false);
