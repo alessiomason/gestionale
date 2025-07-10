@@ -54,9 +54,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
     let monthExpenses = 0;
     let monthKms = 0;
     let monthTripCost = 0;
-
-    useEffect(() => {
-            getData();
+    
     useEffect(() => {
         setDirtyWorkItems(true);
         setDirtyDailyExpenses(true);
