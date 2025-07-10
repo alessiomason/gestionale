@@ -7,7 +7,7 @@ import WorkedHoursTable from "./workedHoursTable/WorkedHoursTable";
 import WorkedHoursSelectUser from "./WorkedHoursSelectUser";
 import {MonthSelector, SelectMonthButtons} from "./MonthSelectingComponents";
 import SavingStatusMessage, {SavingStatus} from "../components/SavingStatusMessage";
-import {Type} from "../models/user";
+import {Role, Type, User} from "../models/user";
 import {upperCaseFirst} from "../functions";
 import dayjs from "dayjs";
 
@@ -21,7 +21,12 @@ function WorkedHoursDesktopPage(props: WorkedHoursPageProps) {
     const [month, setMonth] = useState(searchMonth ? parseInt(searchMonth) : currentMonth);
     const [year, setYear] = useState(searchYear ? parseInt(searchYear) : currentYear);
     const [selectingMonth, setSelectingMonth] = useState(false);
-    const [selectedUser, setSelectedUser] = useState(props.user);
+
+    const searchUserId = parseInt(searchParams.get("u") ?? "-1");
+    const emptyUser = new User(searchUserId, Role.user, Type.office, "", "", "", undefined,
+        undefined, undefined, 0, 0);
+    const initialSelectedUser = searchUserId === -1 ? props.user : emptyUser;
+    const [selectedUser, setSelectedUser] = useState(initialSelectedUser);
     const [savingStatus, setSavingStatus] = useState<SavingStatus>("");
 
     return (

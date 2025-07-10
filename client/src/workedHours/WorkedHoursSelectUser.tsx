@@ -37,7 +37,7 @@ function WorkedHoursSelectUser(props: WorkedHoursSelectUserProps) {
                 props.setSelectedUser(selectedUser);
             }
         }
-    }, [users.length]);
+    }, [users.length, searchParams]);
 
     function setSearchUser(userId: number) {
         let newSearchParams: any = {};
