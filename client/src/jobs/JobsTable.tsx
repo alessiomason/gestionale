@@ -81,10 +81,19 @@ function JobsTable(props: JobsTableProps) {
                     .sort((a, b) => -1 * a.id.localeCompare(b.id))
                     .slice(pageNumber * 100, (pageNumber + 1) * 100)
                     .map(job => {
+                        let className = "";
+                        if (!job.active) {
+                            className = "closed-job";
+                        }
+                        if (job.inProgress) {
+                            className += " in-progress-job";
+                            className = className.trim();
+                        }
+
                         return (
                             <tr className={props.isAdministrator ? undefined : "unhoverable"} key={job.id}
                                 onClick={() => handleClick(job)}>
-                                <td className={job.active ? undefined : "closed-job"}>{job.id}</td>
+                                <td className={className}>{job.id}</td>
                                 <td>{job.client}</td>
                                 <td>{job.finalClient}</td>
                                 <td>{job.subject}</td>

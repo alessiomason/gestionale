@@ -39,6 +39,10 @@ function JobsPage(props: JobsPageProps) {
         const filtering = sessionStorage.getItem("filteringOnlyActive");
         return filtering === "true";    // this way, default is false
     });
+    const [filteringOnlyInProgress, setFilteringOnlyInProgress] = useState(() => {
+        const filtering = sessionStorage.getItem("filteringOnlyInProgress");
+        return filtering === "true";    // this way, default is false
+    });
 
     // Save all filters for the whole session
     useEffect(() => {
@@ -62,6 +66,10 @@ function JobsPage(props: JobsPageProps) {
     }, [filteringOnlyActive]);
 
     useEffect(() => {
+        sessionStorage.setItem("filteringOnlyInProgress", String(filteringOnlyInProgress));
+    }, [filteringOnlyInProgress]);
+
+    useEffect(() => {
         if (dirty) {
             jobApis.getAllJobs()
                 .then(jobs => {
@@ -81,6 +89,7 @@ function JobsPage(props: JobsPageProps) {
         setFilteringClient("");
         setFilteringFinalClient("");
         setFilteringOnlyActive(false);
+        setFilteringOnlyInProgress(false);
     }
 
     return (
@@ -136,7 +145,15 @@ function JobsPage(props: JobsPageProps) {
                                 <Col className="d-flex justify-content-center">
                                     <SwitchToggle id="active-toggle" isOn={filteringOnlyActive}
                                                   handleToggle={() => setFilteringOnlyActive(prevFilter => !prevFilter)}/>
-                                    <label>Nascondi non attive</label>
+                                    <label>Mostra solo commesse attive</label>
+                                </Col>
+                            </Row>
+
+                            <Row className="my-3">
+                                <Col className="d-flex justify-content-center">
+                                    <SwitchToggle id="in-progress-toggle" isOn={filteringOnlyInProgress}
+                                                  handleToggle={() => setFilteringOnlyInProgress(prevFilter => !prevFilter)}/>
+                                    <label>Mostra solo commesse in lavorazione</label>
                                 </Col>
                             </Row>
 
@@ -168,6 +185,9 @@ function JobsPage(props: JobsPageProps) {
                             }
                             if (keep && filteringOnlyActive) {
                                 keep = job.active
+                            }
+                            if (keep && filteringOnlyInProgress) {
+                                keep = job.inProgress
                             }
 
                             return keep;
