@@ -50,15 +50,14 @@ export async function getAllWorkItems(month: string) {
         .join("users", "workItems.userId", "users.id")
         .whereRaw("work_items.date LIKE ?", formattedMonth + "-%")
         .groupBy("jobs.id", "jobs.subject", "jobs.client", "jobs.finalClient", "jobs.orderName",
-            "jobs.orderAmount", "jobs.startDate", "jobs.deliveryDate", "jobs.notes", "jobs.active", "jobs.lost",
-            "jobs.design", "jobs.construction", "users.id", "users.role", "users.type", "users.active",
+            "jobs.orderAmount", "jobs.startDate", "jobs.deliveryDate", "jobs.notes", "jobs.active", "jobs.inProgress",
+            "jobs.lost", "jobs.design", "jobs.construction", "users.id", "users.role", "users.type", "users.active",
             "users.managesTickets", "users.managesOrders", "users.email", "users.name", "users.surname",
-            "users.username", "users.phone", "users.hoursPerDay", "users.costPerHour", "users.car",
-            "users.costPerKm")
+            "users.username", "users.phone", "users.hoursPerDay", "users.costPerHour", "users.car", "users.costPerKm")
         .select("jobs.id as jobId", "jobs.subject", "jobs.client", "jobs.finalClient",
             "jobs.orderName", "jobs.orderAmount", "jobs.startDate", "jobs.deliveryDate",
-            "jobs.notes", "jobs.active", "jobs.lost", "jobs.design", "jobs.construction",
-            "users.id as userId", "users.role", "users.type", "users.active",
+            "jobs.notes", "jobs.active", "jobs.inProgress", "jobs.lost", "jobs.design", "jobs.construction",
+            "users.id as userId", "users.role", "users.type", "users.active AS activeUser",
             "users.managesTickets", "users.managesOrders", "users.email", "users.name",
             "users.surname", "users.username", "users.phone", "users.hoursPerDay",
             "users.costPerHour", "users.car", "users.costPerKm",
@@ -80,7 +79,7 @@ export async function getAllWorkItems(month: string) {
             undefined,
             parseFloat(workItem.hoursPerDay),
             parseFloat(workItem.costPerHour),
-            workItem.active === 1,
+            workItem.activeUser === 1,
             workItem.managesTickets === 1,
             workItem.managesOrders === 1,
             workItem.email,
@@ -100,6 +99,7 @@ export async function getAllWorkItems(month: string) {
             workItem.deliveryDate === "" ? null : workItem.deliveryDate,
             workItem.notes,
             workItem.active === 1,
+            workItem.inProgress === 1,
             workItem.lost === 1,
             workItem.design === 1,
             workItem.construction === 1

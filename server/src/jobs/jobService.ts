@@ -15,6 +15,7 @@ function parseJobs(jobs: [{
     deliveryDate: string | null | undefined
     notes: string | undefined
     active: boolean | undefined
+    inProgress: boolean | undefined
     lost: boolean | undefined
     design: boolean | undefined
     construction: boolean | undefined
@@ -31,6 +32,7 @@ function parseJobs(jobs: [{
         job.deliveryDate,
         job.notes,
         !!job.active,
+        !!job.inProgress,
         !!job.lost,
         !!job.design,
         !!job.construction,
@@ -78,13 +80,13 @@ export async function getDetailedJob(id: string) {
         .leftJoin("users", "workItems.userId", "users.id")
         .whereRaw("jobs.id = ?", [id])
         .groupBy("jobs.id", "jobs.subject", "jobs.client", "jobs.finalClient", "jobs.orderName",
-            "jobs.orderAmount", "jobs.startDate", "jobs.deliveryDate", "jobs.notes", "jobs.active", "jobs.lost",
-            "jobs.design", "jobs.construction", "users.id", "users.role", "users.type", "users.active",
-            "users.managesTickets", "users.email", "users.name", "users.surname", "users.username",
-            "users.phone", "users.hoursPerDay", "users.costPerHour", "users.car", "users.costPerKm")
+            "jobs.orderAmount", "jobs.startDate", "jobs.deliveryDate", "jobs.notes", "jobs.active", "jobs.inProgress",
+            "jobs.lost", "jobs.design", "jobs.construction", "users.id", "users.role", "users.type", "users.active",
+            "users.managesTickets", "users.email", "users.name", "users.surname", "users.username", "users.phone",
+            "users.hoursPerDay", "users.costPerHour", "users.car", "users.costPerKm")
         .select("jobs.id as jobId", "jobs.subject", "jobs.client", "jobs.finalClient",
             "jobs.orderName", "jobs.orderAmount", "jobs.startDate", "jobs.deliveryDate",
-            "jobs.notes", "jobs.active AS activeJob", "jobs.lost", "jobs.design",
+            "jobs.notes", "jobs.active AS activeJob", "jobs.inProgress", "jobs.lost", "jobs.design",
             "jobs.construction", "users.id AS userId", "users.role", "users.type",
             "users.active as activeUser", "users.managesTickets", "users.email", "users.name",
             "users.surname", "users.username", "users.phone", "users.hoursPerDay",
@@ -140,6 +142,7 @@ export async function getDetailedJob(id: string) {
         jobUserHoursResult[0].deliveryDate,
         jobUserHoursResult[0].notes,
         !!jobUserHoursResult[0].activeJob,
+        !!jobUserHoursResult[0].inProgress,
         !!jobUserHoursResult[0].lost,
         !!jobUserHoursResult[0].design,
         !!jobUserHoursResult[0].construction,

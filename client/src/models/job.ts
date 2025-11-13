@@ -11,6 +11,7 @@ export class Job {
     deliveryDate: string | null
     notes: string
     active: boolean
+    inProgress: boolean
     lost: boolean
     design: boolean
     construction: boolean
@@ -27,6 +28,7 @@ export class Job {
         deliveryDate: string | null = null,
         notes: string = "",
         active: boolean = true,
+        inProgress: boolean = false,
         lost: boolean = false,
         design: boolean = false,
         construction: boolean = false,
@@ -42,6 +44,7 @@ export class Job {
         this.deliveryDate = deliveryDate;
         this.notes = notes;
         this.active = active;
+        this.inProgress = inProgress;
         this.lost = lost;
         this.design = design;
         this.construction = construction;
@@ -76,6 +79,7 @@ export class DetailedJob extends Job {
         deliveryDate: string | null = null,
         notes: string = "",
         active: boolean = true,
+        inProgress: boolean = false,
         lost: boolean = false,
         design: boolean = false,
         construction: boolean = false,
@@ -94,6 +98,7 @@ export class DetailedJob extends Job {
             deliveryDate,
             notes,
             active,
+            inProgress,
             lost,
             design,
             construction,

@@ -8,10 +8,10 @@ import {PlannedDayNotFound} from "./plannedDayErrors";
 const getPlannedDayQueryFields = [
     "plannedDays.*", "jobs.subject", "jobs.client", "jobs.finalClient",
     "jobs.orderName", "jobs.orderAmount", "jobs.startDate", "jobs.deliveryDate",
-    "jobs.notes", "jobs.active", "jobs.lost", "jobs.design",
+    "jobs.notes", "jobs.active", "jobs.inProgress", "jobs.lost", "jobs.design",
     "jobs.construction", "users.role", "users.type", "users.name",
     "users.surname", "users.username", "users.hoursPerDay", "users.costPerHour",
-    "users.active", "users.managesTickets", "users.managesOrders", "users.email",
+    "users.active AS activeUser", "users.managesTickets", "users.managesOrders", "users.email",
     "users.phone", "users.car", "users.costPerKm"
 ];
 
@@ -30,7 +30,7 @@ function parsePlannedDay(plannedDay: any) {
         undefined,
         parseFloat(plannedDay.hoursPerDay),
         parseFloat(plannedDay.costPerHour),
-        plannedDay.active === 1,
+        plannedDay.activeUser === 1,
         plannedDay.managesTickets === 1,
         plannedDay.managesOrders === 1,
         plannedDay.email,
@@ -50,6 +50,7 @@ function parsePlannedDay(plannedDay: any) {
         plannedDay.deliveryDate,
         plannedDay.notes,
         !!plannedDay.active,
+        !!plannedDay.inProgress,
         !!plannedDay.lost,
         !!plannedDay.design,
         !!plannedDay.construction,
