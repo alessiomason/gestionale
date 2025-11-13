@@ -1,4 +1,5 @@
 import {Type, User} from "./models/user";
+import {Job} from "./models/job";
 import ExcelJS from "exceljs";
 import dayjs from "dayjs";
 import {
@@ -69,6 +70,20 @@ export function compareUsers(a: User, b: User) {
     // sort by surname and name
     const surnameComparison = a.surname.localeCompare(b.surname);
     return surnameComparison !== 0 ? surnameComparison : a.name.localeCompare(b.name);
+}
+
+// Compare jobs, sorting them in reverse id order, with in progress jobs first and inactive ones last.
+export function compareJobs(a: Job, b: Job) {
+    // sort in progress jobs first
+    if (!a.inProgress && b.inProgress) return 1;
+    else if (a.inProgress && !b.inProgress) return -1;
+
+    // sort inactive jobs last
+    if (!a.active && b.active) return 1;
+    if (a.active && !b.active) return -1;
+
+    // sort by reverse id order
+    return -1 * a.id.localeCompare(b.id);
 }
 
 // Exports an Excel file and downloads it.

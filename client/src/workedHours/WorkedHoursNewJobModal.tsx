@@ -1,7 +1,8 @@
 import React, {useState} from "react";
+import {Card, FloatingLabel, Form, Modal} from "react-bootstrap";
 import {Job} from "../models/job";
 import jobApis from "../api/jobApis";
-import {Card, FloatingLabel, Form, Modal} from "react-bootstrap";
+import {compareJobs} from "../functions";
 
 interface WorkedHoursNewJobModalProps {
     readonly show: boolean
@@ -44,7 +45,7 @@ function WorkedHoursNewJobModal(props: WorkedHoursNewJobModalProps) {
                 </Form>
             </Modal.Header>
             <Modal.Body className="modal-body-overflow">
-                {jobs.sort((a, b) => -1 * a.id.localeCompare(b.id))
+                {jobs.sort(compareJobs)
                     .filter(job => {
                         const searchString = searchText.toLowerCase();
 
@@ -69,7 +70,7 @@ function JobListItem(props: JobListItemProps) {
     return (
         <Card key={props.job.id} className="job-card mb-3" onClick={() => props.selectJob(props.job)}>
             <Card.Body className="px-3 py-1">
-                <p className="p-mt grey">{props.job.id}</p>
+                <p className="p-mt grey">{props.job.id} {props.job.inProgress && <em>(in lavorazione)</em>}</p>
                 <p className="p-mt"><strong>{props.job.client}</strong> - {props.job.subject}</p>
             </Card.Body>
         </Card>
