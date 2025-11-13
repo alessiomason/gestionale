@@ -11,6 +11,9 @@ for (let year = 2019; year <= currentYear + 10; year++) {
     holidays.push(`${year}-05-01`);
     holidays.push(`${year}-06-02`);
     holidays.push(`${year}-08-15`);
+    if (year >= 2026) {
+        holidays.push(`${year}-10-04`);
+    }
     holidays.push(`${year}-11-01`);
     holidays.push(`${year}-12-08`);
     holidays.push(`${year}-12-25`);
