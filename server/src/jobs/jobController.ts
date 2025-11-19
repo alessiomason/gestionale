@@ -109,7 +109,7 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler, isAdminist
             }
 
             const newJob = new Job(
-                req.body.id,
+                req.body.id.replace("/", "-"),      // will be used in routing
                 req.body.subject,
                 req.body.client,
                 req.body.finalClient,
@@ -163,7 +163,7 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler, isAdminist
             }
 
             const updatedJob = new Job(
-                req.body.id,
+                req.body.id.replace("/", "-"),      // will be used in routing
                 req.body.subject,
                 req.body.client,
                 req.body.finalClient,
