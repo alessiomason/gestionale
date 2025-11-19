@@ -30,6 +30,7 @@ describe("Test jobs APIs", () => {
         formatDate(faker.date.recent()),
         faker.lorem.sentences(),
         true,
+        true,
         false,
         true,
         true

@@ -97,6 +97,7 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler, isAdminist
         body("deliveryDate").optional({values: "null"}).isDate(),
         body("notes").optional({values: "null"}).isString(),
         body("active").isBoolean(),
+        body("inProgress").isBoolean(),
         body("lost").isBoolean(),
         body("design").isBoolean(),
         body("construction").isBoolean(),
@@ -108,7 +109,7 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler, isAdminist
             }
 
             const newJob = new Job(
-                req.body.id,
+                req.body.id.replace("/", "-"),      // will be used in routing
                 req.body.subject,
                 req.body.client,
                 req.body.finalClient,
@@ -118,6 +119,7 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler, isAdminist
                 req.body.deliveryDate,
                 req.body.notes ?? "",
                 req.body.active,
+                req.body.inProgress,
                 req.body.lost,
                 req.body.design,
                 req.body.construction
@@ -148,6 +150,7 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler, isAdminist
         body("deliveryDate").optional({values: "null"}).isDate(),
         body("notes").optional({values: "null"}).isString(),
         body("active").isBoolean(),
+        body("inProgress").isBoolean(),
         body("lost").isBoolean(),
         body("design").isBoolean(),
         body("construction").isBoolean(),
@@ -160,7 +163,7 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler, isAdminist
             }
 
             const updatedJob = new Job(
-                req.body.id,
+                req.body.id.replace("/", "-"),      // will be used in routing
                 req.body.subject,
                 req.body.client,
                 req.body.finalClient,
@@ -170,6 +173,7 @@ export function useJobsAPIs(app: Express, isLoggedIn: RequestHandler, isAdminist
                 req.body.deliveryDate,
                 req.body.notes,
                 req.body.active,
+                req.body.inProgress,
                 req.body.lost,
                 req.body.design,
                 req.body.construction

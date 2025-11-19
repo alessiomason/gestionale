@@ -26,6 +26,7 @@ function JobPane(props: JobPaneProps) {
     const [deliveryDate, setDeliveryDate] = useState(props.job?.deliveryDate ?? "");
 
     const [active, setActive] = useState(props.job?.active ?? true);
+    const [inProgress, setInProgress] = useState(props.job?.inProgress ?? false);
     const [lost, setLost] = useState(props.job?.lost ?? false);
     const [design, setDesign] = useState(props.job?.design ?? false);
     const [construction, setConstruction] = useState(props.job?.construction ?? false);
@@ -67,6 +68,7 @@ function JobPane(props: JobPaneProps) {
             deliveryDate,
             notes,
             active,
+            inProgress,
             lost,
             design,
             construction
@@ -84,6 +86,7 @@ function JobPane(props: JobPaneProps) {
                 deliveryDate,
                 notes,
                 active,
+                inProgress,
                 lost,
                 design,
                 construction,
@@ -142,11 +145,20 @@ function JobPane(props: JobPaneProps) {
                                 </div>
 
                                 <div className="d-flex justify-content-center">
+                                    <SwitchToggle id="in-progress-toggle" isOn={inProgress}
+                                                  handleToggle={() => setInProgress(prevInProgress => !prevInProgress)}/>
+                                    <label>In lavorazione</label>
+                                </div>
+
+                                <div className="d-flex justify-content-center">
                                     <SwitchToggle id="lost-toggle" isOn={lost}
                                                   handleToggle={() => setLost(prevLost => !prevLost)}/>
                                     <label>Persa</label>
                                 </div>
-
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col className="d-flex justify-content-evenly mt-2 mb-3">
                                 <div className="d-flex justify-content-center">
                                     <SwitchToggle id="design-toggle" isOn={design}
                                                   handleToggle={() => setDesign(prevDesign => !prevDesign)}/>
@@ -239,7 +251,8 @@ function JobPane(props: JobPaneProps) {
 
             <Row className="d-flex justify-content-center my-4">
                 <Col sm={4} className="d-flex justify-content-center">
-                    <GlossyButton type="submit" icon={updated ? Check2 : Floppy} onClick={handleSubmit}>{buttonLabel}</GlossyButton>
+                    <GlossyButton type="submit" icon={updated ? Check2 : Floppy}
+                                  onClick={handleSubmit}>{buttonLabel}</GlossyButton>
                 </Col>
             </Row>
         </Form>
@@ -250,7 +263,7 @@ interface JobPaneDetailsProps {
     readonly job: DetailedJob
 }
 
-function JobPaneDetails (props: JobPaneDetailsProps) {
+function JobPaneDetails(props: JobPaneDetailsProps) {
     return (
         <Col>
             <Row>

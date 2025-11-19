@@ -22,6 +22,7 @@ function parseOrder(order: any) {
         order.deliveryDate,
         order.notes,
         !!order.active,
+        !!order.inProgress,
         !!order.lost,
         !!order.design,
         !!order.construction,
@@ -42,7 +43,7 @@ function parseOrder(order: any) {
         undefined,
         parseFloat(order.hoursPerDay),
         parseFloat(order.costPerHour),
-        order.active === 1,
+        order.active1 === 1,
         order.managesTickets === 1,
         order.managesOrders === 1,
         order.email,
@@ -118,16 +119,16 @@ function parseOrder(order: any) {
         partiallyClearedBy,
         order.partialClearingDate ? order.partialClearingDate : undefined,    // if null, set undefined
         clearedBy,
-        order.clearingDate ? order.clearingDate : undefined                        // if null, set undefined
+        order.clearingDate ? order.clearingDate : undefined                   // if null, set undefined
     );
 }
 
 const getOrderQueryFields = [
     "orders.*", "jobs.subject", "jobs.client", "jobs.finalClient",
     "jobs.orderName", "jobs.orderAmount", "jobs.startDate", "jobs.deliveryDate",
-    "jobs.notes", "jobs.active", "jobs.lost", "jobs.design", "jobs.construction",
+    "jobs.notes", "jobs.active", "jobs.inProgress", "jobs.lost", "jobs.design", "jobs.construction",
     "u1.role", "u1.type", "u1.name", "u1.surname", "u1.username",
-    "u1.hoursPerDay", "u1.costPerHour", "u1.active", "u1.managesTickets",
+    "u1.hoursPerDay", "u1.costPerHour", "u1.active AS active1", "u1.managesTickets",
     "u1.managesOrders", "u1.email", "u1.phone", "u1.car", "u1.costPerKm",
     "u2.role AS role2", "u2.type AS type2", "u2.name AS name2",
     "u2.surname AS surname2", "u2.username AS username2", "u2.hoursPerDay AS hoursPerDay2",
