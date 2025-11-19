@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import {useSearchParams} from "react-router-dom";
 import {Table} from "react-bootstrap";
 import Loading from "../../Loading";
 import WorkedHoursWorkItemTableCell from "./WorkedHoursWorkItemTableCell";
@@ -22,6 +21,7 @@ interface WorkedHoursTableProps {
     readonly month: number
     readonly year: number
     readonly setSavingStatus: React.Dispatch<React.SetStateAction<"" | "saving" | "saved">>
+    readonly setSavingError: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 function WorkedHoursTable(props: WorkedHoursTableProps) {
@@ -31,7 +31,6 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
         workdays.push(dayjs(`${props.year}-${props.month}-${i}`));
     }
 
-    const [searchParams] = useSearchParams();
     const isMachine = props.selectedUser.type === Type.machine;
     const [workItems, setWorkItems] = useState<WorkItem[]>();
     const [dailyExpenses, setDailyExpenses] = useState<DailyExpense[]>([]);
@@ -173,6 +172,7 @@ function WorkedHoursTable(props: WorkedHoursTableProps) {
                                                                   job={job} workday={workday} workItem={workItem}
                                                                   selectedUser={props.selectedUser}
                                                                   setSavingStatus={props.setSavingStatus}
+                                                                  setSavingError={props.setSavingError}
                                                                   createOrUpdateLocalWorkItem={createOrUpdateLocalWorkItem}/>
                                 );
                             })}

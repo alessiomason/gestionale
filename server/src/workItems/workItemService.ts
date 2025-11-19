@@ -8,6 +8,7 @@ import {getJob} from "../jobs/jobService";
 import {JobNotFound} from "../jobs/jobErrors";
 import {User} from "../users/user";
 import {checkValidDate, checkValidMonth} from "../functions";
+import {JobClosed} from "./workItemErrors";
 
 export async function getWorkItems(userId: number, month: string) {
     const formattedMonth = checkValidMonth(month);
@@ -144,6 +145,10 @@ export async function createOrUpdateWorkItem(userId: number, jobId: string, date
                 .update({userId, jobId, date, hours, cost});
         }
     } else {                // create
+        const job = await getJob(jobId);
+        if (!job) throw new JobNotFound();
+        if (!job.active) throw new JobClosed();
+
         await knex("workItems")
             .insert({userId, jobId, date, hours, cost});
     }

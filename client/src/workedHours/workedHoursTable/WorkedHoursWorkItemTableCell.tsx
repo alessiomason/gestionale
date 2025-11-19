@@ -14,6 +14,7 @@ interface WorkedHoursWorkItemTableCellProps {
     readonly job: Job
     readonly workItem: WorkItem | undefined
     readonly setSavingStatus: React.Dispatch<React.SetStateAction<"" | "saving" | "saved">>
+    readonly setSavingError: React.Dispatch<React.SetStateAction<boolean>>
     readonly createOrUpdateLocalWorkItem: (job: Job, date: string, hours: number) => void
 }
 
@@ -47,6 +48,13 @@ function WorkedHoursWorkItemTableCell(props: WorkedHoursWorkItemTableCellProps) 
 
     function editWorkItem() {
         if (workItemHours !== initialWorkItemHours) {
+            if (!props.job.active) {
+                setWorkItemHours(hoursBeforeEditing);
+                setEditing(false);
+                props.setSavingError(true);
+                return;
+            }
+
             let hours = parseFloat(workItemHours);
             if (workItemHours === "") {
                 hours = 0;

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useSearchParams} from "react-router-dom";
 import {Col, Row} from "react-bootstrap";
 import {ExclamationCircle} from "react-bootstrap-icons";
@@ -28,6 +28,15 @@ function WorkedHoursDesktopPage(props: WorkedHoursPageProps) {
     const initialSelectedUser = searchUserId === -1 ? props.user : emptyUser;
     const [selectedUser, setSelectedUser] = useState(initialSelectedUser);
     const [savingStatus, setSavingStatus] = useState<SavingStatus>("");
+    const [savingError, setSavingError] = useState(false);
+
+    useEffect(() => {
+        if (savingError) {
+            setTimeout(() => {
+                setSavingError(false);
+            }, 10000);
+        }
+    }, [savingError]);
 
     return (
         <>
@@ -56,11 +65,14 @@ function WorkedHoursDesktopPage(props: WorkedHoursPageProps) {
 
                 <Row>
                     <Col>
-                        {selectedUser.id !== props.user.id && <p className="warning d-flex align-items-center">
+                        {!savingError && selectedUser.id !== props.user.id && <p className="warning d-flex align-items-center">
                             <ExclamationCircle className="mx-1"/>
                             Attenzione! Stai modificando le ore di
                             {selectedUser.type === Type.machine ? " una macchina" : " un altro utente"}, non le tue!
                         </p>}
+                        {savingError && <p className="error d-flex align-items-center">
+                            <ExclamationCircle className="mx-1"/>
+                            Non è possibile aggiungere ore ad una commessa chiusa!</p>}
                     </Col>
 
                     <Col>
@@ -73,7 +85,7 @@ function WorkedHoursDesktopPage(props: WorkedHoursPageProps) {
 
                 <Row className="mt-2">
                     <WorkedHoursTable user={props.user} selectedUser={selectedUser} month={month} year={year}
-                                      setSavingStatus={setSavingStatus}/>
+                                      setSavingStatus={setSavingStatus} setSavingError={setSavingError}/>
                 </Row>
             </Row>
         </>
