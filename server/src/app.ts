@@ -29,6 +29,7 @@ import {useCompanyHoursAPIs} from "./companyHours/companyHoursController";
 import {useDatabaseAPIs} from "./database/databaseController";
 import {useOrdersAPIs} from "./orders/orderController";
 import {usePlannedDaysAPIs} from "./planning/plannedDayController";
+import {useReportsAPIs} from "./reports/reportController";
 
 // setup passport
 const webAuthnStore = new SessionChallengeStore();
@@ -160,6 +161,7 @@ useDailyExpensesAPIs(app, isLoggedIn, isAdministrator, isDeveloper);
 useCompanyHoursAPIs(app, isLoggedIn, isAdministrator);
 useOrdersAPIs(app, isLoggedIn, canManageOrders);
 usePlannedDaysAPIs(app, isLoggedIn);
+useReportsAPIs(app, isLoggedIn);
 
 // serve the client
 if (process.env.NODE_ENV === "production") {
