@@ -58,3 +58,40 @@ export class Report {
         this.workingDays = workingDays;
     }
 }
+
+export class NewReport {
+    operatorId: number
+    date: string
+    jobId: string
+    address: string
+    machine: string
+    jobsDone: string
+    jobsToBeDone: string
+    reportVehicle: ReportVehicle
+    reportExpenses: ReportExpenses
+    supplyIncludesIntervention: boolean
+
+    constructor(
+        operatorId: number,
+        date: string,
+        jobId: string,
+        address: string,
+        machine: string,
+        jobsDone: string,
+        jobsToBeDone: string,
+        reportVehicle: ReportVehicle,
+        reportExpenses: ReportExpenses,
+        supplyIncludesIntervention: boolean
+    ) {
+        this.operatorId = operatorId;
+        this.date = date;
+        this.jobId = jobId;
+        this.address = address;
+        this.machine = machine;
+        this.jobsDone = jobsDone;
+        this.jobsToBeDone = jobsToBeDone;
+        this.reportVehicle = reportVehicle;
+        this.reportExpenses = reportExpenses;
+        this.supplyIncludesIntervention = supplyIncludesIntervention;
+    }
+}
